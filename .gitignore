@@ -1,3 +1,7 @@
+# DB Info
+WEB-INF/src/dbConnect/DBConfig.java
+/WEB-INF/src/dbConnect/DBConfig.java
+
 # Compiled class file
 *.class
 
