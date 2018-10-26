@@ -1,0 +1,15 @@
+/*Art of War Style page...*/
+
+body {
+    wider: 100%;
+    high: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#main-menu {
+    background-color: #00000096;
+    color: white;
+}
