@@ -8,10 +8,10 @@
     <%@include file="includes/menu.jsp" %>
     <div class="container">
 		<div id="welcome">
-			<jsp:useBean id="addr" class="com.artOfWar.dbConnect.DBConnect"/>
+			<jsp:useBean id="addr" class="com.artOfWar.blizzardAPI.Update"/>
 			<jsp:setProperty name="addr" property="*"/>
 			
-			<% addr.insert("jdbc_test", new String[] {"username", "email"}, new String[] {"Test", "v: home"}); %>
+			<% addr.runUpdate(); %>
 			Welcome to Art of War
 		</div>
     </div>

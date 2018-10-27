@@ -11,12 +11,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.zip.DataFormatException;
 
-public class DBConnect implements DBConfig {
+public class DBConnect implements DBConfig 
+{
 	
 	//acces info
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	
+	/**
+	 * RUN a sql query in SQL server.
+	 * @sql SQL Query [SIN DATOS INTERNOS]
+	 * @values[] data
+	 */
 	private void runUpdate(String sql, String[] values) throws SQLException, ClassNotFoundException
 	{
 		//Load JDBC Driver
@@ -33,16 +39,24 @@ public class DBConnect implements DBConfig {
 		pstmt.executeUpdate();
 	}
 	
+	/**
+	 * Contruye una query de insercion.
+	 * @table Tabla
+	 * @columns nombre de las columnas que afecta
+	 * @values valores de dichas columnas
+	 */
 	public void insert(String table, String[] columns, String[] values) throws DataFormatException, SQLException, ClassNotFoundException
 	{
 		if ((columns.length > 0 && values.length > 0) && 
 			(columns.length == values.length))
 		{
 			String columnsSQL = "";
-			for(String c: columns) { columnsSQL += c +','; }
+			String valuesSQL = "";
+			for(String c: columns) { columnsSQL += c +","; valuesSQL += "?,"; }
 			columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
+			valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
 			
-			String sql = "insert into "+ table +" ("+ columnsSQL +") values(?,?)";
+			String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
 			
 			runUpdate(sql, values);
 		}
