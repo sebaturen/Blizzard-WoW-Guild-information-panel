@@ -5,11 +5,16 @@
  */
 package com.artOfWar.dbConnect;
 
+import com.artOfWar.DataException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.zip.DataFormatException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class DBConnect implements DBConfig 
 {
@@ -17,9 +22,51 @@ public class DBConnect implements DBConfig
 	//acces info
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
+	private boolean statusConnect = false;
+	
+	public DBConnect()
+	{		
+		try
+		{
+			//Driver connection
+			this.conn = DriverManager.getConnection(JDBC_URL + DB_NAME,
+												DB_USER,
+												DB_PASSWORD);
+			statusConnect = true;
+		} catch (SQLException e) {
+			statusConnect = false;
+		}
+	}
 	
 	/**
-	 * RUN a sql query in SQL server.
+	 * Run Select Query 
+	 * @table table
+	 * @values array how want select 
+	 * @where where
+	 */
+	public JSONArray select(String table, String[] values) throws SQLException, DataException { return select(table, values, null); }
+	public JSONArray select(String table, String[] values, String where) throws SQLException, DataException
+	{		
+		if (statusConnect == true)
+		{
+			//Prepare QUERY
+			String sql = "select ";
+			for(String v : values) { sql += "`"+ v +"`,"; }
+			sql = sql.substring(0,sql.length()-1);
+			sql += " from `"+ table +"`";
+			if(where != null) sql += " where "+ where;
+			
+			this.pstmt = this.conn.prepareStatement(sql);	
+			return resultToJsonConvert(this.pstmt.executeQuery());
+		}
+		else
+		{			
+			throw new DataException("DB can't connect");
+		}
+	}
+	
+	/**
+	 * RUN a sql query in SQL server. (before call, valide (statusConnect == true))
 	 * @sql SQL Query [SIN DATOS INTERNOS]
 	 * @values[] data
 	 */
@@ -27,16 +74,11 @@ public class DBConnect implements DBConfig
 	{
 		//Load JDBC Driver
 		Class.forName(JDBC_DRIVER);
-
-		//Driver connection
-		conn = DriverManager.getConnection(JDBC_URL + DB_NAME,
-											DB_USER,
-											DB_PASSWORD);
 			
-		pstmt = conn.prepareStatement(sql);
-		for(int i = 0; i < values.length; i++) { pstmt.setString(i+1,values[i]); }					
+		this.pstmt = this.conn.prepareStatement(sql);
+		for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }					
 		//Run Update
-		pstmt.executeUpdate();
+		this.pstmt.executeUpdate();
 	}
 	
 	/**
@@ -45,25 +87,136 @@ public class DBConnect implements DBConfig
 	 * @columns nombre de las columnas que afecta
 	 * @values valores de dichas columnas
 	 */
-	public void insert(String table, String[] columns, String[] values) throws DataFormatException, SQLException, ClassNotFoundException
+	public void insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException
 	{
-		if ((columns.length > 0 && values.length > 0) && 
-			(columns.length == values.length))
-		{
-			String columnsSQL = "";
-			String valuesSQL = "";
-			for(String c: columns) { columnsSQL += c +","; valuesSQL += "?,"; }
-			columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
-			valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
-			
-			String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
-			
-			runUpdate(sql, values);
+		if (statusConnect == true)
+		{			
+			if ((columns.length > 0 && values.length > 0) && 
+				(columns.length == values.length))
+			{
+				String columnsSQL = "";
+				String valuesSQL = "";
+				for(String c: columns) { columnsSQL += "`"+ c +"`,"; valuesSQL += "?,"; }
+				columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
+				valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
+				
+				String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
+				
+				runUpdate(sql, values);
+			}
+			else
+			{
+				throw new DataException("Invalid data in SQL Insert");
+			}
 		}
 		else
 		{
-			throw new DataFormatException("Invalid data");
+			throw new DataException("DB can't connect");
 		}
+	}
+	
+	/**
+	 * Contruye una query de actualizacion.
+	 * @table Tabla
+	 * @columns nombre de las columnas que afecta
+	 * @values valores de dichas columnas
+	 */
+	public void update(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { update(table, columns, values, null);}
+	public void update(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException
+	{
+		if (statusConnect == true)
+		{			
+			if ((columns.length > 0 && values.length > 0) && 
+				(columns.length == values.length))
+			{
+				String columnsSQL = "";
+				for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
+				columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
+				
+				String sql = "Update "+ table +" SET "+ columnsSQL;
+				if(where != null) sql += " where "+ where;
+				
+				runUpdate(sql, values);
+			}
+			else
+			{
+				throw new DataException("Invalid data in SQL Insert");
+			}
+		}
+		else
+		{
+			throw new DataException("DB can't connect");
+		}
+	}
+	
+	/**
+	 * Convert SQL Result to JSONArray
+	 */
+	private static JSONArray resultToJsonConvert(ResultSet rs) throws SQLException
+	{		
+		JSONArray json = new JSONArray();
+		ResultSetMetaData rsmd = rs.getMetaData();
+		
+		while(rs.next()) 
+		{
+			int numColumns = rsmd.getColumnCount();
+			JSONObject obj = new JSONObject();
+
+			for (int i=1; i<numColumns+1; i++) 
+			{
+				String column_name = rsmd.getColumnName(i);
+
+				switch (rsmd.getColumnType(i)) 
+				{
+					case java.sql.Types.ARRAY:
+						obj.put(column_name, rs.getArray(column_name));
+						break;
+					case java.sql.Types.BIGINT:
+						obj.put(column_name, rs.getDouble(column_name));
+						break;
+					case java.sql.Types.BOOLEAN:
+						obj.put(column_name, rs.getBoolean(column_name));
+						break;
+					case java.sql.Types.BLOB:
+						obj.put(column_name, rs.getBlob(column_name));
+						break;
+					case java.sql.Types.DOUBLE:
+						obj.put(column_name, rs.getDouble(column_name));
+						break;
+					case java.sql.Types.FLOAT:
+						obj.put(column_name, rs.getFloat(column_name));
+						break;
+					case java.sql.Types.INTEGER:
+						obj.put(column_name, rs.getInt(column_name));
+						break;
+					case java.sql.Types.NVARCHAR:
+						obj.put(column_name, rs.getNString(column_name));
+						break;
+					case java.sql.Types.VARCHAR:
+						obj.put(column_name, rs.getString(column_name));
+						break;
+					case java.sql.Types.TINYINT:
+						obj.put(column_name, rs.getInt(column_name));
+						break;
+					case java.sql.Types.SMALLINT:
+						obj.put(column_name, rs.getInt(column_name));
+						break;
+					case java.sql.Types.DATE:
+						obj.put(column_name, rs.getDate(column_name));
+						break;
+					case java.sql.Types.TIMESTAMP:
+						obj.put(column_name, rs.getTimestamp(column_name));
+						break;
+					default:
+						obj.put(column_name, rs.getObject(column_name));
+						break;
+				}
+			}
+
+			json.add(obj);
+		}
+		
+		return json;
 	}
 	
 }
