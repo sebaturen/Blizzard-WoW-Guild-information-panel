@@ -10,12 +10,13 @@ echo ======== START Compile ========
 javac \
     DataException.java \
     gameObject/Guild.java \
+    gameObject/Character.java \
     dbConnect/DBConnect.java \
     dbConnect/DBConfig.java \
     blizzardAPI/Update.java \
     blizzardAPI/UpdateRunning.java \
     blizzardAPI/APIInfo.java \
-    -d . -classpath ".:/opt/tomcat/lib/servlet-api.jar:/opt/tomcat/artOfWar/ROOT/WEB-INF/lib/json-simple-1.1.1.jar:/opt/tomcat/artOfWar/ROOT/WEB-INF/classes"
+    -d . -classpath ".:/opt/tomcat/lib/servlet-api.jar:/opt/tomcat/artOfWar/ROOT/WEB-INF/lib/json-simple-1.1.1.jar"
 echo ======== END Compile ========
 echo Delete old .class
 rm -rf /opt/tomcat/artOfWar/ROOT/WEB-INF/classes/com

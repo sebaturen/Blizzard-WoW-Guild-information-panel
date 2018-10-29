@@ -1,13 +1,14 @@
 /**
  * File : Update.java
- * Desc : Update player and guild information
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * Desc : Update guild and character in guild information
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.gameObject.Guild;
+import com.artOfWar.gameObject.Character;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,19 +19,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 
 public class Update implements APIInfo
 {
-	
-	//TEST FUNCTION
-	public void runUpdate() throws IOException, ParseException, ClassNotFoundException, SQLException, DataException
-	{
-		getGuildProfile();
-	}
-	
+
 	//Atribute
 	private String accesToken = "";
 	private DBConnect dbConnect;
@@ -62,6 +58,7 @@ public class Update implements APIInfo
 		this.accesToken = (String) (curl(urlString,
 										"POST",
 										"Basic "+ apiInfo,
+										null,
 										postDataBytes)
 									).get("access_token");
 	}
@@ -69,51 +66,115 @@ public class Update implements APIInfo
 	/**
 	 * Get a guild profile
 	 */
-	private void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
+	public void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
 	{
-		if(this.accesToken.length() == 0) System.out.println("Acces token not found");
+		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
 		else
 		{
+			//Generate an API URL
 			String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
 																			URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
 																			URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
+			//Call Blizzard API
 			JSONObject respond = curl(urlString, 
 									"GET",
 									"Bearer "+ this.accesToken);
 			
 			Guild actualGuild = new Guild(); //actual guild in DB
-			Guild apiGuild = new Guild(respond.get("name").toString(), //consctrut a new guild, using a get data
-										(long) respond.get("lastModified"),
-										respond.get("battlegroup").toString(),
-										((Long) respond.get("level")).intValue(),
-										((Long) respond.get("side")).intValue(),
-										(long) respond.get("achievementPoints"));
+			Guild apiGuild = new Guild(respond);
 										
 			//If guild not exist in DB, or is not update
 			if( !actualGuild.isData() ) //guild not exist
 			{
 				System.out.println("Guild not found");
-				dbConnect.insert("guild_info",
-								new String[] {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"},
-								new String[] { 	respond.get("name").toString(), 
-												respond.get("lastModified").toString(),
-												respond.get("battlegroup").toString(),
-												respond.get("level").toString(),
-												respond.get("side").toString(),
-												respond.get("achievementPoints").toString()});
+				apiGuild.insertInDB();
 				
 			}
 			else if (!actualGuild.equals(apiGuild))
 			{
 				System.out.println("Guild Update found");
-				dbConnect.update("guild_info",
-								new String[] {"lastModified", "battlegroup", "level", "side", "achievementPoints"},
-								new String[] { 	respond.get("lastModified").toString(),
-												respond.get("battlegroup").toString(),
-												respond.get("level").toString(),
-												respond.get("side").toString(),
-												respond.get("achievementPoints").toString()});
-			}else { System.out.println("Guild not CHANGE"); }
+				apiGuild.updateInDB();
+			}
+		}
+	}
+	
+	/**
+	 * get a guilds members
+	 */
+	public void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
+	{
+		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		else
+		{
+			//Generate an API URL
+			String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
+																			URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+																			URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
+			//Call Blizzard API
+			JSONObject respond = curl(urlString, 
+								"GET",
+								"Bearer "+ this.accesToken,
+								new String[] {"fields=members"});
+			
+			JSONArray members = (JSONArray) respond.get("members");
+			
+			for(int i = 0; i < members.size(); i++)
+			{
+				JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
+				JSONArray playerDB = dbConnect.select("gMembers_id_name",
+													new String[] {"internal_id","member_name"},
+													"member_name=\""+info.get("name")+"\"");
+				//If not exist in table, right a name 
+				if(playerDB.size() == 0) //not exist
+				{//save member
+					System.out.println("Player "+ info.get("name") +" SAVE");
+					dbConnect.insert("gMembers_id_name",
+								new String[] {"member_name","rank"},
+								new String[] {info.get("name").toString(),
+											((JSONObject) members.get(i)).get("rank").toString()});
+				}
+			}
+		}
+	}
+	
+	/**
+	 * get a player information
+	 */
+	public void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
+	{
+		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		else
+		{
+			JSONArray members = dbConnect.select("gMembers_id_name", 
+									new String[] {"internal_id", "member_name"});
+									
+			if(members.size() > 0) //we have a player in DB
+			{
+				for(int i = 0; i < members.size(); i++)
+				{
+					JSONObject member = (JSONObject) members.get(i); //internal DB Members					
+					//Generate an API URL
+					String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
+																					URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+																					URLEncoder.encode(member.get("member_name").toString(), "UTF-8").replace("+", "%20")));
+					try 
+					{
+						//Call Blizzard API
+						JSONObject blizzPlayerInfo = curl(urlString, //DataException posible trigger
+											"GET",
+											"Bearer "+ this.accesToken,
+											new String[] {"fields=guild"});
+						//is Outdated?... if is>
+						Character blizzPlayer = new Character((int) member.get("internal_id"), blizzPlayerInfo);
+						System.out.println(blizzPlayer.getName());
+						//else NOTHIN!												
+					} 
+					catch (DataException e) //Error in blizz api, like player not found
+					{
+						System.out.println("Blizz lanzo error para el amigo "+ member.get("member_name") +"\n\t"+ e);
+					}
+				}
+			}
 		}
 	}
 	
@@ -122,11 +183,21 @@ public class Update implements APIInfo
 	 * @urlString : URl de la api completa
 	 * @method : GET, POST, DELETE, etc
 	 * @authorization : autorizacion de la API, Bearer, o basic, etc
+	 * @parameters : parametros URL ("field=member","acctrion=move"....)
 	 * @bodyData : en caso de tener datos en el body
 	 */
-	private JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null); }
-	private JSONObject curl(String urlString, String method, String authorization, byte[] bodyData) throws IOException, ParseException, DataException
+	private JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
+	private JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
+	private JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, ParseException, DataException
 	{
+		//Add paramethers
+		if(parameters != null)
+		{
+			String url = urlString +"?";
+			for(String param : parameters) { url += param +"&"; }
+			urlString = url.substring(0,url.length()-1);
+		}
+		
 		URL url = new URL(urlString);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		

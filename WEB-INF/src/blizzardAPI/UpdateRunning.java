@@ -1,7 +1,7 @@
 /**
  * File : UpdateRunning.java
  * Desc : Run player information every X time
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.blizzardAPI;
 

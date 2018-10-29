@@ -1,7 +1,7 @@
 /**
  * File : DBConnect.java
  * Desc : DB Connection controller.
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.dbConnect;
 

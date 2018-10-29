@@ -24,17 +24,17 @@
 
     <description>Art of War Web Page</description>
     <display-name>Art of War - Ragnaros Guild</display-name>
-	
-	<listener>
-		<listener-class>com.artOfWar.blizzardAPI.UpdateRunning</listener-class>
-	</listener>
 
     <!-- Define servlets that are included in the example application -->
 
     <servlet>
       <servlet-name>ArtOfWar</servlet-name>
-      <servlet-class>turensoft.artOfWar</servlet-class>
+      <servlet-class>com.artOfWar</servlet-class>
     </servlet>
+	
+	<listener>
+		<listener-class>com.artOfWar.blizzardAPI.UpdateRunning</listener-class>
+	</listener>
 	
     <servlet-mapping>
         <servlet-name>ArtOfWar</servlet-name>

@@ -1,7 +1,7 @@
 /**
  * File : DBConfig.java
  * Desc : Configure to DB Connection info.
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.dbConnect;
 

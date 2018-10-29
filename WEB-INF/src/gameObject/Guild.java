@@ -1,7 +1,7 @@
 /**
  * File : Guild.java
- * Desc : Update player and guild information
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * Desc : Guild Object
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.gameObject;
 
@@ -17,32 +17,45 @@ public class Guild implements APIInfo
 {
 	//Atribute
 	private String name;
-	private String battlegroup;
+	private String battleGroup;
 	private long lastModified;
 	private long achievementPoints;
-	private int level;
-	private int side;
+	private short level;
+	private short side;
+	
+	//Variable
+	private DBConnect dbConnect;
 	private boolean isData = false;
 	
-	/**
-	 * If not set data, is load from DB.
-	 */
+	//Constructor
 	public Guild()
 	{
 		//Load guild from DB
 		loadGuildFromDB();
 	}
 	
-	public Guild(String name, long lastModified, String battlegroup,
-				int level, int side, long achievementPoints)
+	//Load to BlizzAPI
+	public Guild(String name, long lastModified, String battleGroup,
+				short level, short side, long achievementPoints)
 	{
 		this.name = name;
-		this.battlegroup = battlegroup;
+		this.battleGroup = battleGroup;
 		this.lastModified = lastModified;
 		this.achievementPoints = achievementPoints;		
 		this.level = level;
 		this.side = side;
 		this.isData = true;
+	}
+	
+	//Load to JSON
+	public Guild(JSONObject guildInfo)
+	{
+		this.name = guildInfo.get("name").toString();
+		this.lastModified = (long) guildInfo.get("lastModified");
+		this.battleGroup = guildInfo.get("battlegroup").toString();
+		this.level = ((Long) guildInfo.get("level")).shortValue();
+		this.side = ((Long) guildInfo.get("side")).shortValue();
+		this.achievementPoints = (long) guildInfo.get("achievementPoints");
 	}
 	
 	/**
@@ -52,24 +65,25 @@ public class Guild implements APIInfo
 	{
 		try
 		{			
-			DBConnect dbConnect = new DBConnect();
+			dbConnect = new DBConnect();
 			JSONArray guildJSON = dbConnect.select("guild_info", 
 									new String[] {"name", "lastModified", "battlegroup",
 												"level", "side", "achievementPoints"});
 												
 			if(guildJSON.size() > 0)
 			{
+				JSONObject guildInfo = (JSONObject) guildJSON.get(0);
 				//Contrcutr the guild object
-				this.name 				= ((JSONObject) guildJSON.get(0)).get("name").toString();
-				this.battlegroup 		= ((JSONObject) guildJSON.get(0)).get("battlegroup").toString();
-				this.lastModified 		= ((Double) (((JSONObject) guildJSON.get(0)).get("lastModified"))).longValue();
-				this.achievementPoints 	= ((Double) (((JSONObject) guildJSON.get(0)).get("achievementPoints"))).longValue();
-				this.level 				= (int) (((JSONObject) guildJSON.get(0)).get("level"));
-				this.side 				= (int) (((JSONObject) guildJSON.get(0)).get("side"));	
+				this.name 				= guildInfo.get("name").toString();
+				this.battleGroup 		= guildInfo.get("battlegroup").toString();
+				this.lastModified 		= ((Double) (guildInfo.get("lastModified"))).longValue();
+				this.achievementPoints 	= ((Double) (guildInfo.get("achievementPoints"))).longValue();
+				this.level 				= (short) (guildInfo.get("level"));
+				this.side 				= (short) (guildInfo.get("side"));	
 				this.isData 			= true;
 			}
 			else
-			{
+			{//REVISAR ERROR SI LA GUILD NO EXISTE!
 				System.out.println("Guild not found");	
 			}
 		} catch (DataException|SQLException e) {
@@ -77,13 +91,40 @@ public class Guild implements APIInfo
 		}
 	}
 	
+	public void updateInDB() throws DataException, SQLException, ClassNotFoundException
+	{
+		if(dbConnect == null) dbConnect = new DBConnect();		
+		dbConnect.update("guild_info",
+						new String[] {"lastModified", "battlegroup", "level", "side", "achievementPoints"},
+						new String[] { 	this.lastModified +"",
+										this.battleGroup,
+										this.level +"",
+										this.side +"",
+										this.achievementPoints +"" });
+	}
+	
+	public void insertInDB() throws DataException, SQLException, ClassNotFoundException
+	{
+		if(dbConnect == null) dbConnect = new DBConnect();
+		
+		dbConnect.insert("guild_info",
+						new String[] {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"},
+						new String[] { 	this.name, 
+										this.lastModified +"",
+										this.battleGroup,
+										this.level +"",
+										this.side +"",
+										this.achievementPoints +"" });
+		
+	}
+	
 	//GETTERS
 	public String getName() { return this.name; }
-	public String getBattlegroup() { return this.battlegroup; }
+	public String getBattleGroup() { return this.battleGroup; }
 	public long getLastModified() { return this.lastModified; }
 	public long getAchivementPoints() { return this.achievementPoints; }
-	public int getLevel() { return this.level; }
-	public int getSide() { return this.side; }
+	public short getLevel() { return this.level; }
+	public short getSide() { return this.side; }
 	public boolean isData() { return this.isData; }
 	
 	//two guild equals method

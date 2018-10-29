@@ -1,7 +1,7 @@
 /**
  * File : APIInfo.java
  * Desc : Blizzard API and Guild Information
- * @author Sebastián Turen Croquevielle(seba@turensoft.com)
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.artOfWar.blizzardAPI;
 
@@ -24,4 +24,5 @@ public interface APIInfo
 	//API Acces
 	//-------------------------
 	public static final String API_GUILD_PROFILE	 = "wow/guild/%s/%s"; //realm, guildName
+	public static final String API_CHARACTER_PROFILE = "wow/character/%s/%s"; //realm, character name
 }
