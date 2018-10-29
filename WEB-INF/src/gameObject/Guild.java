@@ -78,8 +78,8 @@ public class Guild implements APIInfo
 				this.battleGroup 		= guildInfo.get("battlegroup").toString();
 				this.lastModified 		= ((Double) (guildInfo.get("lastModified"))).longValue();
 				this.achievementPoints 	= ((Double) (guildInfo.get("achievementPoints"))).longValue();
-				this.level 				= (short) (guildInfo.get("level"));
-				this.side 				= (short) (guildInfo.get("side"));	
+				this.level 				= ((Integer) guildInfo.get("level")).shortValue();
+				this.side 				= ((Integer) guildInfo.get("side")).shortValue();
 				this.isData 			= true;
 			}
 			else
