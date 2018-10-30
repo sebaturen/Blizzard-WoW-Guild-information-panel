@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
-public class Guild implements APIInfo
+public class Guild
 {
 	//Atribute
 	private String name;
@@ -24,7 +24,7 @@ public class Guild implements APIInfo
 	private short side;
 	
 	//Variable
-	private DBConnect dbConnect;
+	private static DBConnect dbConnect;
 	private boolean isData = false;
 	
 	//Constructor
@@ -63,9 +63,9 @@ public class Guild implements APIInfo
 	 */
 	private void loadGuildFromDB()
 	{
+		if(dbConnect == null) dbConnect = new DBConnect();	
 		try
 		{			
-			dbConnect = new DBConnect();
 			JSONArray guildJSON = dbConnect.select("guild_info", 
 									new String[] {"name", "lastModified", "battlegroup",
 												"level", "side", "achievementPoints"});

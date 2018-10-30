@@ -29,7 +29,7 @@ public class Update implements APIInfo
 
 	//Atribute
 	private String accesToken = "";
-	private DBConnect dbConnect;
+	private static DBConnect dbConnect;
 	
 	/**
 	 * Constructor. Ejecuta el metodo para obtener el token de acceso
@@ -124,7 +124,7 @@ public class Update implements APIInfo
 				JSONArray playerDB = dbConnect.select("gMembers_id_name",
 													new String[] {"internal_id","member_name"},
 													"member_name=\""+info.get("name")+"\"");
-				//If not exist in table, right a name 
+				//If not exist in table (gMembers_id_name), write a name 
 				if(playerDB.size() == 0) //not exist
 				{//save member
 					System.out.println("Player "+ info.get("name") +" SAVE");
@@ -164,10 +164,54 @@ public class Update implements APIInfo
 											"GET",
 											"Bearer "+ this.accesToken,
 											new String[] {"fields=guild"});
-						//is Outdated?... if is>
+						//is Outdated?... if is>*/
+						JSONArray lastModifiedOldCharacter = dbConnect.select("character_info",
+														new String[] {"internal_id", "lastModified"},
+														"internal_id="+ ((int) member.get("internal_id")));
+														
 						Character blizzPlayer = new Character((int) member.get("internal_id"), blizzPlayerInfo);
-						System.out.println(blizzPlayer.getName());
-						//else NOTHIN!												
+						//if player exist in DB
+						if(lastModifiedOldCharacter.size() > 0)
+						{
+							long lastModCharOld = ((Double)((JSONObject) lastModifiedOldCharacter.get(0)).get("lastModified")).longValue();
+							if (Long.compare(lastModCharOld, blizzPlayer.getLastModified()) != 0) //save is old!
+							{
+								try
+								{
+									blizzPlayer.updateInDB();
+								}
+								catch (SQLException e)
+								{
+									if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY)
+									{
+										System.out.println("El men se cambio de guild :D");
+										//delte player in character_info and gMembers_id_name
+									}
+									
+								}
+								catch (DataException|ClassNotFoundException e)
+								{
+									System.out.println("Error Other: "+ e);
+								}
+								System.out.println("Update player "+ blizzPlayer.getName());
+							}
+							else
+							{
+								System.out.println("Not need update player "+ blizzPlayer.getName());
+							}
+						}
+						else //insert a player...
+						{
+							System.out.println("New Player "+ blizzPlayer.getName());
+							try
+							{
+								blizzPlayer.insertInDB();
+							}
+							catch (SQLException|DataException|ClassNotFoundException e)
+							{
+								System.out.println("Error to insert: "+ e +" Player "+ blizzPlayer.getName());
+							}
+						}
 					} 
 					catch (DataException e) //Error in blizz api, like player not found
 					{

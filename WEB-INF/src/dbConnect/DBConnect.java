@@ -18,6 +18,8 @@ import org.json.simple.JSONObject;
 
 public class DBConnect implements DBConfig 
 {
+	//error SQL constant
+	public static final int ERROR_FOREIGN_KEY = 1452;
 	
 	//acces info
 	private Connection conn = null;
