@@ -36,6 +36,7 @@ public class DBConnect implements DBConfig
 												DB_PASSWORD);
 			statusConnect = true;
 		} catch (SQLException e) {
+			System.out.println("Fail to generate DB Connection: "+ e);
 			statusConnect = false;
 		}
 	}

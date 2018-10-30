@@ -8,7 +8,7 @@ package com.artOfWar.blizzardAPI;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.gameObject.Guild;
-import com.artOfWar.gameObject.Character;
+import com.artOfWar.gameObject.Member;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -184,43 +184,40 @@ public class Update implements APIInfo
 		{
 			JSONArray members = dbConnect.select("gMembers_id_name", 
 									new String[] {"internal_id", "member_name"});
-									
-			if(members.size() > 0) //we have a player in DB
+						
+			int iProgres = 1;
+			System.out.print("0%");
+			for(int i = 0; i < members.size(); i++)
 			{
-				int iProgres = 1;
-				System.out.print("0%");
-				for(int i = 0; i < members.size(); i++)
+				JSONObject member = (JSONObject) members.get(i); //internal DB Members					
+				//Generate an API URL
+				String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
+																				URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+																				URLEncoder.encode(member.get("member_name").toString(), "UTF-8").replace("+", "%20")));
+				try 
 				{
-					JSONObject member = (JSONObject) members.get(i); //internal DB Members					
-					//Generate an API URL
-					String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
-																					URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
-																					URLEncoder.encode(member.get("member_name").toString(), "UTF-8").replace("+", "%20")));
-					try 
-					{
-						//Call Blizzard API
-						JSONObject blizzPlayerInfo = curl(urlString, //DataException posible trigger
-											"GET",
-											"Bearer "+ this.accesToken,
-											new String[] {"fields=guild"});
-														
-						Character blizzPlayer = new Character((int) member.get("internal_id"), blizzPlayerInfo);
-						blizzPlayer.saveInDB();
-					} 
-					catch (DataException e) //Error in blizz api, like player not found
-					{
-						System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
-					}
-					
-					//Show update logress...
-					if ( (((iProgres*2)*10)*members.size())/100 < i )
-					{
-						System.out.print("..."+ ((iProgres*2)*10) +"%");
-						iProgres++;
-					}
+					//Call Blizzard API
+					JSONObject blizzPlayerInfo = curl(urlString, //DataException posible trigger
+										"GET",
+										"Bearer "+ this.accesToken,
+										new String[] {"fields=guild"});
+													
+					Member blizzPlayer = new Member((int) member.get("internal_id"), blizzPlayerInfo);
+					blizzPlayer.saveInDB();
+				} 
+				catch (DataException e) //Error in blizz api, like player not found
+				{
+					System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
 				}
-				System.out.println("...100%");
+				
+				//Show update logress...
+				if ( (((iProgres*2)*10)*members.size())/100 < i )
+				{
+					System.out.print("..."+ ((iProgres*2)*10) +"%");
+					iProgres++;
+				}
 			}
+			System.out.println("...100%");
 		}
 	}
 	

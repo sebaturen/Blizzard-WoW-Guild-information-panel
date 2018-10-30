@@ -1,5 +1,5 @@
 /**
- * File : Character.java
+ * File : Member.java
  * Desc : Character Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
-public class Character
+public class Member
 {
 	//Atribute
 	private int internalID;
@@ -36,15 +36,15 @@ public class Character
 	private static DBConnect dbConnect;
 	private boolean isData = false;
 	
-	//Constructor
-	public Character(int internalID)
+	//Constructor load from DB if have a ID
+	public Member(int internalID)
 	{
 		//Load Character from DB
 		loadPlayerFromDB(internalID);
 	}
 	
-	//Load to BlizzAPI
-	public Character(int internalID, String name, String realm,
+	//Load to all elements
+	public Member(int internalID, String name, String realm,
 				String battleGroup, short classCode, short race,
 				short gender, short level, long achievementPoints,
 				String thumbnail, char calcClass, short faction,
@@ -69,7 +69,28 @@ public class Character
 	}
 	
 	//Load to JSON
-	public Character(int internalID, JSONObject playerInfo)
+	public Member(JSONObject playerInfo)
+	{
+		this.internalID = ((Long) playerInfo.get("internalID")).intValue();
+		this.name = playerInfo.get("name").toString();
+		this.realm = playerInfo.get("realm").toString();
+		this.battleGroup = playerInfo.get("battlegroup").toString();
+		this.classCode = ((Long) playerInfo.get("class")).shortValue();
+		this.race = ((Long) playerInfo.get("race")).shortValue();
+		this.gender = ((Long) playerInfo.get("gender")).shortValue();
+		this.level = ((Long) playerInfo.get("level")).shortValue();
+		this.achievementPoints = (long) playerInfo.get("achievementPoints");
+		this.thumbnail = playerInfo.get("thumbnail").toString();
+		this.calcClass = (playerInfo.get("calcClass").toString()).charAt(0);
+		this.faction = ((Long) playerInfo.get("faction")).shortValue();
+		this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
+		this.lastModified = (long) playerInfo.get("lastModified");
+		this.totalHonorableKills = ((Long) playerInfo.get("totalHonorableKills")).intValue();
+		this.isData = true;
+	}
+	
+	//Load to JSON exept id
+	public Member(int internalID, JSONObject playerInfo)
 	{
 		this.internalID = internalID;
 		this.name = playerInfo.get("name").toString();
