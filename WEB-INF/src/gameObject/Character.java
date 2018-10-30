@@ -134,9 +134,83 @@ public class Character
 		}
 	}
 	
-	public void updateInDB() throws DataException, SQLException, ClassNotFoundException
-	{//TEST
-		//insert into character_info values (1,"seba","ragnaros","123",1,2,1,1,1,"asd","x",1,1,"Art of War",1);
+	public boolean saveInDB()
+	{
+		if(dbConnect == null) dbConnect = new DBConnect();
+		boolean resultSave = false;
+		if (isData)
+		{
+			boolean haveOtherData = false;
+			long lastUpdateOtherData = 0;
+			
+			//is Outdated?... if is>*/
+			try
+			{
+				JSONArray lastModifiedOldCharacter = dbConnect.select("character_info",
+												new String[] {"internal_id", "lastModified"},
+												"internal_id="+this.internalID );	
+				if(lastModifiedOldCharacter.size() > 0)
+				{
+					lastUpdateOtherData = ((Double)((JSONObject) lastModifiedOldCharacter.get(0)).get("lastModified")).longValue();
+					haveOtherData = true;
+				}
+			} 
+			catch (SQLException|DataException er)
+			{
+				System.out.println("Error wen try get a last modified old character: "+ er);
+			}
+			
+			//if player exist in DB
+			if(haveOtherData)
+			{				
+				if (Long.compare(lastUpdateOtherData, this.lastModified) != 0) //save is old!
+				{
+					try
+					{
+						updateInDB();
+						resultSave = true;
+					}
+					catch (SQLException e)
+					{//User not in guild! (foreign key error)
+						if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY)
+						{
+							try
+							{//delte player in character_info and gMembers_id_name becouse this character not in the guild NOW
+								System.out.println("Character change guild");
+								dbConnect.delete("character_info","internal_id="+ this.internalID);
+								dbConnect.delete("gMembers_id_name","internal_id="+ this.internalID);
+							}
+							catch (SQLException|DataException ex)
+							{
+								System.out.println("Error when try remove a user not in guild: "+ ex);
+							}
+						}
+						
+					}
+					catch (DataException|ClassNotFoundException e)
+					{
+						System.out.println("Error Other when try uplote a character information: "+ e);
+					}
+				}
+			}
+			else //insert a player...
+			{
+				try
+				{
+					insertInDB();
+					resultSave = true;
+				}
+				catch (SQLException|DataException|ClassNotFoundException e)
+				{
+					System.out.println("Error to insert Player "+ this.name +": "+ e);
+				}
+			}			
+		}
+		return resultSave;
+	}
+	
+	private void updateInDB() throws DataException, SQLException, ClassNotFoundException
+	{
 		if(dbConnect == null) dbConnect = new DBConnect();
 		
 		dbConnect.update("character_info",
@@ -149,9 +223,8 @@ public class Character
 						"internal_id="+ this.internalID);
 	}
 	
-	public void insertInDB() throws DataException, SQLException, ClassNotFoundException
-	{//TEST
-		//insert into character_info values (1,"seba","ragnaros","123",1,2,1,1,1,"asd","x",1,1,"Art of War",1);
+	private void insertInDB() throws DataException, SQLException, ClassNotFoundException
+	{
 		if(dbConnect == null) dbConnect = new DBConnect();
 		
 		dbConnect.insert("character_info",
@@ -182,7 +255,4 @@ public class Character
 	public int getTotalHonorableKills() { return this.totalHonorableKills; }
 	public boolean isData() { return this.isData; }
 	
-	//test...
-	public void setLevel(short level) { this.level = level; }
-	public void setGuildName(String nName) { this.guildName = nName; }
 }

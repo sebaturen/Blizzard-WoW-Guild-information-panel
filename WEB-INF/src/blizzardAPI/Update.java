@@ -18,11 +18,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Calendar;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class Update implements APIInfo
 {
@@ -38,6 +40,42 @@ public class Update implements APIInfo
 	{
 		dbConnect = new DBConnect();
 		generateAccesToken();
+	}
+	
+	/**
+	 * Run all update method and save the register the last update.
+	 */
+	public void updateAllNow()
+	{
+		System.out.println("-------Update proces is START! ------");
+		//Guild information update!
+		System.out.println("Guild Information update!");
+		try { getGuildProfile(); } 
+		catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { System.out.println("Fail update Guild Info: "+ ex); }
+		//Guild members information update!
+		System.out.println("Guild members information update!");
+		try { getGuildMembers(); } 
+		catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { System.out.println("Fail update Guild Members Info: "+ ex); }
+		//Character inforotmation update!						
+		System.out.println("Character information update!");
+		try { getCharacterInfo(); } 
+		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+		System.out.println("-------Update proces is COMPLATE! ------");
+		
+		//Save log update in DB
+		try 
+		{			
+			Calendar cal = Calendar.getInstance();  
+			Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
+			
+			dbConnect.insert("update_timeline",
+							new String[] {"update_time"},
+							new String[] {timestamp.toString()});
+		} 
+		catch(DataException|SQLException|ClassNotFoundException e)
+		{
+			System.out.println("Fail to save update time: "+ e);
+		}
 	}
 	
 	/**
@@ -127,7 +165,6 @@ public class Update implements APIInfo
 				//If not exist in table (gMembers_id_name), write a name 
 				if(playerDB.size() == 0) //not exist
 				{//save member
-					System.out.println("Player "+ info.get("name") +" SAVE");
 					dbConnect.insert("gMembers_id_name",
 								new String[] {"member_name","rank"},
 								new String[] {info.get("name").toString(),
@@ -150,6 +187,8 @@ public class Update implements APIInfo
 									
 			if(members.size() > 0) //we have a player in DB
 			{
+				int iProgres = 1;
+				System.out.print("0%");
 				for(int i = 0; i < members.size(); i++)
 				{
 					JSONObject member = (JSONObject) members.get(i); //internal DB Members					
@@ -164,60 +203,23 @@ public class Update implements APIInfo
 											"GET",
 											"Bearer "+ this.accesToken,
 											new String[] {"fields=guild"});
-						//is Outdated?... if is>*/
-						JSONArray lastModifiedOldCharacter = dbConnect.select("character_info",
-														new String[] {"internal_id", "lastModified"},
-														"internal_id="+ ((int) member.get("internal_id")));
 														
 						Character blizzPlayer = new Character((int) member.get("internal_id"), blizzPlayerInfo);
-						//if player exist in DB
-						if(lastModifiedOldCharacter.size() > 0)
-						{
-							long lastModCharOld = ((Double)((JSONObject) lastModifiedOldCharacter.get(0)).get("lastModified")).longValue();
-							if (Long.compare(lastModCharOld, blizzPlayer.getLastModified()) != 0) //save is old!
-							{
-								try
-								{
-									blizzPlayer.updateInDB();
-								}
-								catch (SQLException e)
-								{
-									if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY)
-									{
-										System.out.println("El men se cambio de guild :D");
-										//delte player in character_info and gMembers_id_name
-									}
-									
-								}
-								catch (DataException|ClassNotFoundException e)
-								{
-									System.out.println("Error Other: "+ e);
-								}
-								System.out.println("Update player "+ blizzPlayer.getName());
-							}
-							else
-							{
-								System.out.println("Not need update player "+ blizzPlayer.getName());
-							}
-						}
-						else //insert a player...
-						{
-							System.out.println("New Player "+ blizzPlayer.getName());
-							try
-							{
-								blizzPlayer.insertInDB();
-							}
-							catch (SQLException|DataException|ClassNotFoundException e)
-							{
-								System.out.println("Error to insert: "+ e +" Player "+ blizzPlayer.getName());
-							}
-						}
+						blizzPlayer.saveInDB();
 					} 
 					catch (DataException e) //Error in blizz api, like player not found
 					{
-						System.out.println("Blizz lanzo error para el amigo "+ member.get("member_name") +"\n\t"+ e);
+						System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
+					}
+					
+					//Show update logress...
+					if ( (((iProgres*2)*10)*members.size())/100 < i )
+					{
+						System.out.print("..."+ ((iProgres*2)*10) +"%");
+						iProgres++;
 					}
 				}
+				System.out.println("...100%");
 			}
 		}
 	}

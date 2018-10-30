@@ -8,8 +8,7 @@
     <%@include file="includes/menu.jsp" %>
     <div class="container">
 		<jsp:useBean id="addr" class="com.artOfWar.blizzardAPI.Update"/>
-		<!-- addr.getCharacterInfo(); --><%  %>
-			
+		<!-- addr.getCharacterInfo(); --><%  %>	
       <div id="player-content">
         <table class="player-tab">
           <thead>

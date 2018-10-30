@@ -5,43 +5,56 @@
  */
 package com.artOfWar.blizzardAPI;
 
-import com.artOfWar.dbConnect.DBConnect;
+import com.artOfWar.blizzardAPI.Update;
+import com.artOfWar.DataException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import java.io.IOException;
+import org.json.simple.parser.ParseException;
+import java.sql.SQLException;
 
 public class UpdateRunning implements ServletContextListener 
 {
 	private Thread t = null;
 	private ServletContext context;
 	private int count = 0;
+	private Update blizzUp;
 
 	@Override
 	public void contextInitialized(ServletContextEvent contextEvent)
 	{
-		System.out.println("im run?!!!");
+		System.out.println("Update Running is runing!");
 		t =  new Thread(){
 			//task
 			public void run()
 			{
-				DBConnect dbConn = new DBConnect();
-				try {
+				try 
+				{
+					blizzUp = new Update();
 					while(true)
 					{
-						dbConn.insert("jdbc_test", new String[] {"username", "email"}, new String[] {"Test", t.getId() +"v: "+ count});
-						System.out.println("Thread running every second "+ count);
-						count++;
-						Thread.sleep(1000);
+						blizzUp.updateAllNow();
+						//Wait 1h...
+						Thread.sleep(1000 * 60 * 60);
 					}
-				} catch (Exception ex) {
+				} 
+				catch (IOException|ParseException|DataException ex)
+				{
+					System.out.println("Cant create a Data Update Object! "+ ex);
+				}
+				catch (InterruptedException ex)
+				{
+					System.out.println("Thread is break! "+ ex);
 				}
 			}
 		};
-		//t.start();
-		context = contextEvent.getServletContext();
+		t.start();
+		//context = contextEvent.getServletContext();
 		// you can set a context variable just like this
-		context.setAttribute("TEST", count);
+		//context.setAttribute("TEST", count);
 	}
 
 	@Override

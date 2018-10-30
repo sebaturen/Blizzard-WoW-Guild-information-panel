@@ -68,6 +68,27 @@ public class DBConnect implements DBConfig
 	}
 	
 	/**
+	 * Delete data from DB, run a query
+	 * @table table
+	 * @where where in sql, IS MANDAROTY!
+	 */
+	public JSONArray delete(String table, String where) throws SQLException, DataException
+	{
+		if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
+		if (statusConnect == true)
+		{
+			//Prepare QUERY
+			String sql = "delete from "+ table +" where "+ where;
+			this.pstmt = this.conn.prepareStatement(sql);
+			return resultToJsonConvert(this.pstmt.executeQuery());
+		}
+		else
+		{
+			throw new DataException("DB can't connect");
+		}
+	}
+	
+	/**
 	 * RUN a sql query in SQL server. (before call, valide (statusConnect == true))
 	 * @sql SQL Query [SIN DATOS INTERNOS]
 	 * @values[] data
