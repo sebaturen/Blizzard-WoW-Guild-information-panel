@@ -31,11 +31,11 @@ import java.sql.Timestamp;
 public class Update implements APIInfo
 {
 
-	//Constante	
+	//Constant	
 	public static final int DYNAMIC_UPDATE = 0;
 	public static final int STATIC_UPDATE = 1;
 	
-	//Atribute
+	//Attribute
 	private String accesToken = "";
 	private static DBConnect dbConnect;
 	
@@ -129,7 +129,7 @@ public class Update implements APIInfo
 		String boodyDate = "grant_type=client_credentials";
 		byte[] postDataBytes = boodyDate.getBytes("UTF-8");
 		
-		//Get an Acces Token
+		//Get an Access Token
 		this.accesToken = (String) (curl(urlString,
 										"POST",
 										"Basic "+ apiInfo,
@@ -154,9 +154,7 @@ public class Update implements APIInfo
 			JSONObject respond = curl(urlString, 
 									"GET",
 									"Bearer "+ this.accesToken);
-			System.out.println("Get guild to blizz");
 			Guild apiGuild = new Guild(respond);
-			System.out.println("read guild to blizz");
 			apiGuild.saveInDB();
 		}
 	}
@@ -185,10 +183,14 @@ public class Update implements APIInfo
 			{				
 				JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
 				
-				dbConnect.insert(	"gMembers_id_name",
-									new String[] {"member_name","rank"},
-									new String[] {info.get("name").toString(), ((JSONObject) members.get(i)).get("rank").toString()},
-									"ON DUPLICATE KEY UPDATE member_name='"+  info.get("name").toString() +"'");
+				//Check if have a guild and if set guild, (Blizzard not update a guilds members list) 
+				if(info.containsKey("guild") && (info.get("guild").toString()).equals(GUILD_NAME))
+				{
+					dbConnect.insert(	"gMembers_id_name",
+										new String[] {"member_name","rank"},
+										new String[] {info.get("name").toString(), ((JSONObject) members.get(i)).get("rank").toString()},
+										"ON DUPLICATE KEY UPDATE member_name='"+  info.get("name").toString() +"'");
+				}				
 			}
 		}
 	}
@@ -216,7 +218,7 @@ public class Update implements APIInfo
 				try 
 				{
 					//Call Blizzard API
-					JSONObject blizzPlayerInfo = curl(urlString, //DataException posible trigger
+					JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
 										"GET",
 										"Bearer "+ this.accesToken,
 										new String[] {"fields=guild"});
@@ -224,7 +226,7 @@ public class Update implements APIInfo
 					Member blizzPlayer = new Member(blizzPlayerInfo);
 					blizzPlayer.saveInDB();
 				} 
-				catch (DataException e) //Error in blizz api, like player not found
+				catch (DataException e) //Error in blizzard API, like player not found
 				{
 					System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
 				}

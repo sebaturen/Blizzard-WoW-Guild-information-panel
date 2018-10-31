@@ -20,7 +20,7 @@ public abstract class GameObject
 	private String tableDB;
 	private String[] tableStruct;
 	
-	//Constante save data info
+	//Constant save data info
 	public static final int SAVE_MSG_NO_DATA 					= 0;
 	public static final int SAVE_MSG_INSERT_ERROR 				= 1;
 	public static final int SAVE_MSG_INSERT_OK 					= 2;
@@ -41,7 +41,7 @@ public abstract class GameObject
 	protected abstract boolean isOld();
 	public abstract boolean saveInDB();
 	
-	//Generi function
+	//Generic function
 	/**
 	 * Save Game object element in DB
 	 * @values values from object we need save, use in query.
@@ -78,10 +78,12 @@ public abstract class GameObject
 					}
 					catch (SQLException e)
 					{
-						if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY)
+						if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY || 
+							e.getErrorCode() == DBConnect.ERROR_NULL_ELEMENT)
 						{
 							return SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR;
 						}
+						return SAVE_MSG_SQL_INSERT_ERROR;						
 					}
 					catch (DataException|ClassNotFoundException e)
 					{
@@ -167,7 +169,7 @@ public abstract class GameObject
 	/**
 	 * Remove a first element in array.
 	 * The idea is remove key in table array, when this object is load, save a
-	 * table structur, and when we need insert, use all values, but when need update, put all except the key.
+	 * table structure, and when we need insert, use all values, but when need update, put all except the key.
 	 * @arrayElem array that wants to delete the first value 
 	 */
 	private String[] removeFirstElement(String[] arryElem)

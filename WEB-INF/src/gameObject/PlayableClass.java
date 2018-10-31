@@ -39,13 +39,14 @@ public class PlayableClass extends GameObject
 	@Override
 	protected void saveInternalInfoObject(JSONObject exInfo)
 	{		
-		this.id = ((Integer) exInfo.get("id")).intValue();
 		if(exInfo.containsKey("name")) //if info come to blizzAPI or DB
 		{
+			this.id = ((Long) exInfo.get("id")).intValue();
 			this.enName = ((JSONObject) exInfo.get("name")).get("en_US").toString();
 		}
 		else
 		{
+			this.id = ((Integer) exInfo.get("id")).intValue();
 			this.enName = exInfo.get("en_US").toString();
 		}
 		

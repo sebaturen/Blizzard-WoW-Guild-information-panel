@@ -34,8 +34,8 @@ public class Member extends GameObject
 	private String guildName;
 	private long lastModified;
 	private long totalHonorableKills;
-	
-	//Constante
+		
+	//Constant
 	private static final String TABLE_NAME = "character_info";
 	private static final String[] TABLE_TRUCTU = {"internal_id", "name", "realm", "lastModified", "battlegroup", "class", 
 										"race", "gender", "level", "achievementPoints", "thumbnail", "calcClass", 
@@ -113,25 +113,36 @@ public class Member extends GameObject
 		String[] val = new String[] { 	this.internalID +"", this.name, this.realm +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
 										this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
 										this.faction +"", this.totalHonorableKills +"", this.guildName };
+		//Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this colum, for this use this IF)
+		if(this.isData && this.guildName == null) deleteFromDB();
+		else
 		switch (saveInDBObj(val))
 		{
-			case SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR:
-				try
-				{//delte player in character_info and gMembers_id_name becouse this character not in the guild NOW
-					System.out.println("Character change guild");
-					dbConnect.delete("character_info","internal_id="+ this.internalID);
-					dbConnect.delete("gMembers_id_name","internal_id="+ this.internalID);
-					return true;
-				}
-				catch (SQLException|DataException ex)
-				{
-					System.out.println("Error when try remove a user not in guild: "+ ex);
-					return false;
-				}
+			case SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR: case SAVE_MSG_SQL_INSERT_ERROR:
+				return deleteFromDB();
 			case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Delete from DB
+	 */
+	private boolean deleteFromDB()
+	{
+		try
+		{//delete player in character_info and gMembers_id_name because this character not in the guild NOW
+			System.out.println("Character change "+ this.name +" guild");
+			dbConnect.delete("character_info","internal_id="+ this.internalID);
+			dbConnect.delete("gMembers_id_name","internal_id="+ this.internalID);
+			return true;
+		}
+		catch (SQLException|DataException ex)
+		{
+			System.out.println("Error when try remove a user not in guild: "+ ex);
+			return false;
+		}				
 	}
 	
 	//GETTERS	

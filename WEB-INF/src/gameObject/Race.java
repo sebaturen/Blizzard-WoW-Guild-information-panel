@@ -41,8 +41,16 @@ public class Race extends GameObject
 	@Override
 	protected void saveInternalInfoObject(JSONObject exInfo)
 	{
-		this.id = ((Integer) exInfo.get("id")).shortValue();
-		this.mask = ((Integer) exInfo.get("mask")).intValue();
+		if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
+		{			
+			this.id = ((Long) exInfo.get("id")).intValue();
+			this.mask = ((Long) exInfo.get("mask")).intValue();
+		}
+		else
+		{
+			this.id = ((Integer) exInfo.get("id")).intValue();
+			this.mask = ((Integer) exInfo.get("mask")).intValue();
+		}
 		this.side = exInfo.get("side").toString();
 		this.name = exInfo.get("name").toString();
 		this.isData = true;		

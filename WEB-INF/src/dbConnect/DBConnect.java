@@ -60,8 +60,7 @@ public class DBConnect implements DBConfig
 			sql += " from `"+ table +"`";
 			if(where != null) sql += " where "+ where;
 						
-			this.pstmt = this.conn.prepareStatement(sql);	
-			//System.out.println("DEBUG: "+ pstmt);
+			this.pstmt = this.conn.prepareStatement(sql);
 			return resultToJsonConvert(this.pstmt.executeQuery());
 		}
 		else
@@ -73,7 +72,7 @@ public class DBConnect implements DBConfig
 	/**
 	 * Delete data from DB, run a query
 	 * @table table
-	 * @where where in sql, IS MANDAROTY!
+	 * @where where in SQL, IS MANDAROTY!
 	 */
 	public JSONArray delete(String table, String where) throws SQLException, DataException
 	{
