@@ -17,24 +17,38 @@ import java.sql.SQLException;
 public class PlayableClass extends GameObject
 {	
 	//Atribute
-	private short id;
+	private int id;
 	private String enName;
 	
 	//Constante
 	private static final String TABLE_NAME = "playable_class";
 	private static final String[] TABLE_TRUCTU = {"id", "en_US"};
 		
-	public PlayableClass(short id)
+	public PlayableClass(int id)
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
-		//LOAD FROM DB
+		loadFromDB(id+"");
 	}
 	
 	public PlayableClass(JSONObject exInfo)
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
-		this.id = ((Long) exInfo.get("id")).shortValue();
-		this.enName = ((JSONObject) exInfo.get("name")).get("en_US").toString();
+		saveInternalInfoObject(exInfo);
+	}
+	
+	@Override
+	protected void saveInternalInfoObject(JSONObject exInfo)
+	{		
+		this.id = ((Integer) exInfo.get("id")).intValue();
+		if(exInfo.containsKey("name")) //if info come to blizzAPI or DB
+		{
+			this.enName = ((JSONObject) exInfo.get("name")).get("en_US").toString();
+		}
+		else
+		{
+			this.enName = exInfo.get("en_US").toString();
+		}
+		
 		this.isData = true;
 	}
 	

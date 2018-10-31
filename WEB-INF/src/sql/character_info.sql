@@ -11,7 +11,7 @@ CREATE TABLE `character_info` (
 	`thumbnail`			varchar(70) NOT NULL,
 	`calcClass`			varchar(2) NOT NULL,
 	`faction`			int NOT NULL,
-	`totalHonorableKills` int NOT NULL,
+	`totalHonorableKills` bigint(20) NOT NULL,
 	`guild_name`		varchar(50) NOT NULL,
 	`lastModified`		bigint(20) NOT NULL,
 	PRIMARY KEY(internal_id),

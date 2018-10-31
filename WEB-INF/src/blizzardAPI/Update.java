@@ -226,8 +226,8 @@ public class Update implements APIInfo
 										"GET",
 										"Bearer "+ this.accesToken,
 										new String[] {"fields=guild"});
-													
-					Member blizzPlayer = new Member((int) member.get("internal_id"), blizzPlayerInfo);
+					blizzPlayerInfo.put("internal_id", (int) member.get("internal_id"));
+					Member blizzPlayer = new Member(blizzPlayerInfo);
 					blizzPlayer.saveInDB();
 				} 
 				catch (DataException e) //Error in blizz api, like player not found

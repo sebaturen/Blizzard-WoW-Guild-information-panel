@@ -35,6 +35,7 @@ public abstract class GameObject
 		this.tableStruct = tableStruct;
 	}
 	
+	protected abstract void saveInternalInfoObject(JSONObject guildInfo);
 	protected abstract boolean isOld();
 	public abstract boolean saveInDB();
 	
@@ -99,6 +100,28 @@ public abstract class GameObject
 			}
 		}
 		return SAVE_MSG_NO_DATA;
+	}
+	
+	protected void loadFromDB(String id)
+	{
+		if(dbConnect == null) dbConnect = new DBConnect();
+		try
+		{		
+			JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct ,this.tableStruct[0] +"=\""+ id +"\"");
+												
+			if(dbSelect.size() > 0)
+			{
+				JSONObject infoDB = (JSONObject) dbSelect.get(0);
+				//Contruct a character object
+				saveInternalInfoObject(infoDB);
+			}
+			else
+			{
+				System.out.println("Character not found");	
+			}			
+		} catch (DataException|SQLException e) {
+			System.out.println("Error in Load Char: "+ e);
+		}
 	}
 		
 	private void updateInDB(String[] values) throws DataException, SQLException, ClassNotFoundException

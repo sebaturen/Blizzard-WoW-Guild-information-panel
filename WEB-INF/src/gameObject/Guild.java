@@ -33,24 +33,25 @@ public class Guild extends GameObject
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
 		//Load guild from DB
-		loadGuildFromDB();
+		loadFromDB(APIInfo.GUILD_NAME);
 	}
 	
 	//Load to JSON
 	public Guild(JSONObject guildInfo)
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
-		saveGuildInfo(guildInfo);
+		saveInternalInfoObject(guildInfo);
 	}
 	
-	private void saveGuildInfo(JSONObject guildInfo)
+	@Override
+	protected void saveInternalInfoObject(JSONObject guildInfo)
 	{
 		this.name = guildInfo.get("name").toString();
 		this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
 		this.battleGroup = guildInfo.get("battlegroup").toString();
 		this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
 		if(guildInfo.get("level").getClass() == java.lang.Long.class)
-		{
+		{//if info come to blizzAPI or DB
 			this.level = ((Long) guildInfo.get("level")).intValue();
 			this.side =  ((Long) guildInfo.get("side")).intValue();
 		}
@@ -60,31 +61,6 @@ public class Guild extends GameObject
 			this.side =  ((Integer) guildInfo.get("side")).intValue();		
 		}		
 		this.isData = true;		
-	}
-	
-	/**
-	 * Get guild info data from DB
-	 */
-	private void loadGuildFromDB()
-	{
-		if(dbConnect == null) dbConnect = new DBConnect();	
-		try
-		{			
-			JSONArray guildJSON = dbConnect.select(TABLE_NAME, TABLE_TRUCTU);
-												
-			if(guildJSON.size() > 0)
-			{
-				JSONObject guildInfo = (JSONObject) guildJSON.get(0);
-				//Contrcutr the guild object
-				saveGuildInfo(guildInfo);
-			}
-			else
-			{//REVISAR ERROR SI LA GUILD NO EXISTE!
-				System.out.println("Guild not found");	
-			}
-		} catch (DataException|SQLException e) {
-			System.out.println("Error in Load Guild: "+ e);
-		}
 	}
 		
 	@Override

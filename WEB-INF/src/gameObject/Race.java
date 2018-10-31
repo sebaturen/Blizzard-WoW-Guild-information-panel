@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public class Race extends GameObject
 {	
 	//Atribute
-	private short id;
+	private int id;
 	private int mask;
 	private String side;
 	private String name;
@@ -26,20 +26,26 @@ public class Race extends GameObject
 	private static final String TABLE_NAME = "races";
 	private static final String[] TABLE_TRUCTU = {"id", "mask", "side", "name"};
 	
-	public Race(short id)
+	public Race(int id)
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
-		//LOAD FROM DB
+		loadFromDB(id+"");
 	}
 	
 	public Race(JSONObject exInfo)
 	{
 		super(TABLE_NAME,TABLE_TRUCTU);
-		this.id = ((Long) exInfo.get("id")).shortValue();
-		this.mask = ((Long) exInfo.get("mask")).intValue();
+		saveInternalInfoObject(exInfo);
+	}
+	
+	@Override
+	protected void saveInternalInfoObject(JSONObject exInfo)
+	{
+		this.id = ((Integer) exInfo.get("id")).shortValue();
+		this.mask = ((Integer) exInfo.get("mask")).intValue();
 		this.side = exInfo.get("side").toString();
 		this.name = exInfo.get("name").toString();
-		this.isData = true;
+		this.isData = true;		
 	}
 	
 	@Override
