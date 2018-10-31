@@ -7,55 +7,59 @@ package com.artOfWar.gameObject;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.blizzardAPI.APIInfo;
+import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
-public class Guild
+public class Guild extends GameObject
 {
 	//Atribute
 	private String name;
 	private String battleGroup;
 	private long lastModified;
 	private long achievementPoints;
-	private short level;
-	private short side;
+	private int level;
+	private int side;
 	
-	//Variable
-	private static DBConnect dbConnect;
-	private boolean isData = false;
-	
+	//Constante
+	private static final String TABLE_NAME = "guild_info";
+	private static final String[] TABLE_TRUCTU = {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"};
+		
 	//Constructor
 	public Guild()
 	{
+		super(TABLE_NAME,TABLE_TRUCTU);
 		//Load guild from DB
 		loadGuildFromDB();
-	}
-	
-	//Load to BlizzAPI
-	public Guild(String name, long lastModified, String battleGroup,
-				short level, short side, long achievementPoints)
-	{
-		this.name = name;
-		this.battleGroup = battleGroup;
-		this.lastModified = lastModified;
-		this.achievementPoints = achievementPoints;		
-		this.level = level;
-		this.side = side;
-		this.isData = true;
 	}
 	
 	//Load to JSON
 	public Guild(JSONObject guildInfo)
 	{
+		super(TABLE_NAME,TABLE_TRUCTU);
+		saveGuildInfo(guildInfo);
+	}
+	
+	private void saveGuildInfo(JSONObject guildInfo)
+	{
 		this.name = guildInfo.get("name").toString();
-		this.lastModified = (long) guildInfo.get("lastModified");
+		this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
 		this.battleGroup = guildInfo.get("battlegroup").toString();
-		this.level = ((Long) guildInfo.get("level")).shortValue();
-		this.side = ((Long) guildInfo.get("side")).shortValue();
-		this.achievementPoints = (long) guildInfo.get("achievementPoints");
+		this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
+		if(guildInfo.get("level").getClass() == java.lang.Long.class)
+		{
+			this.level = ((Long) guildInfo.get("level")).intValue();
+			this.side =  ((Long) guildInfo.get("side")).intValue();
+		}
+		else
+		{
+			this.level = ((Integer) guildInfo.get("level")).intValue();	
+			this.side =  ((Integer) guildInfo.get("side")).intValue();		
+		}		
+		this.isData = true;		
 	}
 	
 	/**
@@ -66,21 +70,13 @@ public class Guild
 		if(dbConnect == null) dbConnect = new DBConnect();	
 		try
 		{			
-			JSONArray guildJSON = dbConnect.select("guild_info", 
-									new String[] {"name", "lastModified", "battlegroup",
-												"level", "side", "achievementPoints"});
+			JSONArray guildJSON = dbConnect.select(TABLE_NAME, TABLE_TRUCTU);
 												
 			if(guildJSON.size() > 0)
 			{
 				JSONObject guildInfo = (JSONObject) guildJSON.get(0);
 				//Contrcutr the guild object
-				this.name 				= guildInfo.get("name").toString();
-				this.battleGroup 		= guildInfo.get("battlegroup").toString();
-				this.lastModified 		= ((Double) (guildInfo.get("lastModified"))).longValue();
-				this.achievementPoints 	= ((Double) (guildInfo.get("achievementPoints"))).longValue();
-				this.level 				= ((Integer) guildInfo.get("level")).shortValue();
-				this.side 				= ((Integer) guildInfo.get("side")).shortValue();
-				this.isData 			= true;
+				saveGuildInfo(guildInfo);
 			}
 			else
 			{//REVISAR ERROR SI LA GUILD NO EXISTE!
@@ -90,32 +86,33 @@ public class Guild
 			System.out.println("Error in Load Guild: "+ e);
 		}
 	}
-	
-	public void updateInDB() throws DataException, SQLException, ClassNotFoundException
+		
+	@Override
+	protected boolean isOld()
 	{
-		if(dbConnect == null) dbConnect = new DBConnect();		
-		dbConnect.update("guild_info",
-						new String[] {"lastModified", "battlegroup", "level", "side", "achievementPoints"},
-						new String[] { 	this.lastModified +"",
-										this.battleGroup,
-										this.level +"",
-										this.side +"",
-										this.achievementPoints +"" });
+		Guild actualG = new Guild();
+		if(actualG.isData())
+		{
+			return !equals(actualG);
+		}
+		return true;		
 	}
 	
-	public void insertInDB() throws DataException, SQLException, ClassNotFoundException
+	@Override
+	public boolean saveInDB()
 	{
-		if(dbConnect == null) dbConnect = new DBConnect();
-		
-		dbConnect.insert("guild_info",
-						new String[] {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"},
-						new String[] { 	this.name, 
-										this.lastModified +"",
-										this.battleGroup,
-										this.level +"",
-										this.side +"",
-										this.achievementPoints +"" });
-		
+		String[] values = { this.name, 
+							this.lastModified +"",
+							this.battleGroup,
+							this.level +"",
+							this.side +"",
+							this.achievementPoints +"" };
+		switch (saveInDBObj(values))
+		{
+			case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+				return true;
+		}
+		return false;		
 	}
 	
 	//GETTERS
@@ -123,8 +120,8 @@ public class Guild
 	public String getBattleGroup() { return this.battleGroup; }
 	public long getLastModified() { return this.lastModified; }
 	public long getAchivementPoints() { return this.achievementPoints; }
-	public short getLevel() { return this.level; }
-	public short getSide() { return this.side; }
+	public int getLevel() { return this.level; }
+	public int getSide() { return this.side; }
 	public boolean isData() { return this.isData; }
 	
 	//two guild equals method

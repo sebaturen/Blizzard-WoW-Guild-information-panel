@@ -9,6 +9,7 @@ cd /opt/tomcat/artOfWar/ROOT/WEB-INF/src
 echo ======== START Compile ========
 javac \
     DataException.java \
+    gameObject/GameObject.java \
     gameObject/Guild.java \
     gameObject/Member.java \
     gameObject/PlayableClass.java \

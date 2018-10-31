@@ -58,8 +58,9 @@ public class DBConnect implements DBConfig
 			sql = sql.substring(0,sql.length()-1);
 			sql += " from `"+ table +"`";
 			if(where != null) sql += " where "+ where;
-			
+						
 			this.pstmt = this.conn.prepareStatement(sql);	
+			//System.out.println("DEBUG: "+ pstmt);
 			return resultToJsonConvert(this.pstmt.executeQuery());
 		}
 		else
@@ -196,7 +197,7 @@ public class DBConnect implements DBConfig
 						obj.put(column_name, rs.getArray(column_name));
 						break;
 					case java.sql.Types.BIGINT:
-						obj.put(column_name, rs.getDouble(column_name));
+						obj.put(column_name, rs.getLong(column_name));
 						break;
 					case java.sql.Types.BOOLEAN:
 						obj.put(column_name, rs.getBoolean(column_name));

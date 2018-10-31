@@ -6,13 +6,15 @@
 package com.artOfWar.gameObject;
 
 import com.artOfWar.dbConnect.DBConnect;
+import com.artOfWar.blizzardAPI.APIInfo;
+import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
-public class Race
+public class Race extends GameObject
 {	
 	//Atribute
 	private short id;
@@ -20,17 +22,19 @@ public class Race
 	private String side;
 	private String name;
 	
-	//Variable	
-	private static DBConnect dbConnect;
-	private boolean isData;
+	//Constante
+	private static final String TABLE_NAME = "races";
+	private static final String[] TABLE_TRUCTU = {"id", "mask", "side", "name"};
 	
 	public Race(short id)
 	{
+		super(TABLE_NAME,TABLE_TRUCTU);
 		//LOAD FROM DB
 	}
 	
 	public Race(JSONObject exInfo)
 	{
+		super(TABLE_NAME,TABLE_TRUCTU);
 		this.id = ((Long) exInfo.get("id")).shortValue();
 		this.mask = ((Long) exInfo.get("mask")).intValue();
 		this.side = exInfo.get("side").toString();
@@ -38,72 +42,23 @@ public class Race
 		this.isData = true;
 	}
 	
+	@Override
+	protected boolean isOld()
+	{
+		//For the amount of data that this object uses, consulting and 
+		//validating is more expensive than just updating
+		return true;
+	}
+	
+	@Override
 	public boolean saveInDB()
 	{
-		if(dbConnect == null) dbConnect = new DBConnect();
-		boolean resultSave = false;
-		if (isData)
+		switch (saveInDBObj(new String[] {this.id +"", this.mask +"", this.side +"", this.name}))
 		{
-			boolean haveOtherData = false;
-			
-			//exits preview data?
-			try
-			{
-				JSONArray lastModifiedOldRace = dbConnect.select("races",
-												new String[] {"id"},
-												"id="+this.id );	
-				if(lastModifiedOldRace.size() > 0)	haveOtherData = true;
-			}
-			catch (SQLException|DataException er)
-			{
-				System.out.println("Error wen try get a old race: "+ er);
-			}
-			
-			if(haveOtherData)
-			{			
-				try
-				{
-					updateInDB();
-					resultSave = true;
-				}
-				catch (DataException|ClassNotFoundException|SQLException e)
-				{
-					System.out.println("Error Other when try uplote a race information: "+ e);
-				}
-			}
-			else
-			{
-				try
-				{
-					insertInDB();
-					resultSave = true;
-				}
-				catch (SQLException|DataException|ClassNotFoundException e)
-				{
-					System.out.println("Error to insert race "+ this.name +": "+ e);
-				}
-			}
+			case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+				return true;
 		}
-		return resultSave;
-	}
-	
-	private void updateInDB() throws DataException, SQLException, ClassNotFoundException
-	{
-		if(dbConnect == null) dbConnect = new DBConnect();
-		
-		dbConnect.update("races",
-						new String[] {	"mask", "side", "name"},
-						new String[] { 	this.mask +"", this.side +"", this.name},
-						"id="+ this.id);	
-	}
-	
-	private void insertInDB() throws DataException, SQLException, ClassNotFoundException
-	{
-		if(dbConnect == null) dbConnect = new DBConnect();
-		
-		dbConnect.insert("races",
-						new String[] {	"id", "mask", "side", "name"},
-						new String[] { 	this.id +"", this.mask +"", this.side +"", this.name});
+		return false;
 	}
 	
 	//Getters

@@ -154,22 +154,10 @@ public class Update implements APIInfo
 			JSONObject respond = curl(urlString, 
 									"GET",
 									"Bearer "+ this.accesToken);
-			
-			Guild actualGuild = new Guild(); //actual guild in DB
+			System.out.println("Get guild to blizz");
 			Guild apiGuild = new Guild(respond);
-										
-			//If guild not exist in DB, or is not update
-			if( !actualGuild.isData() ) //guild not exist
-			{
-				System.out.println("Guild not found");
-				apiGuild.insertInDB();
-				
-			}
-			else if (!actualGuild.equals(apiGuild))
-			{
-				System.out.println("Guild Update found");
-				apiGuild.updateInDB();
-			}
+			System.out.println("read guild to blizz");
+			apiGuild.saveInDB();
 		}
 	}
 	
