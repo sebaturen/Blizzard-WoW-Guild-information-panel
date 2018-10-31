@@ -14,11 +14,9 @@ CREATE TABLE `character_info` (
 	`totalHonorableKills` int NOT NULL,
 	`guild_name`		varchar(50) NOT NULL,
 	`lastModified`		bigint(20) NOT NULL,
-	PRIMARY KEY(internal_id)
+	PRIMARY KEY(internal_id),
+	FOREIGN KEY(guild_name) REFERENCES guild_info(name),
+	FOREIGN KEY(internal_id) REFERENCES gMembers_id_name(internal_id),
+	FOREIGN KEY(class) REFERENCES playable_class(id),
+	FOREIGN KEY(race) REFERENCES races(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `character_info`
-  ADD FOREIGN KEY (guild_name) REFERENCES guild_info(name);
-
-ALTER TABLE `character_info`
-  ADD FOREIGN KEY (internal_id) REFERENCES gMembers_id_name(internal_id);

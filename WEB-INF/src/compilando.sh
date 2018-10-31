@@ -11,6 +11,8 @@ javac \
     DataException.java \
     gameObject/Guild.java \
     gameObject/Member.java \
+    gameObject/PlayableClass.java \
+    gameObject/Race.java \
     dbConnect/DBConnect.java \
     dbConnect/DBConfig.java \
     blizzardAPI/Update.java \

@@ -7,7 +7,6 @@ package com.artOfWar.gameObject;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
-import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;

@@ -14,7 +14,7 @@
 					<thead>
 						<tr>
 						<th>Name</th>
-						<th>Nivel</th>
+						<th>Level</th>
 						</tr>
 					</thead>
 					<tbody>

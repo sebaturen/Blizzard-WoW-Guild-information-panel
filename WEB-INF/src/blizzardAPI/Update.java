@@ -9,6 +9,8 @@ import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.gameObject.Guild;
 import com.artOfWar.gameObject.Member;
+import com.artOfWar.gameObject.PlayableClass;
+import com.artOfWar.gameObject.Race;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +31,10 @@ import java.sql.Timestamp;
 public class Update implements APIInfo
 {
 
+	//Constante	
+	public static final int DYNAMIC_UPDATE = 0;
+	public static final int STATIC_UPDATE = 1;
+	
 	//Atribute
 	private String accesToken = "";
 	private static DBConnect dbConnect;
@@ -43,11 +49,11 @@ public class Update implements APIInfo
 	}
 	
 	/**
-	 * Run all update method and save the register the last update.
+	 * Run Dynamic element update method and save the register the last update.
 	 */
-	public void updateAllNow()
+	public void updateDynamicAll()
 	{
-		System.out.println("-------Update proces is START! ------");
+		System.out.println("-------Update proces is START! (Dynamic)------");
 		//Guild information update!
 		System.out.println("Guild Information update!");
 		try { getGuildProfile(); } 
@@ -60,7 +66,7 @@ public class Update implements APIInfo
 		System.out.println("Character information update!");
 		try { getCharacterInfo(); } 
 		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
-		System.out.println("-------Update proces is COMPLATE! ------");
+		System.out.println("-------Update proces is COMPLATE! (Dynamic)------");
 		
 		//Save log update in DB
 		try 
@@ -69,13 +75,44 @@ public class Update implements APIInfo
 			Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
 			
 			dbConnect.insert("update_timeline",
-							new String[] {"update_time"},
-							new String[] {timestamp.toString()});
+							new String[] {"type", "update_time"},
+							new String[] {DYNAMIC_UPDATE +"", timestamp.toString()});
 		} 
 		catch(DataException|SQLException|ClassNotFoundException e)
 		{
 			System.out.println("Fail to save update time: "+ e);
 		}
+	}
+	
+	/**
+	 * Run Static element update
+	 */
+	public void updateStaticAll()
+	{
+		System.out.println("-------Update proces is START! (Static)------");
+		//Playeble Class
+		System.out.println("Playable class Information update!");
+		try { getPlayableClass(); } 
+		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Playable class Info: "+ ex); }
+		System.out.println("Races Information update!");
+		try { getRaces(); } 
+		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Races Info: "+ ex); }		
+		System.out.println("-------Update proces is COMPLATE! (Static)------");
+		
+		//Save log update in DB
+		try 
+		{
+			Calendar cal = Calendar.getInstance();  
+			Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
+			
+			dbConnect.insert("update_timeline",
+							new String[] {"type", "update_time"},
+							new String[] {STATIC_UPDATE +"", timestamp.toString()});
+		} 
+		catch(DataException|SQLException|ClassNotFoundException e)
+		{
+			System.out.println("Fail to save update time: "+ e);
+		}		
 	}
 	
 	/**
@@ -218,6 +255,58 @@ public class Update implements APIInfo
 				}
 			}
 			System.out.println("...100%");
+		}
+	}
+	
+	/**
+	 * get a playable class information 
+	 */
+	public void getPlayableClass() throws SQLException, DataException, IOException, ParseException
+	{
+		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		else
+		{
+			//Generate an API URL
+			String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_PLAYABLE_CLASS);
+			//Call Blizzard API
+			JSONObject blizzPlayableClass = curl(urlString, //DataException posible trigger
+								"GET",
+								"Bearer "+ this.accesToken,
+								new String[] {"namespace=static-us"});
+			
+			JSONArray playClass = (JSONArray) blizzPlayableClass.get("classes");
+			for(int i = 0; i < playClass.size(); i++)
+			{
+				JSONObject info = (JSONObject) playClass.get(i);
+				
+				PlayableClass pClass = new PlayableClass(info);
+				pClass.saveInDB();
+			}
+		}
+	}
+	
+	/**
+	 * get a Characters races information 
+	 */
+	public void getRaces() throws SQLException, DataException, IOException, ParseException
+	{
+		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		else
+		{
+			//Generate an API URL
+			String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_CHARACTER_RACES);
+			//Call Blizzard API
+			JSONObject blizzRaces = curl(urlString, //DataException posible trigger
+								"GET",
+								"Bearer "+ this.accesToken);
+
+			JSONArray races = (JSONArray) blizzRaces.get("races");
+			for(int i = 0; i < races.size(); i++)
+			{
+				JSONObject info = (JSONObject) races.get(i);
+				Race race = new Race(info);
+				race.saveInDB();		
+			}
 		}
 	}
 	
