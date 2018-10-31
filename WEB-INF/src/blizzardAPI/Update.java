@@ -182,19 +182,13 @@ public class Update implements APIInfo
 			JSONArray members = (JSONArray) respond.get("members");
 			
 			for(int i = 0; i < members.size(); i++)
-			{
+			{				
 				JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
-				JSONArray playerDB = dbConnect.select("gMembers_id_name",
-													new String[] {"internal_id","member_name"},
-													"member_name=\""+info.get("name")+"\"");
-				//If not exist in table (gMembers_id_name), write a name 
-				if(playerDB.size() == 0) //not exist
-				{//save member
-					dbConnect.insert("gMembers_id_name",
-								new String[] {"member_name","rank"},
-								new String[] {info.get("name").toString(),
-											((JSONObject) members.get(i)).get("rank").toString()});
-				}
+				
+				dbConnect.insert(	"gMembers_id_name",
+									new String[] {"member_name","rank"},
+									new String[] {info.get("name").toString(), ((JSONObject) members.get(i)).get("rank").toString()},
+									"ON DUPLICATE KEY UPDATE member_name='"+  info.get("name").toString() +"'");
 			}
 		}
 	}
@@ -214,7 +208,7 @@ public class Update implements APIInfo
 			System.out.print("0%");
 			for(int i = 0; i < members.size(); i++)
 			{
-				JSONObject member = (JSONObject) members.get(i); //internal DB Members					
+				JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]				
 				//Generate an API URL
 				String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
 																				URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 

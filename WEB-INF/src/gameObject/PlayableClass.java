@@ -74,6 +74,5 @@ public class PlayableClass extends GameObject
 	//Getters
 	public int getId() { return this.id; }
 	public String getEnName() { return this.enName; }
-	public boolean isData() { return this.isData; }
 	
 }

@@ -20,6 +20,7 @@ public class DBConnect implements DBConfig
 {
 	//error SQL constant
 	public static final int ERROR_FOREIGN_KEY = 1452;
+	public static final int ERROR_NULL_ELEMENT = 1048;
 	
 	//acces info
 	private Connection conn = null;
@@ -112,7 +113,8 @@ public class DBConnect implements DBConfig
 	 * @columns nombre de las columnas que afecta
 	 * @values valores de dichas columnas
 	 */
-	public void insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException
+	public void insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { insert(table, columns, values, null); }
+	public void insert(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException
 	{
 		if (statusConnect == true)
 		{			
@@ -126,6 +128,8 @@ public class DBConnect implements DBConfig
 				valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
 				
 				String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
+				
+				if(where != null) sql += " "+ where;
 				
 				runUpdate(sql, values);
 			}

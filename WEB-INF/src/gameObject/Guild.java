@@ -98,7 +98,6 @@ public class Guild extends GameObject
 	public long getAchivementPoints() { return this.achievementPoints; }
 	public int getLevel() { return this.level; }
 	public int getSide() { return this.side; }
-	public boolean isData() { return this.isData; }
 	
 	//two guild equals method
 	@Override

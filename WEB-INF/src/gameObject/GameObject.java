@@ -27,7 +27,8 @@ public abstract class GameObject
 	public static final int SAVE_MSG_UPDATE_OK 					= 3;
 	public static final int SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR 	= 4;
 	public static final int SAVE_MSG_UPDATE_ERROR				= 5;
-	public static final int SAVE_MSG_UPDATE_NOT_OLD				= 6;
+	public static final int SAVE_MSG_NOT_UPDATE_OK				= 6;
+	public static final int SAVE_MSG_SQL_INSERT_ERROR			= 7;
 	
 	public GameObject(String tableDB, String[] tableStruct) 
 	{ 
@@ -35,10 +36,16 @@ public abstract class GameObject
 		this.tableStruct = tableStruct;
 	}
 	
+	//Abstract
 	protected abstract void saveInternalInfoObject(JSONObject guildInfo);
 	protected abstract boolean isOld();
 	public abstract boolean saveInDB();
 	
+	//Generi function
+	/**
+	 * Save Game object element in DB
+	 * @values values from object we need save, use in query.
+	 */
 	protected int saveInDBObj(String[] values)
 	{
 		if(dbConnect == null) dbConnect = new DBConnect();
@@ -82,7 +89,7 @@ public abstract class GameObject
 						return SAVE_MSG_UPDATE_ERROR;
 					}					
 				}
-				return SAVE_MSG_UPDATE_NOT_OLD;
+				return SAVE_MSG_NOT_UPDATE_OK;
 			}
 			else
 			{
@@ -92,7 +99,16 @@ public abstract class GameObject
 					insertInDB(values);
 					return SAVE_MSG_INSERT_OK;
 				}
-				catch (SQLException|DataException|ClassNotFoundException e)
+				catch (SQLException e)
+				{
+					if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY || 
+						e.getErrorCode() == DBConnect.ERROR_NULL_ELEMENT)
+					{
+						return SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR;
+					}
+					return SAVE_MSG_SQL_INSERT_ERROR;
+				}
+				catch (DataException|ClassNotFoundException e)
 				{
 					System.out.println("Error to insert race "+ values.toString() +": "+ e);
 					return SAVE_MSG_INSERT_ERROR;
@@ -102,6 +118,10 @@ public abstract class GameObject
 		return SAVE_MSG_NO_DATA;
 	}
 	
+	/**
+	 * Get a content from DB to load in object
+	 * @id element identifier (primary key!)
+	 */
 	protected void loadFromDB(String id)
 	{
 		if(dbConnect == null) dbConnect = new DBConnect();
@@ -117,25 +137,39 @@ public abstract class GameObject
 			}
 			else
 			{
-				System.out.println("Character not found");	
+				System.out.println("Element not found");	
 			}			
 		} catch (DataException|SQLException e) {
-			System.out.println("Error in Load Char: "+ e);
+			System.out.println("Error in Load element: "+ e);
 		}
 	}
-		
+	
+	/**
+	 * Update a object in DB
+	 * @values values for query
+	 */
 	private void updateInDB(String[] values) throws DataException, SQLException, ClassNotFoundException
 	{
 		if(dbConnect == null) dbConnect = new DBConnect();		
 		dbConnect.update(this.tableDB, removeFirstElement(this.tableStruct), values, this.tableStruct[0] +"=\""+ values[0] +"\"");
 	}
-	
+
+	/**
+	 * Inser a object in DB
+	 * @values values for query
+	 */
 	private void insertInDB(String[] values) throws DataException, SQLException, ClassNotFoundException
 	{
 		if(dbConnect == null) dbConnect = new DBConnect();
 		dbConnect.insert(this.tableDB, this.tableStruct, values);
 	}
 	
+	/**
+	 * Remove a first element in array.
+	 * The idea is remove key in table array, when this object is load, save a
+	 * table structur, and when we need insert, use all values, but when need update, put all except the key.
+	 * @arrayElem array that wants to delete the first value 
+	 */
 	private String[] removeFirstElement(String[] arryElem)
 	{
 		String[] columnNotKey = new String[arryElem.length-1];
@@ -146,6 +180,7 @@ public abstract class GameObject
 		return columnNotKey;
 	}
 	
-	//implemented
+	//Get/Set method
+	public boolean isData() { return this.isData; }
 	
 }

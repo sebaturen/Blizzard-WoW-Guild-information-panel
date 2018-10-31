@@ -75,9 +75,10 @@ public class Member extends GameObject
 			this.gender = ((Long) playerInfo.get("gender")).intValue();
 			this.level = ((Long) playerInfo.get("level")).intValue();
 			this.faction = ((Long) playerInfo.get("faction")).intValue();
-			this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
 			classID = ((Long) playerInfo.get("class")).intValue();
 			raceID = ((Long) playerInfo.get("race")).intValue();
+			//If have a guild...
+			if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
 		}
 		else
 		{
@@ -92,7 +93,7 @@ public class Member extends GameObject
 		this.memberClass = new PlayableClass(classID);
 		this.race = new Race(raceID);
 		
-		this.isData = true;		
+		this.isData = true;	
 	}
 		
 	@Override
@@ -149,7 +150,6 @@ public class Member extends GameObject
 	public String getGuildName() { return this.guildName; }
 	public long getLastModified() { return this.lastModified; }
 	public long getTotalHonorableKills() { return this.totalHonorableKills; }
-	public boolean isData() { return this.isData; }
 	
 	//two members equals method
 	@Override
