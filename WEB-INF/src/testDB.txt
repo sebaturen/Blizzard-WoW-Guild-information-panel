@@ -1,3 +1,0 @@
-select c.* from character_info c
-left Join gMembers_id_name gm on gm.internal_id = c.internal_id
-where gm.rank = 1;

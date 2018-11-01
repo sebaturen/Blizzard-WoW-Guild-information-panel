@@ -7,6 +7,7 @@ package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
+import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.Guild;
 import com.artOfWar.gameObject.Member;
 import com.artOfWar.gameObject.PlayableClass;
@@ -34,6 +35,7 @@ public class Update implements APIInfo
 	//Constant	
 	public static final int DYNAMIC_UPDATE = 0;
 	public static final int STATIC_UPDATE = 1;
+	public static final String GMEMBERS_ID_TABLE = "gMembers_id_name";
 	
 	//Attribute
 	private String accesToken = "";
@@ -53,7 +55,7 @@ public class Update implements APIInfo
 	 */
 	public void updateDynamicAll()
 	{
-		System.out.println("-------Update proces is START! (Dynamic)------");
+		System.out.println("-------Update process is START! (Dynamic)------");
 		//Guild information update!
 		System.out.println("Guild Information update!");
 		try { getGuildProfile(); } 
@@ -66,7 +68,7 @@ public class Update implements APIInfo
 		System.out.println("Character information update!");
 		try { getCharacterInfo(); } 
 		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
-		System.out.println("-------Update proces is COMPLATE! (Dynamic)------");
+		System.out.println("-------Update process is COMPLATE! (Dynamic)------");
 		
 		//Save log update in DB
 		try 
@@ -89,7 +91,7 @@ public class Update implements APIInfo
 	 */
 	public void updateStaticAll()
 	{
-		System.out.println("-------Update proces is START! (Static)------");
+		System.out.println("-------Update process is START! (Static)------");
 		//Playeble Class
 		System.out.println("Playable class Information update!");
 		try { getPlayableClass(); } 
@@ -97,7 +99,7 @@ public class Update implements APIInfo
 		System.out.println("Races Information update!");
 		try { getRaces(); } 
 		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Races Info: "+ ex); }		
-		System.out.println("-------Update proces is COMPLATE! (Static)------");
+		System.out.println("-------Update process is COMPLATE! (Static)------");
 		
 		//Save log update in DB
 		try 
@@ -143,7 +145,7 @@ public class Update implements APIInfo
 	 */
 	public void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
 	{
-		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
 		else
 		{
 			//Generate an API URL
@@ -164,7 +166,7 @@ public class Update implements APIInfo
 	 */
 	public void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
 	{
-		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
 		else
 		{
 			//Generate an API URL
@@ -179,17 +181,23 @@ public class Update implements APIInfo
 			
 			JSONArray members = (JSONArray) respond.get("members");
 			
+			//Reset 0 in_guild all members...
+			dbConnect.update(GMEMBERS_ID_TABLE,
+							new String[] {"in_guild"},
+							new String[] {"0"});
+			
 			for(int i = 0; i < members.size(); i++)
 			{				
 				JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
 				
 				//Check if have a guild and if set guild, (Blizzard not update a guilds members list) 
 				if(info.containsKey("guild") && (info.get("guild").toString()).equals(GUILD_NAME))
-				{
-					dbConnect.insert(	"gMembers_id_name",
-										new String[] {"member_name","rank"},
-										new String[] {info.get("name").toString(), ((JSONObject) members.get(i)).get("rank").toString()},
-										"ON DUPLICATE KEY UPDATE member_name='"+  info.get("name").toString() +"'");
+				{	
+					String rankMember = ((JSONObject) members.get(i)).get("rank").toString();
+					dbConnect.insert(	GMEMBERS_ID_TABLE,
+										new String[] {"member_name","rank","in_guild"},
+										new String[] {info.get("name").toString(), rankMember, "1"},
+										"ON DUPLICATE KEY UPDATE in_guild='1', rank='"+ rankMember +"'");
 				}				
 			}
 		}
@@ -200,11 +208,12 @@ public class Update implements APIInfo
 	 */
 	public void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
 	{
-		if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+		if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
 		else
 		{
-			JSONArray members = dbConnect.select("gMembers_id_name", 
-									new String[] {"internal_id", "member_name"});
+			JSONArray members = dbConnect.select(GMEMBERS_ID_TABLE, 
+									new String[] {"internal_id", "member_name"},
+									"in_guild=1");
 						
 			int iProgres = 1;
 			System.out.print("0%");

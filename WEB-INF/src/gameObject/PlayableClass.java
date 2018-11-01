@@ -54,14 +54,6 @@ public class PlayableClass extends GameObject
 	}
 	
 	@Override
-	protected boolean isOld()
-	{
-		//For the amount of data that this object uses, consulting and 
-		//validating is more expensive than just updating
-		return true;
-	}
-	
-	@Override
 	public boolean saveInDB()
 	{
 		switch (saveInDBObj(new String[] {this.id +"", this.enName}))

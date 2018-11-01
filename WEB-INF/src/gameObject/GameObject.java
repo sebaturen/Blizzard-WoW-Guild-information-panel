@@ -36,9 +36,8 @@ public abstract class GameObject
 		this.tableStruct = tableStruct;
 	}
 	
-	//Abstract
+	//Abstract method
 	protected abstract void saveInternalInfoObject(JSONObject guildInfo);
-	protected abstract boolean isOld();
 	public abstract boolean saveInDB();
 	
 	//Generic function
@@ -51,70 +50,23 @@ public abstract class GameObject
 		if(dbConnect == null) dbConnect = new DBConnect();
 		if (this.isData && values.length > 0)
 		{
-			//need Update or Insert?
-			boolean updateOrInsert = false;
+			String updateDuplicate = "ON DUPLICATE KEY UPDATE ";
+			for(int i = 1; i < values.length; i++) //start in 1 omitted key!
+			{
+				updateDuplicate += " "+ this.tableStruct[i] +"='"+ values[i] +"',";
+			}
+			updateDuplicate = updateDuplicate.substring(0,updateDuplicate.length()-1); //remove las ','
 			try
 			{
-				JSONArray exist = dbConnect.select(
-												this.tableDB, 
-												this.tableStruct,
-												this.tableStruct[0]+"=\""+values[0]+"\"" );	
-				if(exist.size() > 0) updateOrInsert = true;
+				dbConnect.insert(this.tableDB,
+								this.tableStruct,
+								values,
+								updateDuplicate);
+				return SAVE_MSG_INSERT_OK;
 			}
-			catch (SQLException|DataException er)
+			catch (DataException|SQLException|ClassNotFoundException e)
 			{
-				System.out.println("Error wen try get a last modified old character: "+ er);
-			}
-			//If updateOrInsert is tru, we need update, if is false, insert
-			if(updateOrInsert)
-			{
-				if(isOld())
-				{
-					//Update
-					try
-					{
-						updateInDB(removeFirstElement(values));
-						return SAVE_MSG_UPDATE_OK;
-					}
-					catch (SQLException e)
-					{
-						if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY || 
-							e.getErrorCode() == DBConnect.ERROR_NULL_ELEMENT)
-						{
-							return SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR;
-						}
-						return SAVE_MSG_SQL_INSERT_ERROR;						
-					}
-					catch (DataException|ClassNotFoundException e)
-					{
-						System.out.println("Error Other when try uplote a race information: "+ e);
-						return SAVE_MSG_UPDATE_ERROR;
-					}					
-				}
-				return SAVE_MSG_NOT_UPDATE_OK;
-			}
-			else
-			{
-				//Insert
-				try
-				{
-					insertInDB(values);
-					return SAVE_MSG_INSERT_OK;
-				}
-				catch (SQLException e)
-				{
-					if(e.getErrorCode() == DBConnect.ERROR_FOREIGN_KEY || 
-						e.getErrorCode() == DBConnect.ERROR_NULL_ELEMENT)
-					{
-						return SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR;
-					}
-					return SAVE_MSG_SQL_INSERT_ERROR;
-				}
-				catch (DataException|ClassNotFoundException e)
-				{
-					System.out.println("Error to insert race "+ values.toString() +": "+ e);
-					return SAVE_MSG_INSERT_ERROR;
-				}
+				return SAVE_MSG_INSERT_ERROR;
 			}
 		}
 		return SAVE_MSG_NO_DATA;
@@ -134,7 +86,7 @@ public abstract class GameObject
 			if(dbSelect.size() > 0)
 			{
 				JSONObject infoDB = (JSONObject) dbSelect.get(0);
-				//Contruct a character object
+				//Construct a character object
 				saveInternalInfoObject(infoDB);
 			}
 			else
@@ -144,26 +96,6 @@ public abstract class GameObject
 		} catch (DataException|SQLException e) {
 			System.out.println("Error in Load element: "+ e);
 		}
-	}
-	
-	/**
-	 * Update a object in DB
-	 * @values values for query
-	 */
-	private void updateInDB(String[] values) throws DataException, SQLException, ClassNotFoundException
-	{
-		if(dbConnect == null) dbConnect = new DBConnect();		
-		dbConnect.update(this.tableDB, removeFirstElement(this.tableStruct), values, this.tableStruct[0] +"=\""+ values[0] +"\"");
-	}
-
-	/**
-	 * Inser a object in DB
-	 * @values values for query
-	 */
-	private void insertInDB(String[] values) throws DataException, SQLException, ClassNotFoundException
-	{
-		if(dbConnect == null) dbConnect = new DBConnect();
-		dbConnect.insert(this.tableDB, this.tableStruct, values);
 	}
 	
 	/**

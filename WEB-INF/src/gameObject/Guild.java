@@ -62,17 +62,6 @@ public class Guild extends GameObject
 		}		
 		this.isData = true;		
 	}
-		
-	@Override
-	protected boolean isOld()
-	{
-		Guild actualG = new Guild();
-		if(actualG.isData())
-		{
-			return !equals(actualG);
-		}
-		return true;		
-	}
 	
 	@Override
 	public boolean saveInDB()

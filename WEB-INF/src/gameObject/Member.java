@@ -18,7 +18,7 @@ import java.sql.SQLException;
 
 public class Member extends GameObject
 {
-	//Atribute
+	//Attribute
 	private int internalID;
 	private String name;
 	private String realm;
@@ -37,7 +37,7 @@ public class Member extends GameObject
 		
 	//Constant
 	private static final String TABLE_NAME = "character_info";
-	private static final String[] TABLE_TRUCTU = {"internal_id", "name", "realm", "lastModified", "battlegroup", "class", 
+	private static final String[] TABLE_TRUCTU = {"internal_id", "realm", "lastModified", "battlegroup", "class", 
 										"race", "gender", "level", "achievementPoints", "thumbnail", "calcClass", 
 										"faction", "totalHonorableKills", "guild_name"};
 	
@@ -78,6 +78,7 @@ public class Member extends GameObject
 			classID = ((Long) playerInfo.get("class")).intValue();
 			raceID = ((Long) playerInfo.get("race")).intValue();
 			//If have a guild...
+			this.guildName = "";
 			if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
 		}
 		else
@@ -95,33 +96,19 @@ public class Member extends GameObject
 		
 		this.isData = true;	
 	}
-		
-	@Override
-	protected boolean isOld()
-	{
-		Member oldMeber = new Member(this.internalID);
-		if(oldMeber.isData())
-		{
-			return !equals(oldMeber);
-		}
-		return true;
-	}
 	
 	@Override
 	public boolean saveInDB()
 	{
-		String[] val = new String[] { 	this.internalID +"", this.name, this.realm +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
+		String[] val = new String[] { 	this.internalID +"", this.realm +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
 										this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
 										this.faction +"", this.totalHonorableKills +"", this.guildName };
-		//Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this colum, for this use this IF)
-		if(this.isData && this.guildName == null) deleteFromDB();
-		else
-		switch (saveInDBObj(val))
+		//Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
+		if(this.isData)
 		{
-			case SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR: case SAVE_MSG_SQL_INSERT_ERROR:
-				return deleteFromDB();
-			case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-				return true;
+			if (!this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
+			int vSave = saveInDBObj(val);
+			return ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK));
 		}
 		return false;
 	}
@@ -132,13 +119,15 @@ public class Member extends GameObject
 	private boolean deleteFromDB()
 	{
 		try
-		{//delete player in character_info and gMembers_id_name because this character not in the guild NOW
-			System.out.println("Character change "+ this.name +" guild");
-			dbConnect.delete("character_info","internal_id="+ this.internalID);
-			dbConnect.delete("gMembers_id_name","internal_id="+ this.internalID);
+		{//change player in character_info in_guild because is change
+			System.out.println("Character "+ this.name +" change guild");
+			dbConnect.update(com.artOfWar.blizzardAPI.Update.GMEMBERS_ID_TABLE,
+							new String[] {"in_guild"},
+							new String[] {"0"},
+							"internal_id="+ this.internalID);
 			return true;
 		}
-		catch (SQLException|DataException ex)
+		catch (SQLException|DataException|ClassNotFoundException ex)
 		{
 			System.out.println("Error when try remove a user not in guild: "+ ex);
 			return false;
