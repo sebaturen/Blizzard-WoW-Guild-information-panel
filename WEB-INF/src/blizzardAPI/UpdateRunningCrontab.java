@@ -6,12 +6,10 @@
  */
 package com.artOfWar.blizzardAPI;
 
-import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.DataException;
 
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
-import java.sql.SQLException;
 
 public class UpdateRunningCrontab
 {

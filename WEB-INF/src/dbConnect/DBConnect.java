@@ -22,7 +22,7 @@ public class DBConnect implements DBConfig
 	public static final int ERROR_FOREIGN_KEY = 1452;
 	public static final int ERROR_NULL_ELEMENT = 1048;
 	
-	//acces info
+	//access info
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	private boolean statusConnect = false;
@@ -91,7 +91,7 @@ public class DBConnect implements DBConfig
 	}
 	
 	/**
-	 * RUN a sql query in SQL server. (before call, valide (statusConnect == true))
+	 * RUN a SQL query in SQL server. (before call, valide (statusConnect == true))
 	 * @sql SQL Query [SIN DATOS INTERNOS]
 	 * @values[] data
 	 */
@@ -107,10 +107,10 @@ public class DBConnect implements DBConfig
 	}
 	
 	/**
-	 * Contruye una query de insercion.
+	 * Insert Query construct.
 	 * @table Tabla
-	 * @columns nombre de las columnas que afecta
-	 * @values valores de dichas columnas
+	 * @columns name of value is change
+	 * @values values from this insert
 	 */
 	public void insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { insert(table, columns, values, null); }
 	public void insert(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException
@@ -144,10 +144,10 @@ public class DBConnect implements DBConfig
 	}
 	
 	/**
-	 * Contruye una query de actualizacion.
+	 * Update Query
 	 * @table Tabla
-	 * @columns nombre de las columnas que afecta
-	 * @values valores de dichas columnas
+	 * @columns name of value is change
+	 * @values values from this insert
 	 */
 	public void update(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { update(table, columns, values, null);}
 	public void update(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException

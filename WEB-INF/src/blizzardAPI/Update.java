@@ -7,7 +7,6 @@ package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
-import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.Guild;
 import com.artOfWar.gameObject.Member;
 import com.artOfWar.gameObject.PlayableClass;
@@ -42,7 +41,7 @@ public class Update implements APIInfo
 	private static DBConnect dbConnect;
 	
 	/**
-	 * Constructor. Ejecuta el metodo para obtener el token de acceso
+	 * Constructor. Run a generateAccesToken to generate this token
 	 */
 	public Update() throws IOException, ParseException, DataException
 	{
@@ -92,7 +91,7 @@ public class Update implements APIInfo
 	public void updateStaticAll()
 	{
 		System.out.println("-------Update process is START! (Static)------");
-		//Playeble Class
+		//Playable Class
 		System.out.println("Playable class Information update!");
 		try { getPlayableClass(); } 
 		catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Playable class Info: "+ ex); }
@@ -118,9 +117,8 @@ public class Update implements APIInfo
 	}
 	
 	/**
-	 * Siempre se requiere un token de acceso que depende del ID
-	 * y del clientSecret de la api de Blizzard, por lo que debe ser generada 
-	 * al inicializarse este objeto
+	 * Blizzard API need a token to access to API, this token you can
+	 * get if have a ClinetID and ClientSecret of the application
 	 */
 	private void generateAccesToken() throws IOException, ParseException, DataException
 	{
@@ -240,7 +238,7 @@ public class Update implements APIInfo
 					System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
 				}
 				
-				//Show update logress...
+				//Show update progress...
 				if ( (((iProgres*2)*10)*members.size())/100 < i )
 				{
 					System.out.print("..."+ ((iProgres*2)*10) +"%");
@@ -262,7 +260,7 @@ public class Update implements APIInfo
 			//Generate an API URL
 			String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_PLAYABLE_CLASS);
 			//Call Blizzard API
-			JSONObject blizzPlayableClass = curl(urlString, //DataException posible trigger
+			JSONObject blizzPlayableClass = curl(urlString, //DataException possible trigger
 								"GET",
 								"Bearer "+ this.accesToken,
 								new String[] {"namespace=static-us"});
@@ -304,18 +302,18 @@ public class Update implements APIInfo
 	}
 	
 	/**
-	 * Genera la conexion URL a la appi
-	 * @urlString : URl de la api completa
+	 * Generate URL API connection
+	 * @urlString : complete API URL
 	 * @method : GET, POST, DELETE, etc
-	 * @authorization : autorizacion de la API, Bearer, o basic, etc
-	 * @parameters : parametros URL ("field=member","acctrion=move"....)
-	 * @bodyData : en caso de tener datos en el body
+	 * @authorization : API authorization, Bearer, o basic, etc
+	 * @parameters : URL parameters ("field=member","acctrion=move"....)
+	 * @bodyData : if have a data in body
 	 */
 	private JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
 	private JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
 	private JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, ParseException, DataException
 	{
-		//Add paramethers
+		//Add parameters
 		if(parameters != null)
 		{
 			String url = urlString +"?";

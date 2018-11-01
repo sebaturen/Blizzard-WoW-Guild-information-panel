@@ -5,15 +5,10 @@
  */
 package com.artOfWar.gameObject;
 
-import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.gameObject.Race;
-import com.artOfWar.gameObject.PlayableClass;
 import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
 public class Member extends GameObject
@@ -59,7 +54,7 @@ public class Member extends GameObject
 	@Override
 	protected void saveInternalInfoObject(JSONObject playerInfo)
 	{		
-		this.internalID = ((Integer) playerInfo.get("internal_id")).intValue();
+		this.internalID = (Integer) playerInfo.get("internal_id");
 		this.name = playerInfo.get("name").toString();
 		this.realm = playerInfo.get("realm").toString();
 		this.battleGroup = playerInfo.get("battlegroup").toString();
@@ -83,12 +78,12 @@ public class Member extends GameObject
 		}
 		else
 		{
-			this.gender = ((Integer) playerInfo.get("gender")).intValue();
-			this.level = ((Integer) playerInfo.get("level")).intValue();
-			this.faction = ((Integer) playerInfo.get("faction")).intValue();
+			this.gender = (Integer) playerInfo.get("gender");
+			this.level = (Integer) playerInfo.get("level");
+			this.faction = (Integer) playerInfo.get("faction");
 			this.guildName = playerInfo.get("guild_name").toString();
-			classID = ((Integer) playerInfo.get("class")).intValue();
-			raceID = ((Integer) playerInfo.get("race")).intValue();
+			classID = (Integer) playerInfo.get("class");
+			raceID = (Integer) playerInfo.get("race");
 		}
 		
 		this.memberClass = new PlayableClass(classID);

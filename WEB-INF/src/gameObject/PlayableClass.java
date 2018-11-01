@@ -5,22 +5,15 @@
  */
 package com.artOfWar.gameObject;
 
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.DataException;
-
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import java.sql.SQLException;
 
 public class PlayableClass extends GameObject
 {	
-	//Atribute
+	//Attribute
 	private int id;
 	private String enName;
 	
-	//Constante
+	//Constant
 	private static final String TABLE_NAME = "playable_class";
 	private static final String[] TABLE_TRUCTU = {"id", "en_US"};
 		
@@ -46,7 +39,7 @@ public class PlayableClass extends GameObject
 		}
 		else
 		{
-			this.id = ((Integer) exInfo.get("id")).intValue();
+			this.id = (Integer) exInfo.get("id");
 			this.enName = exInfo.get("en_US").toString();
 		}
 		

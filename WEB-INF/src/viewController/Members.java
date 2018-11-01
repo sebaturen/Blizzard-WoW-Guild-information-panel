@@ -40,7 +40,7 @@ public class Members
 			{
 				int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
 				Member member = new Member(idMember);
-				//If data is sucerfull load, save a member
+				//If data is successful load, save a member
 				if(member.isData()) membersList.add(member);
 			}
 			//Convert LIST to simple Member Array

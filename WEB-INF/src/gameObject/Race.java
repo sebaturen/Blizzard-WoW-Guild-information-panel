@@ -5,24 +5,17 @@
  */
 package com.artOfWar.gameObject;
 
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.DataException;
-
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import java.sql.SQLException;
 
 public class Race extends GameObject
 {	
-	//Atribute
+	//Attribute
 	private int id;
 	private int mask;
 	private String side;
 	private String name;
 	
-	//Constante
+	//Constant
 	private static final String TABLE_NAME = "races";
 	private static final String[] TABLE_TRUCTU = {"id", "mask", "side", "name"};
 	
@@ -48,8 +41,8 @@ public class Race extends GameObject
 		}
 		else
 		{
-			this.id = ((Integer) exInfo.get("id")).intValue();
-			this.mask = ((Integer) exInfo.get("mask")).intValue();
+			this.id = (Integer) exInfo.get("id");
+			this.mask = (Integer) exInfo.get("mask");
 		}
 		this.side = exInfo.get("side").toString();
 		this.name = exInfo.get("name").toString();

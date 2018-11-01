@@ -98,22 +98,6 @@ public abstract class GameObject
 		}
 	}
 	
-	/**
-	 * Remove a first element in array.
-	 * The idea is remove key in table array, when this object is load, save a
-	 * table structure, and when we need insert, use all values, but when need update, put all except the key.
-	 * @arrayElem array that wants to delete the first value 
-	 */
-	private String[] removeFirstElement(String[] arryElem)
-	{
-		String[] columnNotKey = new String[arryElem.length-1];
-		for(int i = 0; i < columnNotKey.length; i++)
-		{
-			columnNotKey[i] = arryElem[i+1];
-		}
-		return columnNotKey;
-	}
-	
 	//Get/Set method
 	public boolean isData() { return this.isData; }
 	

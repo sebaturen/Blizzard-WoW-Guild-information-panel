@@ -5,18 +5,13 @@
  */
 package com.artOfWar.gameObject;
 
-import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import java.sql.SQLException;
 
 public class Guild extends GameObject
 {
-	//Atribute
+	//Attribute
 	private String name;
 	private String battleGroup;
 	private long lastModified;
@@ -24,7 +19,7 @@ public class Guild extends GameObject
 	private int level;
 	private int side;
 	
-	//Constante
+	//Constant
 	private static final String TABLE_NAME = "guild_info";
 	private static final String[] TABLE_TRUCTU = {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"};
 		
@@ -57,8 +52,8 @@ public class Guild extends GameObject
 		}
 		else
 		{
-			this.level = ((Integer) guildInfo.get("level")).intValue();	
-			this.side =  ((Integer) guildInfo.get("side")).intValue();		
+			this.level = (Integer) guildInfo.get("level");	
+			this.side =  (Integer) guildInfo.get("side");		
 		}		
 		this.isData = true;		
 	}
