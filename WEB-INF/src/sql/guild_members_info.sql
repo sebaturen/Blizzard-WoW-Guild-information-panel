@@ -1,3 +1,22 @@
+CREATE TABLE `guild_info` (
+	`name` 			varchar(50) NOT NULL,
+	`lastModified`	bigint(20) NOT NULL,
+	`battlegroup` 	varchar(50) NOT NULL,
+	`level` 		int NOT NULL,
+	`side`			int NOT NULL,
+	`achievementPoints`	bigint(20) NOT NULL,
+	PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `gMembers_id_name` (
+	`internal_id`	int NOT NULL AUTO_INCREMENT,
+	`member_name`	varchar(20) NOT NULL,
+	`in_guild` 		TINYINT(1) NOT NULL,
+	`rank` 			int NOT NULL,
+	PRIMARY KEY(internal_id),
+	UNIQUE (member_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `character_info` (
 	`internal_id`		int NOT NULL,
 	`realm`				varchar(50) NOT NULL,

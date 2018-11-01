@@ -11,92 +11,92 @@ import org.json.simple.JSONObject;
 
 public class Guild extends GameObject
 {
-	//Attribute
-	private String name;
-	private String battleGroup;
-	private long lastModified;
-	private long achievementPoints;
-	private int level;
-	private int side;
-	
-	//Constant
-	private static final String TABLE_NAME = "guild_info";
-	private static final String[] TABLE_TRUCTU = {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"};
+    //Attribute
+    private String name;
+    private String battleGroup;
+    private long lastModified;
+    private long achievementPoints;
+    private int level;
+    private int side;
+
+    //Constant
+    private static final String TABLE_NAME = "guild_info";
+    private static final String[] TABLE_TRUCTU = {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"};
 		
-	//Constructor
-	public Guild()
-	{
-		super(TABLE_NAME,TABLE_TRUCTU);
-		//Load guild from DB
-		loadFromDB(APIInfo.GUILD_NAME);
-	}
+    //Constructor
+    public Guild()
+    {
+        super(TABLE_NAME,TABLE_TRUCTU);
+        //Load guild from DB
+        loadFromDB(APIInfo.GUILD_NAME);
+    }
+
+    //Load to JSON
+    public Guild(JSONObject guildInfo)
+    {
+        super(TABLE_NAME,TABLE_TRUCTU);
+        saveInternalInfoObject(guildInfo);
+    }
 	
-	//Load to JSON
-	public Guild(JSONObject guildInfo)
-	{
-		super(TABLE_NAME,TABLE_TRUCTU);
-		saveInternalInfoObject(guildInfo);
-	}
+    @Override
+    protected void saveInternalInfoObject(JSONObject guildInfo)
+    {
+        this.name = guildInfo.get("name").toString();
+        this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
+        this.battleGroup = guildInfo.get("battlegroup").toString();
+        this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
+        if(guildInfo.get("level").getClass() == java.lang.Long.class)
+        {//if info come to blizzAPI or DB
+            this.level = ((Long) guildInfo.get("level")).intValue();
+            this.side =  ((Long) guildInfo.get("side")).intValue();
+        }
+        else
+        {
+            this.level = (Integer) guildInfo.get("level");	
+            this.side =  (Integer) guildInfo.get("side");		
+        }		
+        this.isData = true;		
+    }
 	
-	@Override
-	protected void saveInternalInfoObject(JSONObject guildInfo)
-	{
-		this.name = guildInfo.get("name").toString();
-		this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
-		this.battleGroup = guildInfo.get("battlegroup").toString();
-		this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
-		if(guildInfo.get("level").getClass() == java.lang.Long.class)
-		{//if info come to blizzAPI or DB
-			this.level = ((Long) guildInfo.get("level")).intValue();
-			this.side =  ((Long) guildInfo.get("side")).intValue();
-		}
-		else
-		{
-			this.level = (Integer) guildInfo.get("level");	
-			this.side =  (Integer) guildInfo.get("side");		
-		}		
-		this.isData = true;		
-	}
+    @Override
+    public boolean saveInDB()
+    {
+        String[] values = { this.name, 
+                            this.lastModified +"",
+                            this.battleGroup,
+                            this.level +"",
+                            this.side +"",
+                            this.achievementPoints +"" };
+        switch (saveInDBObj(values))
+        {
+            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                return true;
+        }
+        return false;		
+    }
 	
-	@Override
-	public boolean saveInDB()
-	{
-		String[] values = { this.name, 
-							this.lastModified +"",
-							this.battleGroup,
-							this.level +"",
-							this.side +"",
-							this.achievementPoints +"" };
-		switch (saveInDBObj(values))
-		{
-			case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-				return true;
-		}
-		return false;		
-	}
+    //GETTERS
+    public String getName() { return this.name; }
+    public String getBattleGroup() { return this.battleGroup; }
+    public long getLastModified() { return this.lastModified; }
+    public long getAchivementPoints() { return this.achievementPoints; }
+    public int getLevel() { return this.level; }
+    public int getSide() { return this.side; }
 	
-	//GETTERS
-	public String getName() { return this.name; }
-	public String getBattleGroup() { return this.battleGroup; }
-	public long getLastModified() { return this.lastModified; }
-	public long getAchivementPoints() { return this.achievementPoints; }
-	public int getLevel() { return this.level; }
-	public int getSide() { return this.side; }
-	
-	//two guild equals method
-	@Override
-	public boolean equals(Object o) 
-	{
-		if(o == this) return true;
-		if(o == null || (this.getClass() != o.getClass())) return false;
-		
-		String oName = ((Guild) o).getName();
-		long oLastModified = ((Guild) o).getLastModified();
-		return (  
-					oName.equals(this.name) 
-					&&
-					(Long.compare(oLastModified, this.lastModified) == 0)
-				);
-	}
+    //two guild equals method
+    @Override
+    public boolean equals(Object o) 
+    {
+        if(o == this) return true;
+        if(o == null || (this.getClass() != o.getClass())) return false;
+
+        String oName = ((Guild) o).getName();
+        long oLastModified = ((Guild) o).getLastModified();
+        return (  
+                oName.equals(this.name) 
+                &&
+                (Long.compare(oLastModified, this.lastModified) == 0)
+                );
+    }
 	
 }
