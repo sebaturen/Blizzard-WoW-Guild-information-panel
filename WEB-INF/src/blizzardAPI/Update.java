@@ -17,6 +17,7 @@ import com.artOfWar.gameObject.challenge.ChallengeGroup;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -29,6 +30,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Update implements APIInfo
 {
@@ -54,7 +56,7 @@ public class Update implements APIInfo
     /**
      * Run Dynamic element update method and save the register the last update.
      */
-    public void updateDynamicAll()
+    public void updateDynamicAll() throws SQLException
     {
         System.out.println("-------Update process is START! (Dynamic)------");
         /*
@@ -73,7 +75,7 @@ public class Update implements APIInfo
         //Guild challenges update!*/
         System.out.println("Guild challenges update!");
         try { getGuildChallenges(); } 
-        catch (IOException|ParseException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|DataException|java.text.ParseException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
         System.out.println("-------Update process is COMPLATE! (Dynamic)------");
 
         //Save log update in DB
@@ -147,7 +149,7 @@ public class Update implements APIInfo
     /**
      * Get a guild profile
      */
-    public void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
+    private void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
     {
         if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
         else
@@ -168,7 +170,7 @@ public class Update implements APIInfo
     /**
      * get a guilds members
      */
-    public void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
+    private void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
     {
         if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
         else
@@ -201,48 +203,32 @@ public class Update implements APIInfo
                     dbConnect.insert(GMEMBERS_ID_TABLE,
                                     new String[] {"member_name","rank","in_guild"},
                                     new String[] {info.get("name").toString(), rankMember, "1"},
-                                    "ON DUPLICATE KEY UPDATE in_guild='1', rank='"+ rankMember +"'");
+                                    "ON DUPLICATE KEY UPDATE in_guild=?, rank=?",
+                                    new String[] { "1",rankMember+"" });
                 }				
             }
         }
     }
 
     /**
-     * get a player information
+     * get a player information IN GUILD!
      */
-    public void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
+    private void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
         else
         {
             JSONArray members = dbConnect.select(GMEMBERS_ID_TABLE, 
                                                 new String[] {"internal_id", "member_name"},
-                                                "in_guild=1");
+                                                "in_guild=?",
+                                                new String[] {"1"});
 
             int iProgres = 1;
             System.out.print("0%");
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]				
-                //Generate an API URL
-                String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
-                                                URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
-                                                URLEncoder.encode(member.get("member_name").toString(), "UTF-8").replace("+", "%20")));
-                try 
-                {
-                    //Call Blizzard API
-                    JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
-                                                    "GET",
-                                                    "Bearer "+ this.accesToken,
-                                                    new String[] {"fields=guild"});
-                    blizzPlayerInfo.put("internal_id", (int) member.get("internal_id"));
-                    Member blizzPlayer = new Member(blizzPlayerInfo);
-                    blizzPlayer.saveInDB();
-                } 
-                catch (DataException e) //Error in blizzard API, like player not found
-                {
-                    System.out.println("BlizzAPI haven a error to "+ member.get("member_name") +"\n\t"+ e);
-                }
+                saveMemberFromBlizz((int) member.get("internal_id"), member.get("member_name").toString(), APIInfo.GUILD_REALM);
 
                 //Show update progress...
                 if ( (((iProgres*2)*10)*members.size())/100 < i )
@@ -254,11 +240,36 @@ public class Update implements APIInfo
             System.out.println("...100%");
         }
     }
+    
+    private Member saveMemberFromBlizz(int id, String name, String realm) throws UnsupportedEncodingException
+    {
+        Member blizzPlayer = null;
+        //Generate an API URL
+        String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_CHARACTER_PROFILE, 
+                                        URLEncoder.encode(realm, "UTF-8").replace("+", "%20"), 
+                                        URLEncoder.encode(name, "UTF-8").replace("+", "%20")));
+        try 
+        {
+            //Call Blizzard API
+            JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
+                                            "GET",
+                                            "Bearer "+ this.accesToken,
+                                            new String[] {"fields=guild"});
+            blizzPlayerInfo.put("internal_id", id);
+            blizzPlayer = new Member(blizzPlayerInfo);
+            blizzPlayer.saveInDB();
+        } 
+        catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
+        {
+            System.out.println("BlizzAPI haven a error to "+ name +"\n\t"+ e);
+        }
+        return blizzPlayer;
+    }
 
     /**
      * get a playable class information 
      */
-    public void getPlayableClass() throws SQLException, DataException, IOException, ParseException
+    private void getPlayableClass() throws SQLException, DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
         else
@@ -285,7 +296,7 @@ public class Update implements APIInfo
     /**
      * get a Characters races information 
      */
-    public void getRaces() throws SQLException, DataException, IOException, ParseException
+    private void getRaces() throws SQLException, DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
         else
@@ -310,7 +321,7 @@ public class Update implements APIInfo
     /**
      * Guild challenges information
      */
-    private void getGuildChallenges() throws IOException, ParseException, DataException
+    private void getGuildChallenges() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
         else
@@ -333,45 +344,81 @@ public class Update implements APIInfo
                 JSONArray groups = (JSONArray) challeng.get("groups");
                 if(groups.size() > 0)
                 {
-                    Challenges ch = new Challenges();
-                    ch.setMapName(map.get("name").toString());
+                    Challenges ch = new Challenges(map);
 
                     for(int j = 0; j < groups.size(); j++)
                     {
                         JSONObject group = (JSONObject) groups.get(j);
-                        ChallengeGroup chGroup = new ChallengeGroup();
-                        //Data 
-                        chGroup.setTimeDate((Date) group.get("date"));
-                        JSONObject dataRun = (JSONObject) group.get("time");
-                        chGroup.setTimeHours((Integer) dataRun.get("hours"));
-                        chGroup.setTimeMinutes((Integer) dataRun.get("minutes"));
-                        chGroup.setTimeSeconds((Integer) dataRun.get("seconds"));
-                        chGroup.setTimeMilliseconds((Integer) dataRun.get("milliseconds"));
-                        chGroup.setPositive((Boolean) dataRun.get("isPositive"));
+                        ChallengeGroup chGroup = new ChallengeGroup(ch.getMapId(), group);
 
                         //Members
                         JSONArray members = (JSONArray) group.get("members");
-                        for(int k = 0; k < members.size(); k++)
-                        {
-                            JSONObject member = (JSONObject) members.get(j);
-                            JSONObject character = (JSONObject) member.get("character");
-                            JSONObject spec = (JSONObject) member.get("spec");
-                            Member mb = new Member(character.get("name"));
-                            if(mb.isData())
+                        members.forEach((member) -> {
+                            
+                            JSONObject inMeb = (JSONObject) member;
+                            if( inMeb.containsKey("character") )
                             {
-                                mb.setSpecRole(spec.get("role"));
-                                mb.setSpecName(spec.get("name"));
-                                //Add Member 
-                                chGroup.addMember(mb);								
+                                JSONObject character = (JSONObject) inMeb.get("character");
+                                JSONObject spec = (JSONObject) inMeb.get("spec");
+                                //Get info about this member.
+                                
+                                Member mb = getMemberInfoFromBlizzOrDB( character.get("name").toString() , character.get("realm").toString() );
+                                if (mb != null && mb.isData()) {
+                                    mb.setSpecRole(spec.get("role").toString());
+                                    mb.setSpecName(spec.get("name").toString());
+                                    //Add Member
+                                    chGroup.addMember(mb);								
+                                } 
                             }
-                        }
+                        });
                         //Add Group
                         ch.addChallengeGroup(chGroup);
                     }
-                    //ch.saveInDBObj();
+                    System.out.println("Challenges ready!\n"+ ch.toString());
+                    System.out.println("----------------------------------------");
+                    ch.saveInDB();
                 }
             }
         }		
+    }    
+    
+    
+    private Member getMemberInfoFromBlizzOrDB(String name, String realm)
+    {       
+        Member mb = null;
+        //1~ get info from DB
+        try
+        {
+            JSONArray inDBgMembersID = dbConnect.select(GMEMBERS_ID_TABLE, 
+                                                        new String[] {"internal_id"}, 
+                                                        "member_name=?",
+                                                        new String[] {name});
+            //if exist, load from DB
+            if(inDBgMembersID.size() > 0)
+            {
+                int memberInternalId = (Integer) ((JSONObject)inDBgMembersID.get(0)).get("internal_id");
+                mb = new Member( memberInternalId );
+                if(!mb.isData()) //error in load time, is in GMEBERS_ID_TABLE but not have information
+                {
+                    mb = saveMemberFromBlizz(memberInternalId, name, realm);
+                }
+            }
+            else
+            {   
+                String id = dbConnect.insert(GMEMBERS_ID_TABLE,
+                                new String[] {"member_name","rank","in_guild"},
+                                new String[] {name, "0", "0"},
+                                "ON DUPLICATE KEY UPDATE in_guild=?",
+                                new String[] {"0"});
+                mb = saveMemberFromBlizz(Integer.parseInt(id), name, realm);
+            }
+        }
+        catch (SQLException|DataException|ClassNotFoundException|UnsupportedEncodingException e)
+        {
+            System.out.println("Error get SQL Query");
+        }
+        
+        return mb;
     }
 
     /**

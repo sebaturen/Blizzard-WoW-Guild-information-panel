@@ -36,7 +36,7 @@ public class Members
             //Get members to DB			
             JSONArray dbList = dbConnect.select("gMembers_id_name", 
                                 new String[] {"internal_id", "member_name"},
-                                "in_guild=1");	
+                                "in_guild=?", new String[] {"1"});	
             for(int i = 0; i < dbList.size(); i++)
             {
                 int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");

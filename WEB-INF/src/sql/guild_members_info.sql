@@ -13,8 +13,7 @@ CREATE TABLE `gMembers_id_name` (
 	`member_name`	varchar(20) NOT NULL,
 	`in_guild` 		TINYINT(1) NOT NULL,
 	`rank` 			int NOT NULL,
-	PRIMARY KEY(internal_id),
-	UNIQUE (member_name)
+	PRIMARY KEY(internal_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `character_info` (

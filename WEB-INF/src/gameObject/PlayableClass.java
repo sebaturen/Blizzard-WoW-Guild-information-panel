@@ -15,17 +15,17 @@ public class PlayableClass extends GameObject
 
     //Constant
     private static final String TABLE_NAME = "playable_class";
-    private static final String[] TABLE_TRUCTU = {"id", "en_US"};
+    private static final String[] TABLE_STRUCTURE = {"id", "en_US"};
 		
     public PlayableClass(int id)
     {
-        super(TABLE_NAME,TABLE_TRUCTU);
+        super(TABLE_NAME,TABLE_STRUCTURE);
         loadFromDB(id+"");
     }
 	
     public PlayableClass(JSONObject exInfo)
     {
-        super(TABLE_NAME,TABLE_TRUCTU);
+        super(TABLE_NAME,TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 	
@@ -59,5 +59,7 @@ public class PlayableClass extends GameObject
     //Getters
     public int getId() { return this.id; }
     public String getEnName() { return this.enName; }
+    @Override
+    public void setId(String id) { this.id = Integer.parseInt(id); }
 	
 }

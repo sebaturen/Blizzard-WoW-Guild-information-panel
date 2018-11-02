@@ -13,6 +13,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -48,24 +50,63 @@ public class DBConnect implements DBConfig
      * @values array how want select 
      * @where where
      */
-    public JSONArray select(String table, String[] values) throws SQLException, DataException { return select(table, values, null); }
-    public JSONArray select(String table, String[] values, String where) throws SQLException, DataException
+    public JSONArray select(String table, String[] selected) throws SQLException, DataException { return select(table, selected, null, null); }
+    public JSONArray select(String table, String[] selected, String where, String[] whereValues) throws SQLException, DataException
     {
         if (statusConnect == true)
         {
             //Prepare QUERY
             String sql = "SELECT ";
-            for(String v : values) { sql += v +","; }
+            for(String v : selected) { sql += v +","; }
             sql = sql.substring(0,sql.length()-1);
-            sql += " FROM "+ table;
+            sql += " FROM "+ table;   
+            
             if(where != null) sql += " WHERE "+ where;
-
             this.pstmt = this.conn.prepareStatement(sql);
+            if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
+            
             return resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
         {			
             throw new DataException("DB can't connect");
+        }
+    }
+    
+    private String selectLastID() throws SQLException, DataException
+    {
+        if (statusConnect == true)
+        {
+            //Prepare QUERY
+            String sql = "SELECT LAST_INSERT_ID()";
+            this.pstmt = this.conn.prepareStatement(sql);          
+            ResultSet rs = this.pstmt.executeQuery();
+            rs.next();
+            System.out.println("ID: "+ rs.getString("LAST_INSERT_ID()"));
+            return rs.getString("LAST_INSERT_ID()");
+        }
+        else
+        {			
+            throw new DataException("DB can't connect");
+        }        
+    }
+    
+    private void testRs(ResultSet rs)
+    {
+        try {
+            ResultSet resultSet = rs;
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) System.out.print(",  ");
+                    String columnValue = resultSet.getString(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                System.out.println("");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 	
@@ -74,7 +115,7 @@ public class DBConnect implements DBConfig
      * @table table
      * @where where in SQL, IS MANDAROTY!
      */
-    public JSONArray delete(String table, String where) throws SQLException, DataException
+    public JSONArray delete(String table, String where, String[] whereValues) throws SQLException, DataException
     {
         if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
         if (statusConnect == true)
@@ -82,6 +123,7 @@ public class DBConnect implements DBConfig
             //Prepare QUERY
             String sql = "delete from "+ table +" where "+ where;
             this.pstmt = this.conn.prepareStatement(sql);
+            for(int i = 0; i < whereValues.length; i++) { this.pstmt.setString(i+1,whereValues[i]); }
             return resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
@@ -95,7 +137,7 @@ public class DBConnect implements DBConfig
      * @sql SQL Query [SIN DATOS INTERNOS]
      * @values[] data
      */
-    private void runUpdate(String sql, String[] values) throws SQLException, ClassNotFoundException
+    private String runUpdate(String sql, String[] values) throws SQLException, ClassNotFoundException, DataException
     {
         //Load JDBC Driver
         Class.forName(JDBC_DRIVER);
@@ -103,7 +145,9 @@ public class DBConnect implements DBConfig
         this.pstmt = this.conn.prepareStatement(sql);
         for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }					
         //Run Update
+        System.out.println("PSTMT: "+ pstmt);
         this.pstmt.executeUpdate();
+        return selectLastID();
     }
 	
     /**
@@ -112,8 +156,8 @@ public class DBConnect implements DBConfig
      * @columns name of value is change
      * @values values from this insert
      */
-    public void insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { insert(table, columns, values, null); }
-    public void insert(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException
+    public String insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { return insert(table, columns, values, null, null); }
+    public String insert(String table, String[] columns, String[] values, String where, String[] whereValues) throws DataException, SQLException, ClassNotFoundException
     {
         if (statusConnect == true)
         {			
@@ -128,9 +172,16 @@ public class DBConnect implements DBConfig
 
                 String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
 
-                if(where != null) sql += " "+ where;
-
-                runUpdate(sql, values);
+                if(where != null)
+                {                    
+                    String[] valInSql = new String[values.length + whereValues.length];
+                    int i = 0;
+                    for(; i < values.length; i++) valInSql[i] = values[i];
+                    for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
+                    sql += " "+ where;
+                    values = valInSql;
+                }
+                return runUpdate(sql, values);
             }
             else
             {

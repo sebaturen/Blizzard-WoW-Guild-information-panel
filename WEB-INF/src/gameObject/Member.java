@@ -126,9 +126,9 @@ public class Member extends GameObject
         {//change player in character_info in_guild because is change
             System.out.println("Character "+ this.name +" change guild");
             dbConnect.update(com.artOfWar.blizzardAPI.Update.GMEMBERS_ID_TABLE,
-            new String[] {"in_guild"},
-            new String[] {"0"},
-            "internal_id="+ this.internalID);
+                            new String[] {"in_guild", "rank"},
+                            new String[] {"0", "0"},
+                            "internal_id="+ this.internalID);
             return true;
         }
         catch (SQLException|DataException|ClassNotFoundException ex)
@@ -160,6 +160,8 @@ public class Member extends GameObject
     //Setters
     public void setSpecName(String sName) { this.specName = sName; }
     public void setSpecRole(String sRole) { this.specRole = sRole; }
+    @Override
+    public void setId(String id) { this.internalID = Integer.parseInt(id); }
 
     //two members equals method
     @Override

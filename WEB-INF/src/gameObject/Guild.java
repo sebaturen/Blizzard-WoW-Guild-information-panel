@@ -55,7 +55,7 @@ public class Guild extends GameObject
             this.level = (Integer) guildInfo.get("level");	
             this.side =  (Integer) guildInfo.get("side");		
         }		
-        this.isData = true;		
+        this.isData = true;
     }
 	
     @Override
@@ -82,6 +82,8 @@ public class Guild extends GameObject
     public long getAchivementPoints() { return this.achievementPoints; }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
+    @Override
+    public void setId(String id) { this.name = id; }
 	
     //two guild equals method
     @Override
