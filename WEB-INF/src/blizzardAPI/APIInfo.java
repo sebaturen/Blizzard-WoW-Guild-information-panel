@@ -27,6 +27,7 @@ public interface APIInfo
     public static final String API_GUILD_PROFILE        = "wow/guild/%s/%s";        //realm, guildName
     public static final String API_CHARACTER_PROFILE    = "wow/character/%s/%s";    //realm, characterName
     public static final String API_CHARACTER_RACES      = "wow/data/character/races";
+    public static final String API_GUILD_ACHIVEMENTS    = "wow/data/guild/achievements";
     //World of Warcraft Game Data APIs
     public static final String API_PLAYABLE_CLASS       = "data/wow/playable-class/";
 }

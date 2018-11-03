@@ -98,15 +98,19 @@ public class ChallengeGroup extends GameObject
         String isPostSQL = (this.isPositive)? "1":"0";
         setTableStructur(TABLE_STRUCTURE_OUT_PRIMARY);
         switch (saveInDBObj(new String[] {this.challengeId +"", strDate, this.timeHours +"",
-                                            this.timeMinutes +"", this.timeSeconds +"", this.timeMilliseconds +"", isPostSQL},"group_id"))
+                                          this.timeMinutes +"", this.timeSeconds +"", this.timeMilliseconds +"", isPostSQL},
+                            "group_id"))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                System.out.println("Save a members...");
+                //Save members
                 members.forEach((m) -> {                    
                     try {
+                        /*{"internal_member_id", "group_id", "spec_name", "spec_role"};*/
                         dbConnect.insert(TABLE_MEMBERS_NAME,
                                         TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY,
-                                        new String[] {m.getInternalID() +"", this.id +"", m.getSpecName(), m.getSpecRole()});
+                                        new String[] {m.getInternalID() +"", this.id +"", m.getSpecName(), m.getSpecRole()},
+                                        "ON DUPLICATE KEY UPDATE spec_name=?, spec_role=?",
+                                        new String[] { m.getSpecName(), m.getSpecRole() });
                     } catch (DataException|SQLException|ClassNotFoundException ex) {
                         System.out.println("Fail to save members in groups: "+ ex);
                     }

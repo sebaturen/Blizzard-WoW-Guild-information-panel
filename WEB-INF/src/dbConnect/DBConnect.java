@@ -82,7 +82,6 @@ public class DBConnect implements DBConfig
             this.pstmt = this.conn.prepareStatement(sql);          
             ResultSet rs = this.pstmt.executeQuery();
             rs.next();
-            System.out.println("ID: "+ rs.getString("LAST_INSERT_ID()"));
             return rs.getString("LAST_INSERT_ID()");
         }
         else
@@ -91,6 +90,9 @@ public class DBConnect implements DBConfig
         }        
     }
     
+    /**
+     *Show a ResultSet complate
+     */
     private void testRs(ResultSet rs)
     {
         try {
@@ -143,9 +145,9 @@ public class DBConnect implements DBConfig
         Class.forName(JDBC_DRIVER);
 
         this.pstmt = this.conn.prepareStatement(sql);
-        for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }					
+        for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }	
+        //System.out.println("PSTMT: "+ this.pstmt);				
         //Run Update
-        System.out.println("PSTMT: "+ pstmt);
         this.pstmt.executeUpdate();
         return selectLastID();
     }
@@ -170,7 +172,7 @@ public class DBConnect implements DBConfig
                 columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
                 valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
 
-                String sql = "insert into "+ table +" ("+ columnsSQL +") values("+ valuesSQL +")";
+                String sql = "insert into "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
 
                 if(where != null)
                 {                    

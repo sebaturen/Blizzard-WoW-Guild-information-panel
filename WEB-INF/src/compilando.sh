@@ -19,6 +19,7 @@ javac \
 #GameObjects
     gameObject/GameObject.java \
     gameObject/Guild.java \
+    gameObject/GuildAchivements.java \
     gameObject/Member.java \
     gameObject/PlayableClass.java \
     gameObject/Race.java \

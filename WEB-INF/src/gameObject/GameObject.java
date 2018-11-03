@@ -46,23 +46,28 @@ public abstract class GameObject
      * Save Game object element in DB
      * @values values from object we need save, use in query.
      */
-    protected int saveInDBObj(String[] values) { return saveInDBObj(values, null);}
-    protected int saveInDBObj(String[] values, String lastId)
+    protected int saveInDBObj(String[] values) { return saveInDBObj(values, null, false);}
+    protected int saveInDBObj(String[] values, boolean disableLastId) { return saveInDBObj(values, null, disableLastId);}
+    protected int saveInDBObj(String[] values, String lastId) { return saveInDBObj(values, lastId, false);}
+    protected int saveInDBObj(String[] values, String lastId, boolean disableLastId)
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         if (this.isData && values.length > 0)
         {
             String updateDuplicate = "ON DUPLICATE KEY UPDATE ";
-            if(lastId != null) updateDuplicate += lastId +"=LAST_INSERT_ID("+ lastId +"),";
-            else updateDuplicate += this.tableStruct[0] +"=LAST_INSERT_ID("+ this.tableStruct[0] +"),";
+            if(!disableLastId)
+            {
+                if(lastId != null) 
+                    updateDuplicate += lastId +"=LAST_INSERT_ID("+ lastId +"),";
+                else 
+                    updateDuplicate += this.tableStruct[0] +"=LAST_INSERT_ID("+ this.tableStruct[0] +"),";
+            }
             String[] whereValues = new String[values.length-1];
             for(int i = 1; i < values.length; i++) //start in 1 omitted key!
             {
                 whereValues[i-1] = values[i];
-                System.out.println("Where value: "+ values[i]);
                 updateDuplicate += " "+ this.tableStruct[i] +"=?,";
             }
-            System.out.println("Where values: "+ whereValues[0]);
             updateDuplicate = updateDuplicate.substring(0,updateDuplicate.length()-1); //remove the last ','
            
             try
@@ -72,7 +77,8 @@ public abstract class GameObject
                                 values,
                                 updateDuplicate,
                                 whereValues);
-                setId(id);
+                //If is NOT disabled and have a date (not cero or empty), set a ID
+                if(!disableLastId) if( !id.equals("0") && !id.isEmpty()) setId(id);
                 return SAVE_MSG_INSERT_OK;
             }
             catch (DataException|SQLException|ClassNotFoundException e)

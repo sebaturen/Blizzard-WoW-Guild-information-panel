@@ -55,6 +55,7 @@ public class Challenges extends GameObject
     @Override
     public boolean saveInDB()
     {
+        //System.out.println("Challenge: "+ toString());
         int saveInDBReturn = saveInDBObj(new String[] {this.mapId +"", this.mapName});
         switch (saveInDBReturn)
         {

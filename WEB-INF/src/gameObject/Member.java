@@ -32,17 +32,18 @@ public class Member extends GameObject
     private long totalHonorableKills;
     private String specName;
     private String specRole;
+    private boolean isGuildMember;
 
     //Constant
     private static final String TABLE_NAME = "character_info";
-    private static final String[] TABLE_STRUCTURE = {"internal_id", "realm", "lastModified", "battlegroup", "class", 
+    private static final String[] TABLE_STRUCTURE = {"internal_id", "lastModified", "battlegroup", "class", 
                                                     "race", "gender", "level", "achievementPoints", "thumbnail", "calcClass", 
                                                     "faction", "totalHonorableKills", "guild_name"};
 
     private static final String COMBIEN_TABLE_NAME = TABLE_NAME +" c, "+Update.GMEMBERS_ID_TABLE +" gm";
-    private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "c.realm", "c.lastModified", "c.battlegroup", "c.class", 
+    private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
-                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name"};
+                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild"};
 	
     //Constructor load from DB if have a ID
     public Member(int internalID)
@@ -82,7 +83,9 @@ public class Member extends GameObject
             raceID = ((Long) playerInfo.get("race")).intValue();
             //If have a guild...
             this.guildName = "";
+            this.isGuildMember = false;
             if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
+            if( this.guildName.length() > 0 && this.guildName.equals(APIInfo.GUILD_NAME)) this.isGuildMember = true;
         }
         else
         {//if come to DB
@@ -93,6 +96,7 @@ public class Member extends GameObject
             this.guildName = playerInfo.get("guild_name").toString();
             classID = (Integer) playerInfo.get("class");
             raceID = (Integer) playerInfo.get("race");
+            this.isGuildMember = (Boolean) playerInfo.get("in_guild");
         }
 
         this.memberClass = new PlayableClass(classID);
@@ -104,7 +108,7 @@ public class Member extends GameObject
     @Override
     public boolean saveInDB()
     {
-        String[] val = new String[] {this.internalID +"", this.realm +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
+        String[] val = new String[] {this.internalID +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
                                     this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
                                     this.faction +"", this.totalHonorableKills +"", this.guildName };
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)

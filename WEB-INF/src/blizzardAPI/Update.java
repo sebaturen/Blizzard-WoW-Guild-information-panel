@@ -8,6 +8,7 @@ package com.artOfWar.blizzardAPI;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.gameObject.Guild;
+import com.artOfWar.gameObject.GuildAchivements;
 import com.artOfWar.gameObject.Member;
 import com.artOfWar.gameObject.PlayableClass;
 import com.artOfWar.gameObject.Race;
@@ -30,7 +31,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class Update implements APIInfo
 {
@@ -56,10 +56,9 @@ public class Update implements APIInfo
     /**
      * Run Dynamic element update method and save the register the last update.
      */
-    public void updateDynamicAll() throws SQLException
+    public void updateDynamicAll()
     {
-        System.out.println("-------Update process is START! (Dynamic)------");
-        /*
+        System.out.println("-------Update process is START! (Dynamic)------");        
         //Guild information update!
         System.out.println("Guild Information update!");
         try { getGuildProfile(); } 
@@ -72,10 +71,10 @@ public class Update implements APIInfo
         System.out.println("Character information update!");
         try { getCharacterInfo(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
-        //Guild challenges update!*/
+        //Guild challenges update!
         System.out.println("Guild challenges update!");
         try { getGuildChallenges(); } 
-        catch (IOException|ParseException|DataException|java.text.ParseException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
         System.out.println("-------Update process is COMPLATE! (Dynamic)------");
 
         //Save log update in DB
@@ -104,9 +103,14 @@ public class Update implements APIInfo
         System.out.println("Playable class Information update!");
         try { getPlayableClass(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Playable class Info: "+ ex); }
+        //Races
         System.out.println("Races Information update!");
         try { getRaces(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Races Info: "+ ex); }		
+        //Guild Achivements lists
+        System.out.println("Guild Achivements lists information update!");
+        try { getGuildAchivementsLists(); } 
+        catch (IOException|ParseException|DataException ex) { System.out.println("Fail update Achivements Info: "+ ex); }		
         System.out.println("-------Update process is COMPLATE! (Static)------");
 
         //Save log update in DB
@@ -201,10 +205,10 @@ public class Update implements APIInfo
                 {	
                     String rankMember = ((JSONObject) members.get(i)).get("rank").toString();
                     dbConnect.insert(GMEMBERS_ID_TABLE,
-                                    new String[] {"member_name","rank","in_guild"},
-                                    new String[] {info.get("name").toString(), rankMember, "1"},
-                                    "ON DUPLICATE KEY UPDATE in_guild=?, rank=?",
-                                    new String[] { "1",rankMember+"" });
+                                    new String[] {"member_name","realm","rank","in_guild"},
+                                    new String[] {info.get("name").toString(), GUILD_REALM,rankMember, "1"},
+                                    "ON DUPLICATE KEY UPDATE realm=?, in_guild=?, rank=?",
+                                    new String[] { GUILD_REALM, "1",rankMember+"" });
                 }				
             }
         }
@@ -319,6 +323,38 @@ public class Update implements APIInfo
     }
 
     /**
+     * Get guild achivements
+     */
+    private void getGuildAchivementsLists() throws IOException, ParseException, DataException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_GUILD_ACHIVEMENTS);
+            //Call Blizzard API
+            JSONObject blizzAchiv = curl(urlString, //DataException possible trigger
+                                        "GET",
+                                        "Bearer "+ this.accesToken);
+
+            JSONArray achivGroup = (JSONArray) blizzAchiv.get("achievements");
+            for(int i = 0; i < achivGroup.size(); i++)
+            {
+                JSONObject info = (JSONObject) achivGroup.get(i);
+                String classification = info.get("name").toString();
+                JSONArray achiv = (JSONArray) info.get("achievements");
+                for (int j = 0; j < achiv.size(); j++) {
+                    ((JSONObject) achiv.get(j)).put("classification", classification);
+                    GuildAchivements ga = new GuildAchivements((JSONObject) achiv.get(j));
+                    ga.saveInDB();
+                }
+                //Race race = new Race(info);
+                //race.saveInDB();		
+            }
+        }        
+    }
+    
+    /**
      * Guild challenges information
      */
     private void getGuildChallenges() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
@@ -374,8 +410,6 @@ public class Update implements APIInfo
                         //Add Group
                         ch.addChallengeGroup(chGroup);
                     }
-                    System.out.println("Challenges ready!\n"+ ch.toString());
-                    System.out.println("----------------------------------------");
                     ch.saveInDB();
                 }
             }
@@ -391,8 +425,8 @@ public class Update implements APIInfo
         {
             JSONArray inDBgMembersID = dbConnect.select(GMEMBERS_ID_TABLE, 
                                                         new String[] {"internal_id"}, 
-                                                        "member_name=?",
-                                                        new String[] {name});
+                                                        "member_name=? AND realm=?",
+                                                        new String[] {name, realm});
             //if exist, load from DB
             if(inDBgMembersID.size() > 0)
             {
@@ -406,10 +440,10 @@ public class Update implements APIInfo
             else
             {   
                 String id = dbConnect.insert(GMEMBERS_ID_TABLE,
-                                new String[] {"member_name","rank","in_guild"},
-                                new String[] {name, "0", "0"},
+                                new String[] {"member_name","realm","rank","in_guild"},
+                                new String[] {name, realm, "0", "0"},
                                 "ON DUPLICATE KEY UPDATE in_guild=?",
-                                new String[] {"0"});
+                                new String[] {"0"}); //asumed is 0 becouse in frist moment, we get all guilds members.
                 mb = saveMemberFromBlizz(Integer.parseInt(id), name, realm);
             }
         }
