@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class ChallengeGroup extends GameObject
@@ -32,8 +33,8 @@ public class ChallengeGroup extends GameObject
     private List<Member> members;
     
     //Constant
-    private static final String TABLE_NAME = "challenge_groups";
-    private static final String[] TABLE_STRUCTURE = {"group_id", "challenge_id", "time_date", "time_hours", 
+    public static final String TABLE_NAME = "challenge_groups";
+    public static final String[] TABLE_STRUCTURE = {"group_id", "challenge_id", "time_date", "time_hours", 
                                                     "time_minutes", "time_seconds", "time_milliseconds", "is_positive"};
     private static final String[] TABLE_STRUCTURE_OUT_PRIMARY = {"challenge_id", "time_date", "time_hours", 
                                                     "time_minutes", "time_seconds", "time_milliseconds", "is_positive"};
@@ -42,11 +43,12 @@ public class ChallengeGroup extends GameObject
     private static final String[] TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY = {"internal_member_id", "group_id", "spec_name", "spec_role"};
     
     //Constructor
-    public ChallengeGroup(int challengeId)
+    public ChallengeGroup(int id)
     {        
         super(TABLE_NAME,TABLE_STRUCTURE);
-        this.challengeId = challengeId;
         members = new ArrayList<>();
+        loadFromDB(id +"");
+        loadMembersFromDB();
     }
     
     //Load to JSON
@@ -56,6 +58,29 @@ public class ChallengeGroup extends GameObject
         this.challengeId = challengeId;
         members = new ArrayList<>();
         saveInternalInfoObject(challengeGroup);
+    }
+    
+    private void loadMembersFromDB()
+    {
+        try {
+            //dbConnect, select * from challenge_group_members where group_id = this.id;
+            JSONArray dbMem = dbConnect.select(TABLE_MEMBERS_NAME,
+                                                TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY,
+                                                "group_id=?",
+                                                new String[] {this.id +""});
+            for(int i = 0; i < dbMem.size(); i++)
+            {
+                Member cMem = new Member( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
+                if(cMem.isData())
+                {
+                    cMem.setSpecName(((JSONObject) dbMem.get(i)).get("spec_name").toString());
+                    cMem.setSpecRole(((JSONObject) dbMem.get(i)).get("spec_role").toString());
+                    members.add(cMem);                    
+                }
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to load members from challenge group id: "+ this.id);
+        }
     }
 
     @Override
@@ -74,18 +99,22 @@ public class ChallengeGroup extends GameObject
             try {
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
             } catch (ParseException ex) {
-                System.out.println("Fail to convert date from challenge group! "+ this.id);
+                System.out.println("(Blizz) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
         {
             this.challengeId = (Integer) exInfo.get("challenge_id");
-            //FALTA TIME  DATE!
             this.timeHours = (Integer) exInfo.get("time_hours");
             this.timeMinutes = (Integer) exInfo.get("time_minutes");
             this.timeSeconds = (Integer) exInfo.get("time_seconds");
             this.timeMilliseconds = (Integer) exInfo.get("time_milliseconds");
             this.isPositive = (Boolean) exInfo.get("is_positive");
+            try { //2018-10-17 02:39:00
+                this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss").parse(exInfo.get("time_date").toString());
+            } catch (ParseException ex) {
+                System.out.println("(DB) Fail to convert date from challenge group! "+ this.id);
+            }
         }
         this.isData = true;
     }
@@ -128,6 +157,8 @@ public class ChallengeGroup extends GameObject
     public void setTimeMilliseconds(int timeMilliseconds) { this.timeMilliseconds = timeMilliseconds; }
     public void setPositive(boolean isPositive) { this.isPositive = isPositive; }
     public void addMember(Member mb) { members.add(mb); }
+    @Override
+    public void setId(String id) { this.id = Integer.parseInt(id); }
 	
     public int getId() { return this.id; }
     public Date getTimeDate() { return this.timeDate; }
@@ -136,8 +167,7 @@ public class ChallengeGroup extends GameObject
     public int getTimeSeconds() { return this.timeSeconds; }
     public int getTimeMilliseconds() { return this.timeMilliseconds; }
     public boolean isPositive() { return this.isPositive; }
-    @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public List<Member> getMembers() { return this.members; }
 
     @Override
     public String toString()

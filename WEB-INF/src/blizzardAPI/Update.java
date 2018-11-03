@@ -12,7 +12,7 @@ import com.artOfWar.gameObject.GuildAchivements;
 import com.artOfWar.gameObject.Member;
 import com.artOfWar.gameObject.PlayableClass;
 import com.artOfWar.gameObject.Race;
-import com.artOfWar.gameObject.challenge.Challenges;
+import com.artOfWar.gameObject.challenge.Challenge;
 import com.artOfWar.gameObject.challenge.ChallengeGroup;
 
 import java.io.BufferedReader;
@@ -380,7 +380,7 @@ public class Update implements APIInfo
                 JSONArray groups = (JSONArray) challeng.get("groups");
                 if(groups.size() > 0)
                 {
-                    Challenges ch = new Challenges(map);
+                    Challenge ch = new Challenge(map);
 
                     for(int j = 0; j < groups.size(); j++)
                     {

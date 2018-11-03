@@ -11,6 +11,7 @@ import com.artOfWar.DataException;
 
 import org.json.simple.JSONObject;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class Member extends GameObject
 {
@@ -157,6 +158,12 @@ public class Member extends GameObject
     public int getFaction() { return this.faction; }
     public String getGuildName() { return this.guildName; }
     public long getLastModified() { return this.lastModified; }
+    public Date getLastModifiedDate() {
+        //All lastModified in blizzard API is added 3 cero more...
+        String val = this.lastModified+"";
+        val = val.substring(0, val.length()-3);
+        return new Date((Long.parseLong(val))*1000); 
+    }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
     public String getSpecName() { return this.specName; }
     public String getSpecRole() { return this.specRole; }

@@ -96,14 +96,14 @@ public abstract class GameObject
      * @where add a where clause
      */
     protected boolean loadFromDB(String id) { return loadFromDB(id, null); }
-    protected boolean loadFromDB(String id, String where)
+    protected boolean loadFromDB(String id, String andWhere)
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         try
-        {		
+        {
             String whereInSQL = this.tableStruct[0] +"=?";
             String[] whereValues = {id};
-            if(where != null) whereInSQL += " AND "+ where;
+            if(andWhere != null) whereInSQL += " AND "+ andWhere;
             JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues);
 
             if(dbSelect.size() > 0)

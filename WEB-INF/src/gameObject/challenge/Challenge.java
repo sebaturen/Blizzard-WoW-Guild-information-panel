@@ -5,13 +5,18 @@
  */
 package com.artOfWar.gameObject.challenge;
 
+import com.artOfWar.DataException;
 import com.artOfWar.gameObject.GameObject;
+import static com.artOfWar.gameObject.GameObject.SAVE_MSG_INSERT_OK;
+import static com.artOfWar.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class Challenges extends GameObject
+public class Challenge extends GameObject
 {
     //Attribute
     private int mapId;
@@ -19,21 +24,42 @@ public class Challenges extends GameObject
     private List<ChallengeGroup> chGroups;
     
     //Constant
-    private static final String TABLE_NAME = "challenges";
+    public static final String TABLE_NAME = "challenges";
     private static final String[] TABLE_STRUCTURE = {"id", "map_name"};
 
-    public Challenges()
+    public Challenge(int id)
     {
         super(TABLE_NAME,TABLE_STRUCTURE);
         chGroups = new ArrayList<>();
+        loadFromDB(id+"");
+        loadGroups();
     }
     
     //Load to JSON
-    public Challenges(JSONObject mapInfo)
+    public Challenge(JSONObject mapInfo)
     {
         super(TABLE_NAME,TABLE_STRUCTURE);
         chGroups = new ArrayList<>();
         saveInternalInfoObject(mapInfo);
+    }
+    
+    private void loadGroups()
+    {
+        try {
+            //dbConnect, select * from challenge_groups where challenge_id = this.mapId;
+            JSONArray dbGroups = dbConnect.select(ChallengeGroup.TABLE_NAME,
+                                                new String[] {"group_id"},
+                                                "challenge_id=?",
+                                                new String[] {this.mapId +""});
+            for(int i = 0; i < dbGroups.size(); i++)
+            {
+                int gID = (Integer)((JSONObject)dbGroups.get(i)).get("group_id");
+                ChallengeGroup cgDb = new ChallengeGroup( gID );
+                if(cgDb.isData()) chGroups.add(cgDb);
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to load Groups from challenge "+ this.mapId);
+        }
     }
     
     @Override
@@ -80,11 +106,13 @@ public class Challenges extends GameObject
     public void setMapName(String mapName) { this.mapName = mapName; }
     public void addChallengeGroup(ChallengeGroup chGroup) { this.chGroups.add(chGroup); }
     public int getMapId() { return this.mapId; }
+    public String getMapName() { return this.mapName; }
+    public List<ChallengeGroup> getChallengeGroups() { return this.chGroups; }
     
     @Override
     public String toString()
     {
-        String out = "Challenge: "+ this.mapId +" *--"+ mapName +"--*";
+        String out = "Challenge: "+ this.mapId +" *--"+ this.mapName +"--*";
         out += "\n\tGroups!!-----------------------\n";
         for(ChallengeGroup chG : chGroups)
         {

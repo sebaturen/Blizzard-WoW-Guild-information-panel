@@ -1,15 +1,34 @@
 /*Art of War Style page...*/
 
 body {
-    wider: 100%;
-    high: 100%;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
 }
 
-#main-menu {
-    background-color: #00000096;
-    color: white;
+.img_fondo_pagina {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center center;
 }
+
+.container {
+	background-color: #ffffffd6;
+}
+
+/*-------MENU------------*/
+#main-menu {
+	background-color: #00000096;
+	color: white;
+}
+
+#main-menu > nav {
+	text-align: center;
+}
+
+#main-menu > nav > li {
+	display: inline-block;
+}
+/*END -------MENU------------*/

@@ -8,6 +8,7 @@ package com.artOfWar.viewController;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.blizzardAPI.APIInfo;
+import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.gameObject.Member;
 
 import java.util.ArrayList;
@@ -36,9 +37,10 @@ public class Members
             //Prepare list members
             List<Member> mList = new ArrayList<>();
             //Get members to DB			
-            JSONArray dbList = dbConnect.select("gMembers_id_name", 
-                                new String[] {"internal_id", "member_name"},
-                                "in_guild=? AND realm=?", new String[] {"1", APIInfo.GUILD_REALM});	
+            JSONArray dbList = dbConnect.select(Update.GMEMBERS_ID_TABLE, 
+                                                new String[] {"internal_id", "member_name"},
+                                                "in_guild=? AND realm=?", 
+                                                new String[] {"1", APIInfo.GUILD_REALM});	
             for(int i = 0; i < dbList.size(); i++)
             {
                 int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
