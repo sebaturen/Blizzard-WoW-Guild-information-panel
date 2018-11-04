@@ -8,10 +8,15 @@ package com.artOfWar.gameObject;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.DataException;
+import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
 
 public class Member extends GameObject
 {
@@ -31,9 +36,8 @@ public class Member extends GameObject
     private String guildName;
     private long lastModified;
     private long totalHonorableKills;
-    private String specName;
-    private String specRole;
     private boolean isGuildMember;
+    private List<Spec> specs;
 
     //Constant
     private static final String TABLE_NAME = "character_info";
@@ -50,14 +54,16 @@ public class Member extends GameObject
     public Member(int internalID)
     {
         super(COMBIEN_TABLE_NAME,COMBIEN_TABLE_STRUCTURE);
+        specs = new ArrayList<>();
         //Load Character from DB
-        loadFromDB(internalID+"", "gm.internal_id = c.internal_id");
+        loadFromDB(internalID+"", "gm.internal_id = c.internal_id", true);
     }
 
     //Load to JSON
     public Member(JSONObject playerInfo)
     {
         super(TABLE_NAME,TABLE_STRUCTURE);
+        specs = new ArrayList<>();
         saveInternalInfoObject(playerInfo);
     }
 	
@@ -87,6 +93,8 @@ public class Member extends GameObject
             this.isGuildMember = false;
             if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
             if( this.guildName.length() > 0 && this.guildName.equals(APIInfo.GUILD_NAME)) this.isGuildMember = true;
+            //Spec
+            loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
         }
         else
         {//if come to DB
@@ -98,6 +106,7 @@ public class Member extends GameObject
             classID = (Integer) playerInfo.get("class");
             raceID = (Integer) playerInfo.get("race");
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
+            loadSpecFromDB();
         }
 
         this.memberClass = new PlayableClass(classID);
@@ -105,7 +114,63 @@ public class Member extends GameObject
 
         this.isData = true;	
     }
-	
+    
+    private void loadSpecFromBlizz(JSONArray allTalents)
+    {
+        for(int i = 0; i < allTalents.size(); i++)
+        {   
+            JSONObject specsAvailable = (JSONObject) allTalents.get(i);
+            JSONArray spellTalents = (JSONArray) specsAvailable.get("talents");  
+            /**
+             * Todos los miembros tienen talentos dependiendo de su especialidad
+             * Blizzard nos ofrece los talentos por especialidad, por lo que debemos
+             * recorrer la lista de "talentos" (specs) y dentro de cada spec, encontraremos
+             * los talentos que el jugador escogio
+             */
+            if(spellTalents.size() > 0) //Blizzard codio la API para retornar muchas posibles especializaciones
+            {                           //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
+                JSONObject specInfoBlizz = (JSONObject) specsAvailable.get("spec");
+                Spec spec = new Spec(this.internalID, specInfoBlizz, spellTalents);
+                if(specsAvailable.containsKey("selected")) spec.setEnable(true);
+                this.specs.add(spec);
+            }
+        }
+    }
+
+    private void loadSpecFromDB()
+    {
+        try {
+            JSONArray memberSpec = dbConnect.select(Spec.TABLE_NAME,
+                    new String[] { "id" },
+                    "member_id=?",
+                    new String[] { this.internalID +""});
+            if(memberSpec.size() > 0)
+            {
+                for(int i = 0; i < memberSpec.size(); i++)
+                {
+                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") );
+                    this.specs.add(sp);
+                }
+            }
+            else //No have a specs in DB!!!!
+            {
+                try
+                {
+                    Update up = new Update();
+                    specs = up.getMemberFromBlizz(this.internalID, this.name, this.realm).getSpecs();
+                }
+                catch (IOException|ParseException ex)
+                {
+                    System.out.println("Fail to get a spec info in member "+ this.name);
+                }
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+        }
+        System.out.println("Spec have... "+ specs.size());
+        
+    }
+    
     @Override
     public boolean saveInDB()
     {
@@ -117,7 +182,15 @@ public class Member extends GameObject
         {
             if (!this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
-            return ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK));
+            if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
+            {
+                //Save specs...
+                for(int i = 0; i < specs.size(); i++)
+                {
+                    specs.get(i).saveInDB();
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -165,12 +238,33 @@ public class Member extends GameObject
         return new Date((Long.parseLong(val))*1000); 
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
-    public String getSpecName() { return this.specName; }
-    public String getSpecRole() { return this.specRole; }
+    public List<Spec> getSpecs() { return this.specs; }
+    public Spec getActiveSpec() 
+    {
+        for(Spec sp: this.specs) 
+        {
+            if(sp.isEnable())
+            {
+                return sp;
+            }
+        }
+        return null;
+    }
 
     //Setters
-    public void setSpecName(String sName) { this.specName = sName; }
-    public void setSpecRole(String sRole) { this.specRole = sRole; }
+    public void setSpec(int id) { setSpec(id, null, null); }
+    public void setSpec(String sName, String sRole) { setSpec(-1, sName, sRole); }
+    public void setSpec(int id, String sName, String sRole)
+    {
+        for(int i = 0; i < specs.size(); i++)
+        {
+            boolean isEnable = false; 
+            if(id != -1 && id == specs.get(i).getId()) isEnable = true;
+            if(sName != null && specs.get(i).isThisSpec(sName, sRole)) isEnable = true;
+            specs.get(i).setEnable(isEnable);
+        }
+    }
+    
     @Override
     public void setId(String id) { this.internalID = Integer.parseInt(id); }
 

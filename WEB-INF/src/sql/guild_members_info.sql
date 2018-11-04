@@ -37,3 +37,39 @@ CREATE TABLE `character_info` (
     FOREIGN KEY(class) REFERENCES playable_class(id),
     FOREIGN KEY(race) REFERENCES races(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `spells` (
+    `id`            int NOT NULL,
+    `name`          varchar(50) NOT NULL,
+    `icon`          varchar(50) NOT NULL,
+    `description`   TEXT NOT NULL,
+    `castTime`      varchar(20) NOT NULL,
+    `cooldown`      varchar(20),
+    `range`         varchar(20),
+    PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `specs` (
+    `id`            int NOT NULL AUTO_INCREMENT,
+    `member_id`     int NOT NULL,
+    `name`          varchar(50) NOT NULL,
+    `role`          varchar(20) NOT NULL,
+    `enable`        TINYINT(1) NOT NULL,
+    `tier_0`        int,
+    `tier_1`        int,
+    `tier_2`        int,
+    `tier_3`        int,
+    `tier_4`        int,
+    `tier_5`        int,
+    `tier_6`        int,
+    PRIMARY KEY(id),
+    FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id),
+    FOREIGN KEY(tier_0) REFERENCES spells(id),
+    FOREIGN KEY(tier_1) REFERENCES spells(id),
+    FOREIGN KEY(tier_2) REFERENCES spells(id),
+    FOREIGN KEY(tier_3) REFERENCES spells(id),
+    FOREIGN KEY(tier_4) REFERENCES spells(id),
+    FOREIGN KEY(tier_5) REFERENCES spells(id),
+    FOREIGN KEY(tier_6) REFERENCES spells(id),
+    UNIQUE (member_id,name,role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

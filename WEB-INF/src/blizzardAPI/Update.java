@@ -232,7 +232,7 @@ public class Update implements APIInfo
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]				
-                saveMemberFromBlizz((int) member.get("internal_id"), member.get("member_name").toString(), APIInfo.GUILD_REALM);
+                getMemberFromBlizz((int) member.get("internal_id"), member.get("member_name").toString(), APIInfo.GUILD_REALM);
 
                 //Show update progress...
                 if ( (((iProgres*2)*10)*members.size())/100 < i )
@@ -245,7 +245,7 @@ public class Update implements APIInfo
         }
     }
     
-    private Member saveMemberFromBlizz(int id, String name, String realm) throws UnsupportedEncodingException
+    public Member getMemberFromBlizz(int id, String name, String realm) throws UnsupportedEncodingException
     {
         Member blizzPlayer = null;
         //Generate an API URL
@@ -258,7 +258,7 @@ public class Update implements APIInfo
             JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
                                             "GET",
                                             "Bearer "+ this.accesToken,
-                                            new String[] {"fields=guild"});
+                                            new String[] {"fields=guild","fields=talents"});
             blizzPlayerInfo.put("internal_id", id);
             blizzPlayer = new Member(blizzPlayerInfo);
             blizzPlayer.saveInDB();
@@ -400,8 +400,7 @@ public class Update implements APIInfo
                                 
                                 Member mb = getMemberInfoFromBlizzOrDB( character.get("name").toString() , character.get("realm").toString() );
                                 if (mb != null && mb.isData()) {
-                                    mb.setSpecRole(spec.get("role").toString());
-                                    mb.setSpecName(spec.get("name").toString());
+                                    mb.setSpec(spec.get("name").toString(), spec.get("role").toString());
                                     //Add Member
                                     chGroup.addMember(mb);								
                                 } 
@@ -434,7 +433,7 @@ public class Update implements APIInfo
                 mb = new Member( memberInternalId );
                 if(!mb.isData()) //error in load time, is in GMEBERS_ID_TABLE but not have information
                 {
-                    mb = saveMemberFromBlizz(memberInternalId, name, realm);
+                    mb = getMemberFromBlizz(memberInternalId, name, realm);
                 }
             }
             else
@@ -444,7 +443,7 @@ public class Update implements APIInfo
                                 new String[] {name, realm, "0", "0"},
                                 "ON DUPLICATE KEY UPDATE in_guild=?",
                                 new String[] {"0"}); //asumed is 0 becouse in frist moment, we get all guilds members.
-                mb = saveMemberFromBlizz(Integer.parseInt(id), name, realm);
+                mb = getMemberFromBlizz(Integer.parseInt(id), name, realm);
             }
         }
         catch (SQLException|DataException|ClassNotFoundException|UnsupportedEncodingException e)

@@ -39,8 +39,8 @@ public class ChallengeGroup extends GameObject
     private static final String[] TABLE_STRUCTURE_OUT_PRIMARY = {"challenge_id", "time_date", "time_hours", 
                                                     "time_minutes", "time_seconds", "time_milliseconds", "is_positive"};
     private static final String TABLE_MEMBERS_NAME = "challenge_group_members";
-    private static final String[] TABLE_MEMBERS_STRUCTURE = {"member_in_group_id", "internal_member_id", "group_id", "spec_name", "spec_role"};
-    private static final String[] TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY = {"internal_member_id", "group_id", "spec_name", "spec_role"};
+    private static final String[] TABLE_MEMBERS_STRUCTURE = {"member_in_group_id", "internal_member_id", "group_id", "spec_id"};
+    private static final String[] TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY = {"internal_member_id", "group_id", "spec_id"};
     
     //Constructor
     public ChallengeGroup(int id)
@@ -73,8 +73,7 @@ public class ChallengeGroup extends GameObject
                 Member cMem = new Member( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
                 if(cMem.isData())
                 {
-                    cMem.setSpecName(((JSONObject) dbMem.get(i)).get("spec_name").toString());
-                    cMem.setSpecRole(((JSONObject) dbMem.get(i)).get("spec_role").toString());
+                    cMem.setSpec( (Integer) ((JSONObject) dbMem.get(i)).get("spec_id"));
                     members.add(cMem);                    
                 }
             }
@@ -134,12 +133,12 @@ public class ChallengeGroup extends GameObject
                 //Save members
                 members.forEach((m) -> {                    
                     try {
-                        /*{"internal_member_id", "group_id", "spec_name", "spec_role"};*/
+                        /*{"internal_member_id", "group_id", "spec_id"};*/
                         dbConnect.insert(TABLE_MEMBERS_NAME,
                                         TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY,
-                                        new String[] {m.getInternalID() +"", this.id +"", m.getSpecName(), m.getSpecRole()},
-                                        "ON DUPLICATE KEY UPDATE spec_name=?, spec_role=?",
-                                        new String[] { m.getSpecName(), m.getSpecRole() });
+                                        new String[] {m.getInternalID() +"", this.id +"", m.getActiveSpec().getId() +""},
+                                        "ON DUPLICATE KEY UPDATE spec_id=?",
+                                        new String[] { m.getActiveSpec().getId() +"" });
                     } catch (DataException|SQLException|ClassNotFoundException ex) {
                         System.out.println("Fail to save members in groups: "+ ex);
                     }

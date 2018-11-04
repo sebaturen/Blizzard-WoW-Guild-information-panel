@@ -58,7 +58,7 @@ public abstract class GameObject
             if(!disableLastId)
             {
                 if(lastId != null) 
-                    updateDuplicate += lastId +"=LAST_INSERT_ID("+ lastId +"),";
+                    updateDuplicate += "`"+ lastId +"`=LAST_INSERT_ID(`"+ lastId +"`),";
                 else 
                     updateDuplicate += this.tableStruct[0] +"=LAST_INSERT_ID("+ this.tableStruct[0] +"),";
             }
@@ -66,7 +66,7 @@ public abstract class GameObject
             for(int i = 1; i < values.length; i++) //start in 1 omitted key!
             {
                 whereValues[i-1] = values[i];
-                updateDuplicate += " "+ this.tableStruct[i] +"=?,";
+                updateDuplicate += " `"+ this.tableStruct[i] +"`=?,";
             }
             updateDuplicate = updateDuplicate.substring(0,updateDuplicate.length()-1); //remove the last ','
            
@@ -95,8 +95,9 @@ public abstract class GameObject
      * @id element identifier (primary key!)
      * @where add a where clause
      */
-    protected boolean loadFromDB(String id) { return loadFromDB(id, null); }
-    protected boolean loadFromDB(String id, String andWhere)
+    protected boolean loadFromDB(String id) { return loadFromDB(id, null, false); }
+    protected boolean loadFromDB(String id, String andWhere) { return loadFromDB(id, null, false); }
+    protected boolean loadFromDB(String id, String andWhere, boolean disableApostrophe)
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         try
@@ -104,7 +105,7 @@ public abstract class GameObject
             String whereInSQL = this.tableStruct[0] +"=?";
             String[] whereValues = {id};
             if(andWhere != null) whereInSQL += " AND "+ andWhere;
-            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues);
+            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues, disableApostrophe);
 
             if(dbSelect.size() > 0)
             {

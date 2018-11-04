@@ -50,21 +50,23 @@ public class DBConnect implements DBConfig
      * @values array how want select 
      * @where where
      */
-    public JSONArray select(String table, String[] selected) throws SQLException, DataException { return select(table, selected, null, null); }
-    public JSONArray select(String table, String[] selected, String where, String[] whereValues) throws SQLException, DataException
+    public JSONArray select(String table, String[] selected) throws SQLException, DataException { return select(table, selected, null, null, false); }
+    public JSONArray select(String table, String[] selected, String where, String[] whereValues) throws SQLException, DataException { return select(table, selected, where, whereValues, false); }
+    public JSONArray select(String table, String[] selected, String where, String[] whereValues, boolean disableAphostro) throws SQLException, DataException
     {
         if (statusConnect == true)
         {
             //Prepare QUERY
             String sql = "SELECT ";
-            for(String v : selected) { sql += v +","; }
+            String aphost = (disableAphostro)? "":"`";
+            for(String v : selected) { sql += aphost+ v +aphost+","; }
             sql = sql.substring(0,sql.length()-1);
-            sql += " FROM "+ table;   
+            sql += " FROM "+aphost+ table +aphost;
             
             if(where != null) sql += " WHERE "+ where;
             this.pstmt = this.conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
-            
+            //System.out.println("PSTMT: "+ this.pstmt);
             return resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
