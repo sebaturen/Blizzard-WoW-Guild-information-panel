@@ -403,7 +403,7 @@ public class Update implements APIInfo
                                     mb.setSpec(spec.get("name").toString(), spec.get("role").toString());
                                     //Add Member
                                     chGroup.addMember(mb);								
-                                } 
+                                }
                             }
                         });
                         //Add Group
@@ -432,7 +432,7 @@ public class Update implements APIInfo
                 int memberInternalId = (Integer) ((JSONObject)inDBgMembersID.get(0)).get("internal_id");
                 mb = new Member( memberInternalId );
                 if(!mb.isData()) //error in load time, is in GMEBERS_ID_TABLE but not have information
-                {
+                { //add if the member not is update...
                     mb = getMemberFromBlizz(memberInternalId, name, realm);
                 }
             }

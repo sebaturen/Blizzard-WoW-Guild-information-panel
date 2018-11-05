@@ -204,8 +204,8 @@ public class DBConnect implements DBConfig
      * @columns name of value is change
      * @values values from this insert
      */
-    public void update(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { update(table, columns, values, null);}
-    public void update(String table, String[] columns, String[] values, String where) throws DataException, SQLException, ClassNotFoundException
+    public void update(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { update(table, columns, values, null, null);}
+    public void update(String table, String[] columns, String[] values, String where, String[] whereValues) throws DataException, SQLException, ClassNotFoundException
     {
         if (statusConnect == true)
         {			
@@ -217,7 +217,15 @@ public class DBConnect implements DBConfig
                 columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
 
                 String sql = "Update "+ table +" SET "+ columnsSQL;
-                if(where != null) sql += " where "+ where;
+                if(where != null)
+                {
+                    sql += " where "+ where;
+                    String[] valInSql = new String[values.length + whereValues.length];
+                    int i = 0;
+                    for(; i < values.length; i++) valInSql[i] = values[i];
+                    for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
+                    values = valInSql;
+                }
 
                 runUpdate(sql, values);
             }

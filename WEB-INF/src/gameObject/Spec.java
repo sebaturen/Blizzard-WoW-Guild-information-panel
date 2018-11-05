@@ -84,6 +84,7 @@ public class Spec extends GameObject
             if(this.spells[j] != null)
             {
                 spellID[j] = this.spells[j].getId() +"";
+                (this.spells[j]).saveInDB();
             }
         }
         String isEnable = (this.enable)? "1":"0";  

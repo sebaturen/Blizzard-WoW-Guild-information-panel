@@ -144,6 +144,7 @@ public class Member extends GameObject
                     new String[] { "id" },
                     "member_id=?",
                     new String[] { this.internalID +""});
+            
             if(memberSpec.size() > 0)
             {
                 for(int i = 0; i < memberSpec.size(); i++)
@@ -154,21 +155,24 @@ public class Member extends GameObject
             }
             else //No have a specs in DB!!!!
             {
-                try
-                {
-                    Update up = new Update();
-                    specs = up.getMemberFromBlizz(this.internalID, this.name, this.realm).getSpecs();
-                }
-                catch (IOException|ParseException ex)
-                {
-                    System.out.println("Fail to get a spec info in member "+ this.name);
-                }
+                loadSpecFromUpdate();
             }
         } catch (SQLException | DataException ex) {
             System.out.println("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+        }        
+    }
+    
+    private void loadSpecFromUpdate()
+    {
+        try
+        {
+            Update up = new Update();
+            specs = up.getMemberFromBlizz(this.internalID, this.name, this.realm).getSpecs();
         }
-        System.out.println("Spec have... "+ specs.size());
-        
+        catch (IOException|ParseException|DataException ex)
+        {
+            System.out.println("Fail to get a spec info in member "+ this.name);
+        }
     }
     
     @Override
@@ -206,7 +210,8 @@ public class Member extends GameObject
             dbConnect.update(com.artOfWar.blizzardAPI.Update.GMEMBERS_ID_TABLE,
                             new String[] {"in_guild", "rank"},
                             new String[] {"0", "0"},
-                            "internal_id="+ this.internalID);
+                            "internal_id=?",
+                            new String[] { this.internalID +"" });
             return true;
         }
         catch (SQLException|DataException|ClassNotFoundException ex)
@@ -241,13 +246,11 @@ public class Member extends GameObject
     public List<Spec> getSpecs() { return this.specs; }
     public Spec getActiveSpec() 
     {
-        for(Spec sp: this.specs) 
-        {
-            if(sp.isEnable())
-            {
-                return sp;
-            }
-        }
+        for(Spec sp: this.specs) if(sp.isEnable()) return sp;
+        //if is null!! we have a problem! the spec we need setters, mybe the data
+        //no is real correct save, try again... only 1 time
+        loadSpecFromUpdate();
+        for(Spec sp: this.specs) if(sp.isEnable()) return sp;
         return null;
     }
 
