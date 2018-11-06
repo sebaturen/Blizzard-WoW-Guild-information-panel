@@ -22,7 +22,7 @@
                         out.write("["+ groupCh.getTimeHour() +":"+ groupCh.getTimeMinutes() +":"+ groupCh.getTimeSeconds() +":"+ groupCh.getTimeMilliseconds() +"] (Finish in Time? "+ groupCh.isPositive() +")</br>");
                         for(Member m : groupCh.getMembers())
                         {
-                            out.write("-"+ m.getName() +" ("+ m.getSpecRole() +")</br>");
+                            out.write("-"+ m.getName() +" ("+ m.getActiveSpec().getRole() +")</br>");
                         }
                     }
                     out.write("</br>");

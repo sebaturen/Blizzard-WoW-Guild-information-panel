@@ -12,23 +12,28 @@ body {
     z-index: -1;
     background-size: cover;
     background-position: center center;
+    background-image: url("../img/background/BFA (21).jpg");
 }
 
-.container {
-	background-color: #ffffffd6;
+.container {    
+    background-color: #212529;
+    margin-top: 21px;
+    color: white;
+    /* border: 1px solid; */
+    box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
 }
 
 /*-------MENU------------*/
 #main-menu {
-	background-color: #00000096;
-	color: white;
+    background-color: #00000096;
+    color: white;
 }
 
 #main-menu > nav {
-	text-align: center;
+    text-align: center;
 }
 
 #main-menu > nav > li {
-	display: inline-block;
+    display: inline-block;
 }
 /*END -------MENU------------*/

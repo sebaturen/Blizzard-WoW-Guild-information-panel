@@ -9,7 +9,8 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div id="welcome">
-                Welcome to <% out.write(guild_info.getName()); %>
+                Welcome to <% out.write(guild_info.getName()); %><br/>
+                <img src="/assets/img/artofwar_logo.png"/>
             </div>
         </div>
     </body>
