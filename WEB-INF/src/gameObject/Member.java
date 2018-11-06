@@ -165,7 +165,6 @@ public class Member extends GameObject
     
     private void loadSpecFromUpdate()
     {
-        System.out.println("Im trigger...");
         try
         {
             Update up = new Update();
@@ -183,20 +182,16 @@ public class Member extends GameObject
         String[] val = new String[] {this.internalID +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
                                     this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
                                     this.faction +"", this.totalHonorableKills +"", this.guildName };
-        System.out.println("Inserado...");
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
-            if (!this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
+            if (this.isGuildMember && !this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
-            System.out.println("Resultado de insercion "+ vSave);
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
                 //Save specs...
-                System.out.println("Ok... save spec");
                 for(int i = 0; i < specs.size(); i++)
                 {
-                    System.out.println("First spec "+ specs.get(i).getName());
                     specs.get(i).saveInDB();
                 }
                 return true;
@@ -252,12 +247,18 @@ public class Member extends GameObject
     public List<Spec> getSpecs() { return this.specs; }
     public Spec getActiveSpec() 
     {
-        for(Spec sp: this.specs) if(sp.isEnable()) return sp;
+        for(Spec sp: this.specs) {            
+            if(sp.isEnable()) {
+            
+            return sp;
+        }}
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
-        System.out.println("Desde get active spec...");
+        System.out.println("No se encontre la spec activa de "+ this.name +" cargnadola de blizz...");
         loadSpecFromUpdate();
-        for(Spec sp: this.specs) if(sp.isEnable()) return sp;
+        for(Spec sp: this.specs) if(sp.isEnable()) {
+            return sp;
+        }
         return null;
     }
 
@@ -268,9 +269,10 @@ public class Member extends GameObject
     {
         for(int i = 0; i < specs.size(); i++)
         {
+            Spec sp = specs.get(i);
             boolean isEnable = false; 
-            if(id != -1 && id == specs.get(i).getId()) isEnable = true;
-            if(sName != null && specs.get(i).isThisSpec(sName, sRole)) isEnable = true;
+            if(id != -1 && id == sp.getId()) isEnable = true;
+            if(sName != null && sp.isThisSpec(sName, sRole)) isEnable = true;
             specs.get(i).setEnable(isEnable);
         }
     }
@@ -292,5 +294,16 @@ public class Member extends GameObject
                 &&
                 (Long.compare(oLastModified, this.lastModified) == 0)
                 );
+    }
+    
+    @Override
+    public String toString()
+    {
+        String out = "Member: "+ this.name +" ("+ this.internalID +" - "+ this.realm +")";
+        for(Spec sp : specs)
+        {
+            out += "\nSpec> "+ sp.getName() +"-"+ sp.getRole() +" (Enable "+ sp.isEnable() +" "+ sp.getId() +")";
+        }
+        return out;
     }
 }

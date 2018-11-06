@@ -125,9 +125,10 @@ public class ChallengeGroup extends GameObject
         String strDate = dateFormat.format(timeDate); 
         String isPostSQL = (this.isPositive)? "1":"0";
         setTableStructur(TABLE_STRUCTURE_OUT_PRIMARY);
-        switch (saveInDBObj(new String[] {this.challengeId +"", strDate, this.timeHours +"",
+        int saveValue = saveInDBObj(new String[] {this.challengeId +"", strDate, this.timeHours +"",
                                           this.timeMinutes +"", this.timeSeconds +"", this.timeMilliseconds +"", isPostSQL},
-                            "group_id"))
+                            "group_id");
+        switch (saveValue)
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 //Save members
@@ -175,7 +176,7 @@ public class ChallengeGroup extends GameObject
                     "\t\t"+this.timeHours +":"+ this.timeMinutes +":"+ this.timeSeconds +
                     " ("+ this.timeMilliseconds +") -> "+ this.isPositive;
         out += "\n\t\tMembers!!////////////\n";
-        out = members.stream().map((mb) -> "\t\t\t"+ mb.getName() +"\n").reduce(out, String::concat);
+        out = members.stream().map((mb) -> "\t\t\t"+ mb.toString() +"\n").reduce(out, String::concat);
         out += "\t\tEND MEMBERS!!///////////";
         return out;
     }

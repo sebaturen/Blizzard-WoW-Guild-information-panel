@@ -89,12 +89,16 @@ public class Spec extends GameObject
         }
         String isEnable = (this.enable)? "1":"0";  
         
-        //{"id", "member_id", "name", "role", "enable", "tier_0", "tier_1",
-        //"tier_2", "tier_3", "tier_4", "tier_5", "tier_6"};
+        //{"id", "member_id", "name", "role", "enable",
+        // "tier_0", "tier_1", "tier_2", 
+        // "tier_3", "tier_4", "tier_5",
+        // "tier_6"};
         setTableStructur(TABLE_STRUCTURE_OUT_PRIMARY);
         int valSave = saveInDBObj(new String[] { this.memberId +"", this.name, this.role, isEnable,
-                                spellID[0], spellID[1], spellID[2], spellID[3],
-                                spellID[4], spellID[5], spellID[6]});
+                                spellID[0], spellID[1], spellID[2], 
+                                spellID[3], spellID[4], spellID[5],
+                                spellID[6]},
+                                "id");
         switch (valSave)
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
