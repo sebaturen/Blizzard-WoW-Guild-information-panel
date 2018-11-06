@@ -120,19 +120,19 @@ public class Member extends GameObject
         for(int i = 0; i < allTalents.size(); i++)
         {   
             JSONObject specsAvailable = (JSONObject) allTalents.get(i);
-            JSONArray spellTalents = (JSONArray) specsAvailable.get("talents");  
+            JSONObject specInfoBlizz = (JSONObject) specsAvailable.get("spec");
+            JSONArray spellTalents = (JSONArray) specsAvailable.get("talents"); 
             /**
              * Todos los miembros tienen talentos dependiendo de su especialidad
              * Blizzard nos ofrece los talentos por especialidad, por lo que debemos
              * recorrer la lista de "talentos" (specs) y dentro de cada spec, encontraremos
              * los talentos que el jugador escogio
              */
-            if(spellTalents.size() > 0) //Blizzard codio la API para retornar muchas posibles especializaciones
-            {                           //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
-                JSONObject specInfoBlizz = (JSONObject) specsAvailable.get("spec");
+            if(specInfoBlizz != null) //Blizzard codio la API para retornar muchas posibles especializaciones
+            {                         //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
                 Spec spec = new Spec(this.internalID, specInfoBlizz, spellTalents);
                 if(specsAvailable.containsKey("selected")) spec.setEnable(true);
-                this.specs.add(spec);
+                this.specs.add(spec);                
             }
         }
     }
@@ -149,12 +149,13 @@ public class Member extends GameObject
             {
                 for(int i = 0; i < memberSpec.size(); i++)
                 {
-                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") );
-                    this.specs.add(sp);
+                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") ); 
+                    this.specs.add(i, sp);   
                 }
             }
             else //No have a specs in DB!!!!
             {
+                System.out.println("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
                 loadSpecFromUpdate();
             }
         } catch (SQLException | DataException ex) {
@@ -164,6 +165,7 @@ public class Member extends GameObject
     
     private void loadSpecFromUpdate()
     {
+        System.out.println("Im trigger...");
         try
         {
             Update up = new Update();
@@ -181,16 +183,20 @@ public class Member extends GameObject
         String[] val = new String[] {this.internalID +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
                                     this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
                                     this.faction +"", this.totalHonorableKills +"", this.guildName };
+        System.out.println("Inserado...");
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
             if (!this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
+            System.out.println("Resultado de insercion "+ vSave);
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
                 //Save specs...
+                System.out.println("Ok... save spec");
                 for(int i = 0; i < specs.size(); i++)
                 {
+                    System.out.println("First spec "+ specs.get(i).getName());
                     specs.get(i).saveInDB();
                 }
                 return true;
@@ -249,6 +255,7 @@ public class Member extends GameObject
         for(Spec sp: this.specs) if(sp.isEnable()) return sp;
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
+        System.out.println("Desde get active spec...");
         loadSpecFromUpdate();
         for(Spec sp: this.specs) if(sp.isEnable()) return sp;
         return null;
