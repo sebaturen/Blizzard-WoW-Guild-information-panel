@@ -14,7 +14,7 @@ CREATE TABLE `playable_class` (
 
 CREATE TABLE `guild_achievements_list` (
     `id`            int NOT NULL,
-    `title`         VARCHAR(50) NOT NULL,
+    `title`         TINYTEXT NOT NULL,
     `description`   TINYTEXT NOT NULL,
     `icon`          VARCHAR(50) NOT NULL,
     `points`        int NOT NULL,

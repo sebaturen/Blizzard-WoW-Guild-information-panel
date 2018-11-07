@@ -6,6 +6,7 @@
 package com.artOfWar.gameObject.challenge;
 
 import com.artOfWar.DataException;
+import com.artOfWar.gameObject.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.Member;
 import java.sql.SQLException;
@@ -31,21 +32,11 @@ public class ChallengeGroup extends GameObject
     private int timeMilliseconds;
     private boolean isPositive;
     private List<Member> members;
-    
-    //Constant
-    public static final String TABLE_NAME = "challenge_groups";
-    public static final String[] TABLE_STRUCTURE = {"group_id", "challenge_id", "time_date", "time_hours", 
-                                                    "time_minutes", "time_seconds", "time_milliseconds", "is_positive"};
-    private static final String[] TABLE_STRUCTURE_OUT_PRIMARY = {"challenge_id", "time_date", "time_hours", 
-                                                    "time_minutes", "time_seconds", "time_milliseconds", "is_positive"};
-    private static final String TABLE_MEMBERS_NAME = "challenge_group_members";
-    private static final String[] TABLE_MEMBERS_STRUCTURE = {"member_in_group_id", "internal_member_id", "group_id", "spec_id"};
-    private static final String[] TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY = {"internal_member_id", "group_id", "spec_id"};
-    
+        
     //Constructor
     public ChallengeGroup(int id)
     {        
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(CHALLENGE_GROUPS_TABLE_NAME, CHALLENGE_GROUPS_TABLE_KEY, CHALLENGE_GROUPS_TABLE_STRUCTURE);
         members = new ArrayList<>();
         loadFromDB(id +"");
         loadMembersFromDB();
@@ -54,7 +45,7 @@ public class ChallengeGroup extends GameObject
     //Load to JSON
     public ChallengeGroup(int challengeId, JSONObject challengeGroup)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(CHALLENGE_GROUPS_TABLE_NAME, CHALLENGE_GROUPS_TABLE_KEY, CHALLENGE_GROUPS_TABLE_STRUCTURE);
         this.challengeId = challengeId;
         members = new ArrayList<>();
         saveInternalInfoObject(challengeGroup);
@@ -64,8 +55,8 @@ public class ChallengeGroup extends GameObject
     {
         try {
             //dbConnect, select * from challenge_group_members where group_id = this.id;
-            JSONArray dbMem = dbConnect.select(TABLE_MEMBERS_NAME,
-                                                TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY,
+            JSONArray dbMem = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
+                                                DBStructure.outKey(CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE),
                                                 "group_id=?",
                                                 new String[] {this.id +""});
             for(int i = 0; i < dbMem.size(); i++)
@@ -110,7 +101,7 @@ public class ChallengeGroup extends GameObject
             this.timeMilliseconds = (Integer) exInfo.get("time_milliseconds");
             this.isPositive = (Boolean) exInfo.get("is_positive");
             try { //2018-10-17 02:39:00
-                this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss").parse(exInfo.get("time_date").toString());
+                this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
             } catch (ParseException ex) {
                 System.out.println("(DB) Fail to convert date from challenge group! "+ this.id);
             }
@@ -121,26 +112,32 @@ public class ChallengeGroup extends GameObject
     @Override
     public boolean saveInDB()
     {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = dateFormat.format(timeDate); 
         String isPostSQL = (this.isPositive)? "1":"0";
-        setTableStructur(TABLE_STRUCTURE_OUT_PRIMARY);
-        int saveValue = saveInDBObj(new String[] {this.challengeId +"", strDate, this.timeHours +"",
-                                          this.timeMinutes +"", this.timeSeconds +"", this.timeMilliseconds +"", isPostSQL},
-                            "group_id");
+        setTableStructur(DBStructure.outKey(CHALLENGE_GROUPS_TABLE_STRUCTURE));
+        /* {"challenge_id", "time_date",
+         * "time_hours", "time_minutes", "time_seconds",
+         * "time_milliseconds", "is_positive"};
+         */
+        int saveValue = saveInDBObj(new String[] {this.challengeId +"", strDate, 
+                                            this.timeHours +"", this.timeMinutes +"", this.timeSeconds +"", 
+                                            this.timeMilliseconds +"", isPostSQL});
         switch (saveValue)
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 //Save members
                 members.forEach((m) -> {                    
                     try {
+                        System.out.println("("+ m.getInternalID() +") "+ m.getName());
                         /*{"internal_member_id", "group_id", "spec_id"};*/
-                        dbConnect.insert(TABLE_MEMBERS_NAME,
-                                        TABLE_MEMBERS_STRUCTURE_OUT_PRIMARY,
+                        dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
+                                        CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
+                                        DBStructure.outKey(CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE),
                                         new String[] {m.getInternalID() +"", this.id +"", m.getActiveSpec().getId() +""},
                                         "ON DUPLICATE KEY UPDATE spec_id=?",
                                         new String[] { m.getActiveSpec().getId() +"" });
-                    } catch (DataException|SQLException|ClassNotFoundException ex) {
+                    } catch (DataException|ClassNotFoundException ex) {
                         System.out.println("Fail to save members in groups: "+ ex);
                     }
                 });

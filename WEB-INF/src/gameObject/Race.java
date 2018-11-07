@@ -15,19 +15,15 @@ public class Race extends GameObject
     private String side;
     private String name;
 
-    //Constant
-    private static final String TABLE_NAME = "races";
-    private static final String[] TABLE_STRUCTURE = {"id", "mask", "side", "name"};
-
     public Race(int id)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
         loadFromDB(id+"");
     }
 
     public Race(JSONObject exInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 
@@ -52,6 +48,7 @@ public class Race extends GameObject
     @Override
     public boolean saveInDB()
     {
+        /* {"id", "mask", "side", "name"}; */
         switch (saveInDBObj(new String[] {this.id +"", this.mask +"", this.side +"", this.name}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:

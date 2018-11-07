@@ -20,21 +20,16 @@ public class Spec extends GameObject
  
     //Constant
     public static final int MAX_SPELL_TALENTS = 7; //Actualy u can get max 6 differents talents
-    public static final String TABLE_NAME = "specs";
-    public static final String[] TABLE_STRUCTURE = {"id", "member_id", "name", "role", "enable", "tier_0", "tier_1",
-                                                    "tier_2", "tier_3", "tier_4", "tier_5", "tier_6"};
-    public static final String[] TABLE_STRUCTURE_OUT_PRIMARY = {"member_id", "name", "role", "enable", "tier_0", "tier_1",
-                                                    "tier_2", "tier_3", "tier_4", "tier_5", "tier_6"};
 
     public Spec(int specId)
     {        
-        super(TABLE_NAME, TABLE_STRUCTURE);
+        super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         loadFromDB(specId +"");
     }
     
     public Spec(int memberId, JSONObject specInfo, JSONArray talentsInfo)
     {
-        super(TABLE_NAME, TABLE_STRUCTURE);
+        super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = memberId;
         saveInfoFromBlizz(specInfo, talentsInfo);
     }
@@ -89,16 +84,16 @@ public class Spec extends GameObject
         }
         String isEnable = (this.enable)? "1":"0";  
         
-        //{"id", "member_id", "name", "role", "enable",
-        // "tier_0", "tier_1", "tier_2", 
-        // "tier_3", "tier_4", "tier_5",
-        // "tier_6"};
-        setTableStructur(TABLE_STRUCTURE_OUT_PRIMARY);
+        /* {"member_id", "name", "role", "enable",
+         * "tier_0", "tier_1", "tier_2",
+         * "tier_3", "tier_4", "tier_5",
+         * "tier_6"};
+         */
+        setTableStructur(DBStructure.outKey(SPECS_TABLE_STRUCTURE));
         int valSave = saveInDBObj(new String[] { this.memberId +"", this.name, this.role, isEnable,
-                                spellID[0], spellID[1], spellID[2], 
-                                spellID[3], spellID[4], spellID[5],
-                                spellID[6]},
-                                "id");
+                                                spellID[0], spellID[1], spellID[2], 
+                                                spellID[3], spellID[4], spellID[5],
+                                                spellID[6]});
         switch (valSave)
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:

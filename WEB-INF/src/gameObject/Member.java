@@ -40,12 +40,8 @@ public class Member extends GameObject
     private List<Spec> specs;
 
     //Constant
-    private static final String TABLE_NAME = "character_info";
-    private static final String[] TABLE_STRUCTURE = {"internal_id", "lastModified", "battlegroup", "class", 
-                                                    "race", "gender", "level", "achievementPoints", "thumbnail", "calcClass", 
-                                                    "faction", "totalHonorableKills", "guild_name"};
-
-    private static final String COMBIEN_TABLE_NAME = TABLE_NAME +" c, "+Update.GMEMBERS_ID_TABLE +" gm";
+    private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
+    private static final String COMBIEN_TABLE_KEY = "internal_id";
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild"};
@@ -53,7 +49,7 @@ public class Member extends GameObject
     //Constructor load from DB if have a ID
     public Member(int internalID)
     {
-        super(COMBIEN_TABLE_NAME,COMBIEN_TABLE_STRUCTURE);
+        super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         specs = new ArrayList<>();
         //Load Character from DB
         loadFromDB(internalID+"", "gm.internal_id = c.internal_id", true);
@@ -62,7 +58,7 @@ public class Member extends GameObject
     //Load to JSON
     public Member(JSONObject playerInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(CHARACTER_INFO_TABLE_NAME, CHARACTER_INFO_TABLE_KEY, CHARACTER_INFO_TABLE_STRUCTURE);
         specs = new ArrayList<>();
         saveInternalInfoObject(playerInfo);
     }
@@ -140,11 +136,10 @@ public class Member extends GameObject
     private void loadSpecFromDB()
     {
         try {
-            JSONArray memberSpec = dbConnect.select(Spec.TABLE_NAME,
-                    new String[] { "id" },
-                    "member_id=?",
-                    new String[] { this.internalID +""});
-            
+            JSONArray memberSpec = dbConnect.select(SPECS_TABLE_NAME,
+                                                    new String[] { "id" },
+                                                    "member_id=?",
+                                                    new String[] { this.internalID +""});
             if(memberSpec.size() > 0)
             {
                 for(int i = 0; i < memberSpec.size(); i++)
@@ -179,9 +174,15 @@ public class Member extends GameObject
     @Override
     public boolean saveInDB()
     {
-        String[] val = new String[] {this.internalID +"", this.lastModified +"", this.battleGroup, this.memberClass.getId() +"",
-                                    this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", this.thumbnail, this.calcClass +"", 
-                                    this.faction +"", this.totalHonorableKills +"", this.guildName };
+        /* {"internal_id", "battlegroup", "class",
+         * "race", "gender", "level", "achievementPoints",
+         * "thumbnail", "calcClass", "faction", "totalHonorableKills",
+         * "guild_name", "lastModified"};
+         */
+        String[] val = new String[] {this.internalID +"", this.battleGroup, this.memberClass.getId() +"",
+                                    this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", 
+                                    this.thumbnail, this.calcClass +"", this.faction +"", this.totalHonorableKills +"",
+                                    this.guildName, this.lastModified +""};
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
@@ -208,14 +209,14 @@ public class Member extends GameObject
         try
         {//change player in character_info in_guild because is change
             System.out.println("Character "+ this.name +" change guild");
-            dbConnect.update(com.artOfWar.blizzardAPI.Update.GMEMBERS_ID_TABLE,
+            dbConnect.update(GMEMBER_ID_NAME_TABLE_NAME,
                             new String[] {"in_guild", "rank"},
                             new String[] {"0", "0"},
                             "internal_id=?",
                             new String[] { this.internalID +"" });
             return true;
         }
-        catch (SQLException|DataException|ClassNotFoundException ex)
+        catch (DataException|ClassNotFoundException ex)
         {
             System.out.println("Error when try remove a user not in guild: "+ ex);
             return false;

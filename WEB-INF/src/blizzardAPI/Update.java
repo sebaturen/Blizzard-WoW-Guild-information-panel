@@ -7,6 +7,7 @@ package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
+import com.artOfWar.gameObject.DBStructure;
 import com.artOfWar.gameObject.Guild;
 import com.artOfWar.gameObject.GuildAchivements;
 import com.artOfWar.gameObject.Member;
@@ -31,6 +32,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Update implements APIInfo
 {
@@ -38,7 +42,6 @@ public class Update implements APIInfo
     //Constant	
     public static final int DYNAMIC_UPDATE = 0;
     public static final int STATIC_UPDATE = 1;
-    public static final String GMEMBERS_ID_TABLE = "gMembers_id_name";
 
     //Attribute
     private String accesToken = "";
@@ -79,15 +82,14 @@ public class Update implements APIInfo
 
         //Save log update in DB
         try 
-        {			
-            Calendar cal = Calendar.getInstance();  
-            Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
-
-            dbConnect.insert("update_timeline",
-                            new String[] {"type", "update_time"},
-                            new String[] {DYNAMIC_UPDATE +"", timestamp.toString()});
+        {
+            /* {"type", "update_time"}; */
+            dbConnect.insert(DBStructure.UPDATE_INTERVAL_TABLE_NAME,
+                            DBStructure.UPDATE_INTERVAL_TABLE_KEY,
+                            DBStructure.outKey(DBStructure.UPDATE_INTERVAL_TABLE_STRUCTURE),
+                            new String[] {DYNAMIC_UPDATE +"", getCurrentTimeStamp()});
         } 
-        catch(DataException|SQLException|ClassNotFoundException e)
+        catch(DataException|ClassNotFoundException e)
         {
             System.out.println("Fail to save update time: "+ e);
         }
@@ -116,14 +118,13 @@ public class Update implements APIInfo
         //Save log update in DB
         try 
         {
-            Calendar cal = Calendar.getInstance();  
-            Timestamp timestamp = new java.sql.Timestamp(cal.getTimeInMillis());
-
-            dbConnect.insert("update_timeline",
-                            new String[] {"type", "update_time"},
-                            new String[] {STATIC_UPDATE +"", timestamp.toString()});
+            /* {"type", "update_time"}; */
+            dbConnect.insert(DBStructure.UPDATE_INTERVAL_TABLE_NAME,
+                            DBStructure.UPDATE_INTERVAL_TABLE_KEY,
+                            DBStructure.outKey(DBStructure.UPDATE_INTERVAL_TABLE_STRUCTURE),
+                            new String[] {STATIC_UPDATE +"", getCurrentTimeStamp()});
         } 
-        catch(DataException|SQLException|ClassNotFoundException e)
+        catch(DataException|ClassNotFoundException e)
         {
             System.out.println("Fail to save update time: "+ e);
         }		
@@ -192,9 +193,11 @@ public class Update implements APIInfo
             JSONArray members = (JSONArray) respond.get("members");
 
             //Reset 0 in_guild all members...
-            dbConnect.update(GMEMBERS_ID_TABLE,
+            dbConnect.update(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
                             new String[] {"in_guild"},
-                            new String[] {"0"});
+                            new String[] {"0"},
+                            "1=?",
+                            new String[] {"1"});
 
             for(int i = 0; i < members.size(); i++)
             {				
@@ -204,9 +207,10 @@ public class Update implements APIInfo
                 if(info.containsKey("guild") && (info.get("guild").toString()).equals(GUILD_NAME))
                 {	
                     String rankMember = ((JSONObject) members.get(i)).get("rank").toString();
-                    dbConnect.insert(GMEMBERS_ID_TABLE,
-                                    new String[] {"member_name","realm","rank","in_guild"},
-                                    new String[] {info.get("name").toString(), GUILD_REALM,rankMember, "1"},
+                    dbConnect.insert(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
+                                    DBStructure.GMEMBER_ID_NAME_TABLE_KEY,
+                                    DBStructure.outKey(DBStructure.GMEMBER_ID_NAME_TABLE_STRUCTURE),
+                                    new String[] {info.get("name").toString(), GUILD_REALM, rankMember, "1"},
                                     "ON DUPLICATE KEY UPDATE realm=?, in_guild=?, rank=?",
                                     new String[] { GUILD_REALM, "1",rankMember+"" });
                 }				
@@ -222,8 +226,8 @@ public class Update implements APIInfo
         if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
         else
         {
-            JSONArray members = dbConnect.select(GMEMBERS_ID_TABLE, 
-                                                new String[] {"internal_id", "member_name"},
+            JSONArray members = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
+                                                DBStructure.GMEMBER_ID_NAME_TABLE_STRUCTURE,
                                                 "in_guild=?",
                                                 new String[] {"1"});
 
@@ -422,8 +426,8 @@ public class Update implements APIInfo
         //1~ get info from DB
         try
         {
-            JSONArray inDBgMembersID = dbConnect.select(GMEMBERS_ID_TABLE, 
-                                                        new String[] {"internal_id"}, 
+            JSONArray inDBgMembersID = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME, 
+                                                        DBStructure.GMEMBER_ID_NAME_TABLE_STRUCTURE, 
                                                         "member_name=? AND realm=?",
                                                         new String[] {name, realm});
             //if exist, load from DB
@@ -438,11 +442,12 @@ public class Update implements APIInfo
             }
             else
             {   
-                String id = dbConnect.insert(GMEMBERS_ID_TABLE,
-                                new String[] {"member_name","realm","rank","in_guild"},
-                                new String[] {name, realm, "0", "0"},
-                                "ON DUPLICATE KEY UPDATE in_guild=?",
-                                new String[] {"0"}); //asumed is 0 becouse in frist moment, we get all guilds members.
+                String id = dbConnect.insert(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
+                                            DBStructure.GMEMBER_ID_NAME_TABLE_KEY,
+                                            DBStructure.outKey(DBStructure.GMEMBER_ID_NAME_TABLE_STRUCTURE),
+                                            new String[] {name, realm, "0", "0"},
+                                            "ON DUPLICATE KEY UPDATE in_guild=?",
+                                            new String[] {"0"}); //asumed is 0 becouse in frist moment, we get all guilds members.
                 mb = getMemberFromBlizz(Integer.parseInt(id), name, realm);
             }
         }
@@ -451,7 +456,13 @@ public class Update implements APIInfo
             System.out.println("Error get SQL Query");
         }
         
+        if(mb != null) System.out.println("("+ mb.getInternalID() +")"+mb.getName());
         return mb;
+    }
+    
+    public static String getCurrentTimeStamp() 
+    {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
     /**

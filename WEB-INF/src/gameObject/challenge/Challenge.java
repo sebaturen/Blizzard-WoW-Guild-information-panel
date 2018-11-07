@@ -23,13 +23,9 @@ public class Challenge extends GameObject
     private String mapName;
     private List<ChallengeGroup> chGroups;
     
-    //Constant
-    public static final String TABLE_NAME = "challenges";
-    private static final String[] TABLE_STRUCTURE = {"id", "map_name"};
-
     public Challenge(int id)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
         chGroups = new ArrayList<>();
         loadFromDB(id+"");
         loadGroups();
@@ -38,7 +34,7 @@ public class Challenge extends GameObject
     //Load to JSON
     public Challenge(JSONObject mapInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
         chGroups = new ArrayList<>();
         saveInternalInfoObject(mapInfo);
     }
@@ -47,7 +43,7 @@ public class Challenge extends GameObject
     {
         try {
             //dbConnect, select * from challenge_groups where challenge_id = this.mapId;
-            JSONArray dbGroups = dbConnect.select(ChallengeGroup.TABLE_NAME,
+            JSONArray dbGroups = dbConnect.select(CHALLENGE_GROUPS_TABLE_NAME,
                                                 new String[] {"group_id"},
                                                 "challenge_id=?",
                                                 new String[] {this.mapId +""});
@@ -81,7 +77,7 @@ public class Challenge extends GameObject
     @Override
     public boolean saveInDB()
     {
-        //System.out.println("Challenge: "+ toString());
+        /* {"id", "map_name"}; */
         int saveInDBReturn = saveInDBObj(new String[] {this.mapId +"", this.mapName});
         switch (saveInDBReturn)
         {

@@ -18,15 +18,11 @@ public class Guild extends GameObject
     private long achievementPoints;
     private int level;
     private int side;
-
-    //Constant
-    private static final String TABLE_NAME = "guild_info";
-    private static final String[] TABLE_STRUCTURE = {"name","lastModified", "battlegroup", "level", "side", "achievementPoints"};
-		
+	
     //Constructor
     public Guild()
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
         //Load guild from DB
         loadFromDB(APIInfo.GUILD_NAME);
     }
@@ -34,7 +30,7 @@ public class Guild extends GameObject
     //Load to JSON
     public Guild(JSONObject guildInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
         saveInternalInfoObject(guildInfo);
     }
 	
@@ -67,7 +63,7 @@ public class Guild extends GameObject
                             this.level +"",
                             this.side +"",
                             this.achievementPoints +"" };
-        switch (saveInDBObj(values, true))
+        switch (saveInDBObj(values))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;

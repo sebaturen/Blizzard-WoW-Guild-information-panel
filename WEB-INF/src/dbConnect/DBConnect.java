@@ -13,6 +13,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -137,55 +139,79 @@ public class DBConnect implements DBConfig
     }
 	
     /**
-     * RUN a SQL query in SQL server. (before call, valide (statusConnect == true))
-     * @sql SQL Query [SIN DATOS INTERNOS]
-     * @values[] data
-     */
-    private String runUpdate(String sql, String[] values) throws SQLException, ClassNotFoundException, DataException
-    {
-        //Load JDBC Driver
-        Class.forName(JDBC_DRIVER);
-
-        this.pstmt = this.conn.prepareStatement(sql);
-        for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }	
-        //System.out.println("PSTMT: "+ this.pstmt);				
-        //Run Update
-        this.pstmt.executeUpdate();
-        return selectLastID();
-    }
-	
-    /**
      * Insert Query construct.
      * @table Tabla
      * @columns name of value is change
      * @values values from this insert
      */
-    public String insert(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { return insert(table, columns, values, null, null); }
-    public String insert(String table, String[] columns, String[] values, String where, String[] whereValues) throws DataException, SQLException, ClassNotFoundException
+    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException { return insert(table, idColum, columns, values, null, null); }
+    public String insert(String table, String idColum, String[] columns, String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException
     {
         if (statusConnect == true)
         {			
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
-                String columnsSQL = "";
-                String valuesSQL = "";
-                for(String c: columns) { columnsSQL += "`"+ c +"`,"; valuesSQL += "?,"; }
-                columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
-                valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
-
-                String sql = "insert into "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
-
-                if(where != null)
-                {                    
-                    String[] valInSql = new String[values.length + whereValues.length];
-                    int i = 0;
-                    for(; i < values.length; i++) valInSql[i] = values[i];
-                    for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
-                    sql += " "+ where;
-                    values = valInSql;
+                try {
+                    String columnsSQL = "";
+                    String valuesSQL = "";
+                    for(String c: columns) { columnsSQL += "`"+ c +"`,"; valuesSQL += "?,"; }
+                    columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
+                    valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
+                    
+                    String sql = "insert into "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
+                    String[] valuesWithWhereValues = values;
+                    if(where != null)
+                    {
+                        String[] valInSql = new String[values.length + whereValues.length];
+                        int i = 0;
+                        for(; i < values.length; i++) valInSql[i] = values[i];
+                        for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
+                        sql += " "+ where;
+                        valuesWithWhereValues = valInSql;
+                    }
+                    
+                    //Load JDBC Driver
+                    Class.forName(JDBC_DRIVER);
+                    
+                    this.pstmt = this.conn.prepareStatement(sql);
+                    for(int i = 0; i < valuesWithWhereValues.length; i++) { this.pstmt.setString(i+1,valuesWithWhereValues[i]); }
+                    //System.out.println("PSTMT: "+ this.pstmt);
+                    //Run Update
+                    this.pstmt.executeUpdate();
+                    
+                    //Get a ID correspondin to this insert
+                    String whereID = "";
+                    List<String> valusSelect = new ArrayList<>();
+                    for(int i = 0; i < columns.length; i++)
+                    {
+                       if(values[i] != null)
+                        {
+                            whereID += "`"+ columns[i] +"`=? AND ";
+                            valusSelect.add(values[i]);                          
+                        } 
+                    }
+                    String[] stockArr = new String[valusSelect.size()];
+                    stockArr = valusSelect.toArray(stockArr);
+                    whereID = whereID.substring(0,whereID.length()-5);
+                    JSONArray v = select(table,
+                                        new String[] { idColum },
+                                        whereID,
+                                        stockArr);
+                    if(v.isEmpty()) 
+                    {
+                        System.out.println("FAIL TO GET ID! "+ this.pstmt);
+                        System.exit(-1);
+                        return null;
+                    }
+                    else
+                    {                    
+                        return ((JSONObject) v.get(0)).get(idColum).toString();
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
                 }
-                return runUpdate(sql, values);
+
             }
             else
             {
@@ -204,30 +230,42 @@ public class DBConnect implements DBConfig
      * @columns name of value is change
      * @values values from this insert
      */
-    public void update(String table, String[] columns, String[] values) throws DataException, SQLException, ClassNotFoundException { update(table, columns, values, null, null);}
-    public void update(String table, String[] columns, String[] values, String where, String[] whereValues) throws DataException, SQLException, ClassNotFoundException
+    public void update(String table, String[] columns, 
+                        String[] values, String where, String[] whereValues) 
+            throws DataException, ClassNotFoundException
     {
         if (statusConnect == true)
         {			
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
-                String columnsSQL = "";
-                for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
-                columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
-
-                String sql = "Update "+ table +" SET "+ columnsSQL;
-                if(where != null)
-                {
-                    sql += " where "+ where;
-                    String[] valInSql = new String[values.length + whereValues.length];
-                    int i = 0;
-                    for(; i < values.length; i++) valInSql[i] = values[i];
-                    for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
-                    values = valInSql;
+                try {
+                    String columnsSQL = "";
+                    for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
+                    columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);                
+                    
+                    String sql = "Update "+ table +" SET "+ columnsSQL;
+                    if(where != null)
+                    {
+                        sql += " where "+ where;
+                        String[] valInSql = new String[values.length + whereValues.length];
+                        int i = 0;
+                        for(; i < values.length; i++) valInSql[i] = values[i];
+                        for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
+                        values = valInSql;
+                    }
+                    
+                    //Load JDBC Driver
+                    Class.forName(JDBC_DRIVER);
+                    
+                    this.pstmt = this.conn.prepareStatement(sql);
+                    for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }
+                    //System.out.println("PSTMT: "+ this.pstmt);
+                    //Run Update
+                    this.pstmt.executeUpdate();
+                } catch (SQLException ex) {
+                    throw new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
                 }
-
-                runUpdate(sql, values);
             }
             else
             {

@@ -12,27 +12,26 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
 
-public abstract class GameObject
+public abstract class GameObject implements DBStructure
 {
     //Variable
     protected static DBConnect dbConnect;
     protected boolean isData = false;
-    private String tableDB;
+    private final String tableDB;
+    private final String tableKey;
     private String[] tableStruct;
 
     //Constant save data info
     public static final int SAVE_MSG_NO_DATA                    = 0;
     public static final int SAVE_MSG_INSERT_ERROR               = 1;
     public static final int SAVE_MSG_INSERT_OK                  = 2;
-    public static final int SAVE_MSG_UPDATE_OK                  = 3;
-    public static final int SAVE_MSG_UPDATE_FOREIGN_KEY_ERROR   = 4;
     public static final int SAVE_MSG_UPDATE_ERROR               = 5;
-    public static final int SAVE_MSG_NOT_UPDATE_OK              = 6;
-    public static final int SAVE_MSG_SQL_INSERT_ERROR           = 7;
+    public static final int SAVE_MSG_UPDATE_OK                  = 3;
 	
-    public GameObject(String tableDB, String[] tableStruct) 
+    public GameObject(String tableDB, String tableKey, String[] tableStruct) 
     { 
         this.tableDB = tableDB; 
+        this.tableKey = tableKey;
         this.tableStruct = tableStruct;
     }
 	
@@ -46,22 +45,12 @@ public abstract class GameObject
      * Save Game object element in DB
      * @values values from object we need save, use in query.
      */
-    protected int saveInDBObj(String[] values) { return saveInDBObj(values, null, false);}
-    protected int saveInDBObj(String[] values, boolean disableLastId) { return saveInDBObj(values, null, disableLastId);}
-    protected int saveInDBObj(String[] values, String lastId) { return saveInDBObj(values, lastId, false);}
-    protected int saveInDBObj(String[] values, String lastId, boolean disableLastId)
+    protected int saveInDBObj(String[] values)
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         if (this.isData && values.length > 0)
         {
             String updateDuplicate = "ON DUPLICATE KEY UPDATE ";
-            if(!disableLastId)
-            {
-                if(lastId != null) 
-                    updateDuplicate += "`"+ lastId +"`=LAST_INSERT_ID(`"+ lastId +"`),";
-                else 
-                    updateDuplicate += this.tableStruct[0] +"=LAST_INSERT_ID("+ this.tableStruct[0] +"),";
-            }
             String[] whereValues = new String[values.length-1];
             for(int i = 1; i < values.length; i++) //start in 1 omitted key!
             {
@@ -73,15 +62,16 @@ public abstract class GameObject
             try
             {
                 String id = dbConnect.insert(this.tableDB,
-                                this.tableStruct,
-                                values,
-                                updateDuplicate,
-                                whereValues);
+                                            this.tableKey,
+                                            this.tableStruct,
+                                            values,
+                                            updateDuplicate,
+                                            whereValues);
                 //If is NOT disabled and have a date (not cero or empty), set a ID
-                if(!disableLastId) if( !id.equals("0") && !id.isEmpty()) setId(id);
+                setId(id);
                 return SAVE_MSG_INSERT_OK;
             }
-            catch (DataException|SQLException|ClassNotFoundException e)
+            catch (DataException|ClassNotFoundException e)
             {
                 System.out.println("E: "+ e);
                 return SAVE_MSG_INSERT_ERROR;

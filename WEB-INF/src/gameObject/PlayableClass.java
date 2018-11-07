@@ -13,19 +13,15 @@ public class PlayableClass extends GameObject
     private int id;
     private String enName;
 
-    //Constant
-    private static final String TABLE_NAME = "playable_class";
-    private static final String[] TABLE_STRUCTURE = {"id", "en_US"};
-		
     public PlayableClass(int id)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
         loadFromDB(id+"");
     }
 	
     public PlayableClass(JSONObject exInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 	
@@ -48,6 +44,7 @@ public class PlayableClass extends GameObject
     @Override
     public boolean saveInDB()
     {
+        /* {"id", "en_US"}; */
         switch (saveInDBObj(new String[] {this.id +"", this.enName}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:

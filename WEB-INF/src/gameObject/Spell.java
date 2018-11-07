@@ -18,19 +18,15 @@ public class Spell extends GameObject
     private String cooldown;
     private String range;
  
-    //Constant
-    private static final String TABLE_NAME = "spells";
-    private static final String[] TABLE_STRUCTURE = {"id", "name", "icon", "description", "castTime", "cooldown", "range"};
-
     public Spell(int id)
     {
-        super(TABLE_NAME, TABLE_STRUCTURE);
+        super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
         loadFromDB(id +"");        
     }
     
     public Spell(JSONObject inf)
     {
-        super(TABLE_NAME, TABLE_STRUCTURE);
+        super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
     
@@ -53,7 +49,11 @@ public class Spell extends GameObject
     @Override
     public boolean saveInDB()
     {
-        switch (saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.description, this.castTime, this.cooldown, this.range}))
+        /* {"id", "name", "icon", "description",
+         * "castTime", "cooldown", "range"};
+         */
+        switch (saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.description,
+                                            this.castTime, this.cooldown, this.range}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;

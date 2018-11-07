@@ -16,20 +16,16 @@ public class GuildAchivements extends GameObject
     private String icon;
     private int points;
     private String classification;
-        
-    //Constant
-    private static final String TABLE_NAME = "guild_achievements_list";
-    private static final String[] TABLE_STRUCTURE = {"id","title", "description", "icon", "points", "classification"};
-    
+
     public GuildAchivements(int id)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(GUILD_ACHIVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE);
         loadFromDB(id+"");
     }
 
     public GuildAchivements(JSONObject exInfo)
     {
-        super(TABLE_NAME,TABLE_STRUCTURE);
+        super(GUILD_ACHIVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
     
@@ -58,7 +54,11 @@ public class GuildAchivements extends GameObject
     @Override
     public boolean saveInDB()
     {
-        switch (saveInDBObj(new String[] {this.id +"", this.title, this.description, this.icon, this.points +"", this.classification}))
+        /* {"id", "title", "description",
+         * "icon", "points", "classification"};
+         */
+        switch (saveInDBObj(new String[] {this.id +"", this.title, this.description, 
+                                          this.icon, this.points +"", this.classification}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
             return true;
