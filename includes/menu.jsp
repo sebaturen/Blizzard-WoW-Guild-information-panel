@@ -1,4 +1,3 @@
-<jsp:useBean id="lUpdate" class="com.artOfWar.viewController.LastUpdate"/>
 <div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="index.jsp">
@@ -20,8 +19,16 @@
                 <a class="nav-link" href="guild_challenges.jsp">Guild Challenges</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#">Last Update[<%= lUpdate.getLastDynamicUpdate() %>]</a>
+                <a class="nav-link disabled" href="#">Last Update[<%= gameInfo.getLastDynamicUpdate() %>]</a>
             </li>
-        </ul>
+        </ul>            
+        <div class="form-inline my-2 my-lg-0">
+            WoW Token:&nbsp;
+            <% int[] tokenPrice = gameInfo.getTokenWow(); %>
+            <% if (tokenPrice[0] > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice[0]) %></span><% } %>
+            <% if (tokenPrice[1] > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice[1]) %></span><% } %>
+            <% if (tokenPrice[2] > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice[2]) %></span><% } %>
+            &nbsp;<a href="login.jsp"><button class="btn btn-outline-success" type="button"><%= (user == null || !user.checkUser())? "Login":"Account Info" %></button></a>
+        </div>
     </div>
 </nav>

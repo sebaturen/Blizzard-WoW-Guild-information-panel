@@ -129,7 +129,6 @@ public class ChallengeGroup extends GameObject
                 //Save members
                 members.forEach((m) -> {                    
                     try {
-                        System.out.println("("+ m.getInternalID() +") "+ m.getName());
                         /*{"internal_member_id", "group_id", "spec_id"};*/
                         dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                         CHALLENGE_GROUP_MEMBERS_TABLE_KEY,

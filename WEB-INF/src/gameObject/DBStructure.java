@@ -81,6 +81,27 @@ public interface DBStructure
     public static final String[] GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE = {"id", "title", "description",
                                                                             "icon", "points", "classification"};
     
+    //Player Achivements category
+    public static final String PLAYER_ACHIVEMENTS_CATEGORY_TABLE_NAME = "player_achivement_category";
+    public static final String PLAYER_ACHIVEMENTS_CATEGORY_TABLE_KEY = "id";
+    public static final String[] PLAYER_ACHIVEMENTS_CATEGORY_TABLE_STRUCTURE = {"id", "name", "father_id"};
+    
+    //Player Achivements list
+    public static final String PLAYER_ACHIVEMENTS_LIST_TABLE_NAME = "player_achivement_list";
+    public static final String PLAYER_ACHIVEMENTS_LIST_TABLE_KEY = "id";
+    public static final String[] PLAYER_ACHIVEMENTS_LIST_TABLE_STRUCTURE = {"id", "category_id", "title", 
+                                                                            "points", "description", "icon"};
+    
+    //Wow Token
+    public static final String WOW_TOKEN_TABLE_NAME = "wow_token";
+    public static final String WOW_TOKEN_TABLE_KEY = "last_updated_timestamp";
+    public static final String[] WOW_TOKEN_TABLE_STRUCTURE = {"last_updated_timestamp", "price"};
+    
+    //User
+    public static final String USER_TABLE_NAME = "users";
+    public static final String USER_TABLE_KEY = "email";
+    public static final String[] USER_TABLE_STRUCTURE = {"email", "password", "battle_tag", "access_code"};
+    
     //In many time, we need insert out to id, because the id is auto update.
     public static String[] outKey(String[] array)
     {

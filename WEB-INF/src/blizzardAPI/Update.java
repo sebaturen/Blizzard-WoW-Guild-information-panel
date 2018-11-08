@@ -19,20 +19,18 @@ import com.artOfWar.gameObject.challenge.ChallengeGroup;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Calendar;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,6 +59,14 @@ public class Update implements APIInfo
      */
     public void updateDynamicAll()
     {
+        
+        
+        /*System.out.println("Guild new information update!");
+        try { getGuildNews();}
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail update guild news Info: "+ ex); }		
+        */
+        
+        
         System.out.println("-------Update process is START! (Dynamic)------");        
         //Guild information update!
         System.out.println("Guild Information update!");
@@ -78,6 +84,10 @@ public class Update implements APIInfo
         System.out.println("Guild challenges update!");
         try { getGuildChallenges(); } 
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+        //Wow Token
+        System.out.println("Wow token information update!");
+        try { getWowToken(); } 
+        catch (ClassNotFoundException|IOException|ParseException|DataException ex) { System.out.println("Fail update Wow Token Info: "+ ex); }		
         System.out.println("-------Update process is COMPLATE! (Dynamic)------");
 
         //Save log update in DB
@@ -114,7 +124,7 @@ public class Update implements APIInfo
         try { getGuildAchivementsLists(); } 
         catch (IOException|ParseException|DataException ex) { System.out.println("Fail update Achivements Info: "+ ex); }		
         System.out.println("-------Update process is COMPLATE! (Static)------");
-
+        
         //Save log update in DB
         try 
         {
@@ -136,7 +146,7 @@ public class Update implements APIInfo
      */
     private void generateAccesToken() throws IOException, ParseException, DataException
     {
-        String urlString = String.format(API_OAUTH_TOKEN_URL, SERVER_LOCATION);
+        String urlString = String.format(API_OAUTH_URL, SERVER_LOCATION, API_OAUTH_TOKEN);
         String apiInfo = Base64.getEncoder().encodeToString((CLIENT_ID+":"+CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
 
         //prepare info
@@ -419,6 +429,58 @@ public class Update implements APIInfo
         }		
     }    
     
+    private void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
+                                            URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+                                            URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
+            //Call Blizzard API
+            JSONObject respond = curl(urlString, 
+                                    "GET",
+                                    "Bearer "+ this.accesToken,
+                                    new String[] {"fields=news"});
+
+            JSONArray news = (JSONArray) respond.get("news");
+            for(int i = 0; i < news.size(); i++)
+            {
+               
+                System.out.println("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+            }
+        }
+    }
+    
+    private void getPlayerAchivements() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
+                                            URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+                                            URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
+            //Call Blizzard API
+            JSONObject respond = curl(urlString, 
+                                    "GET",
+                                    "Bearer "+ this.accesToken,
+                                    new String[] {"fields=news"});
+
+            JSONArray news = (JSONArray) respond.get("news");
+            for(int i = 0; i < news.size(); i++)
+            {
+                int type = -1;
+                switch((Integer) ((JSONObject)news.get(i)).get("type"))
+                {
+                    
+                }
+                System.out.println("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+            }
+        }
+    }
+    
     
     private Member getMemberInfoFromBlizzOrDB(String name, String realm)
     {       
@@ -455,9 +517,29 @@ public class Update implements APIInfo
         {
             System.out.println("Error get SQL Query");
         }
-        
-        if(mb != null) System.out.println("("+ mb.getInternalID() +")"+mb.getName());
         return mb;
+    }
+    
+    private void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {            
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_WOW_TOKEN);
+            //Call Blizzard API
+            JSONObject wowToken = curl(urlString, //DataException possible trigger
+                                        "GET",
+                                        "Bearer "+ this.accesToken,
+                                        new String[] {"namespace=dynamic-us"});            
+            dbConnect.insert(DBStructure.WOW_TOKEN_TABLE_NAME,
+                            DBStructure.WOW_TOKEN_TABLE_KEY,
+                            DBStructure.WOW_TOKEN_TABLE_STRUCTURE,
+                            new String[] {wowToken.get("last_updated_timestamp").toString(), wowToken.get("price").toString()},
+                            "ON DUPLICATE KEY UPDATE price=?",
+                            new String[] {wowToken.get("price").toString()});
+        }
+        
     }
     
     public static String getCurrentTimeStamp() 
@@ -473,9 +555,9 @@ public class Update implements APIInfo
      * @parameters : URL parameters ("field=member","acctrion=move"....)
      * @bodyData : if have a data in body
      */
-    private JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
-    private JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
-    private JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, ParseException, DataException
+    public static JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
+    public static JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
+    public static JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, ParseException, DataException
     {
         //Add parameters
         if(parameters != null)

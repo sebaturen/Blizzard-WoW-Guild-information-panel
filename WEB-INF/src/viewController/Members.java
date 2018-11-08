@@ -7,14 +7,14 @@ package com.artOfWar.viewController;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.gameObject.DBStructure;
 import com.artOfWar.gameObject.Member;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -34,14 +34,21 @@ public class Members
     private void generateMembersList()
     {
         try
-        {
+        {            
+            //Only show members who logged in at least 1 month ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MONTH, -1);
+            Date oneMotheAgo = cal.getTime();
+            
             //Prepare list members
             List<Member> mList = new ArrayList<>();
-            //Get members to DB			
-            JSONArray dbList = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME, 
-                                                new String[] {"internal_id", "member_name"},
-                                                "in_guild=? AND realm=?", 
-                                                new String[] {"1", APIInfo.GUILD_REALM});	
+            //Get members to DB		
+            
+            //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
+            JSONArray dbList = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ DBStructure.CHARACTER_INFO_TABLE_NAME +" c", 
+                                                new String[] {"gm.internal_id"},
+                                                "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ?", 
+                                                new String[] {"1", oneMotheAgo.getTime() +""}, true);	
             for(int i = 0; i < dbList.size(); i++)
             {
                 int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
@@ -54,7 +61,7 @@ public class Members
         }
         catch (SQLException|DataException e)
         {
-            System.out.println("Fail to load members lists - Members View Controller");
+            System.out.println("Fail to load members lists - Members View Controller "+ e);
         }
     }
 	

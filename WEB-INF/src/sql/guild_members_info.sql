@@ -73,3 +73,24 @@ CREATE TABLE `specs` (
     FOREIGN KEY(tier_6) REFERENCES spells(id),
     UNIQUE (member_id,name,role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `wow_token` (
+    `last_updated_timestamp`    bigint(20) NOT NULL,
+    `price`                     int NOT NULL,
+    PRIMARY KEY(last_updated_timestamp)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `guild_news` (
+    `id`                    INT NOT NULL AUTO_INCREMENT,
+    `type`                  TINYINT NOT NULL,
+    `member_id`             INT NOT NULL,
+    `timestamp`             bigint(20) NOT NULL,
+    `item_id`               INT,
+    `guild_achivement_id`   INT,
+    `player_achivement_id`  INT,
+    PRIMARY KEY(id),
+    FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id),
+    FOREIGN KEY(guild_achivement_id) REFERENCES guild_achievements_list(id),
+    FOREIGN KEY(player_achivement_id) REFERENCES (id),
+    FOREIGN KEY(item_id) REFERENCES (id),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -3,6 +3,7 @@
 body {
     width: 100%;
     height: 100%;
+    color: #fff;
 }
 
 .img_fondo_pagina {
@@ -14,14 +15,32 @@ body {
     background-position: center center;
     background-image: url("../img/background/BFA (21).jpg");
 }
-
+/*-------GENERAL------------*/
 .container {    
     background-color: #212529;
     margin-top: 21px;
-    color: white;
+    padding: 25px;
     /* border: 1px solid; */
     box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
 }
+.moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta, 
+.moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
+    background: no-repeat right center;
+    display: inline-block;
+}
+.moneygold {
+    padding-right: 15px;
+    background-image: url("../img/icons/money-gold.gif");
+}
+.moneysilver {
+    padding-right: 15px;
+    background-image: url("../img/icons/money-silver.gif");
+}
+.moneycopper {
+    padding-right: 15px;
+    background-image: url("../img/icons/money-copper.gif");
+}
+/*END -------GENERAL------------*/
 
 /*-------MENU------------*/
 #main-menu {
@@ -37,3 +56,16 @@ body {
     display: inline-block;
 }
 /*END -------MENU------------*/
+
+/*-------GUILD CHALLENGE------------*/
+.dungeon-challenge-img {
+    background-size: cover;
+    background-position: center center;    
+}
+.dung-title {
+    padding: 50px;
+    text-align: center;
+    text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
+    color: #fff;
+}
+/*END -------GUILD CHALLENGE------------*/

@@ -13,11 +13,30 @@ CREATE TABLE `playable_class` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `guild_achievements_list` (
-    `id`            int NOT NULL,
+    `id`            INT NOT NULL,
     `title`         TINYTEXT NOT NULL,
     `description`   TINYTEXT NOT NULL,
     `icon`          VARCHAR(50) NOT NULL,
     `points`        int NOT NULL,
     `classification` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `player_achivement_category` (
+    `id`        INT NOT NULL,
+    `name`      VARCHAR(20) NOT NULL,
+    `father_id` INT,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY(father_id) REFERENCES player_achivement_category(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `player_achivement_list` (
+    `id`            INT NOT NULL,
+    `category_id`   INT NOT NULL,
+    `title`         TINYTEXT NOT NULL,
+    `points`        INT NOT NULL,
+    `description`   TINYTEXT NOT NULL,
+    `icon` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY(category_id) REFERENCES player_achivement_category(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

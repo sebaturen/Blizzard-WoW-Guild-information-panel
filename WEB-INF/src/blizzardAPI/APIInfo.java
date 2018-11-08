@@ -11,9 +11,14 @@ public interface APIInfo
     public static final String SERVER_LOCATION  = "us";
     public static final String GUILD_NAME       = "Art of War";
     public static final String GUILD_REALM      = "Ragnaros";
+    //Web main URL
+    public static final String MAIN_URL         = "http://artofwar.cl/";
+    public static final String BLIZZAR_LINK     = "blizzLink.jsp";
 
     //API Information
-    public static final String API_OAUTH_TOKEN_URL  = "https://%s.battle.net/oauth/token";
+    public static final String API_OAUTH_URL        = "https://%s.battle.net/oauth/%s";
+    public static final String API_OAUTH_TOKEN      = "token";
+    public static final String API_OAUTH_USERINFO   = "userinfo";
     public static final String API_ROOT_URL         = "https://%s.api.blizzard.com/%s"; //location, api path
 
     //Aplication Info
@@ -30,4 +35,5 @@ public interface APIInfo
     public static final String API_GUILD_ACHIVEMENTS    = "wow/data/guild/achievements";
     //World of Warcraft Game Data APIs
     public static final String API_PLAYABLE_CLASS       = "data/wow/playable-class/";
+    public static final String API_WOW_TOKEN            = "data/wow/token/";
 }

@@ -223,7 +223,7 @@ public class DBConnect implements DBConfig
             throw new DataException("DB can't connect");
         }
     }
-	
+    
     /**
      * Update Query
      * @table Tabla
