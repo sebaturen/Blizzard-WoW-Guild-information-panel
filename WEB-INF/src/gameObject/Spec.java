@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject;
 
+import com.artOfWar.dbConnect.DBStructure;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -44,7 +45,12 @@ public class Spec extends GameObject
             JSONObject talentLevl = (JSONObject) talentsInfo.get(i); //get("tier") talent level 
             if(talentsInfo.get(i) != null)
             {
-                Spell skill = new Spell( (JSONObject) talentLevl.get("spell"));
+                JSONObject skillBlizzDetail = (JSONObject) talentLevl.get("spell");
+                Spell skill = new Spell( ((Long) skillBlizzDetail.get("id")).intValue() );
+                if(!skill.isData())
+                {
+                    skill = new Spell(skillBlizzDetail);
+                }
                 this.spells[ ((Long) talentLevl.get("tier")).intValue() ] = skill;
             }
         }
@@ -106,11 +112,13 @@ public class Spec extends GameObject
     public boolean isEnable() { return this.enable; }
     public boolean isThisSpec(String sName, String sRole) { return this.name.equals(sName) && this.role.equals(sRole); }
     public boolean isThisSpec(int id) { return (this.id == id); }
-    public int getId() { return this.id; }
+    @Override
+    public String getId() { return this.id +""; }
     public String getName() { return this.name; }
     public String getRole() { return this.role; }
     public Spell[] getSpells() { return this.spells; }
     public void setEnable(boolean e) { this.enable = e; }
+    public void setMemberId(int id) { this.memberId = id; }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
         

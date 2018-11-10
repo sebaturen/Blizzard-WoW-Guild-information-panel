@@ -7,7 +7,7 @@ package com.artOfWar.viewController;
 
 import com.artOfWar.DataException;
 import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.gameObject.DBStructure;
+import com.artOfWar.dbConnect.DBStructure;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

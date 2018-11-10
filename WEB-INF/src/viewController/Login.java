@@ -9,7 +9,7 @@ import com.artOfWar.DataException;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.gameObject.DBStructure;
+import com.artOfWar.dbConnect.DBStructure;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -23,9 +23,13 @@ public class Login implements APIInfo
 {
     private final DBConnect dbConnect;
     
+    private int id;
     private String email;
     private String password;
     private String battleTag;
+    private String memberAccesToken;
+    private boolean wowInfo = false;
+    private int guildRank;
     
     public Login()
     {
@@ -36,25 +40,29 @@ public class Login implements APIInfo
     {
         if(this.email == null || this.password == null) return false;
         try {            
-            //{"email", "password", "battle_tag", "access_code"};
+            //{"email", "password", "battle_tag", "access_token", "guild_rank"};
             JSONArray validUser = dbConnect.select(DBStructure.USER_TABLE_NAME,
-                    new String[] {"email", "battle_tag"},
-                    "email=? AND password=?",
-                    new String[] {this.email, Register.encodePass(this.password)});
+                                                DBStructure.USER_TABLE_STRUCTURE,
+                                                "email=? AND password=?",
+                                                new String[] {this.email, Register.encodePass(this.password)});
             if(validUser.size() > 0) 
             {//valid if have a info
                 JSONObject infoUser = (JSONObject) validUser.get(0);
                 if ((infoUser.get("email").toString()).equals(this.email))
                 {//valid the return is same email info
+                    this.id =  (Integer) infoUser.get("id");
+                    this.guildRank = (Integer) infoUser.get("guild_rank");
                     if(infoUser.get("battle_tag") != null)
                     {
+                        this.memberAccesToken = infoUser.get("access_token").toString();
                         this.battleTag = infoUser.get("battle_tag").toString();
+                        this.wowInfo = (Boolean) infoUser.get("wowinfo");
                     }
                     return true;
                 }
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to get user info...");
+            System.out.println("Fail to get user info..."+ ex);
         }
         return false;
     }
@@ -65,17 +73,51 @@ public class Login implements APIInfo
         String bTag = getBattleTag(accessToken);
         try {
             dbConnect.update(DBStructure.USER_TABLE_NAME,
-                            new String[] {"battle_tag", "access_code"},
+                            new String[] {"battle_tag", "access_token"},
                             new String[] { bTag, accessToken },
-                            "email=?",
-                            new String[] { this.email });
+                            "id=?",
+                            new String[] { this.id +"" });
             this.battleTag = bTag;
+            this.memberAccesToken = accessToken;
+                  
+            //Try get a member rank...
+            try {
+                Update up = new Update();
+                int userRank = up.setMemberCharacterInfo(this.memberAccesToken, this.id);
+                dbConnect.update(DBStructure.USER_TABLE_NAME,
+                                new String[] {"guild_rank", "wowinfo"},
+                                new String[] { userRank +"", "" },
+                                "id=?",
+                                new String[] { this.id +"" });
+                this.guildRank = userRank;
+            } catch (IOException | ParseException ex) {
+                System.out.println("Fail to set guild Rank "+ this.id +" - "+ ex);
+            }            
             return true;
         } catch (DataException | ClassNotFoundException ex) {
             System.out.println("Fail to save code from user "+ this.email +" - "+ ex);
         }
         return false;
     }
+    
+    public JSONArray getCharacterList()
+    {
+        try {
+            JSONArray chars = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
+                    new String[] {"member_name", "realm", "rank"},
+                    "user_id=? order by realm",
+                    new String[] { this.id +"" } );
+            if(chars.size() > 0)
+            {
+                System.out.println("Chars> "+ chars);
+                return chars;
+            }
+        } catch (SQLException|DataException ex) {
+            System.out.println("Error get a character user info "+ this.id +" - "+ ex);
+        }
+        return null;
+    }
+    
     
     private String getBattleTag(String accessToken)
     {
@@ -135,16 +177,13 @@ public class Login implements APIInfo
         return null;
     }
     
+ 
+    
     //Getters and Setters
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
     public boolean setAccessCode(String code) { return saveBlizzardInfo(code); }
-    public void setRegister(boolean ty) {
-        if(ty)
-        {
-            System.out.println("llego el momento de registrar al mongo!");
-        }
-    }
     public String getEmail() { return this.email; }
     public String getBattleTag() { return this.battleTag; }
+    public boolean getWowInfo() { return this.wowInfo; }
 }

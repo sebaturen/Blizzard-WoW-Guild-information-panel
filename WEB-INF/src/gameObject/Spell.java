@@ -21,7 +21,7 @@ public class Spell extends GameObject
     public Spell(int id)
     {
         super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
-        loadFromDB(id +"");        
+        loadFromDB(id +"");   
     }
     
     public Spell(JSONObject inf)
@@ -49,6 +49,7 @@ public class Spell extends GameObject
     @Override
     public boolean saveInDB()
     {
+        if(this.isInternalData) return true; //if preview save...
         /* {"id", "name", "icon", "description",
          * "castTime", "cooldown", "range"};
          */
@@ -62,7 +63,7 @@ public class Spell extends GameObject
     }
     
     //Getters and Setters
-    public int getId() { return this.id; }
+    public String getId() { return this.id +""; }
     public String getName() { return this.name; }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }

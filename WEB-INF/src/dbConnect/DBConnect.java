@@ -127,7 +127,7 @@ public class DBConnect implements DBConfig
         if (statusConnect == true)
         {
             //Prepare QUERY
-            String sql = "delete from "+ table +" where "+ where;
+            String sql = "DELETE FROM "+ table +" WHERE "+ where;
             this.pstmt = this.conn.prepareStatement(sql);
             for(int i = 0; i < whereValues.length; i++) { this.pstmt.setString(i+1,whereValues[i]); }
             return resultToJsonConvert(this.pstmt.executeQuery());
@@ -159,7 +159,7 @@ public class DBConnect implements DBConfig
                     columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
                     valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
                     
-                    String sql = "insert into "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
+                    String sql = "INSERT INTO "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
                     String[] valuesWithWhereValues = values;
                     if(where != null)
                     {
@@ -244,10 +244,10 @@ public class DBConnect implements DBConfig
                     for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
                     columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);                
                     
-                    String sql = "Update "+ table +" SET "+ columnsSQL;
+                    String sql = "UPDATE "+ table +" SET "+ columnsSQL;
                     if(where != null)
                     {
-                        sql += " where "+ where;
+                        sql += " WHERE "+ where;
                         String[] valInSql = new String[values.length + whereValues.length];
                         int i = 0;
                         for(; i < values.length; i++) valInSql[i] = values[i];

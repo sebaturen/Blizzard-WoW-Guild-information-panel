@@ -3,7 +3,7 @@
  * Desc : All Game object database structure
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.artOfWar.dbConnect;
 
 public interface DBStructure 
 {
@@ -14,15 +14,15 @@ public interface DBStructure
     
     //Guild
     public static final String GUILD_TABLE_NAME = "guild_info";
-    public static final String GUILD_TABLE_KEY = "name";
-    public static final String[] GUILD_TABLE_STRUCTURE = {"name", "lastModified", "battlegroup", 
+    public static final String GUILD_TABLE_KEY = "id";
+    public static final String[] GUILD_TABLE_STRUCTURE = {"id", "name", "realm","lastModified", "battlegroup", 
                                                         "level", "side", "achievementPoints"};
     
     //Members - id - name    
     public static final String GMEMBER_ID_NAME_TABLE_NAME = "gMembers_id_name";
     public static final String GMEMBER_ID_NAME_TABLE_KEY = "internal_id";
     public static final String[] GMEMBER_ID_NAME_TABLE_STRUCTURE = {"internal_id", "member_name", "realm", 
-                                                                    "rank", "in_guild"};
+                                                                    "rank", "in_guild", "user_id"};
     
     //Character information
     public static final String CHARACTER_INFO_TABLE_NAME = "character_info";
@@ -99,8 +99,8 @@ public interface DBStructure
     
     //User
     public static final String USER_TABLE_NAME = "users";
-    public static final String USER_TABLE_KEY = "email";
-    public static final String[] USER_TABLE_STRUCTURE = {"email", "password", "battle_tag", "access_code"};
+    public static final String USER_TABLE_KEY = "id";
+    public static final String[] USER_TABLE_STRUCTURE = {"id","email", "password", "battle_tag", "access_token", "guild_rank", "wowinfo"};
     
     //In many time, we need insert out to id, because the id is auto update.
     public static String[] outKey(String[] array)

@@ -8,6 +8,7 @@ package com.artOfWar.gameObject;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.DataException;
+import com.artOfWar.dbConnect.DBStructure;
 import java.io.IOException;
 
 import org.json.simple.JSONObject;
@@ -37,14 +38,16 @@ public class Member extends GameObject
     private long lastModified;
     private long totalHonorableKills;
     private boolean isGuildMember;
+    private int userID;
     private List<Spec> specs;
-
+    
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
     private static final String COMBIEN_TABLE_KEY = "internal_id";
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
-                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild"};
+                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
+                                                            "gm.user_id"};
 	
     //Constructor load from DB if have a ID
     public Member(int internalID)
@@ -66,7 +69,6 @@ public class Member extends GameObject
     @Override
     protected void saveInternalInfoObject(JSONObject playerInfo)
     {		
-        this.internalID = (Integer) playerInfo.get("internal_id");
         this.realm = playerInfo.get("realm").toString();
         this.battleGroup = playerInfo.get("battlegroup").toString();
         this.achievementPoints = (long) playerInfo.get("achievementPoints");
@@ -94,6 +96,8 @@ public class Member extends GameObject
         }
         else
         {//if come to DB
+            this.internalID = (Integer) playerInfo.get("internal_id");
+            this.userID = (Integer) playerInfo.get("user_id");
             this.name = playerInfo.get("member_name").toString();
             this.gender = (Integer) playerInfo.get("gender");
             this.level = (Integer) playerInfo.get("level");
@@ -125,11 +129,34 @@ public class Member extends GameObject
              * los talentos que el jugador escogio
              */
             if(specInfoBlizz != null) //Blizzard codio la API para retornar muchas posibles especializaciones
-            {                         //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
+            {
+                //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
                 Spec spec = new Spec(this.internalID, specInfoBlizz, spellTalents);
                 if(specsAvailable.containsKey("selected")) spec.setEnable(true);
-                this.specs.add(spec);                
+                this.specs.add(spec);
             }
+        }
+    }
+    
+    public void checkSpeckIDInDb()
+    {
+        for(int i = 0; i < this.specs.size(); i++)
+        {
+           try 
+            {
+                //UNIQUE (member_id,name,role)   
+                JSONArray dbSpec = dbConnect.select(DBStructure.SPECS_TABLE_NAME,
+                                                    new String[] {"id"},
+                                                    "member_id=? AND name=? AND role=?",
+                                                    new String[] { this.internalID +"", this.specs.get(i).getName(), this.specs.get(i).getRole() });
+                if(dbSpec.size() > 0)
+                {
+                    this.specs.get(i).setId(((JSONObject) dbSpec.get(0)).get("id").toString());
+                    this.specs.get(i).setIsInternalData(true);
+                }
+            } catch (SQLException | DataException ex) {
+                System.out.println("Fail to get old spec info in DB "+ ex);
+            } 
         }
     }
 
@@ -163,7 +190,7 @@ public class Member extends GameObject
         try
         {
             Update up = new Update();
-            specs = up.getMemberFromBlizz(this.internalID, this.name, this.realm).getSpecs();
+            specs = up.getMemberFromBlizz(this.name, this.realm).getSpecs();
         }
         catch (IOException|ParseException|DataException ex)
         {
@@ -193,6 +220,7 @@ public class Member extends GameObject
                 //Save specs...
                 for(int i = 0; i < specs.size(); i++)
                 {
+                    specs.get(i).setMemberId(this.internalID);
                     specs.get(i).saveInDB();
                 }
                 return true;
@@ -223,8 +251,7 @@ public class Member extends GameObject
         }				
     }
 	
-    //GETTERS	
-    public int getInternalID() { return this.internalID; }
+    //GETTERS
     public String getName() { return this.name; }
     public String getRealm() { return this.realm; }
     public String getBattleGroup() { return this.battleGroup; }
@@ -238,6 +265,7 @@ public class Member extends GameObject
     public int getFaction() { return this.faction; }
     public String getGuildName() { return this.guildName; }
     public long getLastModified() { return this.lastModified; }
+    public int getUserID() { return this.userID; }
     public Date getLastModifiedDate() {
         //All lastModified in blizzard API is added 3 cero more...
         String val = this.lastModified+"";
@@ -272,7 +300,7 @@ public class Member extends GameObject
         {
             Spec sp = specs.get(i);
             boolean isEnable = false; 
-            if(id != -1 && id == sp.getId()) isEnable = true;
+            if(id != -1 && id == Integer.parseInt(sp.getId())) isEnable = true;
             if(sName != null && sp.isThisSpec(sName, sRole)) isEnable = true;
             specs.get(i).setEnable(isEnable);
         }
@@ -280,6 +308,8 @@ public class Member extends GameObject
     
     @Override
     public void setId(String id) { this.internalID = Integer.parseInt(id); }
+    @Override
+    public String getId() { return this.internalID +""; }
 
     //two members equals method
     @Override
@@ -288,7 +318,7 @@ public class Member extends GameObject
         if(o == this) return true;
         if(o == null || (this.getClass() != o.getClass())) return false;
 
-        int oId = ((Member) o).getInternalID();
+        int oId = Integer.parseInt(((Member) o).getId());
         long oLastModified = ((Member) o).getLastModified();
         return (  
                 oId == this.internalID

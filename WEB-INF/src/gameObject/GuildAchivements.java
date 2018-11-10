@@ -67,9 +67,10 @@ public class GuildAchivements extends GameObject
     }	
 	
     //Getters
-    public int getId() { return this.id; }
     public String getClassification() { return this.classification; }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
+    @Override
+    public String getId() { return this.id +""; }
     
 }

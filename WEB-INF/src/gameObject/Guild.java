@@ -6,13 +6,16 @@
 package com.artOfWar.gameObject;
 
 import com.artOfWar.blizzardAPI.APIInfo;
+import com.artOfWar.dbConnect.DBStructure;
 
 import org.json.simple.JSONObject;
 
 public class Guild extends GameObject
 {
     //Attribute
+    private int id;
     private String name;
+    private String realm;
     private String battleGroup;
     private long lastModified;
     private long achievementPoints;
@@ -41,6 +44,7 @@ public class Guild extends GameObject
         this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
         this.battleGroup = guildInfo.get("battlegroup").toString();
         this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
+        this.realm = guildInfo.get("realm").toString();
         if(guildInfo.get("level").getClass() == java.lang.Long.class)
         {//if info come to blizzAPI or DB
             this.level = ((Long) guildInfo.get("level")).intValue();
@@ -48,6 +52,7 @@ public class Guild extends GameObject
         }
         else
         {
+            this.id = (Integer) guildInfo.get("id");
             this.level = (Integer) guildInfo.get("level");	
             this.side =  (Integer) guildInfo.get("side");		
         }		
@@ -57,7 +62,12 @@ public class Guild extends GameObject
     @Override
     public boolean saveInDB()
     {
-        String[] values = { this.name, 
+        /* {"name", "realm","lastModified", "battlegroup", 
+         * "level", "side", "achievementPoints"};
+         */
+        setTableStructur(DBStructure.outKey(GUILD_TABLE_STRUCTURE));
+        String[] values = { this.name,
+                            this.realm,
                             this.lastModified +"",
                             this.battleGroup,
                             this.level +"",
@@ -79,8 +89,10 @@ public class Guild extends GameObject
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
     @Override
-    public void setId(String id) { this.name = id; }
-	
+    public void setId(String id) { this.id = Integer.parseInt(id); }
+    @Override
+    public String getId() { return this.id+""; }
+    
     //two guild equals method
     @Override
     public boolean equals(Object o) 

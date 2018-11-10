@@ -1,11 +1,26 @@
 CREATE TABLE `guild_info` (
+    `id`                int NOT NULL AUTO_INCREMENT,
     `name`              varchar(50) NOT NULL,
+    `realm`             varchar(50) NOT NULL,
     `lastModified`      bigint(20) NOT NULL,
     `battlegroup`       varchar(50) NOT NULL,
     `level`             int NOT NULL,
     `side`              int NOT NULL,
     `achievementPoints` bigint(20) NOT NULL,
-    PRIMARY KEY (`name`)
+    PRIMARY KEY (`id`),
+    UNIQUE (`name`, `realm`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `users` (
+    `id`            INT NOT NULL AUTO_INCREMENT,
+    `email`         varchar(50) NOT NULL,
+    `password`      varchar(50) NOT NULL,
+    `battle_tag`    varchar(50),
+    `access_token`  varchar(50),
+    `guild_rank`    TINYINT DEFAULT -1,
+    `wowinfo`       TINYINT(1) DEFAULT 0,
+    PRIMARY KEY(id),
+    UNIQUE(email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `gMembers_id_name` (
@@ -13,8 +28,10 @@ CREATE TABLE `gMembers_id_name` (
     `member_name`   varchar(20) NOT NULL,
     `realm`         varchar(50) NOT NULL,
     `in_guild`      TINYINT(1) NOT NULL,
-    `rank`          int NOT NULL,
+    `rank`          int,
+    `user_id`       int,
     PRIMARY KEY(internal_id),
+    FOREIGN KEY(user_id) REFERENCES users(id),
     UNIQUE (member_name, realm)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -36,17 +53,6 @@ CREATE TABLE `character_info` (
     FOREIGN KEY(internal_id) REFERENCES gMembers_id_name(internal_id),
     FOREIGN KEY(class) REFERENCES playable_class(id),
     FOREIGN KEY(race) REFERENCES races(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `spells` (
-    `id`            int NOT NULL,
-    `name`          varchar(50) NOT NULL,
-    `icon`          varchar(50) NOT NULL,
-    `description`   TEXT NOT NULL,
-    `castTime`      varchar(20) NOT NULL,
-    `cooldown`      varchar(20),
-    `range`         varchar(20),
-    PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `specs` (
@@ -72,12 +78,6 @@ CREATE TABLE `specs` (
     FOREIGN KEY(tier_5) REFERENCES spells(id),
     FOREIGN KEY(tier_6) REFERENCES spells(id),
     UNIQUE (member_id,name,role)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `wow_token` (
-    `last_updated_timestamp`    bigint(20) NOT NULL,
-    `price`                     int NOT NULL,
-    PRIMARY KEY(last_updated_timestamp)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `guild_news` (

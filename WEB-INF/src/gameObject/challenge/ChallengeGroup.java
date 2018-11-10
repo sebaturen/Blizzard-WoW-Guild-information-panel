@@ -6,7 +6,7 @@
 package com.artOfWar.gameObject.challenge;
 
 import com.artOfWar.DataException;
-import com.artOfWar.gameObject.DBStructure;
+import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.Member;
 import java.sql.SQLException;
@@ -112,15 +112,13 @@ public class ChallengeGroup extends GameObject
     @Override
     public boolean saveInDB()
     {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strDate = dateFormat.format(timeDate); 
         String isPostSQL = (this.isPositive)? "1":"0";
         setTableStructur(DBStructure.outKey(CHALLENGE_GROUPS_TABLE_STRUCTURE));
         /* {"challenge_id", "time_date",
          * "time_hours", "time_minutes", "time_seconds",
          * "time_milliseconds", "is_positive"};
          */
-        int saveValue = saveInDBObj(new String[] {this.challengeId +"", strDate, 
+        int saveValue = saveInDBObj(new String[] {this.challengeId +"", getDBDate(this.timeDate), 
                                             this.timeHours +"", this.timeMinutes +"", this.timeSeconds +"", 
                                             this.timeMilliseconds +"", isPostSQL});
         switch (saveValue)
@@ -129,13 +127,24 @@ public class ChallengeGroup extends GameObject
                 //Save members
                 members.forEach((m) -> {                    
                     try {
-                        /*{"internal_member_id", "group_id", "spec_id"};*/
-                        dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
-                                        CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
-                                        DBStructure.outKey(CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE),
-                                        new String[] {m.getInternalID() +"", this.id +"", m.getActiveSpec().getId() +""},
-                                        "ON DUPLICATE KEY UPDATE spec_id=?",
-                                        new String[] { m.getActiveSpec().getId() +"" });
+                        JSONArray memInGroupId = null;
+                        try {
+                            //Verificate if this memers is previewsly register from this group
+                            memInGroupId = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
+                                    new String[] { "member_in_group_id" },
+                                    "internal_member_id=? AND group_id=?",
+                                    new String[] { m.getId(), this.id +"" } );
+                        } catch (SQLException ex) {
+                            System.out.println("Fail to get memberInGroupID "+ ex);
+                        }
+                        //Insert or update... if need insert is because not is register :D
+                        if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
+                        {//insert
+                            dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
+                                            CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
+                                            new String[] { "internal_member_id", "group_id", "spec_id" },
+                                            new String[] { m.getId(), this.id +"", m.getActiveSpec().getId() +"" });
+                        }
                     } catch (DataException|ClassNotFoundException ex) {
                         System.out.println("Fail to save members in groups: "+ ex);
                     }
@@ -155,8 +164,8 @@ public class ChallengeGroup extends GameObject
     public void addMember(Member mb) { members.add(mb); }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
-	
-    public int getId() { return this.id; }
+    @Override
+    public String getId() { return this.id +""; }
     public Date getTimeDate() { return this.timeDate; }
     public int getTimeHour() { return this.timeHours; }
     public int getTimeMinutes() { return this.timeMinutes; }
@@ -175,5 +184,12 @@ public class ChallengeGroup extends GameObject
         out = members.stream().map((mb) -> "\t\t\t"+ mb.toString() +"\n").reduce(out, String::concat);
         out += "\t\tEND MEMBERS!!///////////";
         return out;
+    }
+    
+    public static String getDBDate(Date date)
+    {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = dateFormat.format(date); 
+        return strDate;
     }
 }

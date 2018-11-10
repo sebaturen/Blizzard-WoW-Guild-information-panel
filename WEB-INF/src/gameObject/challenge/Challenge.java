@@ -99,6 +99,8 @@ public class Challenge extends GameObject
     //Getters/Setters
     @Override
     public void setId(String mapId) { this.mapId = Integer.parseInt(mapId); }
+    @Override
+    public String getId() { return this.mapId +""; }
     public void setMapName(String mapName) { this.mapName = mapName; }
     public void addChallengeGroup(ChallengeGroup chGroup) { this.chGroups.add(chGroup); }
     public int getMapId() { return this.mapId; }

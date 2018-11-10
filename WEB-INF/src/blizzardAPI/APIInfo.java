@@ -17,6 +17,7 @@ public interface APIInfo
 
     //API Information
     public static final String API_OAUTH_URL        = "https://%s.battle.net/oauth/%s";
+    public static final String API_OAUTH_AUTHORIZE  = "authorize";
     public static final String API_OAUTH_TOKEN      = "token";
     public static final String API_OAUTH_USERINFO   = "userinfo";
     public static final String API_ROOT_URL         = "https://%s.api.blizzard.com/%s"; //location, api path
@@ -33,7 +34,10 @@ public interface APIInfo
     public static final String API_CHARACTER_PROFILE    = "wow/character/%s/%s";    //realm, characterName
     public static final String API_CHARACTER_RACES      = "wow/data/character/races";
     public static final String API_GUILD_ACHIVEMENTS    = "wow/data/guild/achievements";
+    public static final String API_SPELL                = "/wow/spell/%s"; //spell id
     //World of Warcraft Game Data APIs
     public static final String API_PLAYABLE_CLASS       = "data/wow/playable-class/";
     public static final String API_WOW_TOKEN            = "data/wow/token/";
+    //Community OAuth
+    public static final String API_WOW_OAUTH_PROFILE    = "wow/user/characters";
 }

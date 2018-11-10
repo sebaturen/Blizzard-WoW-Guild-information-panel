@@ -28,12 +28,36 @@
                 <br/><a href="register.jsp"><button type="button" class="btn btn-primary btn-sm">Register</button></a>
            <%} else { %>
                 <%= (user.getBattleTag() != null)? user.getBattleTag():user.getEmail() %><br/>
-                <% if (user.getBattleTag() == null) {%>
-                    <a href="https://us.battle.net/oauth/authorize?redirect_uri=<%= java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8") %>&scope=wow.profile&state=%7B%22region%22%3A%22us%22%7D&response_type=code&client_id=9a30069bb8254369abffe72ea2d8758c">
+                <% if (!user.getWowInfo()) {
+                    
+                    String baseUrl = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 
+                                                com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
+                                                com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
+                    String redirectUri = baseUrl;
+                    redirectUri += "?redirect_uri="java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
+                    redirectUri += "&scope=wow.profile";
+                    redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
+                    redirectUri += "&response_type=code";
+                    redirectUri += "&client_id=" + com.artOfWar.blizzardAPI.APIInfo.CLIENT_ID;
+                %>
+                    <a href="<%= redirectUri %>">
                         <button type="button" class="btn btn-primary">Link blizz account</button>
                     </a>
                     <br>
-              <%}%>
+              <%} else {
+                    %><button type="button" class="btn btn-outline-danger">Un link blizz account</button><%
+                }
+                org.json.simple.JSONArray characters = user.getCharacterList();
+                if(characters != null)
+                {
+                    for(int i = 0; i < characters.size(); i++)
+                    {
+                        org.json.simple.JSONObject infoChar = (org.json.simple.JSONObject) characters.get(i);
+                        out.write( infoChar.get("member_name") +"/"+ infoChar.get("realm") +"<br/>");
+                    }
+                }              
+              %>
+                
                 <form method="post">
                     <input name="logOut" type="hidden" value="true"/>
                     <button type="submit" class="btn btn-primary">Log out</button>

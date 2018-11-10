@@ -40,3 +40,14 @@ CREATE TABLE `player_achivement_list` (
     PRIMARY KEY (`id`),
     FOREIGN KEY(category_id) REFERENCES player_achivement_category(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `spells` (
+    `id`            int NOT NULL,
+    `name`          varchar(50) NOT NULL,
+    `icon`          varchar(50) NOT NULL,
+    `description`   TEXT NOT NULL,
+    `castTime`      varchar(20) NOT NULL,
+    `cooldown`      varchar(20),
+    `range`         varchar(20),
+    PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

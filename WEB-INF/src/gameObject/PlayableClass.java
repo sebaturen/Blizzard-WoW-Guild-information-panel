@@ -54,7 +54,7 @@ public class PlayableClass extends GameObject
     }	
 	
     //Getters
-    public int getId() { return this.id; }
+    public String getId() { return this.id +""; }
     public String getEnName() { return this.enName; }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }

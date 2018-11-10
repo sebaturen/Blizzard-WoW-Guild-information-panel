@@ -7,7 +7,7 @@ package com.artOfWar.viewController;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
-import com.artOfWar.gameObject.DBStructure;
+import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.Member;
 
 import java.util.ArrayList;

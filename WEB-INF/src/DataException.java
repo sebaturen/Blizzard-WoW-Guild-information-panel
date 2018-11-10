@@ -7,6 +7,8 @@ package com.artOfWar;
 
 public class DataException extends Exception
 {
+    private int errorCode;
+    
     // Parameterless Constructor
     public DataException() {}
 
@@ -15,6 +17,9 @@ public class DataException extends Exception
     {
         super(message);
     }	
+    
+    public void setErrorCode(int i) { this.errorCode = i; }
+    public int getErrorCode() { return this.errorCode; }
 	
 } 
 

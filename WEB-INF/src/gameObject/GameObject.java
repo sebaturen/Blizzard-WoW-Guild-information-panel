@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject;
 
+import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 
@@ -17,6 +18,7 @@ public abstract class GameObject implements DBStructure
     //Variable
     protected static DBConnect dbConnect;
     protected boolean isData = false;
+    protected boolean isInternalData = false;
     private final String tableDB;
     private final String tableKey;
     private String[] tableStruct;
@@ -39,6 +41,7 @@ public abstract class GameObject implements DBStructure
     protected abstract void saveInternalInfoObject(JSONObject guildInfo);
     public abstract boolean saveInDB();
     public abstract void setId(String id);
+    public abstract String getId();
 	
     //Generic function
     /**
@@ -50,31 +53,37 @@ public abstract class GameObject implements DBStructure
         if(dbConnect == null) dbConnect = new DBConnect();
         if (this.isData && values.length > 0)
         {
-            String updateDuplicate = "ON DUPLICATE KEY UPDATE ";
-            String[] whereValues = new String[values.length-1];
-            for(int i = 1; i < values.length; i++) //start in 1 omitted key!
-            {
-                whereValues[i-1] = values[i];
-                updateDuplicate += " `"+ this.tableStruct[i] +"`=?,";
+            //Valid if need update or insert...
+            if(this.isInternalData) //if have a ID, is in DB
+            {//update...
+                try 
+                {
+                    //Update
+                    dbConnect.update(this.tableDB,
+                            this.tableStruct,
+                            values,
+                            this.tableKey +"=?",
+                            new String[] { getId() });
+                    return SAVE_MSG_UPDATE_OK;
+                } catch (DataException | ClassNotFoundException ex) {
+                    System.out.println("Fail to update "+ getId() +" in table "+ this.tableDB);
+                    return SAVE_MSG_UPDATE_ERROR;
+                }
             }
-            updateDuplicate = updateDuplicate.substring(0,updateDuplicate.length()-1); //remove the last ','
-           
-            try
-            {
-                String id = dbConnect.insert(this.tableDB,
-                                            this.tableKey,
-                                            this.tableStruct,
-                                            values,
-                                            updateDuplicate,
-                                            whereValues);
-                //If is NOT disabled and have a date (not cero or empty), set a ID
-                setId(id);
-                return SAVE_MSG_INSERT_OK;
-            }
-            catch (DataException|ClassNotFoundException e)
-            {
-                System.out.println("E: "+ e);
-                return SAVE_MSG_INSERT_ERROR;
+            else
+            {   try 
+                {
+                    //Not have a defined ID...
+                    String id = dbConnect.insert(this.tableDB,
+                                                this.tableKey,
+                                                this.tableStruct,
+                                                values);
+                    setId(id);
+                    return SAVE_MSG_INSERT_OK;
+                } catch (DataException | ClassNotFoundException ex) {
+                    System.out.println("Fail to insert "+ ex);
+                    return SAVE_MSG_INSERT_ERROR;
+                }
             }
         }
         return SAVE_MSG_NO_DATA;
@@ -102,6 +111,7 @@ public abstract class GameObject implements DBStructure
                 JSONObject infoDB = (JSONObject) dbSelect.get(0);
                 //Construct a character object
                 saveInternalInfoObject(infoDB);
+                this.isInternalData = true;
                 return isData;
             }
             else
@@ -117,7 +127,9 @@ public abstract class GameObject implements DBStructure
 	
     //Get/Set method
     public boolean isData() { return this.isData; }
+    public boolean isInternalData() { return this.isInternalData; }
     public void setData(boolean isData) { this.isData = isData; }
     public void setTableStructur(String[] tabStruc) { this.tableStruct = tabStruc; }
+    public void setIsInternalData(boolean stat) { this.isInternalData = stat; }
 	
 }
