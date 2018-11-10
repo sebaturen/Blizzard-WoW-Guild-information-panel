@@ -706,7 +706,9 @@ public class Update implements APIInfo
      */
     public int setMemberCharacterInfo(String accessToken, int userID)
     {
-        try {
+        int rank = -1;
+        try 
+        {
             String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_WOW_OAUTH_PROFILE);
             //prepare info
             JSONObject blizzInfo = Update.curl(urlString,
@@ -723,12 +725,12 @@ public class Update implements APIInfo
                     String realm = pj.get("realm").toString();
                     Member mb = getMemberInfoFromBlizzOrDB(name, realm);
                     
-                    if(mb.isData())
+                    if(mb != null && mb.isData())
                     {
                         try 
                         {
                             dbConnect.update(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
-                                            new String[] { "user_id"},
+                                            new String[] { "user_id" },
                                             new String[] { userID+""},
                                             "internal_id=?", 
                                             new String[] { mb.getId()});
@@ -746,7 +748,7 @@ public class Update implements APIInfo
                                                         new String[] {"1", userID +""});
                     if(guildRank.size() > 0)
                     {
-                        return (Integer)((JSONObject) guildRank.get(0)).get("rank");
+                        rank = (Integer)((JSONObject) guildRank.get(0)).get("rank");
                     }
                 } catch (SQLException ex) {
                     System.out.println("Fail to select characters from user "+ userID +" - "+ ex);
@@ -759,6 +761,7 @@ public class Update implements APIInfo
                             new String[] { "1" },
                             "id=?",
                             new String[] { userID +""});
+                    System.out.println("Wow token is update!");
                 } catch (ClassNotFoundException ex) {
                     System.out.println("Fail to set wowinfo is worikng from "+ userID);
                 }
@@ -775,13 +778,12 @@ public class Update implements APIInfo
                             new String[] {userID +""});
                 } catch (DataException | ClassNotFoundException ex) {
                     System.out.println("Fail to update wowinfo false from "+ userID +" - "+ ex);
-                }
-                                
+                }                                
             }
         } catch (IOException|ParseException ex) {
             System.out.println("Fail to get user Access Token "+ ex);
         }
-        return -1;
+        return rank;
     }
 
     /**

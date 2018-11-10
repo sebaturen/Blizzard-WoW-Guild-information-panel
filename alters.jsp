@@ -1,7 +1,7 @@
 <%@include file="includes/globalObject.jsp" %>
-<% if (user == null || !user.checkUser()) {
+<% if (user == null || user.getGuildRank() == -1) {
     response.sendRedirect("index.jsp");
-} else { %>
+} else {%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
@@ -10,13 +10,12 @@
     <body>
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
-            <% if (user.setAccessCode(request.getParameter("code"))) {
-                response.sendRedirect("login.jsp");
-            } else {
-                out.write("ERROR! when try save your blizzard information!");
-            }%>
+            En construccion...
         </div>
     </body>
 </html>
 <%}%>
-            
+    
+    
+    
+    

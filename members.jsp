@@ -27,7 +27,7 @@
                         {%>
                             <tr>
                                 <th scope="row"><%= i %></th>
-                                <td><%= member.getName() %></td>
+                                <td class="character-<%= (member.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= member.getName() %></td>
                                 <td><%= member.getmemberClass().getEnName() %></td>
                                 <td><%= member.getLevel() %></td>
                                 <td><%= member.getActiveSpec().getRole() %> (<%= member.getActiveSpec().getName() %>)</td>

@@ -42,6 +42,22 @@ body {
 }
 /*END -------GENERAL------------*/
 
+/*-------PLAYABLE CLASS COLOR------------*/
+.character-Warrior { color: #C79C6E; }
+.character-Paladin { color: #F58CBA; }
+.character-Hunter { color: #ABD473; }
+.character-Rogue { color: #FFF569; }
+.character-Priest { color: #FFFFFF; }
+.character-DeathKnight { color: #C41F3B; }
+.character-Shaman { color: #0070DE; }
+.character-Mage { color: #40C7EB; }
+.character-Warlock { color: #8787ED; }
+.character-Monk { color: #00FF96; }
+.character-Druid { color: #FF7D0A; }
+.character-DemonHunter { color: #A330C9; }
+/*END -------PLAYABLE CLASS COLOR------------*/
+
+
 /*-------MENU------------*/
 #main-menu {
     background-color: #00000096;

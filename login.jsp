@@ -34,7 +34,7 @@
                                                 com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
                                                 com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
                     String redirectUri = baseUrl;
-                    redirectUri += "?redirect_uri="java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
+                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
                     redirectUri += "&scope=wow.profile";
                     redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
                     redirectUri += "&response_type=code";
@@ -45,7 +45,7 @@
                     </a>
                     <br>
               <%} else {
-                    %><button type="button" class="btn btn-outline-danger">Un link blizz account</button><%
+                    %><button type="button" class="btn btn-outline-danger btn-sm">Un link blizz account</button><br/><%
                 }
                 org.json.simple.JSONArray characters = user.getCharacterList();
                 if(characters != null)

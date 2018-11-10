@@ -36,9 +36,13 @@
                             <% for(Member m : groupCh.getMembers())
                             {%>
                                 <tr>
-                                    <td><%= m.getName() %></td>
-                                    <td><%= m.getActiveSpec().getRole() %></td>
-                                    <td><%= m.getActiveSpec().getName() %></td>
+                                    <td class="character-<%= (m.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= m.getName() %></td>
+                                    <td><img src="assets/img/icons/<%= m.getActiveSpec().getRole() %>.png"/></td>
+                                    <% //Get img from speck
+                                        String className = ((m.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
+                                        String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                    %>
+                                    <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 20px;"/></td>
                                 </tr>
                           <%}%>
                             </tbody>

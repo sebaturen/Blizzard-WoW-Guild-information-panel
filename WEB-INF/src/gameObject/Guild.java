@@ -5,7 +5,6 @@
  */
 package com.artOfWar.gameObject;
 
-import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.dbConnect.DBStructure;
 
 import org.json.simple.JSONObject;
@@ -27,7 +26,7 @@ public class Guild extends GameObject
     {
         super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
         //Load guild from DB
-        loadFromDB(APIInfo.GUILD_NAME);
+        loadFromDB(1 +""); //asumed the first guild is only this guild (this plataform)
     }
 
     //Load to JSON

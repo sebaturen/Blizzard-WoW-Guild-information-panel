@@ -29,7 +29,7 @@ public class Login implements APIInfo
     private String battleTag;
     private String memberAccesToken;
     private boolean wowInfo = false;
-    private int guildRank;
+    private int guildRank = -1;
     
     public Login()
     {
@@ -83,15 +83,10 @@ public class Login implements APIInfo
             //Try get a member rank...
             try {
                 Update up = new Update();
-                int userRank = up.setMemberCharacterInfo(this.memberAccesToken, this.id);
-                dbConnect.update(DBStructure.USER_TABLE_NAME,
-                                new String[] {"guild_rank", "wowinfo"},
-                                new String[] { userRank +"", "" },
-                                "id=?",
-                                new String[] { this.id +"" });
-                this.guildRank = userRank;
+                up.setMemberCharacterInfo(this.memberAccesToken, this.id);
+                checkUser();
             } catch (IOException | ParseException ex) {
-                System.out.println("Fail to set guild Rank "+ this.id +" - "+ ex);
+                System.out.println("Fail to seve characters info "+ this.id +" - "+ ex);
             }            
             return true;
         } catch (DataException | ClassNotFoundException ex) {
@@ -109,7 +104,6 @@ public class Login implements APIInfo
                     new String[] { this.id +"" } );
             if(chars.size() > 0)
             {
-                System.out.println("Chars> "+ chars);
                 return chars;
             }
         } catch (SQLException|DataException ex) {
@@ -186,4 +180,5 @@ public class Login implements APIInfo
     public String getEmail() { return this.email; }
     public String getBattleTag() { return this.battleTag; }
     public boolean getWowInfo() { return this.wowInfo; }
+    public int getGuildRank() { return this.guildRank; }
 }

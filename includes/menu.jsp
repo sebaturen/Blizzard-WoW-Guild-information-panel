@@ -18,6 +18,11 @@
             <li class="nav-item <% out.write((request.getRequestURI().equals("/guild_challenges.jsp"))? "active":""); %>">
                 <a class="nav-link" href="guild_challenges.jsp">Guild Challenges</a>
             </li>
+            <% if(user != null && user.getGuildRank() != -1) { %>
+                <li class="nav-item <% out.write((request.getRequestURI().equals("/alters.jsp"))? "active":""); %>">
+                    <a class="nav-link" href="alters.jsp">Alters</a>
+                </li>
+            <% } %>
             <li class="nav-item">
                 <a class="nav-link disabled" href="#">Last Update[<%= gameInfo.getLastDynamicUpdate() %>]</a>
             </li>
