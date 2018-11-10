@@ -23,7 +23,7 @@
                     <% for(ChallengeGroup groupCh : ch.getChallengeGroups())
                     {%>
                     <div class="col group-info">
-                        <h4 class='group-time'><%= "["+ groupCh.getTimeHour() +":"+ groupCh.getTimeMinutes() +":"+ groupCh.getTimeSeconds() +":"+ groupCh.getTimeMilliseconds() +"]" %></h4>
+                        <p class='group-time'><%= "["+ groupCh.getTimeHour() +"h:"+ groupCh.getTimeMinutes() +"m:"+ groupCh.getTimeSeconds() +"s]" %></p>
                         <table class="table table-dark character-tab">
                             <thead>
                                 <tr>
