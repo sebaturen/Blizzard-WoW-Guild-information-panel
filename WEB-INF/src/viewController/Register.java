@@ -32,7 +32,7 @@ public class Register
             dbConnect.insert(DBStructure.USER_TABLE_NAME,
                             DBStructure.USER_TABLE_KEY,
                            new String[] {"email", "password"},
-                           new String[] {this.email, encodePass(this.password)});
+                           new String[] {this.email, this.password});
             return true;
         } catch (ClassNotFoundException|DataException ex) {
             System.out.println("Fail to save user info..."+ this.email +" - "+ ex);
@@ -61,7 +61,7 @@ public class Register
     
     //Getters and Setters
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String password) { this.password = encodePass(password); }
     public boolean isData() { return !(this.email == null || this.password == null); }
     
     

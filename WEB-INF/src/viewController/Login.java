@@ -42,12 +42,14 @@ public class Login implements APIInfo
     public boolean checkUser() 
     {
         if(this.email == null || this.password == null) return false;
-        try {            
-            //{"email", "password", "battle_tag", "access_token", "guild_rank"};
+        try {
+            /* {"id","email", "password", "battle_tag", 
+             * "access_token", "guild_rank", "wowinfo"};
+             */
             JSONArray validUser = dbConnect.select(DBStructure.USER_TABLE_NAME,
-                                                DBStructure.USER_TABLE_STRUCTURE,
+                                                new String[] {"id", "email", "guild_rank", "access_token", "battle_tag", "wowinfo"},
                                                 "email=? AND password=?",
-                                                new String[] {this.email, Register.encodePass(this.password)});
+                                                new String[] {this.email, this.password});
             if(validUser.size() > 0) 
             {//valid if have a info
                 JSONObject infoUser = (JSONObject) validUser.get(0);
@@ -181,7 +183,7 @@ public class Login implements APIInfo
     
     //Getters and Setters
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String ps) { this.password = Register.encodePass(ps); }
     public boolean setAccessCode(String code) { return saveBlizzardInfo(code); }
     public String getEmail() { return this.email; }
     public String getBattleTag() { return this.battleTag; }
