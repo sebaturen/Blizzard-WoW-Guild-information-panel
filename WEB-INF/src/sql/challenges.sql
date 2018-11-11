@@ -1,6 +1,18 @@
 CREATE TABLE `challenges` (
-    `id`        int NOT NULL AUTO_INCREMENT,
-    `map_name`  varchar(50) NOT NULL,
+    `id`                int NOT NULL AUTO_INCREMENT,
+    `map_name`          varchar(50) NOT NULL,
+    `bronze_hours`          int not null,
+    `bronze_minutes`        int not null,
+    `bronze_seconds`        int not null,
+    `bronze_milliseconds`   int not null,
+    `silver_hours`          int not null,
+    `silver_minutes`        int not null,
+    `silver_seconds`        int not null,
+    `silver_milliseconds`   int not null,
+    `gold_hours`          int not null,
+    `gold_minutes`        int not null,
+    `gold_seconds`        int not null,
+    `gold_milliseconds`   int not null,
     PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

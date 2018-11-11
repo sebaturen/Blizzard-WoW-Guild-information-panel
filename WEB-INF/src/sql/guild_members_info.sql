@@ -9,7 +9,7 @@ CREATE TABLE `guild_info` (
     `achievementPoints` bigint(20) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE (`name`, `realm`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `users` (
     `id`            INT NOT NULL AUTO_INCREMENT,
@@ -21,7 +21,7 @@ CREATE TABLE `users` (
     `wowinfo`       TINYINT(1) DEFAULT 0,
     PRIMARY KEY(id),
     UNIQUE(email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `gMembers_id_name` (
     `internal_id`   int NOT NULL AUTO_INCREMENT,
@@ -33,7 +33,7 @@ CREATE TABLE `gMembers_id_name` (
     PRIMARY KEY(internal_id),
     FOREIGN KEY(user_id) REFERENCES users(id),
     UNIQUE (member_name, realm)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `character_info` (
     `internal_id`       int NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `character_info` (
     FOREIGN KEY(internal_id) REFERENCES gMembers_id_name(internal_id),
     FOREIGN KEY(class) REFERENCES playable_class(id),
     FOREIGN KEY(race) REFERENCES races(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `specs` (
     `id`            int NOT NULL AUTO_INCREMENT,

@@ -10,11 +10,14 @@ import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.Member;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -95,21 +98,24 @@ public class Login implements APIInfo
         return false;
     }
     
-    public JSONArray getCharacterList()
+    public List<Member> getCharacterList()
     {
+        List<Member> userMember = new ArrayList<>();  
         try {
             JSONArray chars = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
-                    new String[] {"member_name", "realm", "rank"},
+                    new String[] {"internal_id" },
                     "user_id=? order by realm",
                     new String[] { this.id +"" } );
-            if(chars.size() > 0)
+            for(int i = 0; i < chars.size(); i++)
             {
-                return chars;
+                int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");
+                Member mb = new Member(internalID);
+                if(mb.isData()) userMember.add(mb);
             }
         } catch (SQLException|DataException ex) {
             System.out.println("Error get a character user info "+ this.id +" - "+ ex);
         }
-        return null;
+        return userMember;
     }
     
     

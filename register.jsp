@@ -28,7 +28,7 @@
                     Register is complet, go to login...<br>
                     <a href="/login.jsp"><button type="submit" class="btn btn-primary">Login</button></a>
               <%} else { %>
-                    Em... we have an error, pls try letter...
+                    Em... we have an error, pls try again...
               <%}
             }%>
         </div>

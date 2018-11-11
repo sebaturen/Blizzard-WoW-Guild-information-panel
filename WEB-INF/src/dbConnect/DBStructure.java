@@ -50,7 +50,10 @@ public interface DBStructure
 
     public static final String CHALLENGES_TABLE_NAME = "challenges";
     public static final String CHALLENGES_TABLE_KEY = "id";
-    public static final String[] CHALLENGES_TABLE_STRUCTURE = {"id", "map_name"};
+    public static final String[] CHALLENGES_TABLE_STRUCTURE = {"id", "map_name",
+                                                        "bronze_hours", "bronze_minutes", "bronze_seconds", "bronze_milliseconds",
+                                                        "silver_hours", "silver_minutes", "silver_seconds", "silver_milliseconds",
+                                                        "gold_hours", "gold_minutes", "gold_seconds", "gold_milliseconds"};
     
     //Challenge Groups
     public static final String CHALLENGE_GROUPS_TABLE_NAME = "challenge_groups";

@@ -66,7 +66,6 @@ public class Update implements APIInfo
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail update guild news Info: "+ ex); }		
         */
         
-        
         System.out.println("-------Update process is START! (Dynamic)------");        
         //Guild information update!
         System.out.println("Guild Information update!");
@@ -685,16 +684,7 @@ public class Update implements APIInfo
             {                    
                 String acToken = ((JSONObject)users.get(i)).get("access_token").toString();
                 int userID = (Integer) ((JSONObject)users.get(i)).get("id");
-                int guild_rank = setMemberCharacterInfo(acToken, userID);
-                try {
-                    dbConnect.update(DBStructure.USER_TABLE_NAME,
-                            new String[] {"guild_rank"},
-                            new String[] { guild_rank +""},
-                            "id=?",
-                            new String[] { userID +"" });
-                } catch (ClassNotFoundException ex) {
-                    System.out.println("Fail to save guild rank from user "+ userID +" - "+ ex);
-                }
+                setMemberCharacterInfo(acToken, userID);
             }
         }
     }
@@ -704,9 +694,8 @@ public class Update implements APIInfo
      * @accessToken String member access Token
      * Return: guild rank
      */
-    public int setMemberCharacterInfo(String accessToken, int userID)
+    public void setMemberCharacterInfo(String accessToken, int userID)
     {
-        int rank = -1;
         try 
         {
             String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_WOW_OAUTH_PROFILE);
@@ -747,8 +736,17 @@ public class Update implements APIInfo
                                                         "in_guild=? AND user_id=? ORDER BY rank ASC LIMIT 1",
                                                         new String[] {"1", userID +""});
                     if(guildRank.size() > 0)
-                    {
-                        rank = (Integer)((JSONObject) guildRank.get(0)).get("rank");
+                    {//Save a rank from this player...
+                        int rank = (Integer)((JSONObject) guildRank.get(0)).get("rank");                        
+                        try {
+                            dbConnect.update(DBStructure.USER_TABLE_NAME,
+                                    new String[] {"guild_rank"},
+                                    new String[] { rank +""},
+                                    "id=?",
+                                    new String[] { userID +"" });
+                        } catch (ClassNotFoundException ex) {
+                            System.out.println("Fail to save guild rank from user "+ userID +" - "+ ex);
+                        }
                     }
                 } catch (SQLException ex) {
                     System.out.println("Fail to select characters from user "+ userID +" - "+ ex);
@@ -761,7 +759,7 @@ public class Update implements APIInfo
                             new String[] { "1" },
                             "id=?",
                             new String[] { userID +""});
-                    System.out.println("Wow token is update!");
+                    System.out.println("Wow access token is update!");
                 } catch (ClassNotFoundException ex) {
                     System.out.println("Fail to set wowinfo is worikng from "+ userID);
                 }
@@ -783,7 +781,6 @@ public class Update implements APIInfo
         } catch (IOException|ParseException ex) {
             System.out.println("Fail to get user Access Token "+ ex);
         }
-        return rank;
     }
 
     /**

@@ -29,11 +29,11 @@ public class Register
         if(this.email == null || this.password == null) return false;
         try {      
             //{"email", "password", "battle_tag", "access_code"};
-            String id = dbConnect.insert(DBStructure.USER_TABLE_NAME,
-                                        DBStructure.USER_TABLE_KEY,
-                                       new String[] {"email", "password"},
-                                       new String[] {this.email, encodePass(this.password)});
-            return (id.equals(this.email));
+            dbConnect.insert(DBStructure.USER_TABLE_NAME,
+                            DBStructure.USER_TABLE_KEY,
+                           new String[] {"email", "password"},
+                           new String[] {this.email, encodePass(this.password)});
+            return true;
         } catch (ClassNotFoundException|DataException ex) {
             System.out.println("Fail to save user info..."+ this.email +" - "+ ex);
         }

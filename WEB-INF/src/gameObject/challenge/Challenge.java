@@ -10,9 +10,14 @@ import com.artOfWar.gameObject.GameObject;
 import static com.artOfWar.gameObject.GameObject.SAVE_MSG_INSERT_OK;
 import static com.artOfWar.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -22,6 +27,9 @@ public class Challenge extends GameObject
     private int mapId;
     private String mapName;
     private List<ChallengeGroup> chGroups;
+    private int[] bronzeTime = new int[4]; //[h][m][s][ms]
+    private int[] silverTime = new int[4]; //[h][m][s][ms]
+    private int[] goldTime = new int[4];   //[h][m][s][ms]
     
     public Challenge(int id)
     {
@@ -65,11 +73,51 @@ public class Challenge extends GameObject
         {//if info come to blizzAPI
             this.mapId = ((Long) exInfo.get("id")).intValue();
             this.mapName = exInfo.get("name").toString();
+            //challenge time~
+            if(exInfo.containsKey("bronzeCriteria"))
+            {
+                JSONObject bronzeCriterial = (JSONObject) exInfo.get("bronzeCriteria");
+                this.bronzeTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
+                this.bronzeTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
+                this.bronzeTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
+                this.bronzeTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+            }
+            if(exInfo.containsKey("silverCriteria"))
+            {
+                JSONObject bronzeCriterial = (JSONObject) exInfo.get("silverCriteria");
+                this.silverTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
+                this.silverTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
+                this.silverTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
+                this.silverTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+            }
+            if(exInfo.containsKey("goldCriteria"))
+            {
+                JSONObject bronzeCriterial = (JSONObject) exInfo.get("goldCriteria");
+                this.goldTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
+                this.goldTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
+                this.goldTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
+                this.goldTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+            }
         }
         else
         {
             this.mapId = (Integer) exInfo.get("id");
             this.mapName = exInfo.get("map_name").toString();
+            //Bronze time
+            this.bronzeTime[0] = (Integer) exInfo.get("bronze_hours");
+            this.bronzeTime[1] = (Integer) exInfo.get("bronze_minutes");
+            this.bronzeTime[2] = (Integer) exInfo.get("bronze_seconds");
+            this.bronzeTime[3] = (Integer) exInfo.get("bronze_milliseconds");
+            //Silver time
+            this.silverTime[0] = (Integer) exInfo.get("silver_hours");
+            this.silverTime[1] = (Integer) exInfo.get("silver_minutes");
+            this.silverTime[2] = (Integer) exInfo.get("silver_seconds");
+            this.silverTime[3] = (Integer) exInfo.get("silver_milliseconds");
+            //Gold time
+            this.goldTime[0] = (Integer) exInfo.get("gold_hours");
+            this.goldTime[1] = (Integer) exInfo.get("gold_minutes");
+            this.goldTime[2] = (Integer) exInfo.get("gold_seconds");
+            this.goldTime[3] = (Integer) exInfo.get("gold_milliseconds");
         }
         this.isData = true;		
     }
@@ -77,8 +125,16 @@ public class Challenge extends GameObject
     @Override
     public boolean saveInDB()
     {
-        /* {"id", "map_name"}; */
-        int saveInDBReturn = saveInDBObj(new String[] {this.mapId +"", this.mapName});
+        /*
+         * {"id", "map_name",
+         * "bronze_hours", "bronze_minutes", "bronze_seconds", "bronze_milliseconds",
+         * "silver_hours", "silver_minutes", "silver_seconds", "silver_milliseconds",
+         * "gold_hours", "gold_minutes", "gold_seconds", "gold_milliseconds"};
+         */
+        int saveInDBReturn = saveInDBObj(new String[] {this.mapId +"", this.mapName,
+                            this.bronzeTime[0] +"", this.bronzeTime[1] +"", this.bronzeTime[2] +"", this.bronzeTime[3] +"",
+                            this.silverTime[0] +"", this.silverTime[1] +"", this.silverTime[2] +"", this.silverTime[3] +"",
+                            this.goldTime[0]   +"", this.goldTime[1]   +"", this.goldTime[2]   +"", this.goldTime[3]   +""});
         switch (saveInDBReturn)
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
@@ -106,6 +162,23 @@ public class Challenge extends GameObject
     public int getMapId() { return this.mapId; }
     public String getMapName() { return this.mapName; }
     public List<ChallengeGroup> getChallengeGroups() { return this.chGroups; }
+    public int isUpdateKey(ChallengeGroup cgroup)
+    {
+        try {
+            //Gold
+            Date cGold = new SimpleDateFormat("HH:mm:ss.SSS").parse(this.goldTime[0]+":"+this.goldTime[1]+":"+this.goldTime[2]+"."+this.goldTime[3]);
+            Date cSilver = new SimpleDateFormat("HH:mm:ss.SSS").parse(this.silverTime[0]+":"+this.silverTime[1]+":"+this.silverTime[2]+"."+this.silverTime[3]);
+            Date cBronze = new SimpleDateFormat("HH:mm:ss.SSS").parse(this.bronzeTime[0]+":"+this.bronzeTime[1]+":"+this.bronzeTime[2]+"."+this.bronzeTime[3]);
+            //Group time
+            Date gTime = new SimpleDateFormat("HH:mm:ss.SSS").parse(cgroup.getTimeHour()+":"+cgroup.getTimeMinutes()+":"+cgroup.getTimeSeconds()+"."+cgroup.getTimeMilliseconds());
+            if(gTime.before(cGold)) return 3;
+            if(gTime.before(cSilver)) return 2;
+            if(gTime.before(cBronze)) return 1;
+        } catch (ParseException ex) {
+            System.out.println("Fail to convert time group "+ ex);
+        }
+        return -1;
+    }
     
     @Override
     public String toString()

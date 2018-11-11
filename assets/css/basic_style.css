@@ -84,4 +84,21 @@ body {
     text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
     color: #fff;
 }
+.group-time {
+    float: left;
+}
+.key-downgrade {
+    color: red;
+}
+.key-upgrade {
+    color: #19e219;
+    text-shadow: 0 0 15px #3dce43, 0 0 30px rgba(255,255,255,.3);
+}
+.key-date {
+    float: right;
+    font-size: 0.7em;
+    text-align: center;
+    padding-top: 2em;
+    margin-bottom: 0em;
+}
 /*END -------GUILD CHALLENGE------------*/

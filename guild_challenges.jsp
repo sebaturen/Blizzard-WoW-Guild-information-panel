@@ -2,6 +2,7 @@
 <%@ page import ="com.artOfWar.gameObject.Member" %>
 <%@ page import ="com.artOfWar.gameObject.challenge.Challenge" %>
 <%@ page import ="com.artOfWar.gameObject.challenge.ChallengeGroup" %>
+<%@ page import ="java.text.SimpleDateFormat" %>
 <jsp:useBean id="challenges" class="com.artOfWar.viewController.GuildChallenges"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
@@ -23,7 +24,13 @@
                     <% for(ChallengeGroup groupCh : ch.getChallengeGroups())
                     {%>
                     <div class="col group-info">
-                        <p class='group-time'><%= "["+ groupCh.getTimeHour() +"h:"+ groupCh.getTimeMinutes() +"m:"+ groupCh.getTimeSeconds() +"s]" %></p>
+                        <%  int upgradeKey = ch.isUpdateKey(groupCh);
+                            String classGroupTime = (upgradeKey == -1)? "downgrade":"upgrade";
+                            String dateGroup = (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(groupCh.getTimeDate());
+                            dateGroup = "<p class='key-date'>"+ dateGroup +"</p>";
+                        %>
+                        <p class='group-time key-<%= classGroupTime %>'><%= "["+ groupCh.getTimeHour() +"h:"+ groupCh.getTimeMinutes() +"m:"+ groupCh.getTimeSeconds() +"s]" %><%= (upgradeKey == -1)? "":" (+"+upgradeKey+")" %></p>
+                        <%= dateGroup %>
                         <table class="table table-dark character-tab">
                             <thead>
                                 <tr>
@@ -42,7 +49,7 @@
                                         String className = ((m.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                         String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
                                     %>
-                                    <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 20px;"/></td>
+                                    <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 </tr>
                           <%}%>
                             </tbody>
