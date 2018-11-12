@@ -105,6 +105,11 @@ public interface DBStructure
     public static final String USER_TABLE_KEY = "id";
     public static final String[] USER_TABLE_STRUCTURE = {"id","email", "password", "battle_tag", "access_token", "guild_rank", "wowinfo"};
     
+    //Boss List
+    public static final String BOSS_LIST_TABLE_NAME = "boss_list";
+    public static final String BOSS_LIST_TABLE_KEY  = "id";
+    public static final String[] BOSS_LIST_TABLE_STRUCTURE = {"id", "name", "slug", "description"};
+    
     //In many time, we need insert out to id, because the id is auto update.
     public static String[] outKey(String[] array)
     {

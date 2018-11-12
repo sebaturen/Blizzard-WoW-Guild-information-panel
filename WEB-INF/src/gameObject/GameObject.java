@@ -38,7 +38,7 @@ public abstract class GameObject implements DBStructure
     }
 	
     //Abstract method
-    protected abstract void saveInternalInfoObject(JSONObject guildInfo);
+    protected abstract void saveInternalInfoObject(JSONObject objInfo);
     public abstract boolean saveInDB();
     public abstract void setId(String id);
     public abstract String getId();

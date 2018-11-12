@@ -21,6 +21,7 @@ public interface APIInfo
     public static final String API_OAUTH_TOKEN      = "token";
     public static final String API_OAUTH_USERINFO   = "userinfo";
     public static final String API_ROOT_URL         = "https://%s.api.blizzard.com/%s"; //location, api path
+    public static final String RAIDER_IO_API_URL    = "https://raider.io/api/guilds/%s/%s/%s"; //location, server, guild name
 
     //Aplication Info
     public static final String CLIENT_ID        = "";
@@ -34,7 +35,8 @@ public interface APIInfo
     public static final String API_CHARACTER_PROFILE    = "wow/character/%s/%s";    //realm, characterName
     public static final String API_CHARACTER_RACES      = "wow/data/character/races";
     public static final String API_GUILD_ACHIVEMENTS    = "wow/data/guild/achievements";
-    public static final String API_SPELL                = "/wow/spell/%s"; //spell id
+    public static final String API_SPELL                = "wow/spell/%s"; //spell id
+    public static final String API_BOSS_MASTER_LIST     = "wow/boss/";
     //World of Warcraft Game Data APIs
     public static final String API_PLAYABLE_CLASS       = "data/wow/playable-class/";
     public static final String API_WOW_TOKEN            = "data/wow/token/";

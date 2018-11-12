@@ -8,6 +8,7 @@ package com.artOfWar.blizzardAPI;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.Boss;
 import com.artOfWar.gameObject.Guild;
 import com.artOfWar.gameObject.GuildAchivements;
 import com.artOfWar.gameObject.Member;
@@ -90,7 +91,11 @@ public class Update implements APIInfo
         //Users player
         System.out.println("Users characters information update!");
         try { getUsersCharacters(); } 
-        catch (SQLException|DataException ex) { System.out.println("Fail update user characters Info: "+ ex); }		
+        catch (SQLException|DataException ex) { System.out.println("Fail update user characters Info: "+ ex); }
+        //Guild progression RaiderIO
+        System.out.println("Guild progression update!");
+        try { getGuildProgression(); } 
+        catch (IOException|ParseException|DataException ex) { System.out.println("Fail update guild progression Info: "+ ex); }	
         System.out.println("-------Update process is COMPLATE! (Dynamic)------");
 
         //Save log update in DB
@@ -130,6 +135,10 @@ public class Update implements APIInfo
         System.out.println("Spell information update!");
         try { updateSpellInformation(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update spell Info: "+ ex); }		
+        //Boss DB Upate info
+        System.out.println("Boss DB Update");
+        try { getBossInformation(); }
+        catch (IOException|ParseException|DataException ex) { System.out.println("Fail get boss DB Info: "+ ex); }
         System.out.println("-------Update process is COMPLATE! (Static)------");
         
         //Save log update in DB
@@ -663,8 +672,7 @@ public class Update implements APIInfo
                             new String[] {wowToken.get("last_updated_timestamp").toString(), wowToken.get("price").toString()},
                             "ON DUPLICATE KEY UPDATE price=?",
                             new String[] {wowToken.get("price").toString()});
-        }
-        
+        }        
     }
     
     public static String getCurrentTimeStamp() 
@@ -782,6 +790,68 @@ public class Update implements APIInfo
             System.out.println("Fail to get user Access Token "+ ex);
         }
     }
+    
+    private void getGuildProgression() throws DataException, IOException, ParseException
+    {                
+        //Generate an API URL
+        String urlString = String.format(RAIDER_IO_API_URL, 
+                                    SERVER_LOCATION, 
+                                    URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+                                    URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20"));
+        //Call RaiderIO API
+        JSONObject raiderIOGuildProgression = curl(urlString, "GET");         
+        JSONArray raidProgress = (JSONArray) ((JSONObject) raiderIOGuildProgression.get("guildDetails")).get("raidProgress");
+        for(int i = 0; i < raidProgress.size(); i++)
+        {
+            JSONObject raid = (JSONObject) raidProgress.get(i);
+            System.out.println(raid);
+        }
+        
+    }
+    
+    private void getBossInformation() throws DataException, IOException, ParseException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_BOSS_MASTER_LIST);
+            //Call Blizzard API
+            JSONObject respond = curl(urlString, 
+                                    "GET",
+                                    "Bearer "+ this.accesToken);
+
+            JSONArray bossList = (JSONArray) respond.get("bosses");
+            for(int i = 0; i < bossList.size(); i++)
+            {
+                JSONObject bossInfo = (JSONObject)bossList.get(i);
+                Boss inDB = new Boss( ((Long) bossInfo.get("id")).intValue() );
+                JSONObject bossInfoCreate = new JSONObject();
+                bossInfoCreate.put("id", bossInfo.get("id"));
+                bossInfoCreate.put("description", bossInfo.get("description"));
+                bossInfoCreate.put("name", bossInfo.get("name"));
+                bossInfoCreate.put("slug", bossInfo.get("urlSlug"));
+                JSONArray npcList = (JSONArray) bossInfo.get("npcs");
+                for(int j = 0; j < npcList.size(); j++)
+                {
+                    JSONObject npcInfo = (JSONObject) npcList.get(j);
+                    if(npcInfo.get("id").equals(bossInfo.get("id")))
+                    {//If have a NPC and have same ID, change the especial slug and complate name
+                        bossInfoCreate.put("name", npcInfo.get("name"));
+                        bossInfoCreate.put("slug", npcInfo.get("urlSlug"));
+                        break;
+                    }
+                }
+                Boss b = new Boss(bossInfoCreate);
+                if(inDB.isInternalData())
+                {
+                    b.setIsInternalData(true);
+                }
+                b.saveInDB();
+                
+            }
+        }
+    }
 
     /**
      * Generate URL API connection
@@ -791,6 +861,7 @@ public class Update implements APIInfo
      * @parameters : URL parameters ("field=member","acctrion=move"....)
      * @bodyData : if have a data in body
      */
+    public static JSONObject curl(String urlString, String method) throws IOException, ParseException, DataException { return curl(urlString, method, null, null); }
     public static JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
     public static JSONObject curl(String urlString, String method, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, null, parameters, null); }
     public static JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
@@ -812,6 +883,8 @@ public class Update implements APIInfo
         if(authorization != null) conn.setRequestProperty("Authorization", authorization);
         conn.setDoOutput(true);
         conn.setDoInput(true);
+        //User agent
+        conn.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
         //body data
         if(bodyData != null) 
         {			
@@ -819,7 +892,7 @@ public class Update implements APIInfo
             conn.setRequestProperty("Content-Length", String.valueOf(bodyData.length));
             conn.getOutputStream().write(bodyData);
         }
-
+        
         //return Object
         JSONObject json;
 

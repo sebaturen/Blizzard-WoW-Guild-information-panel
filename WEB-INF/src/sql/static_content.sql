@@ -51,3 +51,11 @@ CREATE TABLE `spells` (
     `range`         varchar(20),
     PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `boss_list` (
+    `id`            int NOT NULL,
+    `name`          varchar(50) NOT NULL,
+    `slug`          varchar(50) NOT NULL,
+    `description`   TEXT,
+    PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
