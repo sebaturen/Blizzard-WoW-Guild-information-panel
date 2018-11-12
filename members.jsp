@@ -1,5 +1,5 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.Member" %>
+<%@ page import ="com.artOfWar.gameObject.characters.Member" %>
 <jsp:useBean id="members" class="com.artOfWar.viewController.Members"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">

@@ -1,7 +1,7 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.Member" %>
-<%@ page import ="com.artOfWar.gameObject.challenge.Challenge" %>
-<%@ page import ="com.artOfWar.gameObject.challenge.ChallengeGroup" %>
+<%@ page import ="com.artOfWar.gameObject.characters.Member" %>
+<%@ page import ="com.artOfWar.gameObject.guild.challenges.Challenge" %>
+<%@ page import ="com.artOfWar.gameObject.guild.challenges.ChallengeGroup" %>
 <%@ page import ="java.text.SimpleDateFormat" %>
 <jsp:useBean id="challenges" class="com.artOfWar.viewController.GuildChallenges"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

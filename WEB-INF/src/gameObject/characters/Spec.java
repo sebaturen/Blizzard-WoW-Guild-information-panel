@@ -3,9 +3,10 @@
  * Desc : Speciality object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.artOfWar.gameObject.characters;
 
 import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.GameObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

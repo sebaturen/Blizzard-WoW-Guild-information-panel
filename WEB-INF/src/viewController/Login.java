@@ -10,7 +10,7 @@ import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.Member;
+import com.artOfWar.gameObject.characters.Member;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

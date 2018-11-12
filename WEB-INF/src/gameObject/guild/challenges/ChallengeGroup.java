@@ -3,12 +3,12 @@
  * Desc : Guild Challenges object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.challenge;
+package com.artOfWar.gameObject.guild.challenges;
 
 import com.artOfWar.DataException;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.gameObject.Member;
+import com.artOfWar.gameObject.characters.Member;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;

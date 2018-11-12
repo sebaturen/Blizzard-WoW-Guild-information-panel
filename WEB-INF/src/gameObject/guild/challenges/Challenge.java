@@ -3,7 +3,7 @@
  * Desc : Guild Challenges object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.challenge;
+package com.artOfWar.gameObject.guild.challenges;
 
 import com.artOfWar.DataException;
 import com.artOfWar.gameObject.GameObject;

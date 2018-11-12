@@ -3,8 +3,9 @@
  * Desc : GuildAchivements Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.artOfWar.gameObject.guild;
 
+import com.artOfWar.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
 public class GuildAchivements extends GameObject

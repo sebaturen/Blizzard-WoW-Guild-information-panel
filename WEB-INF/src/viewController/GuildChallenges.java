@@ -8,7 +8,7 @@ package com.artOfWar.viewController;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.challenge.Challenge;
+import com.artOfWar.gameObject.guild.challenges.Challenge;
 
 import java.util.ArrayList;
 import java.util.List;
