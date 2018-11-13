@@ -1,0 +1,130 @@
+/**
+ * File : RaidDificult.java
+ * Desc : RaidDificult Object
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
+ */
+package com.artOfWar.gameObject.guild.raids;
+
+import com.artOfWar.DataException;
+import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.GameObject;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+public class RaidDificult extends GameObject
+{
+    //Atribute
+    private int id;
+    private int raidId;
+    private String name;
+    private int rankWorld = -1;
+    private int rankRegion = -1;
+    private int rankRealm = -1;
+    private List<RaidDificultBoss> bosses;
+    
+    public RaidDificult(int id)
+    {
+        super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
+        bosses = new ArrayList<>();
+        loadFromDB(id+"");        
+    }
+    
+    public RaidDificult(String name, int raiderId)
+    {
+        super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
+        bosses = new ArrayList<>();
+        loadFromDBUniqued(new String[] {"name", "raid_id"}, new String[] { name, raiderId +"" });
+    }
+    
+    public RaidDificult(JSONArray info)
+    {
+        super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
+        bosses = new ArrayList<>();
+        loadBossFromRaiderIO(info); //Not have internal data only boss info~
+    }
+
+    @Override
+    protected void saveInternalInfoObject(JSONObject objInfo) 
+    {
+        //from DB
+        this.id = (Integer) objInfo.get("difi_id");
+        this.raidId = (Integer) objInfo.get("raid_id");
+        this.name = objInfo.get("name").toString();
+        this.rankWorld = (Integer) objInfo.get("rank_world");
+        this.rankRegion = (Integer) objInfo.get("rank_region");
+        this.rankRealm = (Integer) objInfo.get("rank_realm");
+        loadBossFromDB();
+        this.isData = true;
+    }
+    
+    private void loadBossFromRaiderIO(JSONArray info)
+    {
+        for(int i = 0; i < info.size(); i++)
+        {
+            JSONObject bossInfo = (JSONObject) info.get(i);
+            System.out.println(bossInfo);
+            //Usar raid dificult boss...
+            RaidDificultBoss rdBoss = new RaidDificultBoss(bossInfo);
+            this.bosses.add(rdBoss);
+        }
+        this.isData = true;
+    }
+    
+    private void loadBossFromDB()
+    {
+        try {
+            JSONArray dificultBosses = dbConnect.select(RAID_DIFICULT_BOSSES_TABLE_NAME,
+                                                    new String[] { RAID_DIFICULT_BOSSES_TABLE_KEY },
+                                                    "difi_id=?",
+                                                    new String[] { this.id +""});
+            for(int i = 0; i < dificultBosses.size(); i++)
+            {
+                //Usar raider dificult boss...
+                RaidDificultBoss rdBoss = new RaidDificultBoss((Integer) ((JSONObject)dificultBosses.get(i)).get(RAID_DIFICULT_BOSSES_TABLE_KEY));
+                this.bosses.add(rdBoss);
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
+        }
+    }
+
+    @Override
+    public boolean saveInDB() 
+    {
+        /* {"raid_id", "name", 
+         * "rank_world", "rank_region", "rank_realm"};
+         */
+        setTableStructur(DBStructure.outKey(RAID_DIFICULTS_TABLE_STRUCTURE));
+        switch (saveInDBObj(new String[] {this.raidId +"", this.name, 
+                            this.rankWorld +"", this.rankRegion +"", this.rankRealm +""}))
+        {
+            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                this.bosses.forEach((rdBoss) -> {
+                    rdBoss.setDifiId(this.id);
+                    rdBoss.saveInDB();
+                });
+                return true;
+
+        }
+        return false; 
+    }
+
+    @Override
+    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setRankWorld(int c) { this.rankWorld = c; }
+    public void setRankRegion(int c) { this.rankRegion = c; }
+    public void setRankRealm(int c) { this.rankRealm = c; }
+    public void setRaidID(int id) { this.raidId = id; }
+    public void setName(String name) { this.name = name; }
+
+    @Override
+    public String getId() { return this.id +""; }
+    public String getName() { return this.name; }
+    public int getRankWorld() { return this.rankWorld; }
+    public int getRankRegion() { return this.rankRegion; }
+    public int getRankRealm() { return this.rankRealm; }
+    
+}

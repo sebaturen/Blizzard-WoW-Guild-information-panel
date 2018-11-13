@@ -1,0 +1,140 @@
+/**
+ * File : Raid.java
+ * Desc : Raid Object
+ * @author Sebastián Turén Croquevielle(seba@turensoft.com)
+ */
+package com.artOfWar.gameObject.guild.raids;
+
+import com.artOfWar.DataException;
+import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.GameObject;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+public class Raid extends GameObject
+{
+    //Atribute
+    private int id;
+    private String name;
+    private String slug;
+    private List<RaidDificult> dificults;
+    
+    public Raid(String slug)
+    {
+        super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
+        dificults = new ArrayList<>();
+        loadFromDBUniqued("slug", slug);
+    }
+    
+    public Raid(JSONObject info)
+    {
+        super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
+        dificults = new ArrayList<>();
+        saveInternalInfoObject(info);
+    }
+    
+    @Override
+    protected void saveInternalInfoObject(JSONObject objInfo) 
+    {
+        if(objInfo.containsKey("id"))
+        {//info from DB
+            this.id = (Integer) objInfo.get("id");
+            this.name = objInfo.get("name").toString();
+            this.slug = objInfo.get("slug").toString();
+            loadRaidDificultFromDB();
+        }
+        else
+        {
+            this.name = "NOT DEFINED";
+            this.slug = objInfo.get("raid").toString();
+            JSONObject dificult = (JSONObject) objInfo.get("encountersDefeated");
+            JSONObject rank = (JSONObject) objInfo.get("rank");
+            loadRaidDificultFromRaiderIO(dificult, rank);
+            
+        }
+        this.isData = true;
+    }
+    
+    private void loadRaidDificultFromDB()
+    {
+        try {
+            JSONArray raidDificult = dbConnect.select(RAID_DIFICULTS_TABLE_NAME,
+                                                    new String[] { RAID_DIFICULTS_TABLE_KEY },
+                                                    "raid_id=?",
+                                                    new String[] { this.id +""});
+            if(raidDificult.size() > 0)
+            {
+                for(int i = 0; i < raidDificult.size(); i++)
+                {                    
+                    RaidDificult r = new RaidDificult( (Integer) ((JSONObject) raidDificult.get(i)).get(RAID_DIFICULTS_TABLE_KEY) ); 
+                    this.dificults.add(r);
+                }
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
+        } 
+    }
+    
+    private void loadRaidDificultFromRaiderIO(JSONObject dificult, JSONObject rank)
+    {
+        RaidDificult lfr = new RaidDificult((JSONArray) dificult.get("lfr"));
+        lfr.setName("Looking for Raid");
+        this.dificults.add(lfr);
+        //Normal dificult~
+        RaidDificult normal = new RaidDificult((JSONArray) dificult.get("normal"));
+        normal.setName("Normal");
+        normal.setRankWorld( ((Long) ((JSONObject)rank.get("normal")).get("world")).intValue() );
+        normal.setRankRegion( ((Long) ((JSONObject)rank.get("normal")).get("region")).intValue() );
+        normal.setRankRealm( ((Long) ((JSONObject)rank.get("normal")).get("realm")).intValue() );
+        this.dificults.add(normal);
+        //Heroic dificult~
+        RaidDificult heroic = new RaidDificult((JSONArray) dificult.get("heroic"));
+        heroic.setName("Heroic");
+        heroic.setRankWorld( ((Long) ((JSONObject)rank.get("heroic")).get("world")).intValue() );
+        heroic.setRankRegion( ((Long) ((JSONObject)rank.get("heroic")).get("region")).intValue() );
+        heroic.setRankRealm( ((Long) ((JSONObject)rank.get("heroic")).get("realm")).intValue() );
+        this.dificults.add(heroic);
+        //Mythic dificult~
+        RaidDificult mythic = new RaidDificult((JSONArray) dificult.get("mythic"));
+        mythic.setName("Mythic");
+        mythic.setRankWorld( ((Long) ((JSONObject)rank.get("mythic")).get("world")).intValue() );
+        mythic.setRankRegion( ((Long) ((JSONObject)rank.get("mythic")).get("region")).intValue() );
+        mythic.setRankRealm( ((Long) ((JSONObject)rank.get("mythic")).get("realm")).intValue() );   
+        this.dificults.add(mythic);    
+    }
+
+    @Override
+    public boolean saveInDB() 
+    {
+        /* {"slug", "name" }; */
+        setTableStructur(DBStructure.outKey(RAIDS_TABLE_STRUCTURE));
+        switch (saveInDBObj(new String[] {this.slug, this.name}))
+        {
+            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                dificults.forEach((dif) -> {
+                    RaidDificult dbTest = new RaidDificult(dif.getName(), this.id);
+                    if(dbTest.isInternalData())
+                    {
+                        dif.setId(dbTest.getId());
+                        dif.setIsInternalData(true);
+                    }
+                    dif.setRaidID(this.id);
+                    dif.saveInDB();
+                });
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setName(String name) { this.name = name; }
+
+    @Override
+    public String getId() { return this.id +""; }
+    public String getName() { return this.name; }
+    
+}

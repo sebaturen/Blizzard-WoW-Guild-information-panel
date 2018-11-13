@@ -110,6 +110,24 @@ public interface DBStructure
     public static final String BOSS_LIST_TABLE_KEY  = "id";
     public static final String[] BOSS_LIST_TABLE_STRUCTURE = {"id", "name", "slug", "description"};
     
+    //Raid
+    public static final String RAIDS_TABLE_NAME = "raids";
+    public static final String RAIDS_TABLE_KEY  = "id";
+    public static final String[] RAIDS_TABLE_STRUCTURE = {"id", "slug", "name"};
+    
+    //Raid dificult
+    public static final String RAID_DIFICULTS_TABLE_NAME = "raid_dificults";
+    public static final String RAID_DIFICULTS_TABLE_KEY  = "difi_id";
+    public static final String[] RAID_DIFICULTS_TABLE_STRUCTURE = {"difi_id", "raid_id", "name", 
+                                                                "rank_world", "rank_region", "rank_realm"};
+    
+    //Raid dificult bosses
+    public static final String RAID_DIFICULT_BOSSES_TABLE_NAME = "raid_dificult_bosses";
+    public static final String RAID_DIFICULT_BOSSES_TABLE_KEY  = "r_d_boss_id";
+    public static final String[] RAID_DIFICULT_BOSSES_TABLE_STRUCTURE = {"r_d_boss_id", "boss_id", "difi_id",
+                                                                    "firstDefeated", "itemLevelAvg", "artifactPowerAvg"};
+    
+    
     //In many time, we need insert out to id, because the id is auto update.
     public static String[] outKey(String[] array)
     {

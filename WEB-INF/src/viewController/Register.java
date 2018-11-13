@@ -8,9 +8,8 @@ package com.artOfWar.viewController;
 import com.artOfWar.DataException;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Register 
 {    
@@ -18,6 +17,9 @@ public class Register
     
     private String email;
     private String password;
+    private boolean isDuplicateUser = false;
+    private boolean tryRegist = false;
+    public static final String emptyHashMD5 = "d41d8cd98f00b204e9800998ecf8427e";
     
     public Register()
     {
@@ -26,20 +28,28 @@ public class Register
     
     public boolean saveRegister()
     {
-        if(this.email == null || this.password == null) return false;
+        if(this.email == null || this.password == null || 
+           this.email.isEmpty() || this.password.equals("emptyHashMD5")) 
+            return false;
         try {      
+            this.tryRegist = true;
+            if (!emailCheck(this.email)) return false;
             //{"email", "password", "battle_tag", "access_code"};
             dbConnect.insert(DBStructure.USER_TABLE_NAME,
                             DBStructure.USER_TABLE_KEY,
                            new String[] {"email", "password"},
                            new String[] {this.email, this.password});
             return true;
-        } catch (ClassNotFoundException|DataException ex) {
+        } catch (DataException e) {
+            System.out.println("Fail to save user info..."+ this.email +" - "+ e.getErrorCode() +" - "+ e);
+            if(e.getErrorCode() == DBConnect.ERROR_DUPLICATE_KEY)isDuplicateUser = true;
+        } catch (ClassNotFoundException ex) {
             System.out.println("Fail to save user info..."+ this.email +" - "+ ex);
         }
         return false;
     }
     
+    /* This function is move to JQuery in browser info! not send from server!
     public static String encodePass(String password)
     {
         String digest = null; 
@@ -57,12 +67,21 @@ public class Register
             System.out.println("Fail to convert password "+ ex);
         }
         return digest;
+    }*/
+    
+    public static boolean emailCheck(String email) {        
+        String regex = "^(.+)@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);        
+        return matcher.matches();
     }
     
     //Getters and Setters
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = encodePass(password); }
+    public void setPassword(String password) { this.password = password; }
     public boolean isData() { return !(this.email == null || this.password == null); }
+    public boolean isDuplicateUser() { return this.isDuplicateUser; }
+    public boolean isTryRegist() { return this.tryRegist; }
     
     
 }

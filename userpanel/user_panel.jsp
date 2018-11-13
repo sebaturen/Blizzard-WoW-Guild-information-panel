@@ -8,6 +8,7 @@ else //only show content if is redirect from login.jsp and the user is valid
 {
 %>
 <%@ page import ="com.artOfWar.gameObject.characters.Member" %>
+<%@ page import ="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
@@ -37,7 +38,8 @@ else //only show content if is redirect from login.jsp and the user is valid
                     %><button type="button" class="btn btn-outline-danger btn-sm">Un-link blizz account</button><br><br><%
                 }
                 //User character info~
-                if(user.getWowInfo())
+                List<Member> memberChars = user.getCharacterList();
+                if(memberChars.size() > 0)
                 {%>
                     <table class="table table-dark character-tab">
                         <thead>
@@ -50,7 +52,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                             </tr>
                         </thead>
                         <tbody>
-                          <%for(Member m : user.getCharacterList()) { %>
+                          <%for(Member m : memberChars) { %>
                             <tr>
                                 <td class="character-<%= (m.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= m.getName() %></td>
                                 <% //Get img from speck

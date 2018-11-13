@@ -94,3 +94,36 @@ CREATE TABLE `guild_news` (
     FOREIGN KEY(player_achivement_id) REFERENCES (id),
     FOREIGN KEY(item_id) REFERENCES (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `raids` (
+    `id`    INT NOT NULL AUTO_INCREMENT,
+    `slug`  VARCHAR(50) NOT NULL,
+    `name`  varchar(50) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `raid_dificults` (
+    `difi_id`       INT NOT NULL AUTO_INCREMENT,
+    `raid_id`       INT NOT NULL,
+    `name`          varchar(50) NOT NULL,
+    `rank_world`    INT,
+    `rank_region`   INT,
+    `rank_realm`    INT,
+    PRIMARY KEY(difi_id),
+    FOREIGN KEY(raid_id) REFERENCES raids(id),
+    UNIQUE(`raid_id`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `raid_dificult_bosses` (
+    `r_d_boss_id`       INT NOT NULL AUTO_INCREMENT,
+    `boss_id`           INT NOT NULL,
+    `difi_id`           INT NOT NULL,
+    `firstDefeated`     datetime NOT NULL,
+    `itemLevelAvg`      DOUBLE NOT NULL,
+    `artifactPowerAvg`  DOUBLE,
+    PRIMARY KEY(r_d_boss_id),
+    FOREIGN KEY(boss_id) REFERENCES boss_list(id),
+    FOREIGN KEY(difi_id) REFERENCES raid_dificults(difi_id),
+    UNIQUE (boss_id,difi_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

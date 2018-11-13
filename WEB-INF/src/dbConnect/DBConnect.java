@@ -23,8 +23,9 @@ import org.json.simple.JSONObject;
 public class DBConnect implements DBConfig 
 {
     //error SQL constant
-    public static final int ERROR_FOREIGN_KEY = 1452;
-    public static final int ERROR_NULL_ELEMENT = 1048;
+    public static final int ERROR_FOREIGN_KEY   = 1452;
+    public static final int ERROR_NULL_ELEMENT  = 1048;
+    public static final int ERROR_DUPLICATE_KEY = 1062;
 
     //access info
     private Connection conn = null;
@@ -209,7 +210,9 @@ public class DBConnect implements DBConfig
                         return ((JSONObject) v.get(0)).get(idColum).toString();
                     }
                 } catch (SQLException ex) {
-                    throw new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
+                    DataException er = new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
+                    er.setErrorCode(ex.getErrorCode());
+                    throw er;
                 }
 
             }

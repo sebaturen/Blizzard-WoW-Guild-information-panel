@@ -40,6 +40,11 @@ body {
     padding-right: 15px;
     background-image: url("../img/icons/money-copper.gif");
 }
+.alert-danger {
+    color: #721c24;
+    background-color: #bf5861;
+    border-color: #ff001b;
+}
 /*END -------GENERAL------------*/
 
 /*-------PLAYABLE CLASS COLOR------------*/

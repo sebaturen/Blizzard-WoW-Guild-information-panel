@@ -66,7 +66,7 @@ public abstract class GameObject implements DBStructure
                             new String[] { getId() });
                     return SAVE_MSG_UPDATE_OK;
                 } catch (DataException | ClassNotFoundException ex) {
-                    System.out.println("Fail to update "+ getId() +" in table "+ this.tableDB);
+                    System.out.println("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
                     return SAVE_MSG_UPDATE_ERROR;
                 }
             }
@@ -88,6 +88,36 @@ public abstract class GameObject implements DBStructure
         }
         return SAVE_MSG_NO_DATA;
     }
+    
+    protected boolean loadFromDBUniqued(String uniqued, String uniquedValues) { return loadFromDBUniqued(new String[] { uniqued }, new String[] {uniquedValues}); }
+    protected boolean loadFromDBUniqued(String[] uniqued, String[] value) 
+    {
+        if(dbConnect == null) dbConnect = new DBConnect();
+        try
+        {
+            String whereInSQL = "";
+            for(String wh : uniqued) whereInSQL += "`"+ wh +"`=? AND ";
+            whereInSQL = whereInSQL.substring(0,whereInSQL.length()-5);
+            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, value);
+            
+            if(dbSelect.size() > 0)
+            {
+                JSONObject infoDB = (JSONObject) dbSelect.get(0);
+                //Construct a character object
+                saveInternalInfoObject(infoDB);
+                this.isInternalData = true;
+                return isData;                
+            }
+            else
+            {
+                System.out.println("Element not found");
+                return false;                
+            }
+        } catch (DataException|SQLException e) {
+            System.out.println("Error in Load element: "+ e);
+        }
+        return false;        
+    }
 	
     /**
      * Get a content from DB to load in object
@@ -95,13 +125,12 @@ public abstract class GameObject implements DBStructure
      * @where add a where clause
      */
     protected boolean loadFromDB(String id) { return loadFromDB(id, null, false); }
-    protected boolean loadFromDB(String id, String andWhere) { return loadFromDB(id, null, false); }
     protected boolean loadFromDB(String id, String andWhere, boolean disableApostrophe)
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         try
         {
-            String whereInSQL = this.tableStruct[0] +"=?";
+            String whereInSQL = this.tableKey +"=?";
             String[] whereValues = {id};
             if(andWhere != null) whereInSQL += " AND "+ andWhere;
             JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues, disableApostrophe);

@@ -20,6 +20,12 @@ public class Boss extends GameObject
         super(BOSS_LIST_TABLE_NAME, BOSS_LIST_TABLE_KEY, BOSS_LIST_TABLE_STRUCTURE);
         loadFromDB(id +"");
     }
+    
+    public Boss(String slug)
+    {        
+        super(BOSS_LIST_TABLE_NAME, BOSS_LIST_TABLE_KEY, BOSS_LIST_TABLE_STRUCTURE);
+        loadFromDBUniqued("slug", slug);
+    }
         
     public Boss(JSONObject bossInfo)
     {
@@ -62,6 +68,7 @@ public class Boss extends GameObject
 
     @Override
     public String getId() { return this.id +""; }
+    public String getName() { return this.name; }
     
     
 }

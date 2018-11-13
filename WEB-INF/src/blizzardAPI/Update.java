@@ -17,6 +17,7 @@ import com.artOfWar.gameObject.characters.Race;
 import com.artOfWar.gameObject.characters.Spell;
 import com.artOfWar.gameObject.guild.challenges.Challenge;
 import com.artOfWar.gameObject.guild.challenges.ChallengeGroup;
+import com.artOfWar.gameObject.guild.raids.Raid;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -675,11 +676,6 @@ public class Update implements APIInfo
         }        
     }
     
-    public static String getCurrentTimeStamp() 
-    {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    }
-    
     private void getUsersCharacters() throws SQLException, DataException
     {
         JSONArray users = dbConnect.select(DBStructure.USER_TABLE_NAME, 
@@ -799,12 +795,24 @@ public class Update implements APIInfo
                                     URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
                                     URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20"));
         //Call RaiderIO API
-        JSONObject raiderIOGuildProgression = curl(urlString, "GET");         
+        JSONObject raiderIOGuildProgression = curl(urlString, "GET");
+        JSONArray raidRankings = (JSONArray) ((JSONObject) raiderIOGuildProgression.get("guildDetails")).get("raidRankings");         
         JSONArray raidProgress = (JSONArray) ((JSONObject) raiderIOGuildProgression.get("guildDetails")).get("raidProgress");
         for(int i = 0; i < raidProgress.size(); i++)
         {
             JSONObject raid = (JSONObject) raidProgress.get(i);
-            System.out.println(raid);
+            //Add rank info
+            raid.put("rank", (JSONObject) ((JSONObject) raidRankings.get(i)).get("ranks"));
+            //Save raid
+            Raid itRaid = new Raid(raid);
+            Raid oldRaid = new Raid(raid.get("raid").toString());
+            if(oldRaid.isInternalData())
+            {
+                itRaid.setName(oldRaid.getName());
+                itRaid.setId(oldRaid.getId());
+                itRaid.setIsInternalData(true);
+            }            
+            itRaid.saveInDB();
         }
         
     }
@@ -920,5 +928,10 @@ public class Update implements APIInfo
             default:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Internal Code: 0");
         }
+    }    
+    
+    public static String getCurrentTimeStamp() 
+    {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 }

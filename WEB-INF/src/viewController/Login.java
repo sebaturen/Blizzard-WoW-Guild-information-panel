@@ -32,6 +32,7 @@ public class Login implements APIInfo
     private String battleTag;
     private String memberAccesToken;
     private boolean wowInfo = false;
+    private boolean tryLogin = false;
     private int guildRank = -1;
     
     public Login()
@@ -43,6 +44,7 @@ public class Login implements APIInfo
     {
         if(this.email == null || this.password == null) return false;
         try {
+            this.tryLogin = true;
             /* {"id","email", "password", "battle_tag", 
              * "access_token", "guild_rank", "wowinfo"};
              */
@@ -183,10 +185,11 @@ public class Login implements APIInfo
     
     //Getters and Setters
     public void setEmail(String email) { this.email = email; }
-    public void setPassword(String ps) { this.password = Register.encodePass(ps); }
+    public void setPassword(String ps) { this.password = ps; }
     public boolean setAccessCode(String code) { return saveBlizzardInfo(code); }
     public String getEmail() { return this.email; }
     public String getBattleTag() { return this.battleTag; }
     public boolean getWowInfo() { return this.wowInfo; }
     public int getGuildRank() { return this.guildRank; }
+    public boolean getTryLogin() { return this.tryLogin; }
 }
