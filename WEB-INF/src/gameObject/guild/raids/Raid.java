@@ -20,26 +20,24 @@ public class Raid extends GameObject
     private int id;
     private String name;
     private String slug;
-    private List<RaidDificult> dificults;
+    private List<RaidDificult> dificults = new ArrayList<>();
+    private int totalBoss = -1;
     
     public Raid(int id)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
-        dificults = new ArrayList<>();
         loadFromDB(id +"");        
     }
     
     public Raid(String slug)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
-        dificults = new ArrayList<>();
         loadFromDBUniqued("slug", slug);
     }
     
     public Raid(JSONObject info)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
-        dificults = new ArrayList<>();
         saveInternalInfoObject(info);
     }
     
@@ -51,6 +49,7 @@ public class Raid extends GameObject
             this.id = (Integer) objInfo.get("id");
             this.name = objInfo.get("name").toString();
             this.slug = objInfo.get("slug").toString();
+            this.totalBoss = (Integer) objInfo.get("total_boss");
             loadRaidDificultFromDB();
         }
         else
@@ -116,9 +115,9 @@ public class Raid extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        /* {"slug", "name" }; */
+        /* {"slug", "name", "total_boss"}; */
         setTableStructur(DBStructure.outKey(RAIDS_TABLE_STRUCTURE));
-        switch (saveInDBObj(new String[] {this.slug, this.name}))
+        switch (saveInDBObj(new String[] {this.slug, this.name, this.totalBoss +""}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 dificults.forEach((dif) -> {
@@ -139,11 +138,13 @@ public class Raid extends GameObject
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
     public void setName(String name) { this.name = name; }
+    public void setTotalBoss(int total) { this.totalBoss = total; }
 
     @Override
     public String getId() { return this.id +""; }
     public String getName() { return this.name; }
     public String getSlug() { return this.slug; }
+    public int getTotalBoss() { return this.totalBoss; }
     public List<RaidDificult> getDificults() { return this.dificults; }
     
 }

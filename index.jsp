@@ -9,8 +9,19 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div id="welcome">
-                Welcome to <%= guild_info.getName() %><br/>
-                <img src="/assets/img/artofwar_logo.png"/><br/>
+                <div class="row">
+                    <div class="col">
+                        <img src="/assets/img/artofwar_logo.png"/>
+                    </div>
+                    <div class="col-6">
+                        <p class='home_name warcraft_font'><%= guild_info.getName() %></p>
+                    </div>
+                    <div class="col">
+                        <img class='flipImg' src="/assets/img/artofwar_logo.png"/>
+                    </div>
+                </div>
+                
+                
             </div>
         </div>
     </body>

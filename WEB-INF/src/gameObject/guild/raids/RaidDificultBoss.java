@@ -29,6 +29,12 @@ public class RaidDificultBoss extends GameObject
         loadFromDB(id +"");
     }
     
+    public RaidDificultBoss(int bossId, int diffId)
+    {
+        super(RAID_DIFICULT_BOSSES_TABLE_NAME, RAID_DIFICULT_BOSSES_TABLE_KEY, RAID_DIFICULT_BOSSES_TABLE_STRUCTURE);
+        loadFromDBUniqued(new String[] { "boss_id", "difi_id" }, new String[] { bossId +"", diffId +"" });        
+    }
+    
     public RaidDificultBoss(JSONObject info)
     {
         super(RAID_DIFICULT_BOSSES_TABLE_NAME, RAID_DIFICULT_BOSSES_TABLE_KEY, RAID_DIFICULT_BOSSES_TABLE_STRUCTURE);
@@ -53,7 +59,6 @@ public class RaidDificultBoss extends GameObject
         }
         else
         {//load from RaiderIO      
-            System.out.println("Boss Slug "+ objInfo.get("slug"));
             this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
             if(!this.boss.isData()) System.exit(-1);
             try {
@@ -112,7 +117,6 @@ public class RaidDificultBoss extends GameObject
         /* {"boss_id", "difi_id",
          * "firstDefeated", "itemLevelAvg", "artifactPowerAvg"};
          */
-        System.out.println("Save "+ this.boss.getName());
         setTableStructur(DBStructure.outKey(RAID_DIFICULT_BOSSES_TABLE_STRUCTURE));
         switch (saveInDBObj(new String[] {this.boss.getId() +"", this.difiId +"", 
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(firstDefeated), this.itemLevelAvg +"", this.artifactPowerAvg+""}))

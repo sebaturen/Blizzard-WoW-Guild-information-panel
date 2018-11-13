@@ -18,7 +18,7 @@
                             <th scope="col">Name</th>
                             <th scope="col">Class</th>
                             <th scope="col">Level</th>
-                            <th scope="col">Role (Spec)</th>
+                            <th scope="col">Current Spec</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,10 +28,12 @@
                         {%>
                             <tr>
                                 <th scope="row"><%= i %></th>
-                                <td class="character-<%= (member.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= member.getName() %></td>
-                                <td><%= member.getmemberClass().getEnName() %></td>
-                                <td><%= member.getLevel() %></td>
-                                <td><%= member.getActiveSpec().getRole() %> (<%= member.getActiveSpec().getName() %>)</td>
+                                <td scope="row" class="character-<%= (member.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= member.getName() %></td>
+                                <% String className = ((member.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase(); 
+                                   String specName = ((member.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase(); %>
+                                <td scope="row"><img src="assets/img/classes/class_<%= className %>.png" style="width: 22px;"/></td>
+                                <td scope="row"><%= member.getLevel() %></td>
+                                <td scope="row"><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/> <img src="assets/img/icons/<%= member.getActiveSpec().getRole() %>.png" style="width: 22px;"/></td>
                             </tr>
                       <%i++;}%>
                     </tbody>

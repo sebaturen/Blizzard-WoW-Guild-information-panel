@@ -31,13 +31,12 @@ public class ChallengeGroup extends GameObject
     private int timeSeconds;
     private int timeMilliseconds;
     private boolean isPositive;
-    private List<Member> members;
+    private List<Member> members = new ArrayList<>();
         
     //Constructor
     public ChallengeGroup(int id)
     {        
         super(CHALLENGE_GROUPS_TABLE_NAME, CHALLENGE_GROUPS_TABLE_KEY, CHALLENGE_GROUPS_TABLE_STRUCTURE);
-        members = new ArrayList<>();
         loadFromDB(id +"");
         loadMembersFromDB();
     }
@@ -47,7 +46,6 @@ public class ChallengeGroup extends GameObject
     {
         super(CHALLENGE_GROUPS_TABLE_NAME, CHALLENGE_GROUPS_TABLE_KEY, CHALLENGE_GROUPS_TABLE_STRUCTURE);
         this.challengeId = challengeId;
-        members = new ArrayList<>();
         saveInternalInfoObject(challengeGroup);
     }
     

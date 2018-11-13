@@ -40,11 +40,11 @@ public class Member extends GameObject
     private long totalHonorableKills;
     private boolean isGuildMember;
     private int userID;
-    private List<Spec> specs;
+    private List<Spec> specs = new ArrayList<>();
     
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
-    private static final String COMBIEN_TABLE_KEY = "internal_id";
+    private static final String COMBIEN_TABLE_KEY = "c.internal_id";
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
@@ -54,7 +54,6 @@ public class Member extends GameObject
     public Member(int internalID)
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
-        specs = new ArrayList<>();
         //Load Character from DB
         loadFromDB(internalID+"", "gm.internal_id = c.internal_id", true);
     }
@@ -63,7 +62,6 @@ public class Member extends GameObject
     public Member(JSONObject playerInfo)
     {
         super(CHARACTER_INFO_TABLE_NAME, CHARACTER_INFO_TABLE_KEY, CHARACTER_INFO_TABLE_STRUCTURE);
-        specs = new ArrayList<>();
         saveInternalInfoObject(playerInfo);
     }
 	

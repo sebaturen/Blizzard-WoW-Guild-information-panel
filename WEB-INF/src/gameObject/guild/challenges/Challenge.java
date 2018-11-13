@@ -24,7 +24,7 @@ public class Challenge extends GameObject
     //Attribute
     private int mapId;
     private String mapName;
-    private List<ChallengeGroup> chGroups;
+    private List<ChallengeGroup> chGroups = new ArrayList<>();
     private int[] bronzeTime = new int[4]; //[h][m][s][ms]
     private int[] silverTime = new int[4]; //[h][m][s][ms]
     private int[] goldTime = new int[4];   //[h][m][s][ms]
@@ -32,7 +32,6 @@ public class Challenge extends GameObject
     public Challenge(int id)
     {
         super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
-        chGroups = new ArrayList<>();
         loadFromDB(id+"");
         loadGroups();
     }
@@ -41,7 +40,6 @@ public class Challenge extends GameObject
     public Challenge(JSONObject mapInfo)
     {
         super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
-        chGroups = new ArrayList<>();
         saveInternalInfoObject(mapInfo);
     }
     

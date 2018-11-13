@@ -96,10 +96,11 @@ CREATE TABLE `guild_news` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `raids` (
-    `id`    INT NOT NULL AUTO_INCREMENT,
-    `guild_id`  INT NOT NULL,
-    `slug`  VARCHAR(50) NOT NULL,
-    `name`  varchar(50) NOT NULL,
+    `id`            INT NOT NULL AUTO_INCREMENT,
+    `guild_id`      INT NOT NULL,
+    `slug`          VARCHAR(50) NOT NULL,
+    `name`          VARCHAR(50) NOT NULL,
+    `total_boss`    TINYINT DEFAULT -1,
     PRIMARY KEY(id),
     UNIQUE(`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

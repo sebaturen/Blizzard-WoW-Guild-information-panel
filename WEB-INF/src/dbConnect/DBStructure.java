@@ -113,7 +113,7 @@ public interface DBStructure
     //Raid
     public static final String RAIDS_TABLE_NAME = "raids";
     public static final String RAIDS_TABLE_KEY  = "id";
-    public static final String[] RAIDS_TABLE_STRUCTURE = {"id", "slug", "name"};
+    public static final String[] RAIDS_TABLE_STRUCTURE = {"id", "slug", "name", "total_boss"};
     
     //Raid dificult
     public static final String RAID_DIFICULTS_TABLE_NAME = "raid_dificults";

@@ -45,7 +45,29 @@ body {
     background-color: #bf5861;
     border-color: #ff001b;
 }
+@font-face {
+    font-family: "LifeCraft";
+    src: url("../font/LifeCraft_Font.ttf");
+}
+.warcraft_font {
+    font-family: "LifeCraft";
+}
+.flipImg {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
 /*END -------GENERAL------------*/
+
+/*-------INDEX------------*/
+.home_name {
+    font-size: 6em;
+    text-align: center;
+}
+/*END -------INDEX------------*/
 
 /*-------PLAYABLE CLASS COLOR------------*/
 .character-Warrior { color: #C79C6E; }

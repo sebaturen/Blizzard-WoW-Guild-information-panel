@@ -106,10 +106,10 @@ public class Login implements APIInfo
     {
         List<Member> userMember = new ArrayList<>();  
         try {
-            JSONArray chars = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME,
-                    new String[] {"internal_id" },
-                    "user_id=? order by realm",
-                    new String[] { this.id +"" } );
+            JSONArray chars = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ DBStructure.CHARACTER_INFO_TABLE_NAME +" c",
+                    new String[] {"gm.internal_id" },
+                    "gm.user_id=? AND gm.internal_id = c.internal_id ORDER BY c.level DESC",
+                    new String[] { this.id +"" }, true);
             for(int i = 0; i < chars.size(); i++)
             {
                 int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");

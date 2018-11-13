@@ -23,26 +23,23 @@ public class RaidDificult extends GameObject
     private int rankWorld = -1;
     private int rankRegion = -1;
     private int rankRealm = -1;
-    private List<RaidDificultBoss> bosses;
+    private List<RaidDificultBoss> bosses = new ArrayList<>();
     
     public RaidDificult(int id)
     {
         super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
-        bosses = new ArrayList<>();
         loadFromDB(id+"");        
     }
     
     public RaidDificult(String name, int raiderId)
     {
         super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
-        bosses = new ArrayList<>();
         loadFromDBUniqued(new String[] {"name", "raid_id"}, new String[] { name, raiderId +"" });
     }
     
     public RaidDificult(JSONArray info)
     {
         super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
-        bosses = new ArrayList<>();
         loadBossFromRaiderIO(info); //Not have internal data only boss info~
     }
 
@@ -65,7 +62,6 @@ public class RaidDificult extends GameObject
         for(int i = 0; i < info.size(); i++)
         {
             JSONObject bossInfo = (JSONObject) info.get(i);
-            System.out.println(bossInfo);
             //Usar raid dificult boss...
             RaidDificultBoss rdBoss = new RaidDificultBoss(bossInfo);
             this.bosses.add(rdBoss);
@@ -78,7 +74,7 @@ public class RaidDificult extends GameObject
         try {
             JSONArray dificultBosses = dbConnect.select(RAID_DIFICULT_BOSSES_TABLE_NAME,
                                                     new String[] { RAID_DIFICULT_BOSSES_TABLE_KEY },
-                                                    "difi_id=?",
+                                                    "difi_id=? ORDER BY firstDefeated DESC",
                                                     new String[] { this.id +""});
             for(int i = 0; i < dificultBosses.size(); i++)
             {
@@ -104,6 +100,12 @@ public class RaidDificult extends GameObject
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.bosses.forEach((rdBoss) -> {
                     rdBoss.setDifiId(this.id);
+                    RaidDificultBoss rdBossDB = new RaidDificultBoss(Integer.parseInt(rdBoss.getBoss().getId()), this.id);
+                    if(rdBossDB.isInternalData())
+                    {
+                        rdBoss.setId(rdBossDB.getId());
+                        rdBoss.setIsInternalData(true);
+                    }
                     rdBoss.saveInDB();
                 });
                 return true;
