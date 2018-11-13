@@ -97,10 +97,20 @@ CREATE TABLE `guild_news` (
 
 CREATE TABLE `raids` (
     `id`    INT NOT NULL AUTO_INCREMENT,
+    `guild_id`  INT NOT NULL,
     `slug`  VARCHAR(50) NOT NULL,
     `name`  varchar(50) NOT NULL,
     PRIMARY KEY(id),
     UNIQUE(`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `guild_raids` (
+    `id`    INT NOT NULL AUTO_INCREMENT,
+    `guild_id`  INT NOT NULL,
+    `raid_id`   INT NOT NULL,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(guild_id) REFERENCES guild_info(id),
+    FOREIGN KEY(raid_id) REFERENCES raids(id)  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `raid_dificults` (

@@ -126,5 +126,6 @@ public class RaidDificult extends GameObject
     public int getRankWorld() { return this.rankWorld; }
     public int getRankRegion() { return this.rankRegion; }
     public int getRankRealm() { return this.rankRealm; }
+    public List<RaidDificultBoss> getDificultBoss() { return this.bosses; }
     
 }

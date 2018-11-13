@@ -107,3 +107,16 @@ body {
     margin-bottom: 0em;
 }
 /*END -------GUILD CHALLENGE------------*/
+
+
+/*-------GUILD PROGRESS------------*/
+.world-rank {
+    color: #fff;
+}
+.region-rank {
+    color: #1eff00;
+}
+.realm-rank {
+    color: #0070dd;
+}
+/*END -------GUILD PROGRESS------------*/

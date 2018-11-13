@@ -22,6 +22,13 @@ public class Raid extends GameObject
     private String slug;
     private List<RaidDificult> dificults;
     
+    public Raid(int id)
+    {
+        super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
+        dificults = new ArrayList<>();
+        loadFromDB(id +"");        
+    }
+    
     public Raid(String slug)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
@@ -63,7 +70,7 @@ public class Raid extends GameObject
         try {
             JSONArray raidDificult = dbConnect.select(RAID_DIFICULTS_TABLE_NAME,
                                                     new String[] { RAID_DIFICULTS_TABLE_KEY },
-                                                    "raid_id=?",
+                                                    "raid_id=? ORDER BY difi_id DESC",
                                                     new String[] { this.id +""});
             if(raidDificult.size() > 0)
             {
@@ -136,5 +143,7 @@ public class Raid extends GameObject
     @Override
     public String getId() { return this.id +""; }
     public String getName() { return this.name; }
+    public String getSlug() { return this.slug; }
+    public List<RaidDificult> getDificults() { return this.dificults; }
     
 }

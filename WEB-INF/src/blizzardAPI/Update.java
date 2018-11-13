@@ -69,7 +69,7 @@ public class Update implements APIInfo
         */
         
         System.out.println("-------Update process is START! (Dynamic)------");        
-        //Guild information update!
+        /*/Guild information update!
         System.out.println("Guild Information update!");
         try { getGuildProfile(); } 
         catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { System.out.println("Fail update Guild Info: "+ ex); }
@@ -94,7 +94,7 @@ public class Update implements APIInfo
         try { getUsersCharacters(); } 
         catch (SQLException|DataException ex) { System.out.println("Fail update user characters Info: "+ ex); }
         //Guild progression RaiderIO
-        System.out.println("Guild progression update!");
+        */System.out.println("Guild progression update!");
         try { getGuildProgression(); } 
         catch (IOException|ParseException|DataException ex) { System.out.println("Fail update guild progression Info: "+ ex); }	
         System.out.println("-------Update process is COMPLATE! (Dynamic)------");

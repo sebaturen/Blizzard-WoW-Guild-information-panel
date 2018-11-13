@@ -69,6 +69,7 @@ public class Boss extends GameObject
     @Override
     public String getId() { return this.id +""; }
     public String getName() { return this.name; }
+    public String getSlug() { return this.slug; }
     
     
 }

@@ -18,6 +18,9 @@
             <li class="nav-item <% out.write((request.getRequestURI().equals("/guild_challenges.jsp"))? "active":""); %>">
                 <a class="nav-link" href="guild_challenges.jsp">Guild Challenges</a>
             </li>
+            <li class="nav-item <% out.write((request.getRequestURI().equals("/progress.jsp"))? "active":""); %>">
+                <a class="nav-link" href="progress.jsp">Guild Progress</a>
+            </li>
             <% if(user != null && user.getGuildRank() != -1) { %>
                 <li class="nav-item <% out.write((request.getRequestURI().equals("/alters.jsp"))? "active":""); %>">
                     <a class="nav-link" href="alters.jsp">Alters</a>
