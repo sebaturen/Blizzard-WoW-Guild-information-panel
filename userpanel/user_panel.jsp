@@ -18,25 +18,8 @@ else //only show content if is redirect from login.jsp and the user is valid
     <body>
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
-            <%= (user.getBattleTag() != null)? user.getBattleTag():user.getEmail() %><br/>
-            <%  //Blizzard account vinculation
-                if (!user.getWowInfo()) {                    
-                    String baseUrl = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 
-                                                com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
-                                                com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
-                    String redirectUri = baseUrl;
-                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
-                    redirectUri += "&scope=wow.profile";
-                    redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
-                    redirectUri += "&response_type=code";
-                    redirectUri += "&client_id=" + com.artOfWar.blizzardAPI.APIInfo.CLIENT_ID;
-                %>
-                    <a href="<%= redirectUri %>">
-                        <button type="button" class="btn btn-primary">Link blizz account</button>
-                    </a><br><br>
-              <%} else {
-                    %><button type="button" class="btn btn-outline-danger btn-sm">Un-link blizz account</button><br><br><%
-                }
+            <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %><br/>
+            <%  
                 //User character info~
                 List<Member> memberChars = user.getCharacterList();
                 if(memberChars.size() > 0)

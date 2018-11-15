@@ -260,6 +260,10 @@ public class Member extends GameObject
     public int getLevel() { return this.level; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public String getThumbnail() { return this.thumbnail; }
+    public String getThumbnailURL() 
+    {
+        return String.format(APIInfo.API_RENDER_URL, APIInfo.SERVER_LOCATION, getThumbnail());
+    }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }
     public String getGuildName() { return this.guildName; }

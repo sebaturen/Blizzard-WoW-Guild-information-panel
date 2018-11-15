@@ -27,7 +27,7 @@
                         for(Member member : members.getMembersList())
                         {%>
                             <tr>
-                                <th scope="row"><%= i %></th>
+                                <th scope="row"><img style="height: 50px;" src="<%= member.getThumbnailURL() %>" /></th>
                                 <td scope="row" class="character-<%= (member.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= member.getName() %></td>
                                 <% String className = ((member.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase(); 
                                    String specName = ((member.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase(); %>

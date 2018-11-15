@@ -92,7 +92,7 @@ public class Update implements APIInfo
         //Users player
         System.out.println("Users characters information update!");
         try { getUsersCharacters(); } 
-        catch (SQLException|DataException ex) { System.out.println("Fail update user characters Info: "+ ex); }
+        catch (SQLException|DataException|ClassNotFoundException ex) { System.out.println("Fail update user characters Info: "+ ex); }
         //Guild progression RaiderIO
         System.out.println("Guild progression update!");
         try { getGuildProgression(); } 
@@ -676,21 +676,56 @@ public class Update implements APIInfo
         }        
     }
     
-    private void getUsersCharacters() throws SQLException, DataException
+    private void getUsersCharacters() throws SQLException, DataException, ClassNotFoundException
     {
         JSONArray users = dbConnect.select(DBStructure.USER_TABLE_NAME, 
                                            new String[] {"id", "access_token"},
                                            "access_token IS NOT NULL AND wowinfo=?",
                                            new String[] {"1"});
-        if(users.size() > 0)
-        {
-            for(int i = 0; i < users.size(); i++)
-            {                    
-                String acToken = ((JSONObject)users.get(i)).get("access_token").toString();
-                int userID = (Integer) ((JSONObject)users.get(i)).get("id");
-                setMemberCharacterInfo(acToken, userID);
-            }
+        //For all account have an accessToken and set a member info
+        for(int i = 0; i < users.size(); i++)
+        {                    
+            String acToken = ((JSONObject)users.get(i)).get("access_token").toString();
+            int userID = (Integer) ((JSONObject)users.get(i)).get("id");
+            setMemberCharacterInfo(acToken, userID);
         }
+        //Re set a guild rank from ALL members~
+        /**
+         * SELECT id, guild_rank as user_rank, rank as member_rank
+         *  FROM (SELECT u.id, u.guild_rank, gm.rank, ROW_NUMBER() OVER (PARTITION BY u.id ORDER BY gm.rank ASC) rn
+         *           FROM  users u, gMembers_id_name gm 
+         *           WHERE u.id = gm.user_id ORDER BY u.id ASC, gm.rank ASC) tab
+         *   WHERE rn = 1;
+         */
+        JSONArray allUsers = dbConnect.select(DBStructure.USER_TABLE_NAME,
+                                            new String[] { "id", "guild_rank" });
+        for(int i = 0; i < allUsers.size(); i++)
+        {
+            int uderID = (Integer) ((JSONObject) allUsers.get(i)).get("id");
+            int actualUserRank = (Integer) ((JSONObject) allUsers.get(i)).get("guild_rank");
+            int membersRank = -1;
+            //Select player have a better guild rank 
+            //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
+            JSONArray charRank = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME, 
+                                                new String[] {"rank"},
+                                                "user_id=? AND rank is not null order by rank limit 1",
+                                                new String[] { uderID +"" });
+            if(charRank.size() > 0)
+            {
+                membersRank = (Integer) ((JSONObject) charRank.get(0)).get("rank");
+            }
+            //Save if is different
+            if(membersRank != actualUserRank)
+            {
+                dbConnect.update(DBStructure.USER_TABLE_NAME, 
+                            new String[] {"guild_rank"},
+                            new String[] {membersRank +""},
+                            "id=?",
+                            new String[] {uderID +""});
+            }
+            
+        }
+        
     }
     
     /**

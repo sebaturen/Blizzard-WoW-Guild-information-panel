@@ -13,14 +13,12 @@ CREATE TABLE `guild_info` (
 
 CREATE TABLE `users` (
     `id`            INT NOT NULL AUTO_INCREMENT,
-    `email`         varchar(50) NOT NULL,
-    `password`      varchar(50) NOT NULL,
     `battle_tag`    varchar(50),
     `access_token`  varchar(50),
     `guild_rank`    TINYINT DEFAULT -1,
     `wowinfo`       TINYINT(1) DEFAULT 0,
     PRIMARY KEY(id),
-    UNIQUE(email)
+    UNIQUE(battle_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `gMembers_id_name` (

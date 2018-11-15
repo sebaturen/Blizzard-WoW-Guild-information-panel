@@ -36,7 +36,21 @@
             <% if (tokenPrice[0] > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice[0]) %></span><% } %>
             <% if (tokenPrice[1] > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice[1]) %></span><% } %>
             <% if (tokenPrice[2] > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice[2]) %></span><% } %>
-            &nbsp;<a href="login.jsp"><button class="btn btn-outline-success" type="button"><%= (user == null || !user.checkUser())? "Login":"Account Info" %></button></a>
+            <%//Blizzard account vinculation                                    
+                String redirectUri = "login.jsp";
+                if(!user.checkUser())
+                {
+                    redirectUri = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 
+                                                com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
+                                                com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
+                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
+                    redirectUri += "&scope=wow.profile";
+                    redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
+                    redirectUri += "&response_type=code";
+                    redirectUri += "&client_id=" + com.artOfWar.blizzardAPI.APIInfo.CLIENT_ID;                    
+                }
+            %>
+            &nbsp;<a href="<%= redirectUri %>"><button class="btn btn-outline-success" type="button"><%= (!user.checkUser())? "Login":"Account Info" %></button></a>
         </div>
     </div>
 </nav>

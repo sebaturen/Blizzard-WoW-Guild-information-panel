@@ -23,27 +23,10 @@ else if ( user.checkUser() ) //login is complate and successful
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
             <div class="row justify-content-md-center">
-                <div class="col-6">
-                    <div class="form-group">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input name="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email"/>
-                        </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input name="noCryptPassword" type="password" class="form-control" id="inputPass" placeholder="Password" />
-                    </div>
-                    <form method="post" id="accesInfo">
-                        <input name="email" type="hidden" id="email"/>
-                        <input name="password" type="hidden" id="password"/>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form><br>
-                    <% if (user.getTryLogin()) {%>
-                    <div class="alert alert-danger" role="alert">
-                        <strong>Account error!</strong> Your login information not is correct, try again!.
-                    </div>
-                    <%}%>
-                    <a href="register.jsp"><button type="button" class="btn btn-primary btn-sm">Register</button></a>
-                </div>
+                    <% // "redirectUri" is generate in menu.jsp %>
+                    <a href="<%= redirectUri %>"> 
+                        <button type="button" class="btn btn-primary">Blizzard Login</button>
+                    </a><br><br>
             </div>
         </div>
     </body>
