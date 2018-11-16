@@ -10,18 +10,16 @@
         <div class="container fill">
             <div id="welcome">
                 <div class="row">
-                    <div class="col">
+                    <div class="col log_artofwar">
                         <img src="/assets/img/artofwar_logo.png"/>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 align-self-center">
                         <p class='home_name warcraft_font'><%= guild_info.getName() %></p>
                     </div>
-                    <div class="col">
+                    <div class="col log_artofwar">
                         <img class='flipImg' src="/assets/img/artofwar_logo.png"/>
                     </div>
                 </div>
-                
-                
             </div>
         </div>
     </body>

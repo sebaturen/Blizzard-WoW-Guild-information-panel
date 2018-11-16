@@ -6,6 +6,7 @@
 package com.artOfWar.gameObject.guild.raids;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import java.sql.SQLException;
@@ -80,7 +81,7 @@ public class Raid extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
+            Logs.saveLog("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
         } 
     }
     

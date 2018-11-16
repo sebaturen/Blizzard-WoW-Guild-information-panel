@@ -6,6 +6,7 @@
 package com.artOfWar.viewController;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
 import java.sql.SQLException;
@@ -32,7 +33,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            System.out.println("Fail to get a last dynamic update");
+            Logs.saveLog("Fail to get a last dynamic update");
         }
         return out;
     }
@@ -53,7 +54,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            System.out.println("Fail to get a last dynamic update");
+            Logs.saveLog("Fail to get a last dynamic update");
         }
         return out;
     }
@@ -78,7 +79,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            System.out.println("Fail to get a wow Token price");
+            Logs.saveLog("Fail to get a wow Token price");
         }
         return out;
     }

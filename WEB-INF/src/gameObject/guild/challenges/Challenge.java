@@ -6,6 +6,7 @@
 package com.artOfWar.gameObject.guild.challenges;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.gameObject.GameObject;
 import static com.artOfWar.gameObject.GameObject.SAVE_MSG_INSERT_OK;
 import static com.artOfWar.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
@@ -58,7 +59,7 @@ public class Challenge extends GameObject
                 if(cgDb.isData()) chGroups.add(cgDb);
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to load Groups from challenge "+ this.mapId);
+            Logs.saveLog("Fail to load Groups from challenge "+ this.mapId);
         }
     }
     
@@ -171,7 +172,7 @@ public class Challenge extends GameObject
             if(gTime.before(cSilver)) return 2;
             if(gTime.before(cBronze)) return 1;
         } catch (ParseException ex) {
-            System.out.println("Fail to convert time group "+ ex);
+            Logs.saveLog("Fail to convert time group "+ ex);
         }
         return -1;
     }

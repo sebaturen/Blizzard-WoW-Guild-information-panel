@@ -16,8 +16,6 @@ else if ( user.checkUser() ) //login is complate and successful
     <head>
         <title><%= guild_info.getName() %> - Login</title>
         <%@include file="../includes/header.jsp" %>
-        <script src="../assets/js/jquery.md5.js"></script>
-        <script src="../assets/js/passMd5Encrypt.js"></script>
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>

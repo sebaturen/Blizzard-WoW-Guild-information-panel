@@ -6,6 +6,7 @@
 package com.artOfWar.viewController;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.guild.raids.Raid;
@@ -39,7 +40,7 @@ public class GuildProgress
                 this.raids[i] = r;
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Error get a guilds raids "+ ex);
+            Logs.saveLog("Error get a guilds raids "+ ex);
         }
     }
     

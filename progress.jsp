@@ -25,6 +25,7 @@
                         <p class='world-rank'><%= (rDiff.getRankWorld() > 0)? "World: "+ rDiff.getRankWorld():"" %></p>
                         <p class='region-rank'><%= (rDiff.getRankRegion() > 0)? "Region: "+ rDiff.getRankRegion():"" %></p>
                         <p class='realm-rank'><%= (rDiff.getRankRealm() > 0)? "Realm: "+ rDiff.getRankRealm():"" %></p>
+                        <br>
                         <% int progressPersent = (rDiff.getDificultBoss().size()*100)/r.getTotalBoss(); %>
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" style="width: <%= progressPersent %>%" aria-valuenow="<%= progressPersent %>" aria-valuemin="0" aria-valuemax="100"></div>

@@ -6,6 +6,7 @@
 package com.artOfWar.gameObject.guild.raids;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import java.sql.SQLException;
@@ -83,7 +84,7 @@ public class RaidDificult extends GameObject
                 this.bosses.add(rdBoss);
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
+            Logs.saveLog("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
         }
     }
 

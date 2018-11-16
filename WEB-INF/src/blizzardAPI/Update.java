@@ -7,6 +7,7 @@ package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.Boss;
 import com.artOfWar.gameObject.guild.Guild;
@@ -35,6 +36,8 @@ import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Update implements APIInfo
 {
@@ -63,41 +66,41 @@ public class Update implements APIInfo
     {
         
         
-        /*System.out.println("Guild new information update!");
+        /*Logs.saveLog("Guild new information update!");
         try { getGuildNews();}
-        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail update guild news Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
         */
         
-        System.out.println("-------Update process is START! (Dynamic)------");        
+        Logs.saveLog("-------Update process is START! (Dynamic)------");
         //Guild information update!
-        System.out.println("Guild Information update!");
+        Logs.saveLog("Guild Information update!");
         try { getGuildProfile(); } 
-        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { System.out.println("Fail update Guild Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Info: "+ ex); }
         //Guild members information update!
-        System.out.println("Guild members information update!");
+        Logs.saveLog("Guild members information update!");
         try { getGuildMembers(); } 
-        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { System.out.println("Fail update Guild Members Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Members Info: "+ ex); }
         //Character information update!						
-        System.out.println("Character information update!");
+        Logs.saveLog("Character information update!");
         try { getCharacterInfo(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
         //Guild challenges update!
-        System.out.println("Guild challenges update!");
+        Logs.saveLog("Guild challenges update!");
         try { getGuildChallenges(); } 
-        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { System.out.println("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
         //Wow Token
-        System.out.println("Wow token information update!");
+        Logs.saveLog("Wow token information update!");
         try { getWowToken(); } 
-        catch (ClassNotFoundException|IOException|ParseException|DataException ex) { System.out.println("Fail update Wow Token Info: "+ ex); }		
+        catch (ClassNotFoundException|IOException|ParseException|DataException|SQLException ex) { Logs.saveLog("Fail update Wow Token Info: "+ ex); }		
         //Users player
-        System.out.println("Users characters information update!");
+        Logs.saveLog("Users characters information update!");
         try { getUsersCharacters(); } 
-        catch (SQLException|DataException|ClassNotFoundException ex) { System.out.println("Fail update user characters Info: "+ ex); }
+        catch (SQLException|DataException|ClassNotFoundException ex) { Logs.saveLog("Fail update user characters Info: "+ ex); }
         //Guild progression RaiderIO
-        System.out.println("Guild progression update!");
+        Logs.saveLog("Guild progression update!");
         try { getGuildProgression(); } 
-        catch (IOException|ParseException|DataException ex) { System.out.println("Fail update guild progression Info: "+ ex); }	
-        System.out.println("-------Update process is COMPLATE! (Dynamic)------");
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update guild progression Info: "+ ex); }	
+        Logs.saveLog("-------Update process is COMPLATE! (Dynamic)------");
 
         //Save log update in DB
         try 
@@ -108,9 +111,9 @@ public class Update implements APIInfo
                             DBStructure.outKey(DBStructure.UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {DYNAMIC_UPDATE +"", getCurrentTimeStamp()});
         } 
-        catch(DataException|ClassNotFoundException e)
+        catch(DataException|ClassNotFoundException|SQLException e)
         {
-            System.out.println("Fail to save update time: "+ e);
+            Logs.saveLog("Fail to save update time: "+ e);
         }
     }
 
@@ -119,28 +122,28 @@ public class Update implements APIInfo
      */
     public void updateStaticAll()
     {
-        System.out.println("-------Update process is START! (Static)------");
+        Logs.saveLog("-------Update process is START! (Static)------");
         //Playable Class
-        System.out.println("Playable class Information update!");
+        Logs.saveLog("Playable class Information update!");
         try { getPlayableClass(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Playable class Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update Playable class Info: "+ ex); }
         //Races
-        System.out.println("Races Information update!");
+        Logs.saveLog("Races Information update!");
         try { getRaces(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update Races Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update Races Info: "+ ex); }		
         //Guild Achivements lists
-        System.out.println("Guild Achivements lists information update!");
+        Logs.saveLog("Guild Achivements lists information update!");
         try { getGuildAchivementsLists(); } 
-        catch (IOException|ParseException|DataException ex) { System.out.println("Fail update Achivements Info: "+ ex); }		
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Achivements Info: "+ ex); }		
         //Update Spell information
-        System.out.println("Spell information update!");
+        Logs.saveLog("Spell information update!");
         try { updateSpellInformation(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { System.out.println("Fail update spell Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update spell Info: "+ ex); }		
         //Boss DB Upate info
-        System.out.println("Boss DB Update");
+        Logs.saveLog("Boss DB Update");
         try { getBossInformation(); }
-        catch (IOException|ParseException|DataException ex) { System.out.println("Fail get boss DB Info: "+ ex); }
-        System.out.println("-------Update process is COMPLATE! (Static)------");
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail get boss DB Info: "+ ex); }
+        Logs.saveLog("-------Update process is COMPLATE! (Static)------");
         
         //Save log update in DB
         try 
@@ -151,9 +154,9 @@ public class Update implements APIInfo
                             DBStructure.outKey(DBStructure.UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {STATIC_UPDATE +"", getCurrentTimeStamp()});
         } 
-        catch(DataException|ClassNotFoundException e)
+        catch(DataException|ClassNotFoundException|SQLException e)
         {
-            System.out.println("Fail to save update time: "+ e);
+            Logs.saveLog("Fail to save update time: "+ e);
         }		
     }
 
@@ -291,7 +294,7 @@ public class Update implements APIInfo
                                                 new String[] {"1"});
 
             int iProgres = 1;
-            System.out.print("0%");
+            Logs.saveLog("0%", false);
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
@@ -300,11 +303,11 @@ public class Update implements APIInfo
                 //Show update progress...
                 if ( (((iProgres*2)*10)*members.size())/100 < i )
                 {
-                    System.out.print("..."+ ((iProgres*2)*10) +"%");
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
                     iProgres++;
                 }
             }
-            System.out.println("...100%");
+            Logs.saveLog("...100%");
         }
     }
     
@@ -326,7 +329,7 @@ public class Update implements APIInfo
         } 
         catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
         {
-            System.out.println("BlizzAPI haven a error to "+ name +"\n\t"+ e);
+            Logs.saveLog("BlizzAPI haven a error to '"+ name +"'\n\t"+ e);
         }
         return blizzPlayer;
     }    
@@ -378,7 +381,7 @@ public class Update implements APIInfo
         }
         catch (SQLException|DataException|ClassNotFoundException|UnsupportedEncodingException e)
         {
-            System.out.println("Error get SQL Query member from blizz or DB "+ e);
+            Logs.saveLog("Error get SQL Query member from blizz or DB "+ e);
         }
         return mb;
     }
@@ -455,7 +458,7 @@ public class Update implements APIInfo
             JSONArray spellInDb = dbConnect.select(DBStructure.SPELLS_TABLE_NAME,
                                                     new String[] {"id"});            
             int iProgres = 1;
-            System.out.print("0%");
+            Logs.saveLog("0%", false);
             for(int i = 0; i < spellInDb.size(); i++)
             {
                 //Generate an API URL
@@ -472,11 +475,11 @@ public class Update implements APIInfo
                 //Show update progress...
                 if ( (((iProgres*2)*10)*spellInDb.size())/100 < i )
                 {
-                    System.out.print("..."+ ((iProgres*2)*10) +"%");
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
                     iProgres++;
                 }              
             }
-            System.out.println("...100%");
+            Logs.saveLog("...100%");
         }        
     }
     /**
@@ -537,7 +540,7 @@ public class Update implements APIInfo
             JSONArray challenges = (JSONArray) respond.get("challenge");
                  
             int iProgres = 1;
-            System.out.print("0%");
+            Logs.saveLog("0%", false);
             for(int i = 0; i < challenges.size(); i++)
             {
                 JSONObject challeng = (JSONObject) challenges.get(i);
@@ -595,11 +598,11 @@ public class Update implements APIInfo
                 //Show update progress...
                 if ( (((iProgres*2)*10)*challenges.size())/100 < i )
                 {
-                    System.out.print("..."+ ((iProgres*2)*10) +"%");
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
                     iProgres++;
                 }
             }
-            System.out.println("...100%");
+            Logs.saveLog("...100%");
         }		
     }    
     
@@ -622,7 +625,7 @@ public class Update implements APIInfo
             for(int i = 0; i < news.size(); i++)
             {
                
-                System.out.println("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+                Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
             }
         }
     }
@@ -650,12 +653,12 @@ public class Update implements APIInfo
                 {
                     
                 }
-                System.out.println("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+                Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
             }
         }
     }
     
-    private void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException
+    private void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException, SQLException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
         else
@@ -762,8 +765,8 @@ public class Update implements APIInfo
                                             new String[] { userID+""},
                                             "internal_id=?", 
                                             new String[] { mb.getId()});
-                        } catch (ClassNotFoundException ex) {
-                            System.out.println("Fail to insert userID info "+ ex);
+                        } catch (ClassNotFoundException|SQLException ex) {
+                            Logs.saveLog("Fail to insert userID info "+ ex);
                         }
                     }
                 }
@@ -784,11 +787,11 @@ public class Update implements APIInfo
                                     "id=?",
                                     new String[] { userID +"" });
                         } catch (ClassNotFoundException ex) {
-                            System.out.println("Fail to save guild rank from user "+ userID +" - "+ ex);
+                            Logs.saveLog("Fail to save guild rank from user "+ userID +" - "+ ex);
                         }
                     }
                 } catch (SQLException ex) {
-                    System.out.println("Fail to select characters from user "+ userID +" - "+ ex);
+                    Logs.saveLog("Fail to select characters from user "+ userID +" - "+ ex);
                 }
                 //Set accessToken is working yet~
                 try 
@@ -798,27 +801,27 @@ public class Update implements APIInfo
                             new String[] { "1" },
                             "id=?",
                             new String[] { userID +""});
-                    System.out.println("Wow access token is update!");
-                } catch (ClassNotFoundException ex) {
-                    System.out.println("Fail to set wowinfo is worikng from "+ userID);
+                    Logs.saveLog("Wow access token is update!");
+                } catch (ClassNotFoundException|SQLException ex) {
+                    Logs.saveLog("Fail to set wowinfo is worikng from "+ userID);
                 }
             }
         } catch(DataException e) {
             if(e.getErrorCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
             {
-                System.out.println("User block or not get access wow~ "+ e);                    
+                Logs.saveLog("User block or not get access wow~ "+ e);                    
                 try {
                     dbConnect.update(DBStructure.USER_TABLE_NAME,
                             new String[] {"wowinfo"},
                             new String[] {"0"},
                             "id=?",
                             new String[] {userID +""});
-                } catch (DataException | ClassNotFoundException ex) {
-                    System.out.println("Fail to update wowinfo false from "+ userID +" - "+ ex);
+                } catch (DataException | ClassNotFoundException |SQLException ex) {
+                    Logs.saveLog("Fail to update wowinfo false from "+ userID +" - "+ ex);
                 }                                
             }
         } catch (IOException|ParseException ex) {
-            System.out.println("Fail to get user Access Token "+ ex);
+            Logs.saveLog("Fail to get user Access Token "+ ex);
         }
     }
     

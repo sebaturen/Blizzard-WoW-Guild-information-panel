@@ -7,6 +7,7 @@
 package com.artOfWar.blizzardAPI;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
@@ -33,7 +34,7 @@ public class UpdateRunningCrontab
         } 
         catch (IOException|ParseException|DataException ex)
         {
-            System.out.println("Cant create a Data Update Object! "+ ex);
+            Logs.saveLog("Cant create a Data Update Object! "+ ex);
         }
     }
 }

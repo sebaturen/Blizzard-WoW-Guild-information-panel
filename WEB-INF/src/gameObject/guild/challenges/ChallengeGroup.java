@@ -6,6 +6,7 @@
 package com.artOfWar.gameObject.guild.challenges;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.characters.Member;
@@ -67,7 +68,7 @@ public class ChallengeGroup extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to load members from challenge group id: "+ this.id);
+            Logs.saveLog("Fail to load members from challenge group id: "+ this.id);
         }
     }
 
@@ -87,7 +88,7 @@ public class ChallengeGroup extends GameObject
             try {
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
             } catch (ParseException ex) {
-                System.out.println("(Blizz) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
@@ -101,7 +102,7 @@ public class ChallengeGroup extends GameObject
             try { //2018-10-17 02:39:00
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
             } catch (ParseException ex) {
-                System.out.println("(DB) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id);
             }
         }
         this.isData = true;
@@ -133,7 +134,7 @@ public class ChallengeGroup extends GameObject
                                     "internal_member_id=? AND group_id=?",
                                     new String[] { m.getId(), this.id +"" } );
                         } catch (SQLException ex) {
-                            System.out.println("Fail to get memberInGroupID "+ ex);
+                            Logs.saveLog("Fail to get memberInGroupID "+ ex);
                         }
                         //Insert or update... if need insert is because not is register :D
                         if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
@@ -143,8 +144,8 @@ public class ChallengeGroup extends GameObject
                                             new String[] { "internal_member_id", "group_id", "spec_id" },
                                             new String[] { m.getId(), this.id +"", m.getActiveSpec().getId() +"" });
                         }
-                    } catch (DataException|ClassNotFoundException ex) {
-                        System.out.println("Fail to save members in groups: "+ ex);
+                    } catch (DataException|ClassNotFoundException|SQLException ex) {
+                        Logs.saveLog("Fail to save members in groups: "+ ex);
                     }
                 });
                 return true;

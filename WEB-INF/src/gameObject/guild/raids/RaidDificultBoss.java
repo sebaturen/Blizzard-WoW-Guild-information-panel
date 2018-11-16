@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject.guild.raids;
 
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.Boss;
 import com.artOfWar.gameObject.GameObject;
@@ -54,7 +55,7 @@ public class RaidDificultBoss extends GameObject
             try { //2018-10-17 02:39:00
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                System.out.println("(DB) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
@@ -64,7 +65,7 @@ public class RaidDificultBoss extends GameObject
             try {
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                System.out.println("(Blizz) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id);
             }
             
             //Save Item Level AVG            

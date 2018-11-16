@@ -6,6 +6,7 @@
 package com.artOfWar.dbConnect;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +35,11 @@ public class DBConnect implements DBConfig
 
     public DBConnect()
     {
+        generateConnextion();
+    }
+    
+    private void generateConnextion()
+    {
         try
         {
             //Driver connection
@@ -42,9 +48,9 @@ public class DBConnect implements DBConfig
                                                     DB_PASSWORD);
             statusConnect = true;
         } catch (SQLException e) {
-            System.out.println("Fail to generate DB Connection: "+ e);
+            Logs.saveLog("Fail to generate DB Connection: "+ e);
             statusConnect = false;
-        }
+        }        
     }
 	
     /**
@@ -59,6 +65,7 @@ public class DBConnect implements DBConfig
     {
         if (statusConnect == true)
         {
+            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "SELECT ";
             String aphost = (disableAphostro)? "":"`";
@@ -69,7 +76,7 @@ public class DBConnect implements DBConfig
             if(where != null) sql += " WHERE "+ where;
             this.pstmt = this.conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
-            //System.out.println("PSTMT: "+ this.pstmt);
+            //Logs.saveLog("PSTMT: "+ this.pstmt);
             return resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
@@ -82,6 +89,7 @@ public class DBConnect implements DBConfig
     {
         if (statusConnect == true)
         {
+            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "SELECT LAST_INSERT_ID()";
             this.pstmt = this.conn.prepareStatement(sql);          
@@ -106,11 +114,11 @@ public class DBConnect implements DBConfig
             int columnsNumber = rsmd.getColumnCount();
             while (resultSet.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) System.out.print(",  ");
+                    if (i > 1) Logs.saveLog(",  ", false);
                     String columnValue = resultSet.getString(i);
-                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                    Logs.saveLog(columnValue + " " + rsmd.getColumnName(i), false);
                 }
-                System.out.println("");
+                Logs.saveLog("");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,6 +135,7 @@ public class DBConnect implements DBConfig
         if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
         if (statusConnect == true)
         {
+            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "DELETE FROM "+ table +" WHERE "+ where;
             this.pstmt = this.conn.prepareStatement(sql);
@@ -145,11 +154,12 @@ public class DBConnect implements DBConfig
      * @columns name of value is change
      * @values values from this insert
      */
-    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException { return insert(table, idColum, columns, values, null, null); }
-    public String insert(String table, String idColum, String[] columns, String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException
+    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException { return insert(table, idColum, columns, values, null, null); }
+    public String insert(String table, String idColum, String[] columns, String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException, SQLException
     {
         if (statusConnect == true)
-        {			
+        {        
+            if(conn.isClosed()) generateConnextion();			
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
@@ -177,7 +187,7 @@ public class DBConnect implements DBConfig
                     
                     this.pstmt = this.conn.prepareStatement(sql);
                     for(int i = 0; i < valuesWithWhereValues.length; i++) { this.pstmt.setString(i+1,valuesWithWhereValues[i]); }
-                    //System.out.println("PSTMT: "+ this.pstmt);
+                    //Logs.saveLog("PSTMT: "+ this.pstmt);
                     //Run Update
                     this.pstmt.executeUpdate();
                     
@@ -201,7 +211,7 @@ public class DBConnect implements DBConfig
                                         stockArr);
                     if(v.isEmpty()) 
                     {
-                        System.out.println("FAIL TO GET ID! "+ this.pstmt);
+                        Logs.saveLog("FAIL TO GET ID! "+ this.pstmt);
                         System.exit(-1);
                         return null;
                     }
@@ -235,10 +245,11 @@ public class DBConnect implements DBConfig
      */
     public void update(String table, String[] columns, 
                         String[] values, String where, String[] whereValues) 
-            throws DataException, ClassNotFoundException
+            throws DataException, ClassNotFoundException, SQLException
     {
         if (statusConnect == true)
-        {			
+        {
+            if(conn.isClosed()) generateConnextion();			
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
@@ -263,7 +274,7 @@ public class DBConnect implements DBConfig
                     
                     this.pstmt = this.conn.prepareStatement(sql);
                     for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }
-                    //System.out.println("PSTMT: "+ this.pstmt);
+                    //Logs.saveLog("PSTMT: "+ this.pstmt);
                     //Run Update
                     this.pstmt.executeUpdate();
                 } catch (SQLException ex) {

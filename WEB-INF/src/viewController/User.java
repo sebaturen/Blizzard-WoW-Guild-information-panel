@@ -6,6 +6,7 @@
 package com.artOfWar.viewController;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
@@ -30,6 +31,7 @@ public class User
     private String accessToken;
     private int guildRank = -1;
     private boolean isLogin = false;
+    private boolean isCharsReady = false;
     
     private final DBConnect dbConnect;
     
@@ -38,10 +40,11 @@ public class User
         dbConnect = new DBConnect();
     }
     
-    public boolean checkUser()
+    public boolean checkUser() { return checkUser(false); }
+    public boolean checkUser(boolean forceCheck)
     {
         if(this.battleTag == null) return false;
-        if(this.isLogin) return this.isLogin;
+        if(this.isLogin && !forceCheck) return this.isLogin;
         try {
             JSONArray validUser = dbConnect.select(DBStructure.USER_TABLE_NAME,
                     new String[] {"id", "battle_tag", "access_token", "guild_rank"},
@@ -57,7 +60,7 @@ public class User
                 return true;
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to login "+ this.battleTag +" - "+ ex);
+            Logs.saveLog("Fail to login "+ this.battleTag +" - "+ ex);
         }
         return false;
     }
@@ -79,8 +82,8 @@ public class User
                         "id=?",
                         new String[] {this.id +""}); 
                 vRet = true;
-            } catch (DataException | ClassNotFoundException ex) {
-                System.out.println("Fail to save access token to "+ this.battleTag +" - "+ ex);
+            } catch (DataException | ClassNotFoundException | SQLException ex) {
+                Logs.saveLog("Fail to save access token to "+ this.battleTag +" - "+ ex);
             }            
         }
         else
@@ -92,26 +95,35 @@ public class User
                         new String[] { this.battleTag, this.accessToken});
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
-            } catch (DataException | ClassNotFoundException ex) {
-                System.out.println("Fail to insert user "+ this.battleTag);
+            } catch (DataException | ClassNotFoundException | SQLException ex) {
+                Logs.saveLog("Fail to insert user "+ this.battleTag);
             }
         }
         //Try get a member rank...   
         updateUserCharacters();
         return vRet;
-    }   
+    }
     
     private void updateUserCharacters()
     {
-        try {
-            Update up = new Update();
-            up.setMemberCharacterInfo(this.accessToken, this.id);
-            checkUser();
-        } catch (IOException | ParseException | DataException ex) {
-            System.out.println("Fail to seve characters info "+ this.id +" - "+ ex);
-        }  
+        final String accToken = this.accessToken;
+        final int uId = this.id;
+        Thread upChar = new Thread() {
+            @Override
+            public void run()
+            {               
+                try {
+                    Update up = new Update();
+                    up.setMemberCharacterInfo(accToken, uId);
+                } catch (IOException | ParseException | DataException ex) {
+                    Logs.saveLog("Fail to seve characters info "+ uId +" - "+ ex);
+                }
+                checkUser(true);
+                setIsCharsReady(true);
+            }
+        };  
+        upChar.start();
     }
-    
     
     private String getAccessToken(String code)
     {
@@ -143,7 +155,7 @@ public class User
                 return blizzInfo.get("access_token").toString();
             }
         } catch (IOException|ParseException|DataException ex) {
-            System.out.println("Fail to get user Access Token "+ ex);
+            Logs.saveLog("Fail to get user Access Token "+ ex);
         }
         return null;
     }
@@ -166,7 +178,7 @@ public class User
                 }
             }
         } catch (IOException|ParseException|DataException ex) {
-            System.out.println("Fail to get BattleTag "+ ex);
+            Logs.saveLog("Fail to get BattleTag "+ ex);
         }
         return null;
     }
@@ -186,12 +198,14 @@ public class User
                 if(mb.isData()) userMember.add(mb);
             }
         } catch (SQLException|DataException ex) {
-            System.out.println("Error get a character user info "+ this.id +" - "+ ex);
+            Logs.saveLog("Error get a character user info "+ this.id +" - "+ ex);
         }
         return userMember;
     }
     
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
+    public boolean isCharsReady() { return this.isCharsReady; }
+    private void setIsCharsReady(boolean r) { this.isCharsReady = r; } 
     
 }

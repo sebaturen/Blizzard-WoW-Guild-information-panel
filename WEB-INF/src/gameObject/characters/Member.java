@@ -8,6 +8,7 @@ package com.artOfWar.gameObject.characters;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import java.io.IOException;
@@ -154,7 +155,7 @@ public class Member extends GameObject
                     this.specs.get(i).setIsInternalData(true);
                 }
             } catch (SQLException | DataException ex) {
-                System.out.println("Fail to get old spec info in DB "+ ex);
+                Logs.saveLog("Fail to get old spec info in DB "+ ex);
             } 
         }
     }
@@ -176,11 +177,11 @@ public class Member extends GameObject
             }
             else //No have a specs in DB!!!!
             {
-                System.out.println("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
+                Logs.saveLog("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
                 loadSpecFromUpdate();
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+            Logs.saveLog("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
         }        
     }
     
@@ -193,7 +194,7 @@ public class Member extends GameObject
         }
         catch (IOException|ParseException|DataException ex)
         {
-            System.out.println("Fail to get a spec info in member "+ this.name);
+            Logs.saveLog("Fail to get a spec info in member "+ this.name);
         }
     }
     
@@ -235,7 +236,7 @@ public class Member extends GameObject
     {
         try
         {//change player in character_info in_guild because is change
-            System.out.println("Character "+ this.name +" change guild");
+            Logs.saveLog("Character "+ this.name +" change guild");
             dbConnect.update(GMEMBER_ID_NAME_TABLE_NAME,
                             new String[] {"in_guild", "rank"},
                             new String[] {"0", "0"},
@@ -243,9 +244,9 @@ public class Member extends GameObject
                             new String[] { this.internalID +"" });
             return true;
         }
-        catch (DataException|ClassNotFoundException ex)
+        catch (DataException|ClassNotFoundException|SQLException ex)
         {
-            System.out.println("Error when try remove a user not in guild: "+ ex);
+            Logs.saveLog("Error when try remove a user not in guild: "+ ex);
             return false;
         }				
     }
@@ -286,7 +287,7 @@ public class Member extends GameObject
         }}
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
-        System.out.println("No se encontre la spec activa de "+ this.name +" cargnadola de blizz...");
+        Logs.saveLog("No se encontre la spec activa de "+ this.name +" cargnadola de blizz...");
         loadSpecFromUpdate();
         for(Spec sp: this.specs) if(sp.isEnable()) {
             return sp;

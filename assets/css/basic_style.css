@@ -15,6 +15,15 @@ body {
     background-position: center center;
     background-image: url("../img/background/BFA (21).jpg");
 }
+.right{
+    float: right;
+}
+.table {
+    /* display: block;
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar; */
+}
 /*-------GENERAL------------*/
 .container {    
     background-color: #212529;
@@ -65,6 +74,9 @@ body {
 /*-------INDEX------------*/
 .home_name {
     font-size: 6em;
+    text-align: center;
+}
+.log_artofwar {
     text-align: center;
 }
 /*END -------INDEX------------*/
@@ -142,3 +154,15 @@ body {
     color: #0070dd;
 }
 /*END -------GUILD PROGRESS------------*/
+
+/*-------FORCE UPDATE------------*/
+.returnCode {
+    padding: 5px;
+    border: solid 1px #000;
+    margin-top: 1em;
+    background-color: #0000003d;
+}
+.returnCode > code {
+    color: white;
+}
+/*END -------FORCE UPDATE------------*/

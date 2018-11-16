@@ -18,8 +18,14 @@ else //only show content if is redirect from login.jsp and the user is valid
     <body>
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
-            <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %><br/>
+            <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %>
+            <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='/userpanel/update/update_panel.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button></a>":"" %><br/>
             <%  
+                if(!user.isCharsReady())
+                {
+                    out.write("Your characters are loading, come back in a moment (F5?)...");
+                    out.write("<br><a href='/login.jsp'><button type='button' class='btn btn-info btn-sm'>Reload</button></a>");
+                }
                 //User character info~
                 List<Member> memberChars = user.getCharacterList();
                 if(memberChars.size() > 0)
@@ -51,10 +57,10 @@ else //only show content if is redirect from login.jsp and the user is valid
                         </tbody>
                     </table>
               <%}%>
-                <form method="post">
-                    <input name="logOut" type="hidden" value="true"/>
-                    <button type="submit" class="btn btn-primary">Log out</button>
-                </form>                
+            <form method="post">
+                <input name="logOut" type="hidden" value="true"/>
+                <button type="submit" class="btn btn-primary">Log out</button>
+            </form>                
         </div>
     </body>
 </html>

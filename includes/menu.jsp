@@ -10,20 +10,20 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item <% out.write((request.getRequestURI().equals("/index.jsp"))? "active":""); %>">
-                <a class="nav-link" href="index.jsp">Home</a>
+                <a class="nav-link" href="/index.jsp">Home</a>
             </li>
             <li class="nav-item <% out.write((request.getRequestURI().equals("/members.jsp"))? "active":""); %>">
-                <a class="nav-link" href="members.jsp">Members List</a>
+                <a class="nav-link" href="/members.jsp">Members List</a>
             </li>
             <li class="nav-item <% out.write((request.getRequestURI().equals("/guild_challenges.jsp"))? "active":""); %>">
-                <a class="nav-link" href="guild_challenges.jsp">Guild Challenges</a>
+                <a class="nav-link" href="/guild_challenges.jsp">Guild Challenges</a>
             </li>
             <li class="nav-item <% out.write((request.getRequestURI().equals("/progress.jsp"))? "active":""); %>">
-                <a class="nav-link" href="progress.jsp">Guild Progress</a>
+                <a class="nav-link" href="/progress.jsp">Guild Progress</a>
             </li>
             <% if(user != null && user.getGuildRank() != -1) { %>
                 <li class="nav-item <% out.write((request.getRequestURI().equals("/alters.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="alters.jsp">Alters</a>
+                    <a class="nav-link" href="/alters.jsp">Alters</a>
                 </li>
             <% } %>
             <li class="nav-item">
@@ -37,7 +37,7 @@
             <% if (tokenPrice[1] > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice[1]) %></span><% } %>
             <% if (tokenPrice[2] > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice[2]) %></span><% } %>
             <%//Blizzard account vinculation                                    
-                String redirectUri = "login.jsp";
+                String redirectUri = "/login.jsp";
                 if(!user.checkUser())
                 {
                     redirectUri = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 

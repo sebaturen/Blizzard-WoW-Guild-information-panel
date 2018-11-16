@@ -7,6 +7,7 @@ package com.artOfWar.viewController;
 
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.characters.Member;
 
@@ -62,7 +63,7 @@ public class Members
         }
         catch (SQLException|DataException e)
         {
-            System.out.println("Fail to load members lists - Members View Controller "+ e);
+            Logs.saveLog("Fail to load members lists - Members View Controller "+ e);
         }
     }
 	

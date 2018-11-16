@@ -8,6 +8,7 @@ package com.artOfWar.gameObject;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -65,8 +66,8 @@ public abstract class GameObject implements DBStructure
                             this.tableKey +"=?",
                             new String[] { getId() });
                     return SAVE_MSG_UPDATE_OK;
-                } catch (DataException | ClassNotFoundException ex) {
-                    System.out.println("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
+                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                    Logs.saveLog("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
                     return SAVE_MSG_UPDATE_ERROR;
                 }
             }
@@ -80,8 +81,8 @@ public abstract class GameObject implements DBStructure
                                                 values);
                     setId(id);
                     return SAVE_MSG_INSERT_OK;
-                } catch (DataException | ClassNotFoundException ex) {
-                    System.out.println("Fail to insert "+ ex);
+                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                    Logs.saveLog("Fail to insert "+ ex);
                     return SAVE_MSG_INSERT_ERROR;
                 }
             }
@@ -110,11 +111,11 @@ public abstract class GameObject implements DBStructure
             }
             else
             {
-                System.out.println("Element not found");
+                Logs.saveLog("Element not found");
                 return false;                
             }
         } catch (DataException|SQLException e) {
-            System.out.println("Error in Load element: "+ e);
+            Logs.saveLog("Error in Load element: "+ e);
         }
         return false;        
     }
@@ -145,11 +146,11 @@ public abstract class GameObject implements DBStructure
             }
             else
             {
-                System.out.println("Element not found");
+                Logs.saveLog("Element not found");
                 return false;
             }			
         } catch (DataException|SQLException e) {
-            System.out.println("Error in Load element: "+ e);
+            Logs.saveLog("Error in Load element: "+ e);
         }
         return false;
     }
