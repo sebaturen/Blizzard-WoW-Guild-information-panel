@@ -8,7 +8,6 @@ package com.artOfWar.viewController;
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.guild.raids.Raid;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
@@ -29,14 +28,14 @@ public class GuildProgress
     private void getGuildRaids()
     {
         try {
-            JSONArray raidDB = dbConnect.select(DBStructure.RAIDS_TABLE_NAME,
-                    new String[] {DBStructure.RAIDS_TABLE_KEY},
+            JSONArray raidDB = dbConnect.select(Raid.RAIDS_TABLE_NAME,
+                    new String[] {Raid.RAIDS_TABLE_KEY},
                     "1=? ORDER BY id desc",
                     new String[] {"1"});
             this.raids = new Raid[raidDB.size()];
             for(int i = 0; i < raidDB.size(); i++)
             {
-                Raid r = new Raid((Integer) ((JSONObject) raidDB.get(i)).get(DBStructure.RAIDS_TABLE_KEY));
+                Raid r = new Raid((Integer) ((JSONObject) raidDB.get(i)).get(Raid.RAIDS_TABLE_KEY));
                 this.raids[i] = r;
             }
         } catch (SQLException | DataException ex) {

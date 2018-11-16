@@ -9,7 +9,6 @@ import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import java.io.IOException;
 
@@ -17,12 +16,28 @@ import org.json.simple.JSONObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
 public class Member extends GameObject
 {
+    //Members - id - name DB
+    public static final String GMEMBER_ID_NAME_TABLE_NAME = "gMembers_id_name";
+    public static final String GMEMBER_ID_NAME_TABLE_KEY = "internal_id";
+    public static final String[] GMEMBER_ID_NAME_TABLE_STRUCTURE = {"internal_id", "member_name", "realm", 
+                                                                    "rank", "in_guild", "user_id"};
+    
+    //Character information DB
+    public static final String CHARACTER_INFO_TABLE_NAME = "character_info";
+    public static final String CHARACTER_INFO_TABLE_KEY = "internal_id";
+    public static final String[] CHARACTER_INFO_TABLE_STRUCTURE = {"internal_id", "battlegroup", "class",
+                                                                    "race", "gender", "level", "achievementPoints",
+                                                                    "thumbnail", "calcClass", "faction", "totalHonorableKills",
+                                                                    "guild_name", "lastModified"};
     //Attribute
     private int internalID;
     private String name;
@@ -42,6 +57,7 @@ public class Member extends GameObject
     private boolean isGuildMember;
     private int userID;
     private List<Spec> specs = new ArrayList<>();
+    private List<ItemMember> items = new ArrayList<>();
     
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
@@ -93,6 +109,7 @@ public class Member extends GameObject
             if( this.guildName.length() > 0 && this.guildName.equals(APIInfo.GUILD_NAME)) this.isGuildMember = true;
             //Spec
             loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
+            loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
         }
         else
         {//if come to DB
@@ -107,6 +124,7 @@ public class Member extends GameObject
             raceID = (Integer) playerInfo.get("race");
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             loadSpecFromDB();
+            loadItemsFromDB();
         }
 
         this.memberClass = new PlayableClass(classID);
@@ -138,6 +156,21 @@ public class Member extends GameObject
         }
     }
     
+    private void loadItemsFromBlizz(JSONObject allItems)
+    {        
+        for(Object key : allItems.keySet()) 
+        {
+            String postItem = (String)key;
+            //all element exept average item level information
+            if(!postItem.equals("averageItemLevel") && !postItem.equals("averageItemLevelEquipped"))
+            {
+                JSONObject item = (JSONObject) allItems.get(postItem);
+                item.put("post_item", postItem);
+                items.add(new ItemMember(item));
+            }
+        }
+    }
+    
     public void checkSpeckIDInDb()
     {
         for(int i = 0; i < this.specs.size(); i++)
@@ -145,7 +178,7 @@ public class Member extends GameObject
            try 
             {
                 //UNIQUE (member_id,name,role)   
-                JSONArray dbSpec = dbConnect.select(DBStructure.SPECS_TABLE_NAME,
+                JSONArray dbSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
                                                     new String[] {"id"},
                                                     "member_id=? AND name=? AND role=?",
                                                     new String[] { this.internalID +"", this.specs.get(i).getName(), this.specs.get(i).getRole() });
@@ -163,7 +196,7 @@ public class Member extends GameObject
     private void loadSpecFromDB()
     {
         try {
-            JSONArray memberSpec = dbConnect.select(SPECS_TABLE_NAME,
+            JSONArray memberSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
                                                     new String[] { "id" },
                                                     "member_id=?",
                                                     new String[] { this.internalID +""});
@@ -183,6 +216,23 @@ public class Member extends GameObject
         } catch (SQLException | DataException ex) {
             Logs.saveLog("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
         }        
+    }
+    
+    private void loadItemsFromDB()
+    {
+        try {
+            JSONArray itemDB = dbConnect.select(ItemMember.ITEMS_MEMBER_TABLE_NAME,
+                                                    new String[] { "id" },
+                                                    "member_id=? AND item_id != 0",
+                                                    new String[] { this.internalID +""});            
+            for(int i = 0; i < itemDB.size(); i++)
+            {
+                ItemMember sp = new ItemMember( (Integer) ((JSONObject) itemDB.get(i)).get("id") ); 
+                this.items.add(sp);
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.saveLog("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+        } 
     }
     
     private void loadSpecFromUpdate()
@@ -218,11 +268,33 @@ public class Member extends GameObject
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
                 //Save specs...
-                for(int i = 0; i < specs.size(); i++)
-                {
-                    specs.get(i).setMemberId(this.internalID);
-                    specs.get(i).saveInDB();
+                this.specs.forEach((spc) -> {
+                    spc.setMemberId(this.internalID);
+                    spc.saveInDB();
+                });
+                //Save items...
+                //Clear all old items:                    
+                try {
+                    dbConnect.update(ItemMember.ITEMS_MEMBER_TABLE_NAME,
+                            new String[] {"item_id", "ilevel", "stats", "armor", "context",
+                                "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"},
+                            new String[] {"0", "0", "", "0", "", "0", "", "0", "0"},
+                            "member_id=?",
+                            new String[] {this.internalID +""});                    
+                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                    System.out.println("Fail to update remove old items "+ this.internalID +" - "+ ex);
                 }
+                //Update or insert a new items
+                this.items.forEach((itm) -> {
+                    itm.setMemberId(this.internalID);
+                    ItemMember iMemberDB = new ItemMember(itm.getPosition(), this.internalID);
+                    if(iMemberDB.isInternalData())
+                    {
+                        itm.setId(iMemberDB.getId());
+                        itm.setIsInternalData(true);
+                    }
+                    itm.saveInDB();
+                });
                 return true;
             }
         }
@@ -293,6 +365,22 @@ public class Member extends GameObject
             return sp;
         }
         return null;
+    }
+    public double getItemLevel()
+    {
+        int sumItemLevl = 0;
+        int count = 0;
+        for(ItemMember item : items)
+        {
+            if(!item.getPosition().equals("tabard") && !item.getPosition().equals("shirt"))
+            {
+                sumItemLevl += item.getIlevel(); 
+                count++;
+            }
+        }
+        if(count == 0) return 0;
+        double iLeve = (double)sumItemLevl/(double)count;
+        return iLeve;
     }
 
     //Setters

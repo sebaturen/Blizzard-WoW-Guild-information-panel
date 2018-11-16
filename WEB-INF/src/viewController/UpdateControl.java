@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.parser.ParseException;
 
 import javax.websocket.OnClose;
@@ -26,6 +24,7 @@ import javax.websocket.server.ServerEndpoint;
 public class UpdateControl 
 {
     private static boolean isRunnin = false;
+    private static boolean runUpdate = false;
     
     private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
 
@@ -48,10 +47,15 @@ public class UpdateControl
         if(isRunnin)
         {
             try {
-                onMessage("Update is in progress.....", null);
+                session.getBasicRemote().sendText("Update is in progress.....");
             } catch (IOException ex) {
                 System.out.println("Fail to send update is progress messaje "+ ex);
             }
+        }
+        else if (runUpdate)
+        {
+            Logs.publicLog(this);
+            generateUpdate();
         }
     }
 
@@ -65,8 +69,7 @@ public class UpdateControl
     {        
         if(!isRunnin)
         {
-            Logs.publicLog(this);
-            generateUpdate();            
+            runUpdate = true;
         }
     }
     
@@ -83,7 +86,8 @@ public class UpdateControl
                 } catch (IOException | ParseException | DataException ex) {
                     Logs.saveLog("fail update...");
                 }
-                setIsRuning(false);               
+                setIsRuning(false);    
+                setRunUpdate(false);
                 Logs.publicLog(null);
             }
         };
@@ -91,4 +95,5 @@ public class UpdateControl
     }  
     
     private void setIsRuning(boolean f) { isRunnin = f; } 
+    private void setRunUpdate(boolean f) { runUpdate = f; } 
 }

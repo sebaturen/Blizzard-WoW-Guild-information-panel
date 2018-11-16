@@ -17,6 +17,11 @@ import org.json.simple.JSONObject;
 
 public class Raid extends GameObject
 {
+    //Raid DB
+    public static final String RAIDS_TABLE_NAME = "raids";
+    public static final String RAIDS_TABLE_KEY  = "id";
+    public static final String[] RAIDS_TABLE_STRUCTURE = {"id", "slug", "name", "total_boss"};
+    
     //Atribute
     private int id;
     private String name;
@@ -45,7 +50,7 @@ public class Raid extends GameObject
     @Override
     protected void saveInternalInfoObject(JSONObject objInfo) 
     {
-        if(objInfo.containsKey("id"))
+        if(objInfo.containsKey(RAIDS_TABLE_KEY))
         {//info from DB
             this.id = (Integer) objInfo.get("id");
             this.name = objInfo.get("name").toString();
@@ -68,15 +73,15 @@ public class Raid extends GameObject
     private void loadRaidDificultFromDB()
     {
         try {
-            JSONArray raidDificult = dbConnect.select(RAID_DIFICULTS_TABLE_NAME,
-                                                    new String[] { RAID_DIFICULTS_TABLE_KEY },
+            JSONArray raidDificult = dbConnect.select(RaidDificult.RAID_DIFICULTS_TABLE_NAME,
+                                                    new String[] { RaidDificult.RAID_DIFICULTS_TABLE_KEY },
                                                     "raid_id=? ORDER BY difi_id DESC",
                                                     new String[] { this.id +""});
             if(raidDificult.size() > 0)
             {
                 for(int i = 0; i < raidDificult.size(); i++)
                 {                    
-                    RaidDificult r = new RaidDificult( (Integer) ((JSONObject) raidDificult.get(i)).get(RAID_DIFICULTS_TABLE_KEY) ); 
+                    RaidDificult r = new RaidDificult( (Integer) ((JSONObject) raidDificult.get(i)).get(RaidDificult.RAID_DIFICULTS_TABLE_KEY) ); 
                     this.dificults.add(r);
                 }
             }

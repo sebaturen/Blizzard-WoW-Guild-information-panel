@@ -19,6 +19,9 @@
                             <th scope="col">Class</th>
                             <th scope="col">Level</th>
                             <th scope="col">Current Spec</th>
+                        <% if(user != null && user.getGuildRank() != -1) { %>
+                            <th scope="col">iLevel</th>
+                        <% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,6 +37,9 @@
                                 <td scope="row"><img src="assets/img/classes/class_<%= className %>.png" style="width: 22px;"/></td>
                                 <td scope="row"><%= member.getLevel() %></td>
                                 <td scope="row"><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/> <img src="assets/img/icons/<%= member.getActiveSpec().getRole() %>.png" style="width: 22px;"/></td>
+                                <% if(user != null && user.getGuildRank() != -1) { %>
+                                <td scope="col"><%= String.format("%.2f", member.getItemLevel()) %></td>
+                                <% } %>
                             </tr>
                       <%i++;}%>
                     </tbody>

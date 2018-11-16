@@ -10,6 +10,11 @@ import org.json.simple.JSONObject;
 
 public class GuildAchivements extends GameObject
 {
+    //Guild Achivements lists DB
+    public static final String GUILD_ACHIVEMENTS_LISTS_TABLE_NAME = "guild_achievements_list";
+    public static final String GUILD_ACHIVEMENTS_LISTS_TABLE_KEY = "id";
+    public static final String[] GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE = {"id", "title", "description",
+                                                                            "icon", "points", "classification"};
     //Atribute
     private int id;
     private String title;

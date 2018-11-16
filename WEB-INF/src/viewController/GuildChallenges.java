@@ -8,7 +8,6 @@ package com.artOfWar.viewController;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.guild.challenges.Challenge;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class GuildChallenges
             //Prepare list members
             List<Challenge> mList = new ArrayList<>();
             //Get members to DB			
-            JSONArray dbList = dbConnect.select(DBStructure.CHALLENGES_TABLE_NAME, 
+            JSONArray dbList = dbConnect.select(Challenge.CHALLENGES_TABLE_NAME, 
                                                 new String[] {"id"});	
             for(int i = 0; i < dbList.size(); i++)
             {

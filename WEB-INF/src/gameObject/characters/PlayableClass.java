@@ -10,6 +10,11 @@ import org.json.simple.JSONObject;
 
 public class PlayableClass extends GameObject
 {	
+    //Playable Class DB
+    public static final String PLAYABLE_CLASS_TABLE_NAME = "playable_class";
+    public static final String PLAYABLE_CLASS_TABLE_KEY = "id";
+    public static final String[] PLAYABLE_CLASS_TABLE_STRUCTURE = {"id", "en_US"};
+    
     //Attribute
     private int id;
     private String enName;

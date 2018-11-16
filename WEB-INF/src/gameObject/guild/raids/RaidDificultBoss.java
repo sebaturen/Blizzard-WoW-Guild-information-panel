@@ -16,6 +16,11 @@ import org.json.simple.JSONObject;
 
 public class RaidDificultBoss extends GameObject
 {
+    //Raid dificult bosses DB
+    public static final String RAID_DIFICULT_BOSSES_TABLE_NAME = "raid_dificult_bosses";
+    public static final String RAID_DIFICULT_BOSSES_TABLE_KEY  = "r_d_boss_id";
+    public static final String[] RAID_DIFICULT_BOSSES_TABLE_STRUCTURE = {"r_d_boss_id", "boss_id", "difi_id",
+                                                                    "firstDefeated", "itemLevelAvg", "artifactPowerAvg"};
     //Atribute
     private int id;
     private int difiId;

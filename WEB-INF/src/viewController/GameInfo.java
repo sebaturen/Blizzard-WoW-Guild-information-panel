@@ -7,6 +7,7 @@ package com.artOfWar.viewController;
 
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
+import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class GameInfo
         String out = "";
         try
         {		
-            JSONArray dateUpdate = dbConnect.select(DBStructure.UPDATE_INTERVAL_TABLE_NAME,
+            JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
                                                     new String[] {"0"});
@@ -43,7 +44,7 @@ public class GameInfo
         String out = "";
         try
         {		
-            JSONArray dateUpdate = dbConnect.select(DBStructure.UPDATE_INTERVAL_TABLE_NAME,
+            JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
                                                     new String[] {"1"});

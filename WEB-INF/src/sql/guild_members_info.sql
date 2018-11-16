@@ -95,21 +95,11 @@ CREATE TABLE `guild_news` (
 
 CREATE TABLE `raids` (
     `id`            INT NOT NULL AUTO_INCREMENT,
-    `guild_id`      INT NOT NULL,
     `slug`          VARCHAR(50) NOT NULL,
     `name`          VARCHAR(50) NOT NULL,
     `total_boss`    TINYINT DEFAULT -1,
     PRIMARY KEY(id),
     UNIQUE(`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `guild_raids` (
-    `id`    INT NOT NULL AUTO_INCREMENT,
-    `guild_id`  INT NOT NULL,
-    `raid_id`   INT NOT NULL,
-    PRIMARY KEY(`id`),
-    FOREIGN KEY(guild_id) REFERENCES guild_info(id),
-    FOREIGN KEY(raid_id) REFERENCES raids(id)  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `raid_dificults` (
@@ -135,4 +125,33 @@ CREATE TABLE `raid_dificult_bosses` (
     FOREIGN KEY(boss_id) REFERENCES boss_list(id),
     FOREIGN KEY(difi_id) REFERENCES raid_dificults(difi_id),
     UNIQUE (boss_id,difi_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `items` (
+    `id`    INT NOT NULL,
+    `name`  VARCHAR(50) NOT NULL,
+    `icon`  VARCHAR(50) NOT NULL,
+    `gemInfo_bonus_name`    VARCHAR(50),
+    `gemInfo_type`          VARCHAR(50),
+    PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO items (`id`, `name`, `icon`) VALUES (0, "NULL ITEM", "NULL ITEM");
+
+CREATE TABLE `items_member` (
+    `id`                    INT NOT NULL AUTO_INCREMENT,
+    `member_id`             INT NOT NULL,
+    `item_id`               INT NOT NULL,
+    `post_item`              VARCHAR(20) NOT NULL,
+    `ilevel`                INT NOT NULL,
+    `stats`                 TINYTEXT NOT NULL, 
+    `armor`                 INT NOT NULL,
+    `context`               VARCHAR(50) NOT NULL,
+    `azerita_level`         INT NOT NULL,
+    `azerita_power`         TINYTEXT,
+    `tooltipGem_id`         INT,
+    `toolTipEnchant_id`     INT,
+    PRIMARY KEY(id),
+    UNIQUE(member_id, item_id, post_item),
+    FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id),
+    FOREIGN KEY(item_id) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

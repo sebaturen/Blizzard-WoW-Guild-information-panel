@@ -38,6 +38,7 @@ public interface APIInfo
     public static final String API_GUILD_ACHIVEMENTS    = "wow/data/guild/achievements";
     public static final String API_SPELL                = "wow/spell/%s"; //spell id
     public static final String API_BOSS_MASTER_LIST     = "wow/boss/";
+    public static final String API_ITEM                 = "wow/item/%s"; //{item id}
     //World of Warcraft Game Data APIs
     public static final String API_PLAYABLE_CLASS       = "data/wow/playable-class/";
     public static final String API_WOW_TOKEN            = "data/wow/token/";

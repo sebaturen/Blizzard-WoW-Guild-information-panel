@@ -1,6 +1,7 @@
 //Send a ajax request to server...
 $(document).ready(function() {
     $("#buttonForceUpdate").click(function() {
+        $("#buttonForceUpdate").attr("disabled", true);
         $.ajax({
             url: "run_update.jsp",
             success: function(){

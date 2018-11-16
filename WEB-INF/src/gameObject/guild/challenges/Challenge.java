@@ -22,6 +22,13 @@ import org.json.simple.JSONObject;
 
 public class Challenge extends GameObject
 {
+    //Challenges DB
+    public static final String CHALLENGES_TABLE_NAME = "challenges";
+    public static final String CHALLENGES_TABLE_KEY = "id";
+    public static final String[] CHALLENGES_TABLE_STRUCTURE = {"id", "map_name",
+                                                        "bronze_hours", "bronze_minutes", "bronze_seconds", "bronze_milliseconds",
+                                                        "silver_hours", "silver_minutes", "silver_seconds", "silver_milliseconds",
+                                                        "gold_hours", "gold_minutes", "gold_seconds", "gold_milliseconds"};
     //Attribute
     private int mapId;
     private String mapName;
@@ -48,7 +55,7 @@ public class Challenge extends GameObject
     {
         try {
             //dbConnect, select * from challenge_groups where challenge_id = this.mapId;
-            JSONArray dbGroups = dbConnect.select(CHALLENGE_GROUPS_TABLE_NAME,
+            JSONArray dbGroups = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
                                                 new String[] {"group_id"},
                                                 "challenge_id=? order by time_date desc limit 3;", //cargando los ulimots 3
                                                 new String[] {this.mapId +""});

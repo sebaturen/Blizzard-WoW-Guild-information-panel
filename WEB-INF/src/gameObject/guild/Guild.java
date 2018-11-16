@@ -12,6 +12,11 @@ import org.json.simple.JSONObject;
 
 public class Guild extends GameObject
 {
+    //Guild DB
+    public static final String GUILD_TABLE_NAME = "guild_info";
+    public static final String GUILD_TABLE_KEY = "id";
+    public static final String[] GUILD_TABLE_STRUCTURE = {"id", "name", "realm","lastModified", "battlegroup", 
+                                                        "level", "side", "achievementPoints"};
     //Attribute
     private int id;
     private String name;

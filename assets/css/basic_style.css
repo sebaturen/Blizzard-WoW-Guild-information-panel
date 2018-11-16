@@ -24,6 +24,9 @@ body {
     overflow-x: auto;
     -ms-overflow-style: -ms-autohiding-scrollbar; */
 }
+.table td, .table th {
+    /*text-align: center;*/
+}
 /*-------GENERAL------------*/
 .container {    
     background-color: #212529;

@@ -3,13 +3,17 @@
  * Desc : Spell object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.characters;
+package com.artOfWar.gameObject;
 
-import com.artOfWar.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
 public class Spell extends GameObject
 {
+    //Spells DB
+    public static final String SPELLS_TABLE_NAME = "spells";
+    public static final String SPELLS_TABLE_KEY = "id";
+    public static final String[] SPELLS_TABLE_STRUCTURE = {"id", "name", "icon", "description",
+                                                           "castTime", "cooldown", "range"};
     //Atribute
     private int id;
     private String name;
@@ -50,7 +54,7 @@ public class Spell extends GameObject
     @Override
     public boolean saveInDB()
     {
-        if(this.isInternalData) return true; //if preview save...
+        //if(this.isInternalData) return true; //if preview save...
         /* {"id", "name", "icon", "description",
          * "castTime", "cooldown", "range"};
          */

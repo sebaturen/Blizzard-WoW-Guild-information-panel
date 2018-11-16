@@ -87,6 +87,7 @@ public abstract class GameObject implements DBStructure
                 }
             }
         }
+        dbConnect.closeConnection();
         return SAVE_MSG_NO_DATA;
     }
     
@@ -111,12 +112,13 @@ public abstract class GameObject implements DBStructure
             }
             else
             {
-                Logs.saveLog("Element not found");
+                //Logs.saveLog("Element not found");
                 return false;                
             }
         } catch (DataException|SQLException e) {
             Logs.saveLog("Error in Load element: "+ e);
         }
+        dbConnect.closeConnection();
         return false;        
     }
 	
@@ -146,12 +148,13 @@ public abstract class GameObject implements DBStructure
             }
             else
             {
-                Logs.saveLog("Element not found");
+                //Logs.saveLog("Element not found");
                 return false;
             }			
         } catch (DataException|SQLException e) {
             Logs.saveLog("Error in Load element: "+ e);
         }
+        dbConnect.closeConnection();
         return false;
     }
 	

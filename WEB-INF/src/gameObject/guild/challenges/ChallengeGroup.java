@@ -23,6 +23,18 @@ import org.json.simple.JSONObject;
 
 public class ChallengeGroup extends GameObject
 {
+    //Challenge Groups DB
+    public static final String CHALLENGE_GROUPS_TABLE_NAME = "challenge_groups";
+    public static final String CHALLENGE_GROUPS_TABLE_KEY = "group_id";
+    public static final String[] CHALLENGE_GROUPS_TABLE_STRUCTURE = {"group_id", "challenge_id", "time_date",
+                                                                     "time_hours", "time_minutes", "time_seconds",
+                                                                     "time_milliseconds", "is_positive"};
+    //Challenge group Members DB
+    public static final String CHALLENGE_GROUP_MEMBERS_TABLE_NAME = "challenge_group_members";
+    public static final String CHALLENGE_GROUP_MEMBERS_TABLE_KEY = "member_in_group_id";
+    public static final String[] CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE = {"member_in_group_id", "internal_member_id",
+                                                                            "group_id", "spec_id"};
+    
     //Attribute
     private int id;
     private int challengeId;

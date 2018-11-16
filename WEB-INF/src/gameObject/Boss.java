@@ -9,6 +9,11 @@ import org.json.simple.JSONObject;
 
 public class Boss extends GameObject
 {
+    //Boss List DB
+    public static final String BOSS_LIST_TABLE_NAME = "boss_list";
+    public static final String BOSS_LIST_TABLE_KEY  = "id";
+    public static final String[] BOSS_LIST_TABLE_STRUCTURE = {"id", "name", "slug", "description"};
+    
     //Atribute
     private int id;
     private String name;

@@ -10,7 +10,6 @@ import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.characters.Member;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -25,6 +24,11 @@ import org.json.simple.parser.ParseException;
 
 public class User 
 {
+    //User
+    public static final String USER_TABLE_NAME = "users";
+    public static final String USER_TABLE_KEY = "id";
+    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "wowinfo"};
+    
     //Atribute
     private int id;
     private String battleTag;
@@ -46,7 +50,7 @@ public class User
         if(this.battleTag == null) return false;
         if(this.isLogin && !forceCheck) return this.isLogin;
         try {
-            JSONArray validUser = dbConnect.select(DBStructure.USER_TABLE_NAME,
+            JSONArray validUser = dbConnect.select(User.USER_TABLE_NAME,
                     new String[] {"id", "battle_tag", "access_token", "guild_rank"},
                     "battle_tag=?",
                     new String[] {battleTag});
@@ -76,7 +80,7 @@ public class User
         if(checkUser()) //Valid if account exit in DB
         {//exist... 
             try {                
-                dbConnect.update(DBStructure.USER_TABLE_NAME,
+                dbConnect.update(User.USER_TABLE_NAME,
                         new String[] {"access_token"},
                         new String[] {this.accessToken},
                         "id=?",
@@ -89,8 +93,8 @@ public class User
         else
         {//not exist...   
             try {            
-                String userIdDB = dbConnect.insert(DBStructure.USER_TABLE_NAME,
-                        DBStructure.USER_TABLE_KEY,
+                String userIdDB = dbConnect.insert(User.USER_TABLE_NAME,
+                        User.USER_TABLE_KEY,
                         new String[] {"battle_tag", "access_token"},
                         new String[] { this.battleTag, this.accessToken});
                 this.id = Integer.parseInt(userIdDB);
@@ -187,7 +191,7 @@ public class User
     {
         List<Member> userMember = new ArrayList<>();  
         try {
-            JSONArray chars = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ DBStructure.CHARACTER_INFO_TABLE_NAME +" c",
+            JSONArray chars = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Member.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
                     "gm.user_id=? AND gm.internal_id = c.internal_id ORDER BY c.level DESC",
                     new String[] { this.id +"" }, true);

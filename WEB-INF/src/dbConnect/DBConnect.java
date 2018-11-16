@@ -29,13 +29,25 @@ public class DBConnect implements DBConfig
     public static final int ERROR_DUPLICATE_KEY = 1062;
 
     //access info
-    private Connection conn = null;
+    private static Connection conn = null;
     private PreparedStatement pstmt = null;
-    private boolean statusConnect = false;
+    private static boolean statusConnect = false;
 
     public DBConnect()
     {
         generateConnextion();
+    }
+    
+    public void closeConnection()
+    {
+        if(conn != null)
+        {            
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     private void generateConnextion()
@@ -43,7 +55,7 @@ public class DBConnect implements DBConfig
         try
         {
             //Driver connection
-            this.conn = DriverManager.getConnection(JDBC_URL + DB_NAME,
+            conn = DriverManager.getConnection(JDBC_URL + DB_NAME,
                                                     DB_USER,
                                                     DB_PASSWORD);
             statusConnect = true;
@@ -63,9 +75,9 @@ public class DBConnect implements DBConfig
     public JSONArray select(String table, String[] selected, String where, String[] whereValues) throws SQLException, DataException { return select(table, selected, where, whereValues, false); }
     public JSONArray select(String table, String[] selected, String where, String[] whereValues, boolean disableAphostro) throws SQLException, DataException
     {
+        if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {
-            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "SELECT ";
             String aphost = (disableAphostro)? "":"`";
@@ -74,7 +86,7 @@ public class DBConnect implements DBConfig
             sql += " FROM "+aphost+ table +aphost;
             
             if(where != null) sql += " WHERE "+ where;
-            this.pstmt = this.conn.prepareStatement(sql);
+            this.pstmt = conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
             //Logs.saveLog("PSTMT: "+ this.pstmt);
             return resultToJsonConvert(this.pstmt.executeQuery());
@@ -87,12 +99,12 @@ public class DBConnect implements DBConfig
     
     private String selectLastID() throws SQLException, DataException
     {
+        if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {
-            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "SELECT LAST_INSERT_ID()";
-            this.pstmt = this.conn.prepareStatement(sql);          
+            this.pstmt = conn.prepareStatement(sql);          
             ResultSet rs = this.pstmt.executeQuery();
             rs.next();
             return rs.getString("LAST_INSERT_ID()");
@@ -133,12 +145,12 @@ public class DBConnect implements DBConfig
     public JSONArray delete(String table, String where, String[] whereValues) throws SQLException, DataException
     {
         if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
+        if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {
-            if(conn.isClosed()) generateConnextion();
             //Prepare QUERY
             String sql = "DELETE FROM "+ table +" WHERE "+ where;
-            this.pstmt = this.conn.prepareStatement(sql);
+            this.pstmt = conn.prepareStatement(sql);
             for(int i = 0; i < whereValues.length; i++) { this.pstmt.setString(i+1,whereValues[i]); }
             return resultToJsonConvert(this.pstmt.executeQuery());
         }
@@ -157,9 +169,9 @@ public class DBConnect implements DBConfig
     public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException { return insert(table, idColum, columns, values, null, null); }
     public String insert(String table, String idColum, String[] columns, String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException, SQLException
     {
+        if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
-        {        
-            if(conn.isClosed()) generateConnextion();			
+        {        		
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
@@ -185,7 +197,7 @@ public class DBConnect implements DBConfig
                     //Load JDBC Driver
                     Class.forName(JDBC_DRIVER);
                     
-                    this.pstmt = this.conn.prepareStatement(sql);
+                    this.pstmt = conn.prepareStatement(sql);
                     for(int i = 0; i < valuesWithWhereValues.length; i++) { this.pstmt.setString(i+1,valuesWithWhereValues[i]); }
                     //Logs.saveLog("PSTMT: "+ this.pstmt);
                     //Run Update
@@ -247,9 +259,9 @@ public class DBConnect implements DBConfig
                         String[] values, String where, String[] whereValues) 
             throws DataException, ClassNotFoundException, SQLException
     {
+        if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
-        {
-            if(conn.isClosed()) generateConnextion();			
+        {		
             if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
             {
@@ -272,7 +284,7 @@ public class DBConnect implements DBConfig
                     //Load JDBC Driver
                     Class.forName(JDBC_DRIVER);
                     
-                    this.pstmt = this.conn.prepareStatement(sql);
+                    this.pstmt = conn.prepareStatement(sql);
                     for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }
                     //Logs.saveLog("PSTMT: "+ this.pstmt);
                     //Run Update

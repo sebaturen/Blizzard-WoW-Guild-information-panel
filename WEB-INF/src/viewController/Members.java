@@ -8,7 +8,6 @@ package com.artOfWar.viewController;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.characters.Member;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class Members
             //Get members to DB		
             
             //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
-            JSONArray dbList = dbConnect.select(DBStructure.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ DBStructure.CHARACTER_INFO_TABLE_NAME +" c", 
+            JSONArray dbList = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Member.CHARACTER_INFO_TABLE_NAME +" c", 
                                                 new String[] {"gm.internal_id"},
                                                 "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ?"
                                                         + "ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
@@ -56,7 +55,11 @@ public class Members
                 int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
                 Member member = new Member(idMember);
                 //If data is successful load, save a member
-                if(member.isData()) mList.add(member);
+                if(member.isData())
+                {
+                    member.getItemLevel();
+                    mList.add(member);
+                }
             }
             //Convert LIST to simple Member Array
             if(mList.size() > 0) this.membersList = mList.toArray(new Member[mList.size()]);

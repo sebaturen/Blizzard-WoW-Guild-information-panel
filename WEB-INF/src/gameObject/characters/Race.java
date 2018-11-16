@@ -10,6 +10,11 @@ import org.json.simple.JSONObject;
 
 public class Race extends GameObject
 {	
+    //Races DB
+    public static final String RACES_TABLE_NAME = "races";
+    public static final String RACES_TABLE_KEY = "id";
+    public static final String[] RACES_TABLE_STRUCTURE = {"id", "mask", "side", "name"};
+    
     //Attribute
     private int id;
     private int mask;

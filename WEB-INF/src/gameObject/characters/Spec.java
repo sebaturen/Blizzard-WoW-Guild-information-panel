@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject.characters;
 
+import com.artOfWar.gameObject.Spell;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import org.json.simple.JSONArray;
@@ -12,6 +13,14 @@ import org.json.simple.JSONObject;
 
 public class Spec extends GameObject
 {
+    //Specs  DB
+    public static final String SPECS_TABLE_NAME = "specs";
+    public static final String SPECS_TABLE_KEY = "id";
+    public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "name", "role", "enable",
+                                                            "tier_0", "tier_1", "tier_2",
+                                                            "tier_3", "tier_4", "tier_5",
+                                                            "tier_6"};
+    
     //Atribute
     private int id;
     private int memberId;
