@@ -38,8 +38,6 @@ import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Update implements APIInfo
 {
@@ -333,7 +331,7 @@ public class Update implements APIInfo
             JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
                                             "GET",
                                             "Bearer "+ this.accesToken,
-                                            new String[] {"fields=guild","fields=talents","fields=items"});
+                                            new String[] {"fields=guild,talents,items,stats"});
             blizzPlayer = new Member(blizzPlayerInfo);
         } 
         catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found

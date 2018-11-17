@@ -1,0 +1,18 @@
+/*Only members Style~*/
+.memContent {
+    background-size: cover;
+    background-position: center center;
+}
+.infoMember {
+    min-height: 600px;
+}
+.Media-image {
+    width: 48px;
+    height: 48px;
+}
+.Icon--health {
+    color: #27cc4e;
+}
+svg.Icon-svg {
+    fill: currentColor;
+}

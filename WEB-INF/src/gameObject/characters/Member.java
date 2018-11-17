@@ -16,10 +16,7 @@ import org.json.simple.JSONObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
@@ -56,8 +53,10 @@ public class Member extends GameObject
     private long totalHonorableKills;
     private boolean isGuildMember;
     private int userID;
+    private int rank;
     private List<Spec> specs = new ArrayList<>();
     private List<ItemMember> items = new ArrayList<>();
+    private StatsMember stats;
     
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
@@ -65,7 +64,7 @@ public class Member extends GameObject
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
-                                                            "gm.user_id"};
+                                                            "gm.user_id", "gm.rank"};
 	
     //Constructor load from DB if have a ID
     public Member(int internalID)
@@ -110,6 +109,7 @@ public class Member extends GameObject
             //Spec
             loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
             loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
+            this.stats = new StatsMember((JSONObject) playerInfo.get("stats"));
         }
         else
         {//if come to DB
@@ -125,6 +125,8 @@ public class Member extends GameObject
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             loadSpecFromDB();
             loadItemsFromDB();
+            this.stats = new StatsMember(this.internalID);
+            this.rank = (Integer) playerInfo.get("rank");
         }
 
         this.memberClass = new PlayableClass(classID);
@@ -295,6 +297,14 @@ public class Member extends GameObject
                     }
                     itm.saveInDB();
                 });
+                //Save stats
+                this.stats.setId(this.internalID +"");
+                StatsMember sDB = new StatsMember(this.internalID);
+                if(sDB.isInternalData())
+                {
+                    this.stats.setIsInternalData(true);
+                }
+                this.stats.saveInDB();
                 return true;
             }
         }
@@ -333,6 +343,8 @@ public class Member extends GameObject
     public int getLevel() { return this.level; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public String getThumbnail() { return this.thumbnail; }
+    public StatsMember getStats() { return this.stats; }
+    public int getRank() { return this.rank; }
     public String getThumbnailURL() 
     {
         return String.format(APIInfo.API_RENDER_URL, APIInfo.SERVER_LOCATION, getThumbnail());

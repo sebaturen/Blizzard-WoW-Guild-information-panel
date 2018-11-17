@@ -28,6 +28,9 @@ body {
     /*text-align: center;*/
 }
 /*-------GENERAL------------*/
+.pointer {
+    cursor: pointer;
+}
 .container {    
     background-color: #212529;
     margin-top: 21px;
@@ -85,18 +88,18 @@ body {
 /*END -------INDEX------------*/
 
 /*-------PLAYABLE CLASS COLOR------------*/
-.character-Warrior { color: #C79C6E; }
-.character-Paladin { color: #F58CBA; }
-.character-Hunter { color: #ABD473; }
-.character-Rogue { color: #FFF569; }
-.character-Priest { color: #FFFFFF; }
-.character-DeathKnight { color: #C41F3B; }
-.character-Shaman { color: #0070DE; }
-.character-Mage { color: #40C7EB; }
-.character-Warlock { color: #8787ED; }
-.character-Monk { color: #00FF96; }
-.character-Druid { color: #FF7D0A; }
-.character-DemonHunter { color: #A330C9; }
+.character-warrior { color: #C79C6E; }
+.character-paladin { color: #F58CBA; }
+.character-hunter { color: #ABD473; }
+.character-rogue { color: #FFF569; }
+.character-priest { color: #FFFFFF; }
+.character-death-knight { color: #C41F3B; }
+.character-shaman { color: #0070DE; }
+.character-mage { color: #40C7EB; }
+.character-warlock { color: #8787ED; }
+.character-monk { color: #00FF96; }
+.character-druid { color: #FF7D0A; }
+.character-demon-hunter { color: #A330C9; }
 /*END -------PLAYABLE CLASS COLOR------------*/
 
 
