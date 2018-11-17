@@ -27,9 +27,11 @@ $(document).ready(function() {
             $( "#ilevelInput" ).prop( "disabled", true );
     });
     //Level filter input
-    $('#levelInput').change(function () { runFilter(); });
+    $('#levelInput').keyup(function () { runFilter(); });
     //Ilevel filter inpute    
-    $('#ilevelInput').change(function () { runFilter(); });    
+    $('#ilevelInput').keyup(function () { runFilter(); });  
+    //Name filter inpute    
+    $('#nameInput').keyup(function () { runFilter(); });   
     //------------SORT---------------------------//
     //Sort by rank
     $("#rankColum").click(function() {
@@ -109,10 +111,12 @@ $(document).ready(function() {
     //Sort by iLevel
     $("#iLevelColum").click(function() {
         visualMember.sort(function(a, b) {
-            if (a.iLevel < b.iLevel) {
+            var aIlv = parseFloat(a.iLevel);
+            var bIlv = parseFloat(b.iLevel);
+            if (aIlv < bIlv) {
                 return 1;
             }
-            if (a.iLevel > b.iLevel) {
+            if (aIlv > bIlv) {
                 return -1;
             }
             // a must be equal to b
@@ -122,10 +126,20 @@ $(document).ready(function() {
         putMembers(visualMember);
     });
     //-----------PJ INFO--------------------------//
-    $('#charContent').on('click', 'tr', function() {
-        var memInfo = visualMember[$(this).data('id')];
-        if(memInfo.iLevel > 0) {
-            showMemberDetail(this, memInfo);
+    var lastIdClick = -1;
+    $('#charContent').on('click', 'tr.pjInfo', function() {
+        if(lastIdClick != $(this).data('id'))
+        {
+            lastIdClick = $(this).data('id');
+            var memInfo = visualMember[lastIdClick];
+            if(memInfo.iLevel > 0) {
+                showMemberDetail(this, memInfo);
+            }            
+        } 
+        else
+        {
+            lastIdClick = -1;
+            $('.memDetail').remove();
         }
     });
 });
@@ -137,7 +151,7 @@ function showMemberDetail(tr, member)
     var fullSizeImg = (member.img).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div class="infoMember"></div>');
-    //Healt info
+    //Health info
     $('.infoMember').append('<div class="Media-image">'+
                                 '<span class="Icon Icon--health Media-icon"><svg class="Icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><use xlink:href="/assets/img/icons/Icon.svg#health"></use></svg></span>'+
                             '</div>'+
@@ -178,6 +192,7 @@ function runFilter()
     var levelInp_filter = $('#levelInput').val();
     var iLevelOrd_filter = $('#ilevelSelect')[0].selectedIndex;
     var iLevelInp_filter = $('#ilevelInput').val();
+    var nameInp_filter = $('#nameInput').val();
     //Apli filters
     var preMemberGRank = [];
     if(gRank_filter !== 0) {
@@ -211,14 +226,24 @@ function runFilter()
     if(iLevelOrd_filter !== 0) {
         jQuery.each( preMemberLevel, function(i, val) 
         {
+            var ilvInput = parseFloat(iLevelInp_filter);
+            var ilv = parseFloat(val.iLevel);
             if(iLevelOrd_filter == 1) //Greater than
-                if(val.iLevel >= iLevelInp_filter)               
+                if(ilv >= ilvInput)               
                     preMemberIlevl.push(val); 
             if(iLevelOrd_filter == 2) //Less than
-                if(val.iLevel <= iLevelInp_filter)               
+                if(ilv <= ilvInput)               
                     preMemberIlevl.push(val);                 
         });
     } else preMemberIlevl = preMemberLevel;
-    visualMember = preMemberIlevl;
+    var preMemberName = [];
+    if(nameInp_filter.length > 0) {
+        jQuery.each( preMemberIlevl, function(i, val) 
+        {
+            if((val.name).indexOf(nameInp_filter) != -1)          
+                    preMemberName.push(val);                 
+        });
+    } else preMemberName = preMemberIlevl;
+    visualMember = preMemberName;
     putMembers(visualMember);
 }

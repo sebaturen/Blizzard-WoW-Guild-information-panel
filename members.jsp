@@ -46,6 +46,10 @@
                 <button type="button" class="btn btn-info" id='membersFilters'>Filters</button>
                 <form style="display: none;" id='formFilter'>
                     <br>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input class="form-control" type="text" value="" id="nameInput"/>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
