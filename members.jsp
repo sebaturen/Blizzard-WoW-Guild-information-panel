@@ -1,93 +1,12 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.characters.Member" %>
-<%@ page import ="com.artOfWar.gameObject.characters.ItemMember" %>
-<%@ page import ="com.artOfWar.gameObject.characters.StatsMember" %>
-<%@ page import ="java.util.ArrayList" %>
-<%@ page import ="java.util.List" %>
 <jsp:useBean id="members" class="com.artOfWar.viewController.Members"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
         <title><%= guild_info.getName() %> - Guild members</title>
         <%@include file="includes/header.jsp" %> 
-        <link type="text/css" rel="stylesheet" href="/assets/css/members.css"> 
-        <script>
-            var members = [];
-            <% 
-            List<Integer> guildRank = new ArrayList<>();
-            List<String> mClass = new ArrayList<>();
-            List<String> txtClass = new ArrayList<>();
-            List<String> spec   = new ArrayList<>();
-            List<String> races  = new ArrayList<>();
-            for(Member member : members.getMembersList())
-            { 
-                String className = ((member.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase(); 
-                String specName = ((member.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase(); 
-                if (!guildRank.contains(member.getRank())) guildRank.add(member.getRank());
-                if (!mClass.contains(className)) 
-                {
-                    mClass.add(className);
-                    txtClass.add(member.getmemberClass().getEnName());
-                }
-                if (!spec.contains(specName)) spec.add(specName);
-                if (!races.contains(member.getRace().getName())) races.add(member.getRace().getName());
-                String iLevel = "0";
-                String race = "";
-                if(user != null && user.getGuildRank() != -1)
-                {
-                    iLevel = String.format("%.2f", member.getItemLevel());
-                    race = member.getRace().getName();
-                }
-            %>
-            members.push({   
-                    'name': '<%= member.getName() %>', 
-                    'class': '<%= className %>', 
-                    'spec': '<%= specName %>', 
-                    'level': <%= member.getLevel() %>, 
-                    'img': '<%= member.getThumbnailURL() %>',
-                    'rol': '<%= member.getActiveSpec().getRole() %>', 
-                    'member_id': <%= member.getId() %>, 
-                    'gRank': <%= member.getRank() %>,
-                    'iLevel': '<%= iLevel %>',
-                    'race': '<%= race %>',
-                    <% if (user != null && user.getGuildRank() != -1) { %>
-                        'stats': {
-                            <% StatsMember mStat = member.getStats(); %>
-                            'health': '<%= String.format("%,d", mStat.getHealth()) %>', 
-                            'stamina': '<%= String.format("%,d", mStat.getSta()) %>', 
-                            'crit': '<%= String.format("%.2f", mStat.getCrit())+"%" %>', 
-                            'haste': '<%= String.format("%.2f", mStat.getHaste())+"%" %>', 
-                            'mastery': '<%= String.format("%.2f", mStat.getMastery())+"%" %>', 
-                            'versatility': '<%= String.format("%.2f", mStat.getVersatilityDamageDoneBonus())+"%" %>',
-                            'powerType':'<%= mStat.getPowerType() %>', 
-                            'power': '<%= String.format("%,d", mStat.getPower()) %>', 
-                            'primaryStatType': '<%= mStat.getBestStat()[0] %>', 
-                            'primaryStat': '<%= String.format("%,d", Integer.parseInt(mStat.getBestStat()[1])) %>' 
-                        },
-                        'items': {
-                            <%  String[] equip = {
-                                "head", "neck", "shoulder", "back", "chest", "shirt", "tabard", "wrist",
-                                "hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2",
-                                "mainHand", "offHand"}; 
-                                for(String post : equip)
-                                { 
-                                    ItemMember im = member.getItemByPost(post); 
-                                    if(im != null) {%>
-                                        '<%= post %>': {
-                                            'name': "<%= (im.getItem().getName()).replaceAll("\"", "'") %>",
-                                            'img': '<%= im.getItem().getIconRenderURL() %>.jpg',
-                                            'ilevel': '<%= im.getIlevel() %>',
-                                            'quality': '<%= im.getQuality() %>'
-                                        },
-                                  <%}
-                                }
-                            %>
-                        }
-                  <%}%>
-                });
-          <%}%>
-        </script>
-        <script src="/assets/js/members.js"></script>
+        <link type="text/css" rel="stylesheet" href="/assets/css/members.css">
+        <script src="/assets/js/loadMemberContent.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
@@ -107,14 +26,12 @@
                                 <label>Guild Rank</label>
                                 <select class="form-control" id='guildRankSelect'>
                                     <option>All</option>
-                                    <% for(Integer b : guildRank) {out.write("<option>"+b+"</option>");} %>
                                 </select>
                             </div>                                
                             <div class="form-group">
                                 <label>Class</label>
                                 <select class="form-control" id='classSelect'>
                                     <option>All</option>
-                                    <% for(int i = 0; i < mClass.size(); i++) {out.write("<option data-desclass='"+ mClass.get(i) +"'>"+ txtClass.get(i) +"</option>");} %>
                                 </select>
                             </div>
                         </div>
@@ -123,7 +40,6 @@
                                 <label>Races</label>
                                 <select class="form-control" id='racesSelect'>
                                     <option>All</option>
-                                    <% for(String b : races) {out.write("<option>"+b+"</option>");} %>
                                 </select>
                             </div>
                             <div class="form-group">  
@@ -174,6 +90,7 @@
                         </tr>
                     </thead>
                     <tbody id="charContent">
+                        <tr><td colspan='6'><div class="row justify-content-md-center"><div class="loader"></div></div></td></tr>
                     </tbody>
                 </table>
             </div>

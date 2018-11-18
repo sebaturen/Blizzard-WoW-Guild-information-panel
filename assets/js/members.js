@@ -1,9 +1,19 @@
 //Members jquery
 var visualMember;
-$(document).ready(function() {
-    visualMember = members;
-    putMembers(visualMember);
-    //------------FILTERS-------------------------//
+visualMember = members;
+//------------FILTERS-------------------------//
+function loadFilterOptions() {
+    guildRanks.forEach(function(val) {
+        $('#guildRankSelect').append('<option>'+ val +'</option>');
+    });
+    jQuery.each( mClass, function(i, val) 
+    {
+        $('#classSelect').append('<option data-desclass="'+ val +'">'+ textClass[i] +'</option>');
+    });
+    races.forEach(function(val) {
+        $('#racesSelect').append('<option>'+ val +'</option>');
+    });
+    //ADD LISTENER
     //Filtres show
     $('#membersFilters').click(function() {
         $('#formFilter').toggle('fast');
@@ -34,116 +44,116 @@ $(document).ready(function() {
     $('#nameInput').keyup(function () { runFilter(); });   
     //Races filter selected
     $('#racesSelect').change(function () { runFilter(); });
-    //------------SORT---------------------------//
-    //Sort by rank
-    $("#rankColum").click(function() {
-        visualMember.sort(function(a, b) {
-            if (a.gRank > b.gRank) {
-                return 1;
-            }
-            if (a.gRank < b.gRank) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });    
-    //Sort by name
-    $("#nameColum").click(function() {
-        visualMember.sort(function(a, b) {
-            if (a.name > b.name) {
-                return 1;
-            }
-            if (a.name < b.name) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });
-    //Sort by Class
-    $("#classColum").click(function() {
-        visualMember.sort(function(a, b) {
-            if (a.class > b.class) {
-                return 1;
-            }
-            if (a.class < b.class) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });
-    //Sort by Level
-    $("#levelColum").click(function() {
-        visualMember.sort(function(a, b) {
-            if (a.level < b.level) {
-                return 1;
-            }
-            if (a.level > b.level) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });
-    //Sort by Spec
-    $("#specColum").click(function() {
-        visualMember.sort(function(a, b) {
-            if (a.spec > b.spec) {
-                return 1;
-            }
-            if (a.spec < b.spec) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });
-    //Sort by iLevel
-    $("#iLevelColum").click(function() {
-        visualMember.sort(function(a, b) {
-            var aIlv = parseFloat(a.iLevel);
-            var bIlv = parseFloat(b.iLevel);
-            if (aIlv < bIlv) {
-                return 1;
-            }
-            if (aIlv > bIlv) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMember.sort();
-        putMembers(visualMember);
-    });
-    //-----------PJ INFO--------------------------//
-    var lastIdClick = -1;
-    $('#charContent').on('click', 'tr.pjInfo', function() {
-        if(lastIdClick != $(this).data('id'))
-        {
-            lastIdClick = $(this).data('id');
-            var memInfo = visualMember[lastIdClick];
-            if(memInfo.iLevel > 0) {
-                showMemberDetail(this, memInfo);
-            }            
-        } 
-        else
-        {
-            lastIdClick = -1;
-            $('.memDetail').remove();
+}
+//------------SORT---------------------------//
+//Sort by rank
+$("#rankColum").click(function() {
+    visualMember.sort(function(a, b) {
+        if (a.gRank > b.gRank) {
+            return 1;
         }
+        if (a.gRank < b.gRank) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
     });
+    visualMember.sort();
+    putMembers(visualMember);
+});    
+//Sort by name
+$("#nameColum").click(function() {
+    visualMember.sort(function(a, b) {
+        if (a.name > b.name) {
+            return 1;
+        }
+        if (a.name < b.name) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
+//Sort by Class
+$("#classColum").click(function() {
+    visualMember.sort(function(a, b) {
+        if (a.class > b.class) {
+            return 1;
+        }
+        if (a.class < b.class) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
+//Sort by Level
+$("#levelColum").click(function() {
+    visualMember.sort(function(a, b) {
+        if (a.level < b.level) {
+            return 1;
+        }
+        if (a.level > b.level) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
+//Sort by Spec
+$("#specColum").click(function() {
+    visualMember.sort(function(a, b) {
+        if (a.spec > b.spec) {
+            return 1;
+        }
+        if (a.spec < b.spec) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
+//Sort by iLevel
+$("#iLevelColum").click(function() {
+    visualMember.sort(function(a, b) {
+        var aIlv = parseFloat(a.iLevel);
+        var bIlv = parseFloat(b.iLevel);
+        if (aIlv < bIlv) {
+            return 1;
+        }
+        if (aIlv > bIlv) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
+//-----------PJ INFO--------------------------//
+var lastIdClick = -1;
+$('#charContent').on('click', 'tr.pjInfo', function() {
+    if(lastIdClick != $(this).data('id'))
+    {
+        lastIdClick = $(this).data('id');
+        var memInfo = visualMember[lastIdClick];
+        if(memInfo.iLevel > 0) {
+            showMemberDetail(this, memInfo);
+        }            
+    } 
+    else
+    {
+        lastIdClick = -1;
+        $('.memDetail').remove();
+    }
 });
 
 function showMemberDetail(tr, member)
