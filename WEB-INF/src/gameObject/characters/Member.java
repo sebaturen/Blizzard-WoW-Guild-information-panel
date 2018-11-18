@@ -168,7 +168,7 @@ public class Member extends GameObject
             {
                 JSONObject item = (JSONObject) allItems.get(postItem);
                 item.put("post_item", postItem);
-                items.add(new ItemMember(item));
+                this.items.add(new ItemMember(item));
             }
         }
     }
@@ -347,7 +347,7 @@ public class Member extends GameObject
     public int getRank() { return this.rank; }
     public String getThumbnailURL() 
     {
-        return String.format(APIInfo.API_RENDER_URL, APIInfo.SERVER_LOCATION, getThumbnail());
+        return String.format(APIInfo.API_CHARACTER_RENDER_URL, APIInfo.SERVER_LOCATION, getThumbnail());
     }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }
@@ -382,7 +382,7 @@ public class Member extends GameObject
     {
         int sumItemLevl = 0;
         int count = 0;
-        for(ItemMember item : items)
+        for(ItemMember item : this.items)
         {
             if(!item.getPosition().equals("tabard") && !item.getPosition().equals("shirt"))
             {
@@ -393,6 +393,15 @@ public class Member extends GameObject
         if(count == 0) return 0;
         double iLeve = (double)sumItemLevl/(double)count;
         return iLeve;
+    }
+    public ItemMember getItemByPost(String post) 
+    {
+        for(ItemMember im : this.items) 
+        {
+            if(im.getPosition().equals(post))
+                return im;
+        }
+        return null;
     }
 
     //Setters

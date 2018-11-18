@@ -9,10 +9,109 @@
 .Media-image {
     width: 48px;
     height: 48px;
+    margin-right: 10px;
+    float: left;
 }
+.statDetail {
+    float: left;
+    width: 200px;
+}
+/*-------ITEMS ---------------*/
+.itemDetail {
+    min-width: 200px;
+    margin-bottom: 5px;
+}
+.itemDesc {
+    text-shadow: 0 0 15px, 0 0 30px rgba(255,255,255,.3);
+}
+.itemIcon {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 1px solid #000000;    
+}
+.itemsLeft .itemDesc {
+    padding-left: 10px;
+}
+.itemsRight .itemDesc {
+    text-align: right;
+    padding-right: 10px;
+}
+.equip.row {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.mainHand {
+    text-align: right;
+}
+.mainHand > .itemIcon {
+    float: right;
+    padding-left: 10px;
+}
+.offHand > .itemIcon {
+    float: left; 
+    padding-right: 10px;
+}
+/*END-------ITEMS ---------------*/
+
+/*-------STATS COLOR ---------*/
 .Icon--health {
     color: #27cc4e;
+}
+.Icon--stamina {
+    color: #ff8b2d;
+}
+.Icon--critical-strike {
+    color: #e01c1c;
+}
+.Icon--haste {
+    color: #0ed59b;
+}
+.Icon--mastery {
+    color: #9256ff;
+}
+.Icon--versatility {
+    color: #bfbfbf;
+}
+.Icon--mana {
+    color: #1c8aff;
+}
+.Icon--focus {
+    color: #d45719;
+}
+.Icon--agility {
+    color: #ffd955;
+}
+.Icon--intellect {
+    color: #d26cd1;
+}
+.Icon--strength {
+    color: #f33232;
+}
+.Icon--rage {
+    color: #ab0000;
+}
+.Icon--runic-power {
+    color: #00bcde;
+}
+.Icon--energy {
+    color: #cb9501;
+}
+.Icon--fury {
+    color: #8400ff;
+}
+.Icon--pain {
+    color: #d45719;
+}
+.Icon--insanity {
+    color: #60f;
+}
+.Icon--maelstrom {
+    color: #008fff;
 }
 svg.Icon-svg {
     fill: currentColor;
 }
+/*END-------STATS COLOR ---------*/

@@ -214,6 +214,25 @@ public class StatsMember extends GameObject
     public int getStr() { return this.str; }
     public int getAgi() { return this.agi; }
     public int getIntStat() { return this.intStat; }
+    public String[] getBestStat() {
+        String[] info = new String[2];
+        if(this.str > this.agi && this.str > this.intStat)
+        {
+            info[0] = "strength";
+            info[1] = this.str +"";
+        }
+        if(this.agi > this.str && this.agi > this.intStat)
+        {
+            info[0] = "agility";
+            info[1] = this.agi +"";            
+        }
+        if(this.intStat > this.str && this.intStat > this.agi)
+        {
+            info[0] = "intellect";
+            info[1] = this.intStat +"";
+        }
+        return info;
+    }
     public int getSta() { return this.sta; }
     public int getSpeedRating() { return this.speedRating; }
     public double getSpeedRatingBonus() { return this.speedRatingBonus; }

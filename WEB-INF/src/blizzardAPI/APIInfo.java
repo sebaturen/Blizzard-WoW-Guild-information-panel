@@ -21,7 +21,8 @@ public interface APIInfo
     public static final String API_OAUTH_TOKEN      = "token";
     public static final String API_OAUTH_USERINFO   = "userinfo";
     public static final String API_ROOT_URL         = "https://%s.api.blizzard.com/%s"; //location, api path
-    public static final String API_RENDER_URL       = "http://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
+    public static final String API_CHARACTER_RENDER_URL       = "http://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
+    public static final String API_ITEM_RENDER_URL       = "http://render-%s.worldofwarcraft.com/icons/%s/%s"; //{region}, {size 56}, {item icon}
     public static final String RAIDER_IO_API_URL    = "https://raider.io/api/guilds/%s/%s/%s"; //location, server, guild name
 
     //Aplication Info

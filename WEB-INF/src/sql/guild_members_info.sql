@@ -11,6 +11,14 @@ CREATE TABLE `guild_info` (
     UNIQUE (`name`, `realm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+CREATE TABLE `guild_rank` (
+    `id`    INT NOT NULL,
+    `title` VARCHAR(20) NOT NULL,
+    PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+INSERT INTO `guild_rank` (`id`,`title`) VALUES (0, "Guild leader");
+INSERT INTO `guild_rank` (`id`,`title`) VALUES (1, "Officer");
+
 CREATE TABLE `users` (
     `id`            INT NOT NULL AUTO_INCREMENT,
     `battle_tag`    varchar(50),
@@ -141,6 +149,7 @@ CREATE TABLE `items_member` (
     `id`                    INT NOT NULL AUTO_INCREMENT,
     `member_id`             INT NOT NULL,
     `item_id`               INT NOT NULL,
+    `quality`               INT NOT NULL,
     `post_item`             VARCHAR(20) NOT NULL,
     `ilevel`                INT NOT NULL,
     `stats`                 TINYTEXT NOT NULL, 
@@ -210,3 +219,4 @@ CREATE TABLE `member_status` (
     PRIMARY KEY(member_id),
     FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

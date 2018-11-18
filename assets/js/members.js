@@ -32,6 +32,8 @@ $(document).ready(function() {
     $('#ilevelInput').keyup(function () { runFilter(); });  
     //Name filter inpute    
     $('#nameInput').keyup(function () { runFilter(); });   
+    //Races filter selected
+    $('#racesSelect').change(function () { runFilter(); });
     //------------SORT---------------------------//
     //Sort by rank
     $("#rankColum").click(function() {
@@ -151,13 +153,130 @@ function showMemberDetail(tr, member)
     var fullSizeImg = (member.img).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div class="infoMember"></div>');
-    //Health info
-    $('.infoMember').append('<div class="Media-image">'+
-                                '<span class="Icon Icon--health Media-icon"><svg class="Icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><use xlink:href="/assets/img/icons/Icon.svg#health"></use></svg></span>'+
+        //Equipo!!!
+        $('.infoMember').append('<div class="itemsMember"></div>');
+        $('.itemsMember').append(renderItem(member));
+        //Status!!!
+        $('.infoMember').append('<div class="statsMember"></div>');
+        $('.statsMember').append(renderStat(member));
+                    
+}
+
+function renderItem(member)
+{
+    var itemsLeft = {
+        'head': member.items.head,
+        'neck': member.items.neck,
+        'shoulder': member.items.shoulder,
+        'back': member.items.back,
+        'chest': member.items.chest,
+        'shirt': member.items.shirt,
+        'tabard': member.items.tabard,
+        'wrist': member.items.wrist
+    }
+    var itemsRight = {
+        'hands': member.items.hands,
+        'waist': member.items.waist,
+        'legs': member.items.legs,
+        'feet': member.items.feet,
+        'finger1': member.items.finger1,
+        'finger2': member.items.finger2,
+        'trinket1': member.items.trinket1,
+        'trinket2': member.items.trinket2
+    }
+    var itemsArm = {
+        'mainHand': member.items.mainHand,
+        'offHand': member.items.offHand
+    }
+    var outEquip = '<div class="equip row"><div class="itemsLeft col">';
+    jQuery.each( itemsLeft, function(i, val) 
+    {
+        if(val !== undefined && val !== null)
+        {
+            outEquip += '<div class="itemDetail '+ i +' row">'+
+                            '<div class="itemIcon left" style="background-image: url('+ val.img +');"></div>'+
+                            '<div class="itemDesc ">'+ 
+                                '<p class="quality-'+ val.quality +'">'+val.name +'</p>'+
+                                val.ilevel+
                             '</div>'+
+                        '</div>';            
+        }
+    });
+    outEquip += '</div><div class="itemsRight col">';
+    jQuery.each( itemsRight, function(i, val) 
+    {
+        if(val !== undefined && val !== null)
+        {
+            outEquip += '<div class="itemDetail '+ i +' row justify-content-end">'+
+                            '<div class="itemDesc left">'+ 
+                                '<p class="quality-'+ val.quality +'">'+val.name +'</p>'+
+                                val.ilevel+
+                            '</div>'+
+                            '<div class="itemIcon" style="background-image: url('+ val.img +');"></div>'+
+                        '</div>';             
+        }
+    });
+    outEquip += '</div></div><div class="equip row itemsArm">';
+    if(itemsArm.mainHand !== undefined && itemsArm.mainHand !== null)
+    {
+        outEquip += '<div class="itemDetail mainHand col">'+
+                        '<div class="itemIcon" style="background-image: url('+ itemsArm.mainHand.img +');"></div>'+
+                        '<div class="itemDesc">'+ 
+                            '<p class="quality-'+ itemsArm.mainHand.quality +'">'+itemsArm.mainHand.name +'</p>'+
+                            itemsArm.mainHand.ilevel+
+                        '</div>'+
+                    '</div>';
+    }
+    outEquip += '<div class="itemDetail offHand col">';
+    if(itemsArm.offHand !== undefined && itemsArm.offHand !== null)
+    {
+        outEquip += '<div class="itemIcon" style="background-image: url('+ itemsArm.offHand.img +');"></div>'+
+                        '<div class="itemDesc">'+ 
+                            '<p class="quality-'+ itemsArm.offHand.quality +'">'+itemsArm.offHand.name +'</p>'+
+                            itemsArm.offHand.ilevel+
+                        '</div>';
+    }    
+    outEquip += '</div></div>';
+    return outEquip;
+}
+
+function renderStat(member)
+{
+    var iconMedia = '<div class="Media-image"><span class="Icon Media-icon"><svg class="Icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><use xlink:href="/assets/img/icons/Icon.svg#PUT_STAT"></use></svg></span></div>';
+    var statsMember = {
+        'health': member.stats.health,
+        'powerType': member.stats.powerType,
+        'power': member.stats.power,
+        'primaryStat': member.stats.primaryStatType,
+        'primaryStatVal': member.stats.primaryStat,
+        'stamina': member.stats.stamina,
+        'critical-strike': member.stats.crit,
+        'haste': member.stats.haste, 
+        'mastery': member.stats.mastery, 
+        'versatility': member.stats.versatility };
+    var outStatus = '';
+    jQuery.each( statsMember, function(i, val) 
+    {
+        if(i === 'powerType')
+        {
+            i = statsMember.powerType;
+            val = statsMember.power;
+        }
+        if(i === 'primaryStat')
+        {
+            i = statsMember.primaryStat;
+            val = statsMember.primaryStatVal;
+        }
+        if(i !== 'power' && i !== 'primaryStatVal')
+        {
+            outStatus += '<div class="Icon--'+ i +' statDetail">'+ iconMedia.replace(/PUT_STAT/g, i) +
                             '<div class="Media-text">'+
-                                '<span>'+ member.health +'</span><div class="font-semp-xSmall-white text-upper">Health</div>'+
-                            '</div>');
+                                '<span>'+ val +'</span><div class="bold">'+ i.capitalize() +'</div>'+
+                            '</div>'+
+                        '</div>';            
+        }
+    });
+    return outStatus;
 }
 
 function putMembers(vMem)
@@ -187,13 +306,16 @@ function runFilter()
     var gRank_filter = $('#guildRankSelect')[0].selectedIndex;
     var gRank_select_filter = $("#guildRankSelect option:selected").text();
     var class_filter = $('#classSelect')[0].selectedIndex;
-    var class_select_filter = $("#classSelect option:selected").text();
+    var class_select_filter = $("#classSelect option:selected").data("desclass");
     var levelOrd_filter = $('#levelSelect')[0].selectedIndex;
     var levelInp_filter = $('#levelInput').val();
     var iLevelOrd_filter = $('#ilevelSelect')[0].selectedIndex;
     var iLevelInp_filter = $('#ilevelInput').val();
     var nameInp_filter = $('#nameInput').val();
+    var race_filter = $('#racesSelect')[0].selectedIndex;
+    var race_select_filter = $("#racesSelect option:selected").text();
     //Apli filters
+    //-----------GUILD RANK
     var preMemberGRank = [];
     if(gRank_filter !== 0) {
         jQuery.each( visualMember, function(i, val) 
@@ -202,6 +324,7 @@ function runFilter()
                 preMemberGRank.push(val); 
         });
     } else preMemberGRank = visualMember;
+    //-----------CLASS
     var preMemberClass = [];
     if(class_filter !== 0) {
         jQuery.each( preMemberGRank, function(i, val) 
@@ -210,6 +333,7 @@ function runFilter()
                 preMemberClass.push(val); 
         });
     } else preMemberClass = preMemberGRank;
+    //-----------LEVEL
     var preMemberLevel = [];
     if(levelOrd_filter !== 0) {
         jQuery.each( preMemberClass, function(i, val) 
@@ -222,6 +346,7 @@ function runFilter()
                     preMemberLevel.push(val);                 
         });
     } else preMemberLevel = preMemberClass;
+    //-----------ITEM LEVEL
     var preMemberIlevl = [];
     if(iLevelOrd_filter !== 0) {
         jQuery.each( preMemberLevel, function(i, val) 
@@ -236,14 +361,27 @@ function runFilter()
                     preMemberIlevl.push(val);                 
         });
     } else preMemberIlevl = preMemberLevel;
+    //-----------NAME
     var preMemberName = [];
     if(nameInp_filter.length > 0) {
         jQuery.each( preMemberIlevl, function(i, val) 
         {
-            if((val.name).indexOf(nameInp_filter) != -1)          
-                    preMemberName.push(val);                 
+            var memName = val.name.toLowerCase();
+            var inputName = nameInp_filter.toLowerCase();
+            if((memName).indexOf(inputName) != -1)          
+                preMemberName.push(val);                   
         });
     } else preMemberName = preMemberIlevl;
-    visualMember = preMemberName;
+    //-----------RACES
+    var preMemberRace = [];
+    if(race_filter !== 0) {
+        jQuery.each( preMemberName, function(i, val) 
+        {
+            if(val.race == race_select_filter)          
+                preMemberRace.push(val);                
+        });
+    } else preMemberRace = preMemberName;
+    
+    visualMember = preMemberRace;
     putMembers(visualMember);
 }

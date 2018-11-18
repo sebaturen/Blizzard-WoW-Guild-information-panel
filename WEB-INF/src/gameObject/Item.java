@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject;
 
+import com.artOfWar.blizzardAPI.APIInfo;
 import org.json.simple.JSONObject;
 
 public class Item extends GameObject
@@ -80,6 +81,12 @@ public class Item extends GameObject
 
     @Override
     public String getId() { return id+"";}
+    public String getIconRenderURL() { return getIconRenderURL(56); }
+    public String getName() { return this.name; }
+    public String getIconRenderURL(int size) 
+    {
+        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon);
+    }
     
     
 }

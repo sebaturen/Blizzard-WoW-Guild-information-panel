@@ -64,6 +64,7 @@ public class Race extends GameObject
     }
 
     //Getters
+    @Override
     public String getId() { return this.id +""; }
     public int getMask() { return this.mask; }
     public String getSide() { return this.side; }

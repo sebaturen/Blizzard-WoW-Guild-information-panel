@@ -31,7 +31,7 @@
             </li>
         </ul>            
         <div class="form-inline my-2 my-lg-0">
-            WoW Token:&nbsp;
+            <p class="quality-wow-token">WoW Token</p>:&nbsp;
             <% int[] tokenPrice = gameInfo.getTokenWow(); %>
             <% if (tokenPrice[0] > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice[0]) %></span><% } %>
             <% if (tokenPrice[1] > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice[1]) %></span><% } %>

@@ -23,13 +23,14 @@ public class ItemMember extends GameObject
     //Item Member DB
     public static final String ITEMS_MEMBER_TABLE_NAME  = "items_member";
     public static final String ITEMS_MEMBER_TABLE_KEY   = "id";
-    public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "post_item",
+    public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "quality", "post_item",
                                                                 "ilevel", "stats", "armor", "context", 
                                                                 "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"};
     //Attribute
     private int id;
     private int memberId;
     private Item item;
+    private int quality;
     private String position;
     private int ilevel;
     private JSONArray stats = new JSONArray();
@@ -67,6 +68,7 @@ public class ItemMember extends GameObject
             this.id = (Integer) objInfo.get("id");
             this.memberId = (Integer) objInfo.get("member_id");
             this.item = loadItem((Integer) objInfo.get("item_id"));
+            this.quality = (Integer) objInfo.get("quality");            
             this.ilevel = (Integer) objInfo.get("ilevel");
             this.armor = (Integer) objInfo.get("armor");
             this.azeritaLevel = (Integer) objInfo.get("azerita_level");
@@ -90,7 +92,8 @@ public class ItemMember extends GameObject
         }
         else
         {//load from blizzard
-            this.item = loadItem(((Long) objInfo.get("id")).intValue());   
+            this.item = loadItem(((Long) objInfo.get("id")).intValue());  
+            this.quality = ((Long) objInfo.get("quality")).intValue();
             this.ilevel = ((Long) objInfo.get("itemLevel")).intValue();   
             this.stats = (JSONArray) objInfo.get("stats");
             this.armor = ((Long) objInfo.get("armor")).intValue();
@@ -134,12 +137,12 @@ public class ItemMember extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        /* {"member_id", "item_id", "post_item",
+        /* {"member_id", "item_id", "quality", "post_item",
          * "ilevel", "stats", "armor", "context", 
          * "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"};
          */
         setTableStructur(DBStructure.outKey(ITEMS_MEMBER_TABLE_STRUCTURE));
-        switch (saveInDBObj(new String[] {this.memberId +"", this.item.getId() +"", this.position,
+        switch (saveInDBObj(new String[] {this.memberId +"", this.item.getId() +"", this.quality +"", this.position,
                                         this.ilevel +"", this.stats.toString(), this.armor +"", this.context,
                                         this.azeritaLevel +"", this.azeritaPower.toString(), this.tooltipGemId +"", this.tooltipEnchantId +""}))
         {
@@ -158,5 +161,7 @@ public class ItemMember extends GameObject
     public String getId() { return this.id+""; }
     public String getPosition() { return this.position; }
     public int getIlevel() { return ilevel; }
+    public Item getItem() { return this.item; }
+    public int getQuality() { return this.quality; }
     
 }

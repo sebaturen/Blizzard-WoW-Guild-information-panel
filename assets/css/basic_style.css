@@ -5,7 +5,20 @@ body {
     height: 100%;
     color: #fff;
 }
-
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.right {
+    float: right;
+}
+.left {
+    float: left;
+}
+.bold {
+    font-weight: bold;
+}
+/*-------GENERAL------------*/
 .img_fondo_pagina {
     position: fixed;
     width: 100%;
@@ -15,19 +28,6 @@ body {
     background-position: center center;
     background-image: url("../img/background/BFA (21).jpg");
 }
-.right{
-    float: right;
-}
-.table {
-    /* display: block;
-    width: 100%;
-    overflow-x: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar; */
-}
-.table td, .table th {
-    /*text-align: center;*/
-}
-/*-------GENERAL------------*/
 .pointer {
     cursor: pointer;
 }
@@ -76,6 +76,36 @@ body {
     -ms-filter: "FlipH";
 }
 /*END -------GENERAL------------*/
+
+/*-------COLOR ITEM QUALITY--------*/
+.quality-poor,.quality-0 {
+    color: #9d9d9d;
+}
+.quality-common,.quality-1 {
+    color: #ffffff;
+}
+.quality-uncommon, .quality-2{
+    color: #1eff00;
+}
+.quality-rare, .quality-3 {
+    color: #0070dd;
+}
+.quality-epic, .quality-4 {
+    color: #a335ee;
+}
+.quality-legendary, .quality-5 {
+    color: #ff8000;
+}
+.quality-artifact, .quality-6 {
+    color: #e6cc80;
+}
+.quality-heirloom, .quality-7 {
+    color: #00ccff;
+}
+.quality-wow-token, .quality-8 {
+    color: #00ccff;
+}
+/*END-------COLOR ITEM QUALITY--------*/
 
 /*-------INDEX------------*/
 .home_name {
