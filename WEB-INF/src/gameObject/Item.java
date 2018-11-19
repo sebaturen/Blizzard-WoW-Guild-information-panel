@@ -5,20 +5,30 @@
  */
 package com.artOfWar.gameObject;
 
+import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.APIInfo;
+import com.artOfWar.blizzardAPI.Update;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Item extends GameObject
 {
     //Item DB
     public static final String ITEM_TABLE_NAME = "items";
     public static final String ITEM_TABLE_KEY = "id";
-    public static final String[] ITEM_TABLE_STRUCTURE = {"id", "name", "icon", "gemInfo_bonus_name", "gemInfo_type"};
+    public static final String[] ITEM_TABLE_STRUCTURE = {"id", "name", "icon", "itemSpell", "gemInfo_bonus_name", "gemInfo_type"};
     
     //Atribute
     private int id;
     private String name;
     private String icon;
+    private Spell itemSpell;
     private String gemInfoBonusName;
     private String gemInfoType;
     
@@ -37,10 +47,40 @@ public class Item extends GameObject
     @Override
     protected void saveInternalInfoObject(JSONObject objInfo)
     {
-        if(objInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB		
+        if(objInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
+        {
             this.id = ((Long) objInfo.get("id")).intValue();
+            JSONArray itemSpellBlizz = (JSONArray) objInfo.get("itemSpells");
+            if(itemSpellBlizz.size() > 0)
+            {
+                int spellId = ((Long) ((JSONObject) itemSpellBlizz.get(0)).get("spellId")).intValue();
+                this.itemSpell = new Spell(spellId);
+                if(!this.itemSpell.isInternalData())
+                {
+                    Update up;
+                    try {
+                        up = new Update();
+                        this.itemSpell = up.getSpellInformationBlizz(spellId);
+                    } catch (IOException | ParseException | DataException ex) {
+                        Logs.saveLog("Fail to get blizzard spell information "+ spellId +" - "+ ex);
+                    }
+                }
+            }
+            else
+            {
+                this.itemSpell = new Spell(0);
+            }
+        }
         else
+        {
             this.id = (Integer) objInfo.get("id");
+            int itemId = 0;
+            if(objInfo.get("itemSpell") != null)
+            {
+                itemId = (Integer) objInfo.get("itemSpell");
+            }
+            this.itemSpell = new Spell(itemId);
+        }
         this.name = objInfo.get("name").toString();
         String iconUrl = "";
         //Not all item have a icon U_U
@@ -55,7 +95,7 @@ public class Item extends GameObject
             this.gemInfoType = typeInfo.get("type").toString();
         }
         else
-        {//from DB
+        {//from DB      
             if(objInfo.get("gemInfo_bonus_name") != null)
                 this.gemInfoBonusName = objInfo.get("gemInfo_bonus_name").toString();
             if(objInfo.get("gemInfo_type") != null)
@@ -68,7 +108,7 @@ public class Item extends GameObject
     public boolean saveInDB() 
     {
         //'154129','Masterful Tidal Amethyst',,'+40 Mastery','PRISMATIC','154129'
-        switch(saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.gemInfoBonusName, this.gemInfoType}))
+        switch(saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.itemSpell.getId(), this.gemInfoBonusName, this.gemInfoType}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;            
@@ -81,11 +121,14 @@ public class Item extends GameObject
 
     @Override
     public String getId() { return id+"";}
-    public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getName() { return this.name; }
+    public String getGemBonus() { return this.gemInfoBonusName; }
+    public String getGemType() { return this.gemInfoType; }
+    public Spell getItemSpell() { return this.itemSpell; }
+    public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon);
+        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
     }
     
     

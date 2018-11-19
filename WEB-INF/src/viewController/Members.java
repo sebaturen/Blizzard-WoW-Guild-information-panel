@@ -69,6 +69,11 @@ public class Members
             Logs.saveLog("Fail to load members lists - Members View Controller "+ e);
         }
     }
+    
+    public Member getMember(int id) 
+    {
+        return new Member(id);
+    }
 	
     public Member[] getMembersList() { return this.membersList; }
 }

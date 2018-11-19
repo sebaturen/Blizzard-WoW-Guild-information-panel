@@ -49,6 +49,7 @@ public class Update implements APIInfo
     //Constant	
     public static final int DYNAMIC_UPDATE = 0;
     public static final int STATIC_UPDATE = 1;
+    private static int blizzAPICallCounter = 0;
 
     //Attribute
     private String accesToken = "";
@@ -67,7 +68,8 @@ public class Update implements APIInfo
      * Run Dynamic element update method and save the register the last update.
      */
     public void updateDynamicAll()
-    {        
+    {       
+        blizzAPICallCounter = 0; 
         
         /*Logs.saveLog("Guild new information update!");
         try { getGuildNews();}
@@ -102,8 +104,9 @@ public class Update implements APIInfo
         //Guild progression RaiderIO
         Logs.saveLog("Guild progression update!");
         try { getGuildProgression(); } 
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update guild progression Info: "+ ex); }	
-        Logs.saveLog("-------Update process is COMPLATE! (Dynamic)------");
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update guild progression Info: "+ ex); }
+        Logs.saveLog("-------Update process is COMPLATE! (Dynamic)------");	
+        Logs.saveLog("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
 
         //Save log update in DB
         try 
@@ -125,6 +128,7 @@ public class Update implements APIInfo
      */
     public void updateStaticAll()
     {
+        blizzAPICallCounter = 0;
         Logs.saveLog("-------Update process is START! (Static)------");
         //Playable Class
         Logs.saveLog("Playable class Information update!");
@@ -149,7 +153,8 @@ public class Update implements APIInfo
         Logs.saveLog("Item informatio update!");
         try{ updateItemInformation(); }
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update item Info: "+ ex); }
-        Logs.saveLog("-------Update process is COMPLATE! (Static)------");
+        Logs.saveLog("-------Update process is COMPLATE! (Static)------");	
+        Logs.saveLog("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
 
         
         //Save log update in DB
@@ -456,6 +461,25 @@ public class Update implements APIInfo
             }
         }
     }
+    
+    public Spell getSpellInformationBlizz(int id) throws DataException, IOException, ParseException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, 
+                                        String.format(API_SPELL, id ));
+            //Call Blizzard API
+            JSONObject blizzSpell = curl(urlString, //DataException possible trigger
+                                        "GET",
+                                        "Bearer "+ this.accesToken);
+            Spell spBlizz = new Spell(blizzSpell);
+            spBlizz.saveInDB(); 
+            Logs.saveLog("New spell is save in DB "+ id +" - "+ spBlizz.getName());
+            return spBlizz;
+        }
+    }
 
     private void updateSpellInformation() throws DataException, SQLException, IOException, ParseException
     {
@@ -463,7 +487,9 @@ public class Update implements APIInfo
         else
         {
             JSONArray spellInDb = dbConnect.select(Spell.SPELLS_TABLE_NAME,
-                                                    new String[] {"id"});            
+                                                    new String[] {"id"},
+                                                    "id != 0",
+                                                    new String[] {});            
             int iProgres = 1;
             Logs.saveLog("0%", false);
             for(int i = 0; i < spellInDb.size(); i++)
@@ -496,12 +522,15 @@ public class Update implements APIInfo
         else
         {
             JSONArray itemInDB = dbConnect.select(Item.ITEM_TABLE_NAME,
-                                                    new String[] {"id"});            
+                                                    new String[] {"id"},
+                                                    "id != 0",
+                                                    new String[] {});            
             int iProgres = 1;
             Logs.saveLog("0%", false);
             for(int i = 0; i < itemInDB.size(); i++)
             {
-                Item itemBlizz = getItemFromBlizz((Integer) ((JSONObject) itemInDB.get(i)).get("id"));
+                int id = (Integer) ((JSONObject) itemInDB.get(i)).get("id");
+                Item itemBlizz = getItemFromBlizz(id);
                 itemBlizz.setIsInternalData(true);
                 itemBlizz.saveInDB();
                 
@@ -994,6 +1023,7 @@ public class Update implements APIInfo
         
         //return Object
         JSONObject json;
+        blizzAPICallCounter++;
 
         //Error Request controller
         switch(conn.getResponseCode())
@@ -1025,4 +1055,6 @@ public class Update implements APIInfo
     {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
+    
+    public static int getBlizzAPICallCounter() { return blizzAPICallCounter; }
 }

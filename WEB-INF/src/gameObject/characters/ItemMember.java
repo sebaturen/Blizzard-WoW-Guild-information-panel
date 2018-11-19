@@ -6,13 +6,13 @@
 package com.artOfWar.gameObject.characters;
 
 import com.artOfWar.DataException;
+import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBStructure;
 import com.artOfWar.gameObject.GameObject;
 import com.artOfWar.gameObject.Item;
+import com.artOfWar.gameObject.Spell;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,6 +26,7 @@ public class ItemMember extends GameObject
     public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "quality", "post_item",
                                                                 "ilevel", "stats", "armor", "context", 
                                                                 "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"};
+    
     //Attribute
     private int id;
     private int memberId;
@@ -87,7 +88,7 @@ public class ItemMember extends GameObject
                     this.azeritaPower = (JSONArray) parser.parse(azerita);
                 }
             } catch (ParseException ex) {
-                Logger.getLogger(ItemMember.class.getName()).log(Level.SEVERE, null, ex);
+                Logs.saveLog("Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
             }
         }
         else
@@ -163,5 +164,47 @@ public class ItemMember extends GameObject
     public int getIlevel() { return ilevel; }
     public Item getItem() { return this.item; }
     public int getQuality() { return this.quality; }
+    public int getArmor() { return this.armor; }
+    public Item getGem() { return new Item(this.tooltipGemId); }
+    public Spell[] getAzeritaPower() 
+    {
+        Spell[] azPower = new Spell[this.azeritaPower.size()];
+        if(this.azeritaPower.size() > 0)
+        {
+            Update up = null;     
+            for(int i = 0; i < this.azeritaPower.size(); i++)
+            {
+                JSONObject power = (JSONObject) this.azeritaPower.get(i);
+                int spellID = ((Long) power.get("spellId")).intValue();
+                if(spellID != 0)
+                {                    
+                    Spell azPowerD = new Spell( spellID );
+                    if(!azPowerD.isInternalData())
+                    {
+                        try {
+                            if (up == null) up = new Update();     
+                            azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
+                        } catch (DataException | IOException | ParseException ex) {
+                            Logs.saveLog("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
+                        }
+                    }
+                    azPower[i] = azPowerD;
+                }
+            }            
+            
+        }
+        return azPower;
+    }
+    public Stat[] getStats() 
+    {
+        Stat[] itemStats = new Stat[this.stats.size()];
+        for(int i = 0; i < this.stats.size(); i++)
+        {
+            JSONObject stat = (JSONObject) this.stats.get(i);
+            itemStats[i] = new Stat( ((Long)stat.get("stat")).intValue());
+            itemStats[i].setAmount(((Long) stat.get("amount")).intValue());
+        }
+        return itemStats;
+    }
     
 }

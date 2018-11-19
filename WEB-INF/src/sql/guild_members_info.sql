@@ -135,16 +135,6 @@ CREATE TABLE `raid_dificult_bosses` (
     UNIQUE (boss_id,difi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `items` (
-    `id`    INT NOT NULL,
-    `name`  VARCHAR(50) NOT NULL,
-    `icon`  VARCHAR(50) NOT NULL,
-    `gemInfo_bonus_name`    VARCHAR(50),
-    `gemInfo_type`          VARCHAR(50),
-    PRIMARY KEY(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO items (`id`, `name`, `icon`) VALUES (0, "NULL ITEM", "NULL ITEM");
-
 CREATE TABLE `items_member` (
     `id`                    INT NOT NULL AUTO_INCREMENT,
     `member_id`             INT NOT NULL,
@@ -165,7 +155,7 @@ CREATE TABLE `items_member` (
     FOREIGN KEY(item_id) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `member_status` (
+CREATE TABLE `member_stats` (
     `member_id` INT NOT NULL,
     `health`    INT NOT NULL,
     `powerType` VARCHAR(20) NOT NULL,

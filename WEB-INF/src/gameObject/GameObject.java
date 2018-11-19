@@ -25,11 +25,11 @@ public abstract class GameObject implements DBStructure
     private String[] tableStruct;
 
     //Constant save data info
-    public static final int SAVE_MSG_NO_DATA                    = 0;
-    public static final int SAVE_MSG_INSERT_ERROR               = 1;
-    public static final int SAVE_MSG_INSERT_OK                  = 2;
-    public static final int SAVE_MSG_UPDATE_ERROR               = 5;
-    public static final int SAVE_MSG_UPDATE_OK                  = 3;
+    public static final int SAVE_MSG_NO_DATA        = 0;
+    public static final int SAVE_MSG_INSERT_ERROR   = 1;
+    public static final int SAVE_MSG_INSERT_OK      = 2;
+    public static final int SAVE_MSG_UPDATE_ERROR   = 5;
+    public static final int SAVE_MSG_UPDATE_OK      = 3;
 	
     public GameObject(String tableDB, String tableKey, String[] tableStruct) 
     { 

@@ -48,11 +48,42 @@
 }
 .mainHand > .itemIcon {
     float: right;
-    padding-left: 10px;
+    margin-left: 10px;
 }
 .offHand > .itemIcon {
     float: left; 
-    padding-right: 10px;
+    margin-right: 10px;
+}
+.item-floting-desc {
+    padding: 10px;
+    padding-right: 20px;
+    background-color: #343a40ed;
+    z-index: 999;
+    display: none;
+    position: fixed;
+    overflow: hidden;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 1px solid #000000;
+}
+.tooltipDesc {
+    text-align: left !important;
+    text-shadow: none;
+}
+.tooltip-yellow {
+    color: #ffd100;
+}
+.gemIcon, .azeritaSkillImg {
+    height: 16px;
+    width: 16px;
+}
+.azeritaPowerDesc, .itemSpellDetail {
+    max-width: 319px;
+    padding-left: 14px;
+}
+.azPower, .itemSpellDetail {
+    font-size: 0.8em;
 }
 /*END-------ITEMS ---------------*/
 

@@ -1,8 +1,8 @@
 /*Load members information!*/
 $(document).ready(function() {
     /*Load a member details*/
-    $.getScript('/assets/js/memberDetail.jsp', function() {
-        console.log('Member details is load!');
+    $.getScript('/assets/js/membersList.jsp', function() {
+        console.log('Members list is load!');
         /*Load render member*/
         $.getScript('/assets/js/members.js', function() {
             if(moreDetail)
@@ -16,7 +16,14 @@ $(document).ready(function() {
             {
                 putMembers(members);
             }
-            console.log('Memer renders is load!');
+            console.log('Memer renders function is load!');
         });
     });
+    
+    window.onmousemove = function (e) {
+        var x = e.clientX +20,
+            y = e.clientY +20;
+        $(".item-floting-desc").css("top", y+"px");
+        $(".item-floting-desc").css("left", x+"px");
+    };
 });

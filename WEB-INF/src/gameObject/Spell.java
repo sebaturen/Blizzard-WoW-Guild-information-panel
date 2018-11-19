@@ -5,6 +5,7 @@
  */
 package com.artOfWar.gameObject;
 
+import com.artOfWar.blizzardAPI.APIInfo;
 import org.json.simple.JSONObject;
 
 public class Spell extends GameObject
@@ -68,8 +69,17 @@ public class Spell extends GameObject
     }
     
     //Getters and Setters
+    @Override
     public String getId() { return this.id +""; }
+    public int getIntId() { return this.id; }
     public String getName() { return this.name; }
+    public String getDesc() { return this.description; }
+    public boolean isPasive() { return (this.castTime.equals("Passive")); }
+    public String getIconRenderURL() { return getIconRenderURL(56); }
+    public String getIconRenderURL(int size) 
+    {
+        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
+    }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
 }

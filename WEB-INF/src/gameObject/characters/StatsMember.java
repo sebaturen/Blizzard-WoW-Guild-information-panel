@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 public class StatsMember extends GameObject
 {
     //Status Member DB
-    public static final String STATUS_MEMBER_TABLE_NAME  = "member_status";
+    public static final String STATUS_MEMBER_TABLE_NAME  = "member_stats";
     public static final String STATUS_MEMBER_TABLE_KEY   = "member_id";
     public static final String[] STATUS_MEMBER_TABLE_STRUCTURE = {
                     "member_id", "health", "powerType", "power", "str", "agi", "int", "sta","speedRating",

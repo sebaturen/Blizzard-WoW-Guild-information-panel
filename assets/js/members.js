@@ -146,7 +146,8 @@ $('#charContent').on('click', 'tr.pjInfo', function() {
         lastIdClick = $(this).data('id');
         var memInfo = visualMember[lastIdClick];
         if(memInfo.iLevel > 0) {
-            showMemberDetail(this, memInfo);
+            var internalId = $(this).data('internal_id');
+            showMemberDetail(this, memInfo.img, internalId);
         }            
     } 
     else
@@ -156,20 +157,34 @@ $('#charContent').on('click', 'tr.pjInfo', function() {
     }
 });
 
-function showMemberDetail(tr, member)
+function showMemberDetail(tr, avImg, memeberId)
 {
     $('.memDetail').remove(); //clear all other member info if is show~
     $(tr).after("<tr class='memDetail'><td class='memContent' colspan='6'></td></tr>");
-    var fullSizeImg = (member.img).replace("-avatar.jpg", "-main.jpg");
+    var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
-    $('.memContent').append('<div class="infoMember"></div>');
+    $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
+    console.log(memeberId);
+    $.getScript('/assets/js/memberDetail.jsp?id='+ memeberId, function() {
+        $('.memContent').append('<div class="infoMember"></div>');
         //Equipo!!!
         $('.infoMember').append('<div class="itemsMember"></div>');
         $('.itemsMember').append(renderItem(member));
+            //Floating information
+            $(".itemDetail")
+                .mouseover(function () 
+                {
+                    $(".tooltip-"+ $(this).data("item")).show();
+                })
+                .mouseleave(function () 
+                {
+                    $(".tooltip-"+ $(this).data("item")).hide();
+                });
         //Status!!!
         $('.infoMember').append('<div class="statsMember"></div>');
-        $('.statsMember').append(renderStat(member));
-                    
+        $('.statsMember').append(renderStat(member));        
+        $('#memberDetailLoad').remove();
+    });
 }
 
 function renderItem(member)
@@ -183,7 +198,7 @@ function renderItem(member)
         'shirt': member.items.shirt,
         'tabard': member.items.tabard,
         'wrist': member.items.wrist
-    }
+    };
     var itemsRight = {
         'hands': member.items.hands,
         'waist': member.items.waist,
@@ -193,58 +208,107 @@ function renderItem(member)
         'finger2': member.items.finger2,
         'trinket1': member.items.trinket1,
         'trinket2': member.items.trinket2
-    }
+    };
     var itemsArm = {
         'mainHand': member.items.mainHand,
         'offHand': member.items.offHand
-    }
+    };
+    var getItemDesc = function(item)
+    {
+        var gemIcon = '';
+        if(item.gem !== undefined && item.gem !== null)
+        {
+            gemIcon += '<img src="'+ item.gem.img +'" class="gemIcon"/>';
+        }
+        return '<p class="quality-'+ item.quality +'">'+ item.name +'</p>'+
+                    item.ilevel +' '+ gemIcon;
+    };
+    var getTooltip = function(item, post)
+    {
+        //Gem info
+        var gemInfo = '';
+        if(item.gem !== undefined && item.gem !== null)
+        {
+            gemInfo += '<p><img src="'+ item.gem.img +'" class="gemIcon"/> '+ item.gem.bonus +'</p>';
+        }
+        //Azerita power
+        var azeritPower = '';
+        if(item.azerita_power !== undefined && item.azerita_power !== null)
+        {
+            var i = 0;
+            jQuery.each( item.azerita_power, function(skillName, azPw) 
+            {
+                azeritPower += '<p>- '+ skillName +' <img class="azeritaSkillImg" src="'+ azPw.img +'"></p>';
+                azeritPower += '<div class="azeritaPowerDesc tooltip-yellow">'+ azPw.desc +'</div>';
+                i++;
+            });  
+            if(i > 0) azeritPower = '<div class="tooltip-yellow">Active Azerita Powers:</div><div class="azPower">' + azeritPower +'</div>';
+        }
+        //Spell
+        var spellDesc = '';
+        if(item.spell !== undefined && item.spell !== null)
+        {
+            spellDesc = '<p class="tooltip-yellow itemSpellDetail">'+ item.spell.action +': '+ item.spell.desc +"</p>";
+        }        
+        //Stats info
+        var stats = '';
+        if(item.armor > 0) stats += '<li>'+ item.armor +' Armor</li>';
+        jQuery.each( item.stats, function(stat, amount) 
+        {
+            stats += '<li>+'+ amount +' '+ stat +'</li>';
+        });        
+        return '<div  class="item-floting-desc tooltip-'+ post +'">'+
+                    '<div class="itemDesc tooltipDesc">'+ 
+                        '<p class="quality-'+ item.quality +'">'+ item.name +'</p>'+
+                        '<p class="tooltip-yellow">Item Level '+ item.ilevel +'</p>'+
+                        '<p>'+ post.capitalize() +'</p>'+
+                        '<ul>'+ stats +'</ul>'+
+                        gemInfo +
+                        azeritPower +
+                        spellDesc +
+                    '</div>'+
+                '</div>';        
+    };
     var outEquip = '<div class="equip row"><div class="itemsLeft col">';
+    //LEFT ITEMS----------------------------------------------------------------
     jQuery.each( itemsLeft, function(i, val) 
     {
         if(val !== undefined && val !== null)
-        {
-            outEquip += '<div class="itemDetail '+ i +' row">'+
+        {   
+            outEquip += '<div class="itemDetail '+ i +' row" data-item="'+ i +'">'+
                             '<div class="itemIcon left" style="background-image: url('+ val.img +');"></div>'+
-                            '<div class="itemDesc ">'+ 
-                                '<p class="quality-'+ val.quality +'">'+val.name +'</p>'+
-                                val.ilevel+
-                            '</div>'+
-                        '</div>';            
+                            '<div class="itemDesc ">'+ getItemDesc(val) +'</div>'+
+                        '</div>'+ getTooltip(val, i);
         }
     });
     outEquip += '</div><div class="itemsRight col">';
+    //RIGHT ITEMS---------------------------------------------------------------
     jQuery.each( itemsRight, function(i, val) 
     {
         if(val !== undefined && val !== null)
         {
-            outEquip += '<div class="itemDetail '+ i +' row justify-content-end">'+
-                            '<div class="itemDesc left">'+ 
-                                '<p class="quality-'+ val.quality +'">'+val.name +'</p>'+
-                                val.ilevel+
-                            '</div>'+
+            outEquip += '<div class="itemDetail '+ i +' row justify-content-end" data-item="'+ i +'">'+
+                            '<div class="itemDesc left">'+ getItemDesc(val) +'</div>'+
                             '<div class="itemIcon" style="background-image: url('+ val.img +');"></div>'+
-                        '</div>';             
+                        '</div>'+ getTooltip(val, i);       
         }
     });
     outEquip += '</div></div><div class="equip row itemsArm">';
+    //MAIN HAND-----------------------------------------------------------------
     if(itemsArm.mainHand !== undefined && itemsArm.mainHand !== null)
     {
-        outEquip += '<div class="itemDetail mainHand col">'+
+        outEquip += '<div class="itemDetail mainHand col" data-item="mainHand">'+
                         '<div class="itemIcon" style="background-image: url('+ itemsArm.mainHand.img +');"></div>'+
-                        '<div class="itemDesc">'+ 
-                            '<p class="quality-'+ itemsArm.mainHand.quality +'">'+itemsArm.mainHand.name +'</p>'+
-                            itemsArm.mainHand.ilevel+
-                        '</div>'+
-                    '</div>';
+                        '<div class="itemDesc">'+ getItemDesc(itemsArm.mainHand) +'</div>'+
+                    '</div>'+ getTooltip(itemsArm.mainHand, "mainHand");   
     }
-    outEquip += '<div class="itemDetail offHand col">';
+    outEquip += '<div class="itemDetail offHand col"  data-item="offHand">';
+    //OFF HAND------------------------------------------------------------------
     if(itemsArm.offHand !== undefined && itemsArm.offHand !== null)
     {
         outEquip += '<div class="itemIcon" style="background-image: url('+ itemsArm.offHand.img +');"></div>'+
-                        '<div class="itemDesc">'+ 
-                            '<p class="quality-'+ itemsArm.offHand.quality +'">'+itemsArm.offHand.name +'</p>'+
-                            itemsArm.offHand.ilevel+
-                        '</div>';
+                        '<div class="itemDesc">'+ getItemDesc(itemsArm.offHand) +'</div>'+
+                        getTooltip(itemsArm.offHand, "offHand"); 
     }    
     outEquip += '</div></div>';
     return outEquip;
@@ -295,7 +359,7 @@ function putMembers(vMem)
     jQuery.each( vMem, function(i, val) 
     {
         var outForm = 
-                '<tr class="pjInfo" data-id="'+i+'">'+
+                '<tr class="pjInfo" data-id="'+i+'" data-internal_id="'+ val.int_id +'">'+
                     '<td scope="row"><img style="height: 50px;" src="'+ val.img +'" /></td>'+
                     '<td scope="row" class="character-'+ val.class +'">'+ val.name +'</td>'+
                     '<td scope="row"><img src="assets/img/classes/class_'+ val.class +'.png" style="width: 22px;"/></td>'+
