@@ -164,7 +164,6 @@ function showMemberDetail(tr, avImg, memeberId)
     var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
-    console.log(memeberId);
     $.getScript('/assets/js/memberDetail.jsp?id='+ memeberId, function() {
         $('.memContent').append('<div class="infoMember"></div>');
         //Equipo!!!
@@ -231,17 +230,30 @@ function renderItem(member)
         {
             gemInfo += '<p><img src="'+ item.gem.img +'" class="gemIcon"/> '+ item.gem.bonus +'</p>';
         }
+        //Azerita Level
+        var azeritLevel = '';
+        if(item.azerita_level > 0)
+        {
+            azeritLevel = '<p class="tooltip-yellow"> Azerita Power Level '+ item.azerita_level +'</p>';
+        }
         //Azerita power
         var azeritPower = '';
         if(item.azerita_power !== undefined && item.azerita_power !== null)
         {
             var i = 0;
-            jQuery.each( item.azerita_power, function(skillName, azPw) 
+            jQuery.each( item.azerita_power, function(pos, azPw) 
             {
-                azeritPower += '<p>- '+ skillName +' <img class="azeritaSkillImg" src="'+ azPw.img +'"></p>';
-                azeritPower += '<div class="azeritaPowerDesc tooltip-yellow">'+ azPw.desc +'</div>';
+                if(azPw.name !== undefined && azPw.name !== null)
+                {                    
+                    azeritPower += '<p>- '+ azPw.name +' <img class="azeritaSkillImg" src="'+ azPw.img +'"></p>';
+                    azeritPower += '<div class="azeritaPowerDesc tooltip-yellow">'+ azPw.desc +'</div>';
+                }
+                else
+                {
+                    azeritPower += '<p class="undefinedAzPower">- Undefined</p>';
+                }
                 i++;
-            });  
+            });
             if(i > 0) azeritPower = '<div class="tooltip-yellow">Active Azerita Powers:</div><div class="azPower">' + azeritPower +'</div>';
         }
         //Spell
@@ -261,6 +273,7 @@ function renderItem(member)
                     '<div class="itemDesc tooltipDesc">'+ 
                         '<p class="quality-'+ item.quality +'">'+ item.name +'</p>'+
                         '<p class="tooltip-yellow">Item Level '+ item.ilevel +'</p>'+
+                        azeritLevel +
                         '<p>'+ post.capitalize() +'</p>'+
                         '<ul>'+ stats +'</ul>'+
                         gemInfo +

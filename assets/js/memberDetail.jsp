@@ -35,6 +35,7 @@ var member = {
                         'img': '<%= im.getItem().getIconRenderURL() %>',
                         'ilevel': '<%= im.getIlevel() %>',
                         'quality': '<%= im.getQuality() %>',
+                        'azerita_level': '<%= im.getAzeritaLevel() %>',
                         <% if(im.getGem().isInternalData()) { Item gem = im.getGem(); %>
                         'gem': {
                             'name': "<%= (gem.getName()).replaceAll("\"", "'") %>",
@@ -49,12 +50,13 @@ var member = {
                             <%}%>
                         },
                         'azerita_power': {
-                            <% for(Spell az : im.getAzeritaPower()) { if (az != null) { %>
-                                "<%= (az.getName()).replaceAll("\"", "'") %>": {
+                            <% int i = 0; for(Spell az : im.getAzeritaPower()) {%>
+                                '<%= i %>': { <%if(az != null) {%>
+                                    'name': "<%= (az.getName()).replaceAll("\"", "'") %>",
                                     'img': '<%= az.getIconRenderURL() %>',
-                                    'desc': "<%= (az.getDesc()).replaceAll("\"", "'").replaceAll("\n\n", "<br>").replaceAll("\r\r", "<br>") %>",
+                                    'desc': "<%= (az.getDesc()).replaceAll("\"", "'").replaceAll("\n\n", "<br>").replaceAll("\r\r", "<br>") %>" <%}%>
                                 },
-                            <%}}%>
+                            <%i++;}%>
                         },
                         <% if( im.getItem().getItemSpell().getIntId() > 0 ) { Spell sp = im.getItem().getItemSpell(); %>
                         'spell': {

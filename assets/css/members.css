@@ -85,6 +85,9 @@
 .azPower, .itemSpellDetail {
     font-size: 0.8em;
 }
+.undefinedAzPower {
+    color: #b7b4b4;
+}
 /*END-------ITEMS ---------------*/
 
 /*-------STATS COLOR ---------*/

@@ -99,7 +99,7 @@ public class ItemMember extends GameObject
             this.stats = (JSONArray) objInfo.get("stats");
             this.armor = ((Long) objInfo.get("armor")).intValue();
             JSONObject aLeve = (JSONObject) objInfo.get("azeriteItem");
-            if(objInfo.containsKey("azeriteLevel"))
+            if(aLeve != null && aLeve.containsKey("azeriteLevel"))
             {
                 this.azeritaLevel = ((Long) aLeve.get("azeriteLevel")).intValue();                
             }
@@ -166,18 +166,19 @@ public class ItemMember extends GameObject
     public int getQuality() { return this.quality; }
     public int getArmor() { return this.armor; }
     public Item getGem() { return new Item(this.tooltipGemId); }
+    public int getAzeritaLevel() { return this.azeritaLevel; }
     public Spell[] getAzeritaPower() 
     {
         Spell[] azPower = new Spell[this.azeritaPower.size()];
         if(this.azeritaPower.size() > 0)
         {
             Update up = null;     
-            for(int i = 0; i < this.azeritaPower.size(); i++)
+            for(int i = this.azeritaPower.size()-1, j = 0; i >= 0 ; i--,j++)
             {
                 JSONObject power = (JSONObject) this.azeritaPower.get(i);
                 int spellID = ((Long) power.get("spellId")).intValue();
                 if(spellID != 0)
-                {                    
+                {
                     Spell azPowerD = new Spell( spellID );
                     if(!azPowerD.isInternalData())
                     {
@@ -188,7 +189,7 @@ public class ItemMember extends GameObject
                             Logs.saveLog("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
                         }
                     }
-                    azPower[i] = azPowerD;
+                    azPower[j] = azPowerD;
                 }
             }            
             
