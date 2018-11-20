@@ -25,7 +25,10 @@ public class ItemMember extends GameObject
     public static final String ITEMS_MEMBER_TABLE_KEY   = "id";
     public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "quality", "post_item",
                                                                 "ilevel", "stats", "armor", "context", 
-                                                                "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"};
+                                                                "azerite_level", "azerite_power", "tooltipGem_id", "toolTipEnchant_id"};
+    public static final String[] ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE = {"item_id", "quality", "ilevel", "stats", "armor", "context", 
+                                                                "azerite_level", "azerite_power", "tooltipGem_id", "toolTipEnchant_id"};
+    public static final String[] ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES = {"0", "0", "0", "0", "0", "0","0","0","0","0"};
     
     //Attribute
     private int id;
@@ -37,8 +40,8 @@ public class ItemMember extends GameObject
     private JSONArray stats = new JSONArray();
     private int armor;
     private String context;
-    private int azeritaLevel;
-    private JSONArray azeritaPower = new JSONArray();
+    private int azeriteLevel;
+    private JSONArray azeritePower = new JSONArray();
     private int tooltipGemId = -1;
     private int tooltipEnchantId = -1;
     
@@ -68,24 +71,24 @@ public class ItemMember extends GameObject
             //load from DB
             this.id = (Integer) objInfo.get("id");
             this.memberId = (Integer) objInfo.get("member_id");
-            this.item = loadItem((Integer) objInfo.get("item_id"));
+            this.item = Item.loadItem((Integer) objInfo.get("item_id"));
             this.quality = (Integer) objInfo.get("quality");            
             this.ilevel = (Integer) objInfo.get("ilevel");
             this.armor = (Integer) objInfo.get("armor");
-            this.azeritaLevel = (Integer) objInfo.get("azerita_level");
+            this.azeriteLevel = (Integer) objInfo.get("azerite_level");
             this.tooltipGemId = (Integer) objInfo.get("tooltipGem_id");
             this.tooltipEnchantId = (Integer) objInfo.get("toolTipEnchant_id");
             try {
                 JSONParser parser = new JSONParser();
                 String stat = objInfo.get("stats").toString();
-                String azerita = objInfo.get("azerita_power").toString();
-                if(stat.length() > 0)
+                String azerita = objInfo.get("azerite_power").toString();
+                if(stat.length() > 2) //+2 becouse JSONArray use minimus '[]'
                 {
                     this.stats = (JSONArray) parser.parse(stat);
                 }
-                if(azerita.length() > 0)
+                if(azerita.length() > 2) //+2 becouse JSONArray use minimus '[]'
                 {
-                    this.azeritaPower = (JSONArray) parser.parse(azerita);
+                    this.azeritePower = (JSONArray) parser.parse(azerita);
                 }
             } catch (ParseException ex) {
                 Logs.saveLog("Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
@@ -93,7 +96,7 @@ public class ItemMember extends GameObject
         }
         else
         {//load from blizzard
-            this.item = loadItem(((Long) objInfo.get("id")).intValue());  
+            this.item = Item.loadItem(((Long) objInfo.get("id")).intValue());  
             this.quality = ((Long) objInfo.get("quality")).intValue();
             this.ilevel = ((Long) objInfo.get("itemLevel")).intValue();   
             this.stats = (JSONArray) objInfo.get("stats");
@@ -101,11 +104,11 @@ public class ItemMember extends GameObject
             JSONObject aLeve = (JSONObject) objInfo.get("azeriteItem");
             if(aLeve != null && aLeve.containsKey("azeriteLevel"))
             {
-                this.azeritaLevel = ((Long) aLeve.get("azeriteLevel")).intValue();                
+                this.azeriteLevel = ((Long) aLeve.get("azeriteLevel")).intValue();                
             }
             if(objInfo.containsKey("azeriteEmpoweredItem"))
             {
-                this.azeritaPower = (JSONArray) ((JSONObject) objInfo.get("azeriteEmpoweredItem")).get("azeritePowers");            
+                this.azeritePower = (JSONArray) ((JSONObject) objInfo.get("azeriteEmpoweredItem")).get("azeritePowers");            
             }
             JSONObject toolTipe = (JSONObject) objInfo.get("tooltipParams");
             if(toolTipe.containsKey("gem0"))
@@ -118,23 +121,7 @@ public class ItemMember extends GameObject
         this.context = objInfo.get("context").toString();
         this.isData = true;
     }
-    
-    private Item loadItem(int id)
-    {
-        Item it = new Item(id);
-        if(!it.isInternalData())
-        {
-            try {
-                Update up = new Update();
-                it = up.getItemFromBlizz(id);
-                it.saveInDB();
-            } catch (IOException | ParseException | DataException ex) {
-                System.out.println("Fail to get item info from blizzard.");
-            }
-        }
-        return it;
-    }
-    
+        
     @Override
     public boolean saveInDB() 
     {
@@ -145,7 +132,7 @@ public class ItemMember extends GameObject
         setTableStructur(DBStructure.outKey(ITEMS_MEMBER_TABLE_STRUCTURE));
         switch (saveInDBObj(new String[] {this.memberId +"", this.item.getId() +"", this.quality +"", this.position,
                                         this.ilevel +"", this.stats.toString(), this.armor +"", this.context,
-                                        this.azeritaLevel +"", this.azeritaPower.toString(), this.tooltipGemId +"", this.tooltipEnchantId +""}))
+                                        this.azeriteLevel +"", this.azeritePower.toString(), this.tooltipGemId +"", this.tooltipEnchantId +""}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;
@@ -166,16 +153,16 @@ public class ItemMember extends GameObject
     public int getQuality() { return this.quality; }
     public int getArmor() { return this.armor; }
     public Item getGem() { return new Item(this.tooltipGemId); }
-    public int getAzeritaLevel() { return this.azeritaLevel; }
-    public Spell[] getAzeritaPower() 
+    public int getAzeriteLevel() { return this.azeriteLevel; }
+    public Spell[] getAzeritePower() 
     {
-        Spell[] azPower = new Spell[this.azeritaPower.size()];
-        if(this.azeritaPower.size() > 0)
+        Spell[] azPower = new Spell[this.azeritePower.size()];
+        if(this.azeritePower.size() > 0)
         {
             Update up = null;     
-            for(int i = this.azeritaPower.size()-1, j = 0; i >= 0 ; i--,j++)
+            for(int i = this.azeritePower.size()-1, j = 0; i >= 0 ; i--,j++)
             {
-                JSONObject power = (JSONObject) this.azeritaPower.get(i);
+                JSONObject power = (JSONObject) this.azeritePower.get(i);
                 int spellID = ((Long) power.get("spellId")).intValue();
                 if(spellID != 0)
                 {

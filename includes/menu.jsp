@@ -25,6 +25,9 @@
                 <li class="nav-item <% out.write((request.getRequestURI().equals("/alters.jsp"))? "active":""); %>">
                     <a class="nav-link" href="/alters.jsp">Alters</a>
                 </li>
+                <li class="nav-item <% out.write((request.getRequestURI().equals("/auction_house.jsp"))? "active":""); %>">
+                    <a class="nav-link" href="/auction_house.jsp">Auction House</a>
+                </li>
             <% } %>
             <li class="nav-item">
                 <a class="nav-link disabled" href="#">Last Update[<%= gameInfo.getLastDynamicUpdate() %>]</a>

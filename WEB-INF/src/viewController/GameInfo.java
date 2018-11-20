@@ -10,6 +10,7 @@ import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.Update;
 import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.AuctionItem;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,7 +27,7 @@ public class GameInfo
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
-                                                    new String[] {"0"});
+                                                    new String[] {Update.UPDATE_DYNAMIC +""});
             if (dateUpdate.size() > 0)
             {
                 out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
@@ -47,7 +48,7 @@ public class GameInfo
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
-                                                    new String[] {"1"});
+                                                    new String[] {Update.UPDATE_STATIC +""});
             if (dateUpdate.size() > 0)
             {
                 out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
@@ -73,9 +74,7 @@ public class GameInfo
             if (dateUpdate.size() > 0)
             {
                 String actuapPrice = (((JSONObject)dateUpdate.get(0)).get("price")).toString();
-                out[0] = Integer.parseInt(actuapPrice.substring(0,actuapPrice.length()-4));
-                out[1] = Integer.parseInt(actuapPrice.substring(actuapPrice.length()-4,actuapPrice.length()-2));
-                out[2] = Integer.parseInt(actuapPrice.substring(actuapPrice.length()-2,actuapPrice.length()));
+                out = AuctionItem.dividePrice(actuapPrice);
             }
         }
         catch (SQLException|DataException e)

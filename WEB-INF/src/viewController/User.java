@@ -158,7 +158,7 @@ public class User
             {
                 return blizzInfo.get("access_token").toString();
             }
-        } catch (IOException|ParseException|DataException ex) {
+        } catch (IOException|DataException ex) {
             Logs.saveLog("Fail to get user Access Token "+ ex);
         }
         return null;

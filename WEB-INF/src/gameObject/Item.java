@@ -10,11 +10,8 @@ import com.artOfWar.Logs;
 import com.artOfWar.blizzardAPI.APIInfo;
 import com.artOfWar.blizzardAPI.Update;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Item extends GameObject
@@ -114,6 +111,23 @@ public class Item extends GameObject
                 return true;            
         }
         return false;
+    }
+    
+    public static Item loadItem(int id)
+    {
+        Item it = new Item(id);
+        if(!it.isInternalData())
+        {
+            try {
+                Update up = new Update();
+                it = up.getItemFromBlizz(id);
+                Logs.saveLog("New Item in DB "+ it.getId() +" - "+ it.getName());
+                it.saveInDB();
+            } catch (IOException | ParseException | DataException ex) {
+                System.out.println("Fail to get item info from blizzard.");
+            }
+        }
+        return it;
     }
 
     @Override

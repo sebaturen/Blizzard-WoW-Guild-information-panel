@@ -78,11 +78,16 @@ INSERT INTO stats (`id`, `en_US`) VALUES (71, "Agility or Strength or Intellect"
 INSERT INTO stats (`id`, `en_US`) VALUES (72, "Agility or Strength");
 INSERT INTO stats (`id`, `en_US`) VALUES (74, "Strength or Intellect");
 
-CREATE TABLE `items` (
+CREATE TABLE `enchants` (
     `id`    INT NOT NULL,
-    `name`  VARCHAR(50) NOT NULL,
-    `icon`  TINYTEXT NOT NULL,
-    `itemSpell`            INT,
+    `en_US` VARCHAR(50) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `items` (
+    `id`                    INT NOT NULL,
+    `name`                  TINYTEXT NOT NULL,
+    `icon`                  TINYTEXT NOT NULL,
+    `itemSpell`             INT,
     `gemInfo_bonus_name`    VARCHAR(50),
     `gemInfo_type`          VARCHAR(50),
     PRIMARY KEY(id),

@@ -232,16 +232,16 @@ function renderItem(member)
         }
         //Azerita Level
         var azeritLevel = '';
-        if(item.azerita_level > 0)
+        if(item.azerite_level > 0)
         {
-            azeritLevel = '<p class="tooltip-yellow"> Azerita Power Level '+ item.azerita_level +'</p>';
+            azeritLevel = '<p class="tooltip-yellow"> Azerite Power Level '+ item.azerite_level +'</p>';
         }
         //Azerita power
         var azeritPower = '';
-        if(item.azerita_power !== undefined && item.azerita_power !== null)
+        if(item.azerite_power !== undefined && item.azerite_power !== null)
         {
             var i = 0;
-            jQuery.each( item.azerita_power, function(pos, azPw) 
+            jQuery.each( item.azerite_power, function(pos, azPw) 
             {
                 if(azPw.name !== undefined && azPw.name !== null)
                 {                    

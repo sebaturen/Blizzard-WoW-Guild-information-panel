@@ -29,13 +29,14 @@ var member = {
             for(String post : equip)
             {
                 ItemMember im = member.getItemByPost(post); 
+                session.setAttribute("im", im);
                 if(im != null) {%>
                     '<%= post %>': {
                         'name': "<%= (im.getItem().getName()).replaceAll("\"", "'") %>",
                         'img': '<%= im.getItem().getIconRenderURL() %>',
-                        'ilevel': '<%= im.getIlevel() %>',
-                        'quality': '<%= im.getQuality() %>',
-                        'azerita_level': '<%= im.getAzeritaLevel() %>',
+                        'ilevel': '${im.ilevel}',
+                        'quality': '${im.quality}',
+                        'azerite_level': '${im.azeriteLevel}',
                         <% if(im.getGem().isInternalData()) { Item gem = im.getGem(); %>
                         'gem': {
                             'name': "<%= (gem.getName()).replaceAll("\"", "'") %>",
@@ -49,8 +50,8 @@ var member = {
                                 '<%= s.getEnUs() %>': '<%= s.getAmount() %>', 
                             <%}%>
                         },
-                        'azerita_power': {
-                            <% int i = 0; for(Spell az : im.getAzeritaPower()) {%>
+                        'azerite_power': {
+                            <% int i = 0; for(Spell az : im.getAzeritePower()) {%>
                                 '<%= i %>': { <%if(az != null) {%>
                                     'name': "<%= (az.getName()).replaceAll("\"", "'") %>",
                                     'img': '<%= az.getIconRenderURL() %>',

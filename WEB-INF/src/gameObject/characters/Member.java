@@ -278,11 +278,10 @@ public class Member extends GameObject
                 //Clear all old items:                    
                 try {
                     dbConnect.update(ItemMember.ITEMS_MEMBER_TABLE_NAME,
-                            new String[] {"item_id", "ilevel", "stats", "armor", "context",
-                                "azerita_level", "azerita_power", "tooltipGem_id", "toolTipEnchant_id"},
-                            new String[] {"0", "0", "", "0", "", "0", "", "0", "0"},
-                            "member_id=?",
-                            new String[] {this.internalID +""});                    
+                                    ItemMember.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
+                                    ItemMember.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
+                                    "member_id=?",
+                                    new String[] {this.internalID +""});                    
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
                     System.out.println("Fail to update remove old items "+ this.internalID +" - "+ ex);
                 }

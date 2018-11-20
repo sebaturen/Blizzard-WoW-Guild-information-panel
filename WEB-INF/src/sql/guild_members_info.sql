@@ -145,8 +145,8 @@ CREATE TABLE `items_member` (
     `stats`                 TINYTEXT NOT NULL, 
     `armor`                 INT NOT NULL,
     `context`               VARCHAR(50) NOT NULL,
-    `azerita_level`         INT NOT NULL,
-    `azerita_power`         TINYTEXT,
+    `azerite_level`         INT NOT NULL,
+    `azerite_power`         TINYTEXT,
     `tooltipGem_id`         INT,
     `toolTipEnchant_id`     INT,
     PRIMARY KEY(id),
@@ -210,3 +210,18 @@ CREATE TABLE `member_stats` (
     FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `auction_items` (
+    `auc`   INT NOT NULL,
+    `item`  INT NOT NULL,
+    `buyout`    bigint NOT NULL,
+    `bid`       bigint NOT NULL,
+    `quantity`  INT NOT NULL,
+    `timeLeft`  VARCHAR(20) NOT NULL,
+    `owner`     VARCHAR(20) NOT NULL,
+    `ownerRealm`    VARCHAR(20) NOT NULL,
+    `context`   INT NOT NULL,
+    `rand`      INT NOT NULL,
+    `status`    TINYINT(1) NOT NULL,
+    PRIMARY KEY (auc),
+    FOREIGN KEY(item) REFERENCES items(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

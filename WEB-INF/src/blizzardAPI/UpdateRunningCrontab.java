@@ -19,17 +19,19 @@ public class UpdateRunningCrontab
         try 
         {
             Update blizzUp = new Update();
-            int upParam = Update.DYNAMIC_UPDATE;
-            if(args.length > 0) upParam = Update.STATIC_UPDATE;
+            int upParam = Update.UPDATE_DYNAMIC;
+            if(args.length > 0) upParam = Integer.parseInt(args[0]);
 
             switch(upParam)
             {
-                case Update.DYNAMIC_UPDATE:
+                case Update.UPDATE_DYNAMIC:
                     blizzUp.updateDynamicAll();
-                break;
-                case Update.STATIC_UPDATE:
+                    break;
+                case Update.UPDATE_STATIC:
                     blizzUp.updateStaticAll();					
-                break;					
+                    break;	
+                case Update.UPDATE_AUCTION:
+                    blizzUp.updateAH();
             }
         } 
         catch (IOException|ParseException|DataException ex)

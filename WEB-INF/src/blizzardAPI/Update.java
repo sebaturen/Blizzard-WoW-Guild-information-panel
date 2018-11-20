@@ -9,6 +9,7 @@ import com.artOfWar.dbConnect.DBConnect;
 import com.artOfWar.DataException;
 import com.artOfWar.Logs;
 import com.artOfWar.dbConnect.DBStructure;
+import com.artOfWar.gameObject.AuctionItem;
 import com.artOfWar.gameObject.Boss;
 import com.artOfWar.gameObject.Item;
 import com.artOfWar.gameObject.guild.Guild;
@@ -47,8 +48,10 @@ public class Update implements APIInfo
     public static final String[] UPDATE_INTERVAL_TABLE_STRUCTURE = {"id", "type", "update_time"};
 
     //Constant	
-    public static final int DYNAMIC_UPDATE = 0;
-    public static final int STATIC_UPDATE = 1;
+    public static final int UPDATE_DYNAMIC  = 0;
+    public static final int UPDATE_STATIC   = 1;
+    public static final int UPDATE_AUCTION  = 2;
+    
     private static int blizzAPICallCounter = 0;
 
     //Attribute
@@ -115,7 +118,7 @@ public class Update implements APIInfo
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                            new String[] {DYNAMIC_UPDATE +"", getCurrentTimeStamp()});
+                            new String[] {UPDATE_DYNAMIC +"", getCurrentTimeStamp()});
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -164,7 +167,7 @@ public class Update implements APIInfo
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                            new String[] {STATIC_UPDATE +"", getCurrentTimeStamp()});
+                            new String[] {UPDATE_STATIC +"", getCurrentTimeStamp()});
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -172,6 +175,67 @@ public class Update implements APIInfo
         }		
     }
 
+    /**
+     * Run AH Update information 
+     */
+    public void updateAH()
+    {
+        Logs.saveLog("-------Update process is START! (Auction House)------");
+        try 
+        {
+            JSONObject genInfo = getURLAH();
+            String lastUpdate = parseUnixTime(genInfo.get("lastModified").toString());
+            JSONArray getLastUpdateInDB = dbConnect.select(UPDATE_INTERVAL_TABLE_NAME, 
+                                                            UPDATE_INTERVAL_TABLE_STRUCTURE, 
+                                                            "type=? AND update_time=?", 
+                                                            new String[] { UPDATE_AUCTION+"", lastUpdate });
+            if(getLastUpdateInDB.isEmpty()) 
+            {
+                //Clear last auItems
+                dbConnect.update(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
+                            new String[] {"status"},
+                            new String[] {"0"},
+                            "status > ?",
+                            new String[] {"0"});                
+                Logs.saveLog("AH last update: "+ lastUpdate);
+                Logs.saveLog("Get a AH update...");
+                JSONObject allAH = curl(genInfo.get("url").toString(), "GET");
+                JSONArray itemsAH = (JSONArray) allAH.get("auctions");
+
+                int iProgres = 1;
+                Logs.saveLog("0%", false);
+                for(int i = 0; i < itemsAH.size(); i++)
+                {
+                    JSONObject item = (JSONObject) itemsAH.get(i);
+                    AuctionItem acObItem = new AuctionItem(item);
+                    AuctionItem acObItemDB = new AuctionItem(((Long) item.get("auc")).intValue());
+                    if(acObItemDB.isInternalData())
+                    {
+                        acObItem.setIsInternalData(true);
+                    }
+                    acObItem.saveInDB();
+
+                    //Show update progress...
+                    if ( (((iProgres*2)*10)*itemsAH.size())/100 < i )
+                    {
+                        Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                        iProgres++;
+                    }
+                }
+                Logs.saveLog("...100%");
+
+                /* {"type", "update_time"}; */
+                dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
+                                UPDATE_INTERVAL_TABLE_KEY,
+                                DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
+                                new String[] {UPDATE_AUCTION +"", lastUpdate});   
+            }            
+        } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
+            Logs.saveLog("Fail to get AH "+ ex);
+        }
+        Logs.saveLog("-------Update process is COMPLATE! (Auction House)------");              
+    }
+    
     /**
      * Blizzard API need a token to access to API, this token you can
      * get if have a ClinetID and ClientSecret of the application
@@ -192,7 +256,25 @@ public class Update implements APIInfo
                                         null,
                                         postDataBytes)).get("access_token");
     }
-
+    
+    private JSONObject getURLAH() throws DataException, IOException, ParseException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_AUCTION, 
+                                            URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20")));
+            //Call blizzard API
+            JSONObject respond = curl(urlString, 
+                                    "GET",
+                                    "Bearer "+ this.accesToken);
+            
+            return ((JSONObject)((JSONArray) respond.get("files")).get(0));
+            
+        }
+    }
+    
     /**
      * Get a guild profile
      */
@@ -993,7 +1075,7 @@ public class Update implements APIInfo
     public static JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
     public static JSONObject curl(String urlString, String method, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, null, parameters, null); }
     public static JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
-    public static JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, ParseException, DataException
+    public static JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, DataException
     {
         //Add parameters
         if(parameters != null)
@@ -1031,13 +1113,23 @@ public class Update implements APIInfo
             case HttpURLConnection.HTTP_OK:
                 //get result
                 BufferedReader reader = new BufferedReader ( new InputStreamReader(conn.getInputStream()));
-                String result = reader.readLine();
+                StringBuilder results = new StringBuilder();
+                String rLine;
+                while ((rLine = reader.readLine()) != null) 
+                {
+                    results.append(rLine);
+                }
                 reader.close();
 
-                //Parse JSON Object
-                JSONParser parser = new JSONParser();
-                json = (JSONObject) parser.parse(result);
-                return json;
+                //Parse JSON Object                
+                try 
+                {
+                    JSONParser parser = new JSONParser();
+                    json = (JSONObject) parser.parse(results.toString());                
+                    return json;
+                } catch(ParseException ex) {
+                    throw new DataException("Fail to parse result!, check the URL"+ urlString +" - "+ ex);
+                }
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 DataException ex = new DataException("Error: "+ conn.getResponseCode() +" - UnAuthorized request, check CLIENT_ID and CLIENT_SECRET in APIInfo.java");
                 ex.setErrorCode(conn.getResponseCode());
@@ -1054,6 +1146,12 @@ public class Update implements APIInfo
     public static String getCurrentTimeStamp() 
     {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    }
+    
+    public static String parseUnixTime(String unixTime)
+    {
+        Date time = new Date(Long.parseLong(unixTime));
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
     }
     
     public static int getBlizzAPICallCounter() { return blizzAPICallCounter; }
