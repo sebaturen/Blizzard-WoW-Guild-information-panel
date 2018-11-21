@@ -1,6 +1,6 @@
 <%@include file="includes/globalObject.jsp" %>
-<% if (user == null || user.getGuildRank() == -1) {
-    response.sendRedirect("login.jsp");
+<% if (user == null || user.getGuildRank() == -1) {%><%@ page import ="java.net.URLEncoder" %><%
+    response.sendRedirect("/login.jsp?rdir="+URLEncoder.encode("/auction_house.jsp", "UTF-8"));
 } else {%>
 <jsp:useBean id="auctionHouse" class="com.artOfWar.viewController.AuctionHouse" scope="request"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

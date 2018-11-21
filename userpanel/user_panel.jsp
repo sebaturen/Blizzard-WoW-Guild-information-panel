@@ -2,7 +2,7 @@
 <% 
 if (!request.getParameter("login_redirect").equals("true") || !user.checkUser()) 
 {
-    response.sendRedirect("index.jsp");
+    response.sendRedirect("/index.jsp");
 } 
 else //only show content if is redirect from login.jsp and the user is valid
 {

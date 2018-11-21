@@ -1,8 +1,8 @@
 <%@include file="../../includes/globalObject.jsp" %>
 <%
 if(user.getGuildRank() != 0 && user.getGuildRank() != 1)
-{//Validate user is Guild Lider or Officer        
-    response.sendRedirect("/index.jsp");
+{//Validate user is Guild Lider or Officer %><%@ page import ="java.net.URLEncoder" %><%
+    response.sendRedirect("/login.jsp?rdir="+URLEncoder.encode("/userpanel/update/update_panel.jsp", "UTF-8"));
 }
 else
 {%>

@@ -212,7 +212,9 @@ public class Update implements APIInfo
                     if(acObItemDB.isInternalData())
                     {
                         acObItem.setIsInternalData(true);
+                        acObItem.setAucDate(acObItemDB.getAucDate());
                     }
+                    acObItem.setAucDate(lastUpdate);
                     acObItem.saveInDB();
 
                     //Show update progress...

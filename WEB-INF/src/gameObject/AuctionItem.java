@@ -12,7 +12,7 @@ public class AuctionItem extends GameObject
     public static final String AUCTION_ITEMS_TABLE_NAME = "auction_items";
     public static final String AUCTION_ITEMS_KEY = "auc";
     public static final String[] AUCTION_ITEMS_TABLE_STRUCTURE = {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
-                                                                    "owner", "ownerRealm", "context", "rand", "status"}; 
+                                                                    "owner", "ownerRealm", "context", "rand", "status", "auc_date"}; 
     //Atributes
     private int auc;
     private Item item;
@@ -24,6 +24,7 @@ public class AuctionItem extends GameObject
     private String ownerRealm;
     private int context;
     private int rand;
+    private String aucDate;
     private boolean status = true; //if exist or not, the idea is save in DB and use query to delete that information if is old
     
     public AuctionItem(int auc)
@@ -68,10 +69,10 @@ public class AuctionItem extends GameObject
     @Override
     public boolean saveInDB() {
         /* {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
-         * "owner", "ownerRealm", "context", "rand"}; 
+         * "owner", "ownerRealm", "context", "rand", "auc_date"}; 
 `        */
         switch(saveInDBObj(new String[] { this.auc+"", this.item.getId(), this.buyout +"", this.bid +"", this.quantity +"", this.timeLeft,
-                                        this.owner, this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0"}))
+                                        this.owner, this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0", this.aucDate}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;            
@@ -83,6 +84,7 @@ public class AuctionItem extends GameObject
 
     @Override
     public void setId(String id) { this.auc = Integer.parseInt(id); }
+    public void setAucDate(String date) { this.aucDate = date; }
 
     @Override
     public String getId() { return this.auc +""; }
@@ -93,10 +95,11 @@ public class AuctionItem extends GameObject
     public String getOwnerRealm() { return this.ownerRealm; }
     public int getContext() { return this.context; }
     public int getRand() { return this.rand; } 
-    public long getBuyout() { return this.buyout; }   
+    public long getBuyout() { return this.buyout; }  
+    public String getAucDate() { return this.aucDate; }
     public int[] getBuyoutDividePrice() { return dividePrice(((Long)this.buyout).toString()); }    
     public long getBid() { return this.bid; }
-    public int[] getBidDividePrice() { return dividePrice(((Long)this.bid).toString()); }    
+    public int[] getBidDividePrice() { return dividePrice(((Long)this.bid).toString()); }  
     
     public static int[] dividePrice(String price) 
     {        

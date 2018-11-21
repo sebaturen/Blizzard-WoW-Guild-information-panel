@@ -46,7 +46,9 @@
                     redirectUri = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 
                                                 com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
                                                 com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
-                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK, "UTF-8");
+                    String urlRedirectGenerator = com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK;
+                    if (request.getParameter("rdir") != null) { session.setAttribute("internal_redirect", request.getParameter("rdir")); }
+                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(urlRedirectGenerator, "UTF-8");
                     redirectUri += "&scope=wow.profile";
                     redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
                     redirectUri += "&response_type=code";

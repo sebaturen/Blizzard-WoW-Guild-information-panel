@@ -222,6 +222,7 @@ CREATE TABLE `auction_items` (
     `context`   INT NOT NULL,
     `rand`      INT NOT NULL,
     `status`    TINYINT(1) NOT NULL,
+    `auc_date`  DATETIME NOT NULL,
     PRIMARY KEY (auc),
     FOREIGN KEY(item) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
