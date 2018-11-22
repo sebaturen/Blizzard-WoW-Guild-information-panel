@@ -32,6 +32,9 @@ public class UpdateRunningCrontab
                     break;	
                 case Update.UPDATE_AUCTION:
                     blizzUp.updateAH();
+                    break;
+                case Update.UPDATE_CLEAR_AH_HISTORY:
+                    blizzUp.moveHistoryAH();
             }
         } 
         catch (IOException|ParseException|DataException ex)

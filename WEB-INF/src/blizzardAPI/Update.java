@@ -51,6 +51,7 @@ public class Update implements APIInfo
     public static final int UPDATE_DYNAMIC  = 0;
     public static final int UPDATE_STATIC   = 1;
     public static final int UPDATE_AUCTION  = 2;
+    public static final int UPDATE_CLEAR_AH_HISTORY = 3;
     
     private static int blizzAPICallCounter = 0;
 
@@ -60,6 +61,9 @@ public class Update implements APIInfo
 
     /**
      * Constructor. Run a generateAccesToken to generate this token
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
      */
     public Update() throws IOException, ParseException, DataException
     {
@@ -195,8 +199,8 @@ public class Update implements APIInfo
                 dbConnect.update(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                             new String[] {"status"},
                             new String[] {"0"},
-                            "status > ?",
-                            new String[] {"0"});                
+                            "status = ?",
+                            new String[] {"1"});                
                 Logs.saveLog("AH last update: "+ lastUpdate);
                 Logs.saveLog("Get a AH update...");
                 JSONObject allAH = curl(genInfo.get("url").toString(), "GET");
@@ -235,12 +239,72 @@ public class Update implements APIInfo
         } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
             Logs.saveLog("Fail to get AH "+ ex);
         }
-        Logs.saveLog("-------Update process is COMPLATE! (Auction House)------");              
+        Logs.saveLog("-------Update process is COMPLATE! (Auction House)------");
+    }
+    
+    /**
+     * See the auc_items and move to History DB if auc finish
+     */
+    public void moveHistoryAH()
+    {
+        Logs.saveLog("-------Update process is Start! (Auction House move to History DB)------");
+        try {
+            JSONArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
+                    new String[] {AuctionItem.AUCTION_ITEMS_KEY},
+                    "status = ?",
+                    new String[] { "0" });
+            //Get and delete all auc need save in history DB
+            int iProgres = 1;
+            Logs.saveLog("0%", false);
+            for(int i = 0; i < aucItem.size(); i++)
+            {
+                int aucId = (Integer) ((JSONObject) aucItem.get(i)).get(AuctionItem.AUCTION_ITEMS_KEY);
+                AuctionItem aucItemOLD = new AuctionItem(aucId);
+                try 
+                {
+                    //Insert in History if have a price
+                    if(aucItemOLD.getBuyout() > 0)
+                    {
+                        dbConnect.insert(DBStructure.AUCTION_HISTORY_TABLE_NAME,
+                                DBStructure.AUCTION_HISTORY_TABLE_KEY,
+                                //{"item", "unique_price", "context", "date"};
+                                DBStructure.outKey(DBStructure.AUCTION_HISTORY_TABLE_STRUCTURE),
+                                new String[] { aucItemOLD.getItem().getId(), aucItemOLD.getUniqueBuyoutPrice()+"", 
+                                                aucItemOLD.getContext()+"", aucItemOLD.getAucDate() });
+                    }
+                    //Delete from current AH
+                    dbConnect.delete(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
+                            AuctionItem.AUCTION_ITEMS_KEY +"=?",
+                            new String[] { aucItemOLD.getId() });
+                } catch (ClassNotFoundException|SQLException|DataException ex) {
+                    Logs.saveLog("Fail to save auc history to "+ aucItemOLD.getId() +" - "+ ex);
+                }                
+                //Show update progress...
+                if ( (((iProgres*2)*10)*aucItem.size())/100 < i )
+                {
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    iProgres++;
+                }
+            }
+            Logs.saveLog("...100%");
+            
+            /* {"type", "update_time"}; */
+            dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
+                            UPDATE_INTERVAL_TABLE_KEY,
+                            DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
+                            new String[] {UPDATE_CLEAR_AH_HISTORY +"", getCurrentTimeStamp()}); 
+        } catch (SQLException | DataException | ClassNotFoundException ex) {
+            Logs.saveLog("Fail to get current auc items "+ ex);
+        }
+        Logs.saveLog("-------Update process is Complete! (Auction House move to History DB)------");
     }
     
     /**
      * Blizzard API need a token to access to API, this token you can
      * get if have a ClinetID and ClientSecret of the application
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
      */
     private void generateAccesToken() throws IOException, ParseException, DataException
     {
@@ -259,6 +323,13 @@ public class Update implements APIInfo
                                         postDataBytes)).get("access_token");
     }
     
+    /**
+     * Generate a AH information URL
+     * @return
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
+     */
     private JSONObject getURLAH() throws DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
@@ -279,6 +350,11 @@ public class Update implements APIInfo
     
     /**
      * Get a guild profile
+     * @throws IOException
+     * @throws ParseException
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws DataException 
      */
     private void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
     {
@@ -317,7 +393,12 @@ public class Update implements APIInfo
     }
 
     /**
-     * get a guilds members
+     * Get a guilds members
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException
+     * @throws SQLException
+     * @throws ClassNotFoundException 
      */
     private void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
     {
@@ -377,7 +458,11 @@ public class Update implements APIInfo
     }
 
     /**
-     * get a player information IN GUILD!
+     * Get a player information IN GUILD!
+     * @throws SQLException
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
      */
     private void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
     {
@@ -430,6 +515,13 @@ public class Update implements APIInfo
         return blizzPlayer;
     }    
     
+    /**
+     * Try load member from DB and if not exist, load from blizzard, if
+     * is load from blizzard, the new player information is save in DB.
+     * @param name
+     * @param realm
+     * @return 
+     */
     private Member getMemberInfoFromBlizzOrDB(String name, String realm)
     {       
         Member mb = null;
@@ -484,7 +576,11 @@ public class Update implements APIInfo
     
 
     /**
-     * get a playable class information 
+     * Get a playable class information 
+     * @throws SQLException
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
      */
     private void getPlayableClass() throws SQLException, DataException, IOException, ParseException
     {
@@ -516,7 +612,11 @@ public class Update implements APIInfo
     }
 
     /**
-     * get a Characters races information 
+     * Get a Characters races information 
+     * @throws SQLException
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
      */
     private void getRaces() throws SQLException, DataException, IOException, ParseException
     {
@@ -546,6 +646,14 @@ public class Update implements APIInfo
         }
     }
     
+    /**
+     * Get a spell information from blizzard API.
+     * @param id
+     * @return Spell object (content blizzard api information about spell)
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
+     */
     public Spell getSpellInformationBlizz(int id) throws DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -565,6 +673,13 @@ public class Update implements APIInfo
         }
     }
 
+    /**
+     * Update all spell informatio from blizzard
+     * @throws DataException
+     * @throws SQLException
+     * @throws IOException
+     * @throws ParseException 
+     */
     private void updateSpellInformation() throws DataException, SQLException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -600,6 +715,13 @@ public class Update implements APIInfo
         }        
     }
     
+    /**
+     * Update all item information from blizzard
+     * @throws DataException
+     * @throws SQLException
+     * @throws IOException
+     * @throws ParseException 
+     */
     private void updateItemInformation() throws DataException, SQLException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -629,6 +751,11 @@ public class Update implements APIInfo
         }        
     }
     
+    /**
+     * Get inforamtion from item from blizzard api
+     * @param id
+     * @return Item object (blizzard information)
+     */
     public Item getItemFromBlizz(int id)
     {
         try {
@@ -649,6 +776,9 @@ public class Update implements APIInfo
     
     /**
      * Get guild achivements
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
      */
     private void getGuildAchivementsLists() throws IOException, ParseException, DataException
     {
@@ -686,6 +816,11 @@ public class Update implements APIInfo
     
     /**
      * Guild challenges information
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException
+     * @throws java.text.ParseException
+     * @throws SQLException 
      */
     private void getGuildChallenges() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
@@ -771,6 +906,14 @@ public class Update implements APIInfo
         }		
     }    
     
+    /**
+     * Get a guild news
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException
+     * @throws java.text.ParseException
+     * @throws SQLException 
+     */
     private void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -795,6 +938,14 @@ public class Update implements APIInfo
         }
     }
     
+    /**
+     * Get playar Achivements
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException
+     * @throws java.text.ParseException
+     * @throws SQLException 
+     */
     private void getPlayerAchivements() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -823,6 +974,14 @@ public class Update implements APIInfo
         }
     }
     
+    /**
+     * Get wow token price
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
     private void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException, SQLException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -844,6 +1003,12 @@ public class Update implements APIInfo
         }        
     }
     
+    /**
+     * Get a user characters information (see all users in DB and try search the characters)
+     * @throws SQLException
+     * @throws DataException
+     * @throws ClassNotFoundException 
+     */
     private void getUsersCharacters() throws SQLException, DataException, ClassNotFoundException
     {
         JSONArray users = dbConnect.select(User.USER_TABLE_NAME, 
@@ -897,9 +1062,9 @@ public class Update implements APIInfo
     }
     
     /**
-     * Get a information from member account
-     * @accessToken String member access Token
-     * Return: guild rank
+     * Set member character info
+     * @param accessToken String member access Token
+     * @param userID internal user ID
      */
     public void setMemberCharacterInfo(String accessToken, int userID)
     {
@@ -990,6 +1155,12 @@ public class Update implements APIInfo
         }
     }
     
+    /**
+     * From RaiderIO get a guild progression information
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
+     */
     private void getGuildProgression() throws DataException, IOException, ParseException
     {                
         //Generate an API URL
@@ -1021,6 +1192,12 @@ public class Update implements APIInfo
         
     }
     
+    /**
+     * Get boss master list from blizzard api
+     * @throws DataException
+     * @throws IOException
+     * @throws ParseException 
+     */
     private void getBossInformation() throws DataException, IOException, ParseException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
@@ -1067,16 +1244,59 @@ public class Update implements APIInfo
 
     /**
      * Generate URL API connection
-     * @urlString : complete API URL
-     * @method : GET, POST, DELETE, etc
-     * @authorization : API authorization, Bearer, o basic, etc
-     * @parameters : URL parameters ("field=member","acctrion=move"....)
-     * @bodyData : if have a data in body
+     * @param urlString complete API URL
+     * @param method GET, POST, DELETE, etc
+     * @return Blizzard JSONObject content
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
      */
     public static JSONObject curl(String urlString, String method) throws IOException, ParseException, DataException { return curl(urlString, method, null, null); }
+    /**
+     * Generate URL API connection
+     * @param urlString complete API URL
+     * @param method GET, POST, DELETE, etc
+     * @param authorization API authorization, Bearer, o basic, etc
+     * @return Blizzard JSONObject content
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
+     */
     public static JSONObject curl(String urlString, String method, String authorization) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, null, null); }
+    /**
+     * Generate URL API connection
+     * @param urlString complete API URL
+     * @param method GET, POST, DELETE, et
+     * @param parameters URL parameters ("field=member","acctrion=move"....)
+     * @return Blizzard JSONObject content
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
+     */
     public static JSONObject curl(String urlString, String method, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, null, parameters, null); }
+    /**
+     * Generate URL API connection
+     * @param urlString complete API URL
+     * @param method GET, POST, DELETE, et
+     * @param authorization API authorization, Bearer, o basic, etc
+     * @param parameters URL parameters ("field=member","acctrion=move"....)
+     * @return Blizzard JSONObject content
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException 
+     */
     public static JSONObject curl(String urlString, String method, String authorization, String[] parameters) throws IOException, ParseException, DataException { return curl(urlString, method, authorization, parameters, null); }
+    /**
+     * Generate URL API connection
+     * @param urlString complete API URL
+     * @param method GET, POST, DELETE, et
+     * @param authorization API authorization, Bearer, o basic, etc
+     * @param parameters URL parameters ("field=member","acctrion=move"....)
+     * @param bodyData if have a data in body
+     * @return Blizzard JSONObject content
+     * @throws IOException
+     * @throws DataException 
+     */
     public static JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, DataException
     {
         //Add parameters
@@ -1145,16 +1365,29 @@ public class Update implements APIInfo
         }
     }    
     
+    /**
+     * Get a current time string yyyy-MM-dd HH:mm:ss
+     * @return 
+     */
     public static String getCurrentTimeStamp() 
     {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
     
+    /**
+     * Parse unix time to actual server time.
+     * @param unixTime
+     * @return 
+     */
     public static String parseUnixTime(String unixTime)
     {
         Date time = new Date(Long.parseLong(unixTime));
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
     }
     
+    /**
+     * Counter blizzard aplication call
+     * @return 
+     */
     public static int getBlizzAPICallCounter() { return blizzAPICallCounter; }
 }

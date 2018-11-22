@@ -74,7 +74,7 @@ public class GameInfo
             if (dateUpdate.size() > 0)
             {
                 String actuapPrice = (((JSONObject)dateUpdate.get(0)).get("price")).toString();
-                out = AuctionItem.dividePrice(actuapPrice);
+                out = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
             }
         }
         catch (SQLException|DataException e)

@@ -226,3 +226,13 @@ CREATE TABLE `auction_items` (
     PRIMARY KEY (auc),
     FOREIGN KEY(item) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `auction_history` (
+    `id`    INT NOT NULL AUTO_INCREMENT,
+    `item`  INT NOT NULL,
+    `unique_price`  bigint NOT NULL,
+    `context`   INT NOT NULL,
+    `date`  DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY(item) REFERENCES items(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

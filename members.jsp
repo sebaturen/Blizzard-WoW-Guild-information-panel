@@ -6,7 +6,7 @@
         <title><%= guild_info.getName() %> - Guild members</title>
         <%@include file="includes/header.jsp" %> 
         <link type="text/css" rel="stylesheet" href="/assets/css/members.css">
-        <script src="/assets/js/loadMemberContent.js"></script>
+        <script src="/assets/js/members/loadMemberContent.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>

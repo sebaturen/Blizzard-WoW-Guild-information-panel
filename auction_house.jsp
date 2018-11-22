@@ -9,7 +9,7 @@
         <title><%= guild_info.getName() %> - Auction House</title>
         <%@include file="includes/header.jsp" %>
         <link type="text/css" rel="stylesheet" href="/assets/css/aution_house.css">
-        <script src="/assets/js/autionHouse.js"></script>
+        <script src="/assets/js/auctionHouse/autionHouse.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
@@ -18,20 +18,18 @@
             <div class="alert alert-danger" role="alert">Esta función esta EN PRUEBA!, puede no funcionar como se espera</div>
             <div id="AH_searchSection">                
                 <div class="form-group">
+                    <div id="itemSearchImag"></div>
                     <label>Item name:</label>
                     <input class="form-control" type="text" value="" id="itemName"/>
+                    <div id="itemsSuggested" style="display: none;"></div>
                 </div>
             </div>
             <table class="table table-dark items_ah-tab">
                 <thead>
                     <tr>
-                        <th scope="col" id="rankColum" class='pointer'>#</th>
-                        <th scope="col" id="nameColum" class='pointer'>Item</th>
-                        <th scope="col" id="classColum" class='pointer'>Quantity</th>
-                        <th scope="col" id="classColum" class='pointer'>Buy</th>
-                        <th scope="col" id="levelColum" class='pointer'>Push</th>
-                        <th scope="col" id="specColum" class='pointer'>Owner</th>
-                        <th scope="col" id="specColum" class='pointer'>Time Left</th>
+                        <th scope="col" id="nameColum" class='pointer'>Unit Price</th>
+                        <th scope="col" id="classColum" class='pointer'>Current Auctions</th>
+                        <th scope="col" id="classColum" class='pointer'>Stack Price</th>
                     </tr>
                 </thead>
                 <tbody id="items_ah_content">

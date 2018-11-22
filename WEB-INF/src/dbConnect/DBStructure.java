@@ -22,6 +22,11 @@ public interface DBStructure
     public static final String WOW_TOKEN_TABLE_NAME = "wow_token";
     public static final String WOW_TOKEN_TABLE_KEY = "last_updated_timestamp";
     public static final String[] WOW_TOKEN_TABLE_STRUCTURE = {"last_updated_timestamp", "price"};
+    
+    //Auction History
+    public static final String AUCTION_HISTORY_TABLE_NAME = "auction_history";
+    public static final String AUCTION_HISTORY_TABLE_KEY = "id";
+    public static final String[] AUCTION_HISTORY_TABLE_STRUCTURE = {"id", "item", "unique_price", "context", "date"};
         
     //In many time, we need insert out to id, because the id is auto update.
     public static String[] outKey(String[] array)

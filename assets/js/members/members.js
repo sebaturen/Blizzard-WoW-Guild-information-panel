@@ -164,7 +164,7 @@ function showMemberDetail(tr, avImg, memeberId)
     var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
-    $.getScript('/assets/js/memberDetail.jsp?id='+ memeberId, function() {
+    $.getScript('/assets/js/members/memberDetail.jsp?id='+ memeberId, function() {
         $('.memContent').append('<div class="infoMember"></div>');
         //Equipo!!!
         $('.infoMember').append('<div class="itemsMember"></div>');

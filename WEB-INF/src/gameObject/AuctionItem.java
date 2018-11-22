@@ -57,6 +57,7 @@ public class AuctionItem extends GameObject
             this.context = (Integer) objInfo.get("context");
             this.rand = (Integer) objInfo.get("rand");
             this.item = Item.loadItem((Integer) objInfo.get("item"));
+            this.aucDate = objInfo.get("auc_date").toString();
         }
         this.buyout = (long) objInfo.get("buyout");
         this.bid = (long) objInfo.get("bid");
@@ -94,21 +95,27 @@ public class AuctionItem extends GameObject
     public String getOwner() { return this.owner; }
     public String getOwnerRealm() { return this.ownerRealm; }
     public int getContext() { return this.context; }
-    public int getRand() { return this.rand; } 
-    public long getBuyout() { return this.buyout; }  
+    public int getRand() { return this.rand; }  
     public String getAucDate() { return this.aucDate; }
-    public int[] getBuyoutDividePrice() { return dividePrice(((Long)this.buyout).toString()); }    
+    public long getBuyout() { return this.buyout; } 
+    public int[] getBuyoutDividePrice() { return dividePrice(this.buyout); }
+    public long getUniqueBuyoutPrice() { return this.buyout/this.quantity; }
+    public int[] getUniqueBuyoutDividePrice() { return dividePrice(getUniqueBuyoutPrice()); }
     public long getBid() { return this.bid; }
-    public int[] getBidDividePrice() { return dividePrice(((Long)this.bid).toString()); }  
+    public int[] getBidDividePrice() { return dividePrice(this.bid); }  
     
-    public static int[] dividePrice(String price) 
+    public static int[] dividePrice(long itemPrice) 
     {        
+        String price = ((Long) itemPrice).toString();
         int[] out = {0,0,0}; //[0-gold][1-silver][2-copper]        
         if(price.length() > 4)
             out[0] = Integer.parseInt(price.substring(0,price.length()-4));
-        if(price.length() > 2)
+        if(price.length() >= 4)
             out[1] = Integer.parseInt(price.substring(price.length()-4,price.length()-2));
-        out[2] = Integer.parseInt(price.substring(price.length()-2,price.length()));
+        if(price.length() >= 2)
+            out[2] = Integer.parseInt(price.substring(price.length()-2,price.length()));
+        else
+            out[2] = Integer.parseInt(price);
         return out;
     }
     

@@ -42,33 +42,48 @@ public class AuctionHouse
         return out;
     }
     
-    public List<AuctionItem> getAucItem(String itemName)
+    public List<AuctionItem> getAucItem(int itemId)
     {
         List<AuctionItem> auItem = new ArrayList<>();
         try
-        {		
-            JSONArray dataItems = dbConnect.select(Item.ITEM_TABLE_NAME,
-                                                    new String[] {Item.ITEM_TABLE_KEY},
-                                                    "name LIKE ? AND id !=0 LIMIT 5",
-                                                    new String[] { "%"+itemName+"%"});
-            for(int i = 0; i < dataItems.size(); i++)
+        {
+            JSONArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
+                                                new String[] {AuctionItem.AUCTION_ITEMS_KEY}, 
+                                                "item = ? AND status = 1 ORDER BY buyout/quantity ASC",
+                                                new String[] { itemId +""});
+            for(int j = 0; j < aucItem.size(); j++)
             {
-                int itemId = (Integer) ((JSONObject) dataItems.get(i)).get(Item.ITEM_TABLE_KEY);
-                JSONArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
-                                                    new String[] {AuctionItem.AUCTION_ITEMS_KEY}, 
-                                                    "item = ? AND status = 1",
-                                                    new String[] { itemId +""});
-                for(int j = 0; j < aucItem.size(); j++)
-                {
-                    int aucId = (Integer) ((JSONObject) aucItem.get(j)).get(AuctionItem.AUCTION_ITEMS_KEY);
-                    auItem.add(new AuctionItem(aucId));
-                }
+                int aucId = (Integer) ((JSONObject) aucItem.get(j)).get(AuctionItem.AUCTION_ITEMS_KEY);
+                auItem.add(new AuctionItem(aucId));
             }
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a items like... "+ e);
+            Logs.saveLog("Fail to get a auction item id "+ itemId +" - "+ e);
         }
         return auItem;
+    }
+    
+    public List<Item> getItems(String name)
+    {
+        List<Item> items = new ArrayList<>();
+        if(name.length() < 3) return null;
+        try
+        {		
+            JSONArray dataItems = dbConnect.select(Item.ITEM_TABLE_NAME,
+                                                    new String[] {Item.ITEM_TABLE_KEY},
+                                                    "name LIKE ? AND id !=0",
+                                                    new String[] { "%"+name+"%"});
+            for(int i = 0; i < dataItems.size(); i++)
+            {
+                int itemId = (Integer) ((JSONObject) dataItems.get(i)).get(Item.ITEM_TABLE_KEY);
+                items.add(new Item(itemId));
+            }
+        }
+        catch (SQLException|DataException e)
+        {
+            Logs.saveLog("Fail to get items name like '"+ name +"' - "+ e);
+        }
+        return items;
     }
 }
