@@ -3,17 +3,18 @@
  * Desc : GuildAchivements Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild;
+package com.blizzardPanel.gameObject.guild;
 
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.blizzardAPI.APIInfo;
+import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
-public class GuildAchivements extends GameObject
+public class GuildAchievementsList extends GameObject
 {
     //Guild Achivements lists DB
-    public static final String GUILD_ACHIVEMENTS_LISTS_TABLE_NAME = "guild_achievements_list";
-    public static final String GUILD_ACHIVEMENTS_LISTS_TABLE_KEY = "id";
-    public static final String[] GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE = {"id", "title", "description",
+    public static final String GUILD_ACHIEVEMENTS_LISTS_TABLE_NAME = "guild_achievements_list";
+    public static final String GUILD_ACHIEVEMENTS_LISTS_TABLE_KEY = "id";
+    public static final String[] GUILD_ACHIEVEMENTS_LISTS_TABLE_STRUCTURE = {"id", "title", "description",
                                                                             "icon", "points", "classification"};
     //Atribute
     private int id;
@@ -23,15 +24,15 @@ public class GuildAchivements extends GameObject
     private int points;
     private String classification;
 
-    public GuildAchivements(int id)
+    public GuildAchievementsList(int id)
     {
-        super(GUILD_ACHIVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE);
+        super(GUILD_ACHIEVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIEVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIEVEMENTS_LISTS_TABLE_STRUCTURE);
         loadFromDB(id+"");
     }
 
-    public GuildAchivements(JSONObject exInfo)
+    public GuildAchievementsList(JSONObject exInfo)
     {
-        super(GUILD_ACHIVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIVEMENTS_LISTS_TABLE_STRUCTURE);
+        super(GUILD_ACHIEVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIEVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIEVEMENTS_LISTS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
     
@@ -72,11 +73,17 @@ public class GuildAchivements extends GameObject
         return false;
     }	
 	
-    //Getters
-    public String getClassification() { return this.classification; }
+    //Getters AND setters
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
     @Override
     public String getId() { return this.id +""; }
-    
+    public String getTitle() { return this.title; }
+    public String getDescription() { return this.description; }
+    public String getClassification() { return this.classification; }
+    public String getIconRenderURL() { return getIconRenderURL(56); }
+    public String getIconRenderURL(int size) 
+    {
+        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
+    }
 }

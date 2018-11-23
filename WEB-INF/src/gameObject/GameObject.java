@@ -3,16 +3,19 @@
  * Desc : General abstract class to game object elements
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.blizzardPanel.gameObject;
 
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public abstract class GameObject implements DBStructure
 {
@@ -87,6 +90,10 @@ public abstract class GameObject implements DBStructure
                 }
             }
         }
+        else
+        {
+            Logs.saveLog("Fail to try save!, no data");
+        }
         dbConnect.closeConnection();
         return SAVE_MSG_NO_DATA;
     }
@@ -156,6 +163,13 @@ public abstract class GameObject implements DBStructure
         }
         dbConnect.closeConnection();
         return false;
+    }
+    
+    public static String getDBDate(Date date)
+    {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = dateFormat.format(date); 
+        return strDate;
     }
 	
     //Get/Set method

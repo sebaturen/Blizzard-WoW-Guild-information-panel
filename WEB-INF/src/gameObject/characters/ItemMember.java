@@ -3,15 +3,15 @@
  * Desc : ItemMember Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.characters;
+package com.blizzardPanel.gameObject.characters;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.Update;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.gameObject.Item;
-import com.artOfWar.gameObject.Spell;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.Item;
+import com.blizzardPanel.gameObject.Spell;
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

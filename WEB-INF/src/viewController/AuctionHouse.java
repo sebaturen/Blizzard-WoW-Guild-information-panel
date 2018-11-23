@@ -3,14 +3,14 @@
  * Desc : Auction house view controller
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.Update;
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.gameObject.AuctionItem;
-import com.artOfWar.gameObject.Item;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.AuctionItem;
+import com.blizzardPanel.gameObject.Item;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

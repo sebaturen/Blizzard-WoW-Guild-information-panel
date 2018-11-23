@@ -17,6 +17,9 @@
     width: 200px;
 }
 /*-------ITEMS ---------------*/
+.noLinkStyle a {
+    text-decoration: none;
+}
 .itemDetail {
     min-width: 200px;
     margin-bottom: 5px;

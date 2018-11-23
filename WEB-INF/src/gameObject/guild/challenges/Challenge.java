@@ -3,13 +3,13 @@
  * Desc : Guild Challenges object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild.challenges;
+package com.blizzardPanel.gameObject.guild.challenges;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.gameObject.GameObject;
-import static com.artOfWar.gameObject.GameObject.SAVE_MSG_INSERT_OK;
-import static com.artOfWar.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.GameObject;
+import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;
+import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

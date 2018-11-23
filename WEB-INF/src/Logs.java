@@ -3,9 +3,9 @@
  * Desc : Control a logs file in proyect.
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar;
+package com.blizzardPanel;
 
-import com.artOfWar.viewController.UpdateControl;
+import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

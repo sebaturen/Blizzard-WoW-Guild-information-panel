@@ -3,12 +3,12 @@
  * Desc : Get a guild progress
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.gameObject.guild.raids.Raid;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.guild.raids.Raid;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

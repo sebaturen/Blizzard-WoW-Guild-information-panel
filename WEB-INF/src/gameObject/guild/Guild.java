@@ -3,10 +3,17 @@
  * Desc : Guild Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild;
+package com.blizzardPanel.gameObject.guild;
 
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.DataException;
+import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.GameObject;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.simple.JSONArray;
 
 import org.json.simple.JSONObject;
 
@@ -26,6 +33,7 @@ public class Guild extends GameObject
     private long achievementPoints;
     private int level;
     private int side;
+    private List<GuildAchievement> achievements = new ArrayList<>();
 	
     //Constructor
     public Guild()
@@ -54,14 +62,58 @@ public class Guild extends GameObject
         {//if info come to blizzAPI or DB
             this.level = ((Long) guildInfo.get("level")).intValue();
             this.side =  ((Long) guildInfo.get("side")).intValue();
+            loadAchievementsFromBlizz((JSONObject) guildInfo.get("achievements"));
         }
         else
         {
             this.id = (Integer) guildInfo.get("id");
             this.level = (Integer) guildInfo.get("level");	
-            this.side =  (Integer) guildInfo.get("side");		
+            this.side =  (Integer) guildInfo.get("side");
+            loadAchievements();		
         }		
         this.isData = true;
+    }
+    
+    private void loadAchievementsFromBlizz(JSONObject respond)
+    {
+        JSONArray achivs = (JSONArray)respond.get("achievementsCompleted");
+        JSONArray achivTimes = (JSONArray)respond.get("achievementsCompletedTimestamp");
+        for(int i = 0; i < achivs.size(); i++)
+        {
+            int idAchiv = ((Long) achivs.get(i)).intValue();
+            //Save achivement
+            GuildAchievement gAHDB = new GuildAchievement(idAchiv);
+            if(!gAHDB.isInternalData())
+            {
+                //Create achivement
+                String achivTime = parseUnixTime(((Long) achivTimes.get(i)).toString());
+                JSONObject infoAchiv = new JSONObject();
+                infoAchiv.put("achievement_id", idAchiv);
+                infoAchiv.put("time_completed", achivTime);
+
+                gAHDB = new GuildAchievement(infoAchiv);
+            }
+            this.achievements.add(gAHDB);
+        }
+    }
+    
+    private void loadAchievements()
+    {
+        if(dbConnect == null) dbConnect = new DBConnect();
+        try {
+            JSONArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
+                                                new String[] {GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY},
+                                                "1=? ORDER BY time_completed DESC",
+                                                new String[] {"1"});
+            for(int i = 0; i < dbAchiv.size(); i++)
+            {
+                int idAchiv = (Integer) ((JSONObject)dbAchiv.get(i)).get(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY);
+                GuildAchievement gAh = new GuildAchievement(idAchiv);
+                this.achievements.add(gAh);
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to load guild Achievements "+ ex);
+        }        
     }
 	
     @Override
@@ -81,6 +133,10 @@ public class Guild extends GameObject
         switch (saveInDBObj(values))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                this.achievements.forEach(aH -> {
+                    if(!aH.isInternalData())
+                        aH.saveInDB();
+                });
                 return true;
         }
         return false;		
@@ -90,7 +146,8 @@ public class Guild extends GameObject
     public String getName() { return this.name; }
     public String getBattleGroup() { return this.battleGroup; }
     public long getLastModified() { return this.lastModified; }
-    public long getAchivementPoints() { return this.achievementPoints; }
+    public long getAchievementPoints() { return this.achievementPoints; }
+    public List<GuildAchievement> getAchievements() { return this.achievements; }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
     @Override

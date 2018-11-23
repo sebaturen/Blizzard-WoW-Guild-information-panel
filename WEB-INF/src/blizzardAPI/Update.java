@@ -3,25 +3,27 @@
  * Desc : Update guild and character in guild information
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.blizzardAPI;
+package com.blizzardPanel.blizzardAPI;
 
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.AuctionItem;
-import com.artOfWar.gameObject.Boss;
-import com.artOfWar.gameObject.Item;
-import com.artOfWar.gameObject.guild.Guild;
-import com.artOfWar.gameObject.guild.GuildAchivements;
-import com.artOfWar.gameObject.characters.Member;
-import com.artOfWar.gameObject.characters.PlayableClass;
-import com.artOfWar.gameObject.characters.Race;
-import com.artOfWar.gameObject.Spell;
-import com.artOfWar.gameObject.guild.challenges.Challenge;
-import com.artOfWar.gameObject.guild.challenges.ChallengeGroup;
-import com.artOfWar.gameObject.guild.raids.Raid;
-import com.artOfWar.viewController.User;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.AuctionItem;
+import com.blizzardPanel.gameObject.Boss;
+import com.blizzardPanel.gameObject.Item;
+import com.blizzardPanel.gameObject.guild.Guild;
+import com.blizzardPanel.gameObject.guild.GuildAchievementsList;
+import com.blizzardPanel.gameObject.characters.Member;
+import com.blizzardPanel.gameObject.characters.PlayableClass;
+import com.blizzardPanel.gameObject.characters.Race;
+import com.blizzardPanel.gameObject.Spell;
+import com.blizzardPanel.gameObject.characters.CharacterAchivementsCategory;
+import com.blizzardPanel.gameObject.characters.CharacterAchivementsList;
+import com.blizzardPanel.gameObject.guild.challenges.Challenge;
+import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
+import com.blizzardPanel.gameObject.guild.raids.Raid;
+import com.blizzardPanel.viewController.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,10 +80,10 @@ public class Update implements APIInfo
     {       
         blizzAPICallCounter = 0; 
         
-        /*Logs.saveLog("Guild new information update!");
+        Logs.saveLog("Guild new information update!");
         try { getGuildNews();}
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
-        */
+        
         
         Logs.saveLog("-------Update process is START! (Dynamic)------");
         //Guild information update!
@@ -146,9 +148,13 @@ public class Update implements APIInfo
         try { getRaces(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update Races Info: "+ ex); }		
         //Guild Achivements lists
-        Logs.saveLog("Guild Achivements lists information update!");
-        try { getGuildAchivementsLists(); } 
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Achivements Info: "+ ex); }		
+        Logs.saveLog("Guild Achievements lists information update!");
+        try { getGuildAchievementsLists(); } 
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Achievements Info: "+ ex); }		
+        //Character Achivements lists
+        Logs.saveLog("Characters Achievements lists information update!");
+        try { getCharacterAchievementsLists(); } 
+        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Characters Achievements Info: "+ ex); }	
         //Update Spell information
         Logs.saveLog("Spell information update!");
         try { updateSpellInformation(); } 
@@ -368,7 +374,8 @@ public class Update implements APIInfo
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken);
+                                    "Bearer "+ this.accesToken,
+                                    new String[] {"fields=achievements"});
             //Chek if is in db
             JSONArray lastModified = dbConnect.select(Guild.GUILD_TABLE_NAME,
                                                     new String[] {"id", "lastModified"},
@@ -453,6 +460,39 @@ public class Update implements APIInfo
                                         new String[] { name, GUILD_REALM, rankMember, "1" });
                     }
                 }				
+            }
+        }
+    }
+     
+    /**
+     * Get a guild news
+     * @throws IOException
+     * @throws ParseException
+     * @throws DataException
+     * @throws java.text.ParseException
+     * @throws SQLException 
+     */
+    private void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
+                                            URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
+                                            URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
+            //Call Blizzard API
+            JSONObject respond = curl(urlString, 
+                                    "GET",
+                                    "Bearer "+ this.accesToken,
+                                    new String[] {"fields=news"});
+
+            JSONArray news = (JSONArray) respond.get("news");
+            //System.out.println("respond "+ respond);
+            for(int i = 0; i < news.size(); i++)
+            {
+                System.out.println("news: "+ ((JSONObject)news.get(i)).get("type"));
+                //Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
             }
         }
     }
@@ -758,7 +798,8 @@ public class Update implements APIInfo
      */
     public Item getItemFromBlizz(int id)
     {
-        try {
+        try 
+        {
             //Generate an API URL
             String urlString = String.format(API_ROOT_URL, SERVER_LOCATION,
                     String.format(API_ITEM, id));
@@ -780,13 +821,58 @@ public class Update implements APIInfo
      * @throws ParseException
      * @throws DataException 
      */
-    private void getGuildAchivementsLists() throws IOException, ParseException, DataException
+    private void getGuildAchievementsLists() throws IOException, ParseException, DataException
     {
         if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
-            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_GUILD_ACHIVEMENTS);
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_GUILD_ACHIEVEMENTS);
+            //Call Blizzard API
+            JSONObject blizzAchiv = curl(urlString, //DataException possible trigger
+                                        "GET",
+                                        "Bearer "+ this.accesToken);
+
+            JSONArray achivGroup = (JSONArray) blizzAchiv.get("achievements");
+            saveGuildAchievements(achivGroup);
+        }        
+    }
+    
+    private void saveGuildAchievements(JSONArray achivGroup)
+    {        
+        for(int i = 0; i < achivGroup.size(); i++)
+        {
+            JSONObject info = (JSONObject) achivGroup.get(i);
+            String classification = info.get("name").toString();
+            JSONArray achiv = (JSONArray) info.get("achievements");
+            for (int j = 0; j < achiv.size(); j++) 
+            {
+                ((JSONObject) achiv.get(j)).put("classification", classification);                    
+
+                GuildAchievementsList gaDB = new GuildAchievementsList( ((Long) ((JSONObject) achiv.get(j)).get("id")).intValue() );
+                GuildAchievementsList gaBlizz = new GuildAchievementsList((JSONObject) achiv.get(j));
+                if(gaDB.isInternalData())
+                {
+                    gaBlizz.setId(gaDB.getId());
+                    gaBlizz.setIsInternalData(true);
+                }
+                gaBlizz.saveInDB();
+            }
+            if(info.containsKey("categories"))
+            {
+                JSONArray acGroup = (JSONArray) info.get("categories");
+                saveGuildAchievements(acGroup);
+            }
+        }
+    }
+    
+    private void getCharacterAchievementsLists() throws IOException, ParseException, DataException
+    {
+        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_CHARACTER_ACHIVEMENTS);
             //Call Blizzard API
             JSONObject blizzAchiv = curl(urlString, //DataException possible trigger
                                         "GET",
@@ -795,24 +881,54 @@ public class Update implements APIInfo
             JSONArray achivGroup = (JSONArray) blizzAchiv.get("achievements");
             for(int i = 0; i < achivGroup.size(); i++)
             {
-                JSONObject info = (JSONObject) achivGroup.get(i);
-                String classification = info.get("name").toString();
-                JSONArray achiv = (JSONArray) info.get("achievements");
-                for (int j = 0; j < achiv.size(); j++) {
-                    ((JSONObject) achiv.get(j)).put("classification", classification);                    
-                    
-                    GuildAchivements gaDB = new GuildAchivements( ((Long) ((JSONObject) achiv.get(j)).get("id")).intValue() );
-                    GuildAchivements gaBlizz = new GuildAchivements((JSONObject) achiv.get(j));
-                    if(gaDB.isInternalData())
-                    {
-                        gaBlizz.setId(gaDB.getId());
-                        gaBlizz.setIsInternalData(true);
-                    }
-                    gaBlizz.saveInDB();
-                }		
+                saveCharacterAchivements( (JSONObject) achivGroup.get(i) , null);
             }
         }        
     }
+    
+    private void saveCharacterAchivements(JSONObject info, CharacterAchivementsCategory fatherCat)
+    {
+        //Category
+        int catId = ((Long) info.get("id")).intValue();
+        CharacterAchivementsCategory category = new CharacterAchivementsCategory(catId);
+        if(!category.isInternalData())
+        {
+            String catName = info.get("name").toString();
+            JSONObject catInfo = new JSONObject();
+            catInfo.put("id", catId);
+            catInfo.put("name", catName);
+            if(fatherCat != null)
+                catInfo.put("father_id", Integer.parseInt(fatherCat.getId()));
+            category = new CharacterAchivementsCategory(catInfo);
+            category.saveInDB();
+        }
+        //Achivements
+        if(info.containsKey("achievements"))
+        {
+            JSONArray achivements = (JSONArray) info.get("achievements");
+            for(int i = 0; i < achivements.size(); i++)
+            {
+                JSONObject achiInfo = (JSONObject) achivements.get(i);
+                CharacterAchivementsList achv = new CharacterAchivementsList(((Long) achiInfo.get("id")).intValue());
+                if(!achv.isInternalData())
+                {
+                    achiInfo.put("category_id", catId);
+                    achv = new CharacterAchivementsList(achiInfo);
+                    achv.saveInDB();
+                }
+            }
+        }
+        //If have a sub categories
+        if(info.containsKey("categories"))
+        {
+            JSONArray subCat = (JSONArray) info.get("categories");
+            for(int i = 0; i < subCat.size(); i++)
+            {
+                saveCharacterAchivements( (JSONObject) subCat.get(i), category );
+            }
+        }
+    }
+    
     
     /**
      * Guild challenges information
@@ -905,39 +1021,7 @@ public class Update implements APIInfo
             Logs.saveLog("...100%");
         }		
     }    
-    
-    /**
-     * Get a guild news
-     * @throws IOException
-     * @throws ParseException
-     * @throws DataException
-     * @throws java.text.ParseException
-     * @throws SQLException 
-     */
-    private void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
-    {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
-        else
-        {
-            //Generate an API URL
-            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, String.format(API_GUILD_PROFILE, 
-                                            URLEncoder.encode(GUILD_REALM, "UTF-8").replace("+", "%20"), 
-                                            URLEncoder.encode(GUILD_NAME, "UTF-8").replace("+", "%20")));
-            //Call Blizzard API
-            JSONObject respond = curl(urlString, 
-                                    "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=news"});
-
-            JSONArray news = (JSONArray) respond.get("news");
-            for(int i = 0; i < news.size(); i++)
-            {
-               
-                Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
-            }
-        }
-    }
-    
+       
     /**
      * Get playar Achivements
      * @throws IOException

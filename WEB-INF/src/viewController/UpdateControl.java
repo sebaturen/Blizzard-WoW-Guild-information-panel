@@ -3,11 +3,11 @@
  * Desc : Update controller
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.Update;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.Update;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;

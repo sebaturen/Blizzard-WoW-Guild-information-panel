@@ -3,7 +3,7 @@
  * Desc : Configure to DB Connection info.
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.dbConnect;
+package com.blizzardPanel.dbConnect;
 
 public interface DBConfig {
 

@@ -1,5 +1,4 @@
 /*Art of War Style page...*/
-
 body {
     width: 100%;
     height: 100%;
@@ -19,6 +18,15 @@ p {
     font-weight: bold;
 }
 /*-------GENERAL------------*/
+.small_title {
+    text-align: center;
+    font-size: 2em;
+}
+.divder {
+    border-bottom: 1px solid #ffffff26;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
 .img_fondo_pagina {
     position: fixed;
     width: 100%;
@@ -107,16 +115,6 @@ p {
 }
 /*END-------COLOR ITEM QUALITY--------*/
 
-/*-------INDEX------------*/
-.home_name {
-    font-size: 6em;
-    text-align: center;
-}
-.log_artofwar {
-    text-align: center;
-}
-/*END -------INDEX------------*/
-
 /*-------PLAYABLE CLASS COLOR------------*/
 .character-warrior { color: #C79C6E; }
 .character-paladin { color: #F58CBA; }
@@ -131,7 +129,6 @@ p {
 .character-druid { color: #FF7D0A; }
 .character-demon-hunter { color: #A330C9; }
 /*END -------PLAYABLE CLASS COLOR------------*/
-
 
 /*-------MENU------------*/
 #main-menu {
@@ -177,7 +174,6 @@ p {
     margin-bottom: 0em;
 }
 /*END -------GUILD CHALLENGE------------*/
-
 
 /*-------GUILD PROGRESS------------*/
 .world-rank {

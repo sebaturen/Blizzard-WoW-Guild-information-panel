@@ -3,9 +3,9 @@
  * Desc : Spell object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.blizzardPanel.gameObject;
 
-import com.artOfWar.blizzardAPI.APIInfo;
+import com.blizzardPanel.blizzardAPI.APIInfo;
 import org.json.simple.JSONObject;
 
 public class Spell extends GameObject

@@ -24,7 +24,7 @@ function renderItemList()
     $('#itemsSuggested').show();
     jQuery.each( items, function(i, item) 
     {
-        $('#itemsSuggested').append("<div class='suggest_item' data-img='"+ item.itemImg +"' data-id='"+ item.itemID +"' data-name='"+ item.itemName +"'>"+
+        $('#itemsSuggested').append("<div class='suggest_item pointer' data-img='"+ item.itemImg +"' data-id='"+ item.itemID +"' data-name='"+ item.itemName +"'>"+
                                         "<img class='suggest_item_icon' src='"+ item.itemImg +"'>"+ item.itemName +
                                     "</div>");
     });

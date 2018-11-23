@@ -1,11 +1,11 @@
 <%@include file="/includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.characters.Member" %>
-<%@ page import ="com.artOfWar.gameObject.characters.ItemMember" %>
-<%@ page import ="com.artOfWar.gameObject.characters.StatsMember" %>
-<%@ page import ="com.artOfWar.gameObject.characters.Stat" %>
-<%@ page import ="com.artOfWar.gameObject.Item" %>
-<%@ page import ="com.artOfWar.gameObject.Spell" %>
-<jsp:useBean id="members" class="com.artOfWar.viewController.Members"/>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.ItemMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.StatsMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
+<%@ page import ="com.blizzardPanel.gameObject.Item" %>
+<%@ page import ="com.blizzardPanel.gameObject.Spell" %>
+<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
 var member = {
 <%if(user != null && user.getGuildRank() != -1) { Member member = members.getMember(Integer.parseInt(request.getParameter("id"))); %>
     'stats': {

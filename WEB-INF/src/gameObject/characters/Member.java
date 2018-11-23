@@ -3,13 +3,13 @@
  * Desc : Character Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.characters;
+package com.blizzardPanel.gameObject.characters;
 
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.blizzardAPI.Update;
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.blizzardAPI.APIInfo;
+import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.GameObject;
 import java.io.IOException;
 
 import org.json.simple.JSONObject;

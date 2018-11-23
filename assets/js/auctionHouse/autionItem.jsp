@@ -1,7 +1,7 @@
 <%@include file="/includes/globalObject.jsp" %>
 <%if(user != null && user.getGuildRank() != -1) {%>
-<jsp:useBean id="auctionHouse" class="com.artOfWar.viewController.AuctionHouse" scope="session"/>
-<%@ page import ="com.artOfWar.gameObject.AuctionItem" %>
+<jsp:useBean id="auctionHouse" class="com.blizzardPanel.viewController.AuctionHouse" scope="session"/>
+<%@ page import ="com.blizzardPanel.gameObject.AuctionItem" %>
 <%@ page import ="java.util.List" %>
 var auctions = [
 <%  List<AuctionItem> aucItems = auctionHouse.getAucItem(Integer.parseInt(request.getParameter("id")));
@@ -25,12 +25,12 @@ var auctions = [
                 {
                     'quantity': '<%= quantity %>',
                     'stacks': '<%= stacks %>',
-                    'uniqueGold': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[0] %>',
-                    'uniqueSilver': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[1] %>',
-                    'uniqueCopper': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[2] %>',
-                    'stackGold': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[0] %>',
-                    'stackSilver': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[1] %>',
-                    'stackCopper': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[2] %>'
+                    'uniqueGold': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[0] %>',
+                    'uniqueSilver': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[1] %>',
+                    'uniqueCopper': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[2] %>',
+                    'stackGold': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[0] %>',
+                    'stackSilver': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[1] %>',
+                    'stackCopper': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[2] %>'
                 },<%
                 quantity = 0;
                 stacks = 0;
@@ -46,12 +46,12 @@ var auctions = [
     {
         'quantity': '<%= quantity %>',
         'stacks': '<%= stacks %>',
-        'uniqueGold': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[0] %>',
-        'uniqueSilver': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[1] %>',
-        'uniqueCopper': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(uniquePrice)[2] %>',
-        'stackGold': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[0] %>',
-        'stackSilver': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[1] %>',
-        'stackCopper': '<%= com.artOfWar.gameObject.AuctionItem.dividePrice(stackPrice)[2] %>'
+        'uniqueGold': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[0] %>',
+        'uniqueSilver': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[1] %>',
+        'uniqueCopper': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(uniquePrice)[2] %>',
+        'stackGold': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[0] %>',
+        'stackSilver': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[1] %>',
+        'stackCopper': '<%= com.blizzardPanel.gameObject.AuctionItem.dividePrice(stackPrice)[2] %>'
     }
 ];
 <%} //login if%>

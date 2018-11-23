@@ -3,7 +3,7 @@
  * Desc : Data base structure
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.dbConnect;
+package com.blizzardPanel.dbConnect;
 
 public interface DBStructure 
 {

@@ -4,10 +4,10 @@
  * THIS FILE NEED PUT IN CRONTAB EVERY HOUR!
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.blizzardAPI;
+package com.blizzardPanel.blizzardAPI;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
 
 import java.io.IOException;
 import org.json.simple.parser.ParseException;

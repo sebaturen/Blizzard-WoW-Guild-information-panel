@@ -3,9 +3,9 @@
  * Desc : ItemMember Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.characters;
+package com.blizzardPanel.gameObject.characters;
 
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
 public class Stat extends GameObject

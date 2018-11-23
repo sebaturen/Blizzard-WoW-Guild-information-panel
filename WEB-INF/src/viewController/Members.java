@@ -3,12 +3,12 @@
  * Desc : members.jsp view controller
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.gameObject.characters.Member;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.characters.Member;
 
 import java.util.ArrayList;
 import java.util.List;

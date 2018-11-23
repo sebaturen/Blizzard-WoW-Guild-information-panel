@@ -3,12 +3,12 @@
  * Desc : RaidDificultBoss Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild.raids;
+package com.blizzardPanel.gameObject.guild.raids;
 
-import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.Boss;
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.Boss;
+import com.blizzardPanel.gameObject.GameObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

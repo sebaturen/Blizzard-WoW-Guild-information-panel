@@ -7,4 +7,4 @@
 #
 
 java -cp "/opt/tomcat/artOfWar/ROOT/WEB-INF/classes:/opt/tomcat/artOfWar/ROOT/WEB-INF/lib/json-simple-1.1.1.jar:/opt/tomcat/lib/mariadb-java-client-2.3.0.jar" \
-    com.artOfWar.blizzardAPI.UpdateRunningCrontab $1
+    com.blizzardPanel.blizzardAPI.UpdateRunningCrontab $1

@@ -3,13 +3,13 @@
  * Desc : Guild Challenges object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild.challenges;
+package com.blizzardPanel.gameObject.guild.challenges;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.GameObject;
-import com.artOfWar.gameObject.characters.Member;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.characters.Member;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -100,7 +100,7 @@ public class ChallengeGroup extends GameObject
             try {
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         else
@@ -114,7 +114,7 @@ public class ChallengeGroup extends GameObject
             try { //2018-10-17 02:39:00
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         this.isData = true;
@@ -195,12 +195,5 @@ public class ChallengeGroup extends GameObject
         out = members.stream().map((mb) -> "\t\t\t"+ mb.toString() +"\n").reduce(out, String::concat);
         out += "\t\tEND MEMBERS!!///////////";
         return out;
-    }
-    
-    public static String getDBDate(Date date)
-    {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strDate = dateFormat.format(date); 
-        return strDate;
     }
 }

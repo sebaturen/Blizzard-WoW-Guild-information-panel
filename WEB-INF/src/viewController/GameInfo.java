@@ -3,14 +3,14 @@
  * Desc : Get a last game info from DB
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.Update;
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.AuctionItem;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.AuctionItem;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

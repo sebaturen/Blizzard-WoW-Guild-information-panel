@@ -1,8 +1,8 @@
 <%@include file="/includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.characters.Member" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
-<jsp:useBean id="members" class="com.artOfWar.viewController.Members"/>
+<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
 var members = [];
 var guildRanks = [];
 var mClass = [];

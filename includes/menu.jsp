@@ -43,16 +43,16 @@
                 String redirectUri = "/login.jsp";
                 if(!user.checkUser())
                 {
-                    redirectUri = String.format(com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_URL, 
-                                                com.artOfWar.blizzardAPI.APIInfo.SERVER_LOCATION,
-                                                com.artOfWar.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
-                    String urlRedirectGenerator = com.artOfWar.blizzardAPI.APIInfo.MAIN_URL+com.artOfWar.blizzardAPI.APIInfo.BLIZZAR_LINK;
+                    redirectUri = String.format(com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_URL, 
+                                                com.blizzardPanel.blizzardAPI.APIInfo.SERVER_LOCATION,
+                                                com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
+                    String urlRedirectGenerator = com.blizzardPanel.blizzardAPI.APIInfo.MAIN_URL+com.blizzardPanel.blizzardAPI.APIInfo.BLIZZAR_LINK;
                     if (request.getParameter("rdir") != null) { session.setAttribute("internal_redirect", request.getParameter("rdir")); }
                     redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(urlRedirectGenerator, "UTF-8");
                     redirectUri += "&scope=wow.profile";
                     redirectUri += "&state=%7B%22region%22%3A%22us%22%7D";
                     redirectUri += "&response_type=code";
-                    redirectUri += "&client_id=" + com.artOfWar.blizzardAPI.APIInfo.CLIENT_ID;                    
+                    redirectUri += "&client_id=" + com.blizzardPanel.blizzardAPI.APIInfo.CLIENT_ID;                    
                 }
             %>
             &nbsp;<a href="<%= redirectUri %>"><button class="btn btn-outline-success" type="button"><%= (!user.checkUser())? "Login":"Account Info" %></button></a>

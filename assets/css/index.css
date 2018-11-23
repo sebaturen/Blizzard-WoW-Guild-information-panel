@@ -1,0 +1,22 @@
+/*Index guild information style*/
+/*-------INDEX------------*/
+.home_name {
+    font-size: 6em;
+    text-align: center;
+}
+.log_artofwar {
+    text-align: center;
+}
+.achievementImg {
+    background-size: cover;
+    background-position: center center;
+}
+.achievementDetail {
+    /*margin-left: 53px;*/
+}
+.achievementDetail > .desc {
+    font-size: 0.7em;
+}
+/*END -------INDEX------------*/
+
+

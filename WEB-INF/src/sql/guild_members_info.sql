@@ -88,17 +88,24 @@ CREATE TABLE `specs` (
 
 CREATE TABLE `guild_news` (
     `id`                    INT NOT NULL AUTO_INCREMENT,
-    `type`                  TINYINT NOT NULL,
+    `type`                  VARCHAR(20) NOT NULL,
     `member_id`             INT NOT NULL,
-    `timestamp`             bigint(20) NOT NULL,
+    `timestamp`             DATETIME NOT NULL,
     `item_id`               INT,
-    `guild_achivement_id`   INT,
-    `player_achivement_id`  INT,
+    `guild_achievement_id`   INT,
+    `player_achievement_id`  INT,
     PRIMARY KEY(id),
     FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id),
-    FOREIGN KEY(guild_achivement_id) REFERENCES guild_achievements_list(id),
-    FOREIGN KEY(player_achivement_id) REFERENCES (id),
-    FOREIGN KEY(item_id) REFERENCES (id),
+    FOREIGN KEY(guild_achievement_id) REFERENCES guild_achievements_list(id),
+    FOREIGN KEY(player_achievement_id) REFERENCES player_achievement_list(id),
+    FOREIGN KEY(item_id) REFERENCES items(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `guild_achievements` (
+    `achivement_id`     INT NOT NULL,
+    `time_completed`         datetime NOT NULL,
+    PRIMARY KEY(achivement_id),
+    FOREIGN KEY(achivement_id) REFERENCES guild_achievements_list(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `raids` (

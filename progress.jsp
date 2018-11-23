@@ -1,10 +1,10 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.artOfWar.gameObject.Boss" %>
-<%@ page import ="com.artOfWar.gameObject.guild.raids.RaidDificultBoss" %>
-<%@ page import ="com.artOfWar.gameObject.guild.raids.RaidDificult" %>
-<%@ page import ="com.artOfWar.gameObject.guild.raids.Raid" %>
+<%@ page import ="com.blizzardPanel.gameObject.Boss" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.raids.RaidDificultBoss" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.raids.RaidDificult" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.raids.Raid" %>
 <%@ page import ="java.text.SimpleDateFormat" %>
-<jsp:useBean id="progress" class="com.artOfWar.viewController.GuildProgress"/>
+<jsp:useBean id="progress" class="com.blizzardPanel.viewController.GuildProgress"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>

@@ -3,7 +3,7 @@
  * Desc : Boss object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.blizzardPanel.gameObject;
 
 import org.json.simple.JSONObject;
 

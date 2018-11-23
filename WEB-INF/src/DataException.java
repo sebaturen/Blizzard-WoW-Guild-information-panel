@@ -3,7 +3,7 @@
  * Desc : Control a sistem Exceptions
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar;
+package com.blizzardPanel;
 
 public class DataException extends Exception
 {

@@ -3,12 +3,12 @@
  * Desc : RaidDificult Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject.guild.raids;
+package com.blizzardPanel.gameObject.guild.raids;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.dbConnect.DBStructure;
-import com.artOfWar.gameObject.GameObject;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

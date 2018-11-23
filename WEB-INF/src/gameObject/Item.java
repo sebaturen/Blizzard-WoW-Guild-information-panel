@@ -3,12 +3,12 @@
  * Desc : Item object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.gameObject;
+package com.blizzardPanel.gameObject;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.blizzardAPI.Update;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.APIInfo;
+import com.blizzardPanel.blizzardAPI.Update;
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

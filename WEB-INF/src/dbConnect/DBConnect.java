@@ -3,10 +3,10 @@
  * Desc : DB Connection controller.
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.dbConnect;
+package com.blizzardPanel.dbConnect;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

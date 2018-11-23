@@ -3,14 +3,14 @@
  * Desc : User controller~
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.artOfWar.viewController;
+package com.blizzardPanel.viewController;
 
-import com.artOfWar.DataException;
-import com.artOfWar.Logs;
-import com.artOfWar.blizzardAPI.APIInfo;
-import com.artOfWar.blizzardAPI.Update;
-import com.artOfWar.dbConnect.DBConnect;
-import com.artOfWar.gameObject.characters.Member;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.APIInfo;
+import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.characters.Member;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
