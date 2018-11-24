@@ -7,15 +7,16 @@
 .log_artofwar {
     text-align: center;
 }
-.achievementImg {
-    background-size: cover;
-    background-position: center center;
-}
-.achievementDetail {
+.newDetail {
     /*margin-left: 53px;*/
 }
-.achievementDetail > .desc {
+.newDetail > .desc {
     font-size: 0.7em;
+}
+.new_date {
+    font-size: 0.7em;
+    color: #a3a7ab;
+    float: right;
 }
 /*END -------INDEX------------*/
 

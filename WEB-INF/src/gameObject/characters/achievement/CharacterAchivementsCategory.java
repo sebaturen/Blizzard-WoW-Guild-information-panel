@@ -3,7 +3,7 @@
  * Desc : Character Achivements Category Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.gameObject.characters;
+package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;

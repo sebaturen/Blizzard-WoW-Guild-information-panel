@@ -65,13 +65,18 @@ public class Member extends GameObject
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
                                                             "gm.user_id", "gm.rank"};
-	
     //Constructor load from DB if have a ID
     public Member(int internalID)
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         //Load Character from DB
         loadFromDB(internalID+"", "gm.internal_id = c.internal_id", true);
+    }
+    
+    public Member(String name, String realm)
+    {
+        super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
+        loadFromDBUniqued(new String[] {"gm.member_name", "gm.realm"}, new String[] {name, realm}, "gm.internal_id = c.internal_id", true);
     }
 
     //Load to JSON

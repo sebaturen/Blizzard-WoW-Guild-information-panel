@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild;
 
+import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.DataException;
 import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -34,6 +35,7 @@ public class Guild extends GameObject
     private int level;
     private int side;
     private List<GuildAchievement> achievements = new ArrayList<>();
+    private List<New> news = new ArrayList<>();
 	
     //Constructor
     public Guild()
@@ -69,7 +71,8 @@ public class Guild extends GameObject
             this.id = (Integer) guildInfo.get("id");
             this.level = (Integer) guildInfo.get("level");	
             this.side =  (Integer) guildInfo.get("side");
-            loadAchievements();		
+            loadAchievements();	
+            loadNews();
         }		
         this.isData = true;
     }
@@ -115,6 +118,25 @@ public class Guild extends GameObject
             System.out.println("Fail to load guild Achievements "+ ex);
         }        
     }
+    
+    private void loadNews()
+    {
+        if(dbConnect == null) dbConnect = new DBConnect();
+        try {
+            JSONArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
+                                                new String[] {New.GUILD_NEWS_TABLE_KEY},
+                                                "1=? ORDER BY timestamp DESC LIMIT 50",
+                                                new String[] {"1"});
+            for(int i = 0; i < dbAchiv.size(); i++)
+            {
+                int idAchiv = (Integer) ((JSONObject)dbAchiv.get(i)).get(New.GUILD_NEWS_TABLE_KEY);
+                New gAh = new New(idAchiv);
+                this.news.add(gAh);
+            }
+        } catch (SQLException | DataException ex) {
+            System.out.println("Fail to load guild news "+ ex);
+        }        
+    }
 	
     @Override
     public boolean saveInDB()
@@ -148,6 +170,7 @@ public class Guild extends GameObject
     public long getLastModified() { return this.lastModified; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public List<GuildAchievement> getAchievements() { return this.achievements; }
+    public List<New> getNews() { return this.news; }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
     @Override

@@ -3,7 +3,7 @@
  * Desc : Character Achivements List Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.gameObject.characters;
+package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.gameObject.GameObject;

@@ -3,7 +3,7 @@
  * Desc : GuildAchivements Object
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.gameObject.guild;
+package com.blizzardPanel.gameObject.guild.achievement;
 
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.gameObject.GameObject;

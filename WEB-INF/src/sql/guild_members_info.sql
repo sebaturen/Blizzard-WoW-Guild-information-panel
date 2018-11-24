@@ -90,6 +90,7 @@ CREATE TABLE `guild_news` (
     `id`                    INT NOT NULL AUTO_INCREMENT,
     `type`                  VARCHAR(20) NOT NULL,
     `member_id`             INT NOT NULL,
+    `context`               VARCHAR(50) NOT NULL,
     `timestamp`             DATETIME NOT NULL,
     `item_id`               INT,
     `guild_achievement_id`   INT,

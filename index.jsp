@@ -1,5 +1,7 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.blizzardPanel.gameObject.guild.GuildAchievement" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.New" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.achievement.GuildAchievement" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList" %>
 <%@ page import ="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
@@ -30,19 +32,42 @@
                         <!-- Content... -->
                     </div>
                     <div class="col-4 guild_achievements">
-                        <p class='small_title warcraft_font'>Last Achievements</p>
+                        <p class='small_title warcraft_font'>Last News</p>
                         <%
-                        List<GuildAchievement> ahivs = guild_info.getAchievements();
-                        for(int i = 0; i < ahivs.size() && i < 6; i++) { %>
-                            <div class="achievement divder row">
-                                <div class="col-1 achievementImg" style="background-image: url('<%= ahivs.get(i).getAchievement().getIconRenderURL() %>')"></div>
-                                <div class="achievementDetail col-11">
-                                    <p><%= ahivs.get(i).getAchievement().getTitle()%></p>
-                                    <p class="desc"><%= ahivs.get(i).getAchievement().getDescription()%></p>
+                        List<New> news = guild_info.getNews();
+                        for(int i = 0; i < news.size() && i <= 6; i++) 
+                        {
+                            New inf = news.get(i);
+                            String img = "";
+                            String desc = "";
+                            String iaDetail = "";
+                            switch(inf.getType())
+                            {
+                                case "itemLoot":
+                                    img = inf.getItem().getIconRenderURL();
+                                    desc = "Item Loot";
+                                    iaDetail = inf.getItem().getName();
+                                    break;
+                                case "playerAchievement":
+                                    img = inf.getCharacterAchievement().getIconRenderURL();
+                                    desc = "Character Achievement";
+                                    iaDetail = inf.getCharacterAchievement().getTitle();
+                                    break;
+                                case "guildAchievement":
+                                    img = inf.getGuildAchievement().getIconRenderURL();
+                                    desc = "Guild Achievement";
+                                    iaDetail = inf.getGuildAchievement().getTitle();
+                                    break;
+                            }//end swithc%> 
+                            <div class="new divder row">
+                                <div class="col-2"><img src="<%= img %>"/></div>
+                                <div class="newDetail col-10">
+                                    <p><%= inf.getMember().getName() %> <span  class="new_date"><%= inf.getTimeStampString() %></span></p>
+                                    <p class="desc"><%= desc %> <%= inf.getContext() %></p>
+                                    <p class="desc"><%= iaDetail %></p>
                                 </div>
                             </div>
-                      <%}%>
-                        <!-- Content... -->
+                      <%}//end for news%>
                     </div>
                 </div>
             </div>

@@ -13,13 +13,14 @@ import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.Boss;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.guild.Guild;
-import com.blizzardPanel.gameObject.guild.GuildAchievementsList;
+import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.gameObject.characters.Member;
 import com.blizzardPanel.gameObject.characters.PlayableClass;
 import com.blizzardPanel.gameObject.characters.Race;
 import com.blizzardPanel.gameObject.Spell;
-import com.blizzardPanel.gameObject.characters.CharacterAchivementsCategory;
-import com.blizzardPanel.gameObject.characters.CharacterAchivementsList;
+import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsCategory;
+import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;
+import com.blizzardPanel.gameObject.guild.New;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
@@ -79,12 +80,7 @@ public class Update implements APIInfo
     public void updateDynamicAll()
     {       
         blizzAPICallCounter = 0; 
-        
-        Logs.saveLog("Guild new information update!");
-        try { getGuildNews();}
-        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
-        
-        
+                
         Logs.saveLog("-------Update process is START! (Dynamic)------");
         //Guild information update!
         Logs.saveLog("Guild Information update!");
@@ -102,6 +98,10 @@ public class Update implements APIInfo
         Logs.saveLog("Guild challenges update!");
         try { getGuildChallenges(); } 
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
+        //Guild news update!
+        Logs.saveLog("Guild new update!");
+        try { getGuildNews();}
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
         //Wow Token
         Logs.saveLog("Wow token information update!");
         try { getWowToken(); } 
@@ -491,8 +491,13 @@ public class Update implements APIInfo
             //System.out.println("respond "+ respond);
             for(int i = 0; i < news.size(); i++)
             {
-                System.out.println("news: "+ ((JSONObject)news.get(i)).get("type"));
-                //Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+                JSONObject infoNew = (JSONObject)news.get(i);
+                New guildNew = new New(infoNew.get("type").toString(), infoNew.get("timestamp").toString(), infoNew.get("character").toString());
+                if(!guildNew.isInternalData())
+                {
+                    guildNew = new New(infoNew);
+                    guildNew.saveInDB();
+                }
             }
         }
     }

@@ -27,13 +27,16 @@ public class Stat extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) {
+    protected void saveInternalInfoObject(JSONObject objInfo) 
+    {
         this.id = (Integer) objInfo.get("id");
         this.enUs = objInfo.get("en_US").toString();
+        this.isData = true;
     }
 
     @Override
-    public boolean saveInDB() {
+    public boolean saveInDB() 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

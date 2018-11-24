@@ -99,15 +99,18 @@ public abstract class GameObject implements DBStructure
     }
     
     protected boolean loadFromDBUniqued(String uniqued, String uniquedValues) { return loadFromDBUniqued(new String[] { uniqued }, new String[] {uniquedValues}); }
-    protected boolean loadFromDBUniqued(String[] uniqued, String[] value) 
+    protected boolean loadFromDBUniqued(String[] uniqued, String[] value) { return loadFromDBUniqued(uniqued, value, false);}
+    protected boolean loadFromDBUniqued(String[] uniqued, String[] value, boolean disableApostrophe) { return loadFromDBUniqued(uniqued, value, null, disableApostrophe);}
+    protected boolean loadFromDBUniqued(String[] uniqued, String[] value, String addWhere, boolean disableApostrophe) 
     {
         if(dbConnect == null) dbConnect = new DBConnect();
         try
         {
             String whereInSQL = "";
-            for(String wh : uniqued) whereInSQL += "`"+ wh +"`=? AND ";
+            for(String wh : uniqued) whereInSQL += ((disableApostrophe)? "":"`")+ wh + ((disableApostrophe)? "":"`") +"=? AND ";
+            if(addWhere != null) whereInSQL += ((disableApostrophe)? "":"`")+ addWhere + ((disableApostrophe)? "":"`") +" AND ";
             whereInSQL = whereInSQL.substring(0,whereInSQL.length()-5);
-            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, value);
+            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, value, disableApostrophe);
             
             if(dbSelect.size() > 0)
             {
