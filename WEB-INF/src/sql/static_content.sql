@@ -43,7 +43,7 @@ CREATE TABLE `player_achievement_list` (
 
 CREATE TABLE `spells` (
     `id`            int NOT NULL,
-    `name`          varchar(60) NOT NULL,
+    `name`          TINYTEXT NOT NULL,
     `icon`          varchar(50) NOT NULL,
     `description`   TEXT NOT NULL,
     `castTime`      varchar(20) NOT NULL,
@@ -80,7 +80,7 @@ INSERT INTO stats (`id`, `en_US`) VALUES (74, "Strength or Intellect");
 
 CREATE TABLE `enchants` (
     `id`    INT NOT NULL,
-    `en_US` VARCHAR(50) NOT NULL,
+    `en_US` VARCHAR(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `items` (
@@ -91,6 +91,18 @@ CREATE TABLE `items` (
     `gemInfo_bonus_name`    VARCHAR(50),
     `gemInfo_type`          VARCHAR(50),
     PRIMARY KEY(id),
-    FOREIGN KEY(itemSpells) REFERENCES spells(id)
+    FOREIGN KEY(itemSpell) REFERENCES spells(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT INTO items (`id`, `name`, `icon`) VALUES (0, "NULL ITEM", "NULL ITEM");
+
+CREATE TABLE `raids` (
+    `id`            INT NOT NULL AUTO_INCREMENT,
+    `slug`          VARCHAR(50) NOT NULL,
+    `name`          VARCHAR(50) NOT NULL,
+    `total_boss`    TINYINT DEFAULT -1,
+    PRIMARY KEY(id),
+    UNIQUE(`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `raids` VALUES (1,'antorus-the-burning-throne','Antorus, the Burning Throne',11);
+INSERT INTO `raids` VALUES (2,'the-emerald-nightmare','The Emerald Nightmare',7);
+INSERT INTO `raids` VALUES (3,'uldir','Uldir',8);

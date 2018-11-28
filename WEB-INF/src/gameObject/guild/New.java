@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild;
 
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
@@ -44,14 +45,16 @@ public class New extends GameObject
     public New(String type, String timestamp, String member_name)
     {
         super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
-        Member loadMember = new Member(member_name, APIInfo.GUILD_REALM);    
+        Member loadMember = new Member(member_name, GeneralConfig.GUILD_REALM);    
         try { //2018-10-17 02:39:00
             timestamp = Update.parseUnixTime(timestamp);
             timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
         } catch (ParseException ex) {
             Logs.saveLog("Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
-        loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId() });
+        //Load only if member have a info
+        if(loadMember.isInternalData())
+            loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId() });
     }
     
     public New(JSONObject inf)
@@ -72,7 +75,7 @@ public class New extends GameObject
         else
         {//Load from blizz
             dateStamp = Update.parseUnixTime(objInfo.get("timestamp").toString());  
-            this.member = new Member(objInfo.get("character").toString(), APIInfo.GUILD_REALM);          
+            this.member = new Member(objInfo.get("character").toString(), GeneralConfig.GUILD_REALM);          
         }
         try { //2018-10-17 02:39:00
             this.timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStamp);
@@ -158,10 +161,14 @@ public class New extends GameObject
                 break;
         }
         setTableStructur(dbStruct);
-        switch(saveInDBObj(val))
-        {            
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
+        //Only if member exist in guild
+        if(this.member.isInternalData())
+        {
+            switch(saveInDBObj(val))
+            {            
+                case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                    return true;
+            }            
         }
         return false;
     }

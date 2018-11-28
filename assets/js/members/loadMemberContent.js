@@ -1,10 +1,10 @@
 /*Load members information!*/
 $(document).ready(function() {
     /*Load a member details*/
-    $.getScript('/assets/js/members/membersList.jsp', function() {
+    $.getScript('assets/js/members/membersList.jsp', function() {
         console.log('Members list is load!');
         /*Load render member*/
-        $.getScript('/assets/js/members/members.js', function() {
+        $.getScript('assets/js/members/members.js', function() {
             if(moreDetail)
             {
                 /*Load filters options~*/

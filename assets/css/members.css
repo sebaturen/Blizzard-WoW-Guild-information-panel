@@ -16,6 +16,10 @@
     float: left;
     width: 200px;
 }
+.img_profile {
+    min-height: 50px;
+    max-height: 50px;
+}
 /*-------ITEMS ---------------*/
 .noLinkStyle a {
     text-decoration: none;
@@ -60,15 +64,11 @@
 .item-floting-desc {
     padding: 10px;
     padding-right: 20px;
-    background-color: #343a40ed;
     z-index: 999;
     display: none;
     position: fixed;
     overflow: hidden;
-    border-radius: 10px 10px 10px 10px;
-    -moz-border-radius: 10px 10px 10px 10px;
-    -webkit-border-radius: 10px 10px 10px 10px;
-    border: 1px solid #000000;
+    background-image: url('../img/tooltip.png');
 }
 .tooltipDesc {
     text-align: left !important;

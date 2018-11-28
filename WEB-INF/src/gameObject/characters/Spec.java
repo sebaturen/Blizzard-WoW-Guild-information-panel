@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 public class Spec extends GameObject
 {
     //Specs  DB
-    public static final String SPECS_TABLE_NAME = "specs";
+    public static final String SPECS_TABLE_NAME = "character_specs";
     public static final String SPECS_TABLE_KEY = "id";
     public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "name", "role", "enable",
                                                             "tier_0", "tier_1", "tier_2",
@@ -56,12 +56,14 @@ public class Spec extends GameObject
             if(talentsInfo.get(i) != null)
             {
                 JSONObject skillBlizzDetail = (JSONObject) talentLevl.get("spell");
-                Spell skill = new Spell( ((Long) skillBlizzDetail.get("id")).intValue() );
-                if(!skill.isData())
+                int spellID = ((Long) skillBlizzDetail.get("id")).intValue();
+                Spell sp = new Spell( spellID );
+                if(!sp.isInternalData())
                 {
-                    skill = new Spell(skillBlizzDetail);
+                    sp = new Spell(skillBlizzDetail);
+                    sp.saveInDB();
                 }
-                this.spells[ ((Long) talentLevl.get("tier")).intValue() ] = skill;
+                this.spells[ ((Long) talentLevl.get("tier")).intValue() ] = sp;
             }
         }
         this.isData = true;
@@ -95,7 +97,6 @@ public class Spec extends GameObject
             if(this.spells[j] != null)
             {
                 spellID[j] = this.spells[j].getId() +"";
-                (this.spells[j]).saveInDB();
             }
         }
         String isEnable = (this.enable)? "1":"0";  
@@ -127,9 +128,10 @@ public class Spec extends GameObject
     public String getName() { return this.name; }
     public String getRole() { return this.role; }
     public Spell[] getSpells() { return this.spells; }
-    public void setEnable(boolean e) { this.enable = e; }
-    public void setMemberId(int id) { this.memberId = id; }
+    public int getMemberId() { return this.memberId; }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setEnable(boolean e) { this.enable = e; }
+    public void setMemberId(int id) { this.memberId = id; }
         
 }

@@ -14,7 +14,7 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container">
             <div id="challenges-content">
-                <%  
+            <%  if (challenges.getChallengesList() != null ) {   
                 for(Challenge ch : challenges.getChallengesList())
                 {%>
                 <div id='dung-<%= ch.getMapId() %>' class='dungeon-challenge'>                        
@@ -44,23 +44,25 @@
                             <% for(Member m : groupCh.getMembers())
                             {%>
                                 <tr>
-                                    <td class="character-<%= ((m.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase() %>"><%= m.getName() %></td>
+                                    <td class="character-<%= ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase() %>"><%= m.getName() %></td>
                                     <td><img src="assets/img/icons/<%= m.getActiveSpec().getRole() %>.png" style="width: 22px;"/></td>
                                     <% //Get img from speck
-                                        String className = ((m.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
+                                        String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                         String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
                                     %>
                                     <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 </tr>
-                          <%}%>
+                          <%}//end foreach member 'm'%>
                             </tbody>
                         </table>
                     </div>
-                  <%}%>
+                  <%}//end foreach groupChallenges%>
                     </div>
                 </div>
                 <br>
-              <%}%>                        
+              <%}/*End foreach challenges*/ } /*End if challenge not null*/ else {%>
+                Not challenges detected
+              <%} //else if challenge not null%>
             </div>
         </div>
     </body>

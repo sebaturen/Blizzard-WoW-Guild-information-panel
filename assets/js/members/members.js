@@ -49,10 +49,12 @@ function loadFilterOptions() {
 //Sort by rank
 $("#rankColum").click(function() {
     visualMember.sort(function(a, b) {
-        if (a.gRank > b.gRank) {
+        var rankA = parseInt(a.gRank);
+        var rankB = parseInt(b.gRank);
+        if (rankA > rankB) {
             return 1;
         }
-        if (a.gRank < b.gRank) {
+        if (rankA < rankB) {
             return -1;
         }
         // a must be equal to b
@@ -94,10 +96,12 @@ $("#classColum").click(function() {
 //Sort by Level
 $("#levelColum").click(function() {
     visualMember.sort(function(a, b) {
-        if (a.level < b.level) {
+        var levA = parseInt(a.level);
+        var levB = parseInt(b.level);
+        if (levA < levB) {
             return 1;
         }
-        if (a.level > b.level) {
+        if (levA > levB) {
             return -1;
         }
         // a must be equal to b
@@ -164,7 +168,7 @@ function showMemberDetail(tr, avImg, memeberId)
     var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
-    $.getScript('/assets/js/members/memberDetail.jsp?id='+ memeberId, function() {
+    $.getScript('assets/js/members/memberDetail.jsp?id='+ memeberId, function() {
         $('.memContent').append('<div class="infoMember"></div>');
         //Equipo!!!
         $('.infoMember').append('<div class="itemsMember"></div>');
@@ -372,8 +376,8 @@ function putMembers(vMem)
     jQuery.each( vMem, function(i, val) 
     {
         var outForm = 
-                '<tr class="pjInfo" data-id="'+i+'" data-internal_id="'+ val.int_id +'">'+
-                    '<td scope="row"><img style="height: 50px;" src="'+ val.img +'" /></td>'+
+                '<tr class="pjInfo" data-id="'+i+'" data-internal_id="'+ val.member_id +'">'+
+                    '<td scope="row"><img class="img_profile" src="'+ val.img +'" /></td>'+
                     '<td scope="row" class="character-'+ val.class +'">'+ val.name +'</td>'+
                     '<td scope="row"><img src="assets/img/classes/class_'+ val.class +'.png" style="width: 22px;"/></td>'+
                     '<td scope="row">'+ val.level +'</td>'+

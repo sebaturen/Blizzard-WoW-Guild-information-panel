@@ -6,6 +6,7 @@
 package com.blizzardPanel.viewController;
 
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
@@ -132,10 +133,10 @@ public class User
     private String getAccessToken(String code)
     {
         try {
-            String urlString = String.format(APIInfo.API_OAUTH_URL, APIInfo.SERVER_LOCATION, APIInfo.API_OAUTH_TOKEN);
+            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.SERVER_LOCATION, APIInfo.API_OAUTH_TOKEN);
             String apiInfo = Base64.getEncoder().encodeToString((APIInfo.CLIENT_ID+":"+APIInfo.CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
          
-            String redirectUrl = URLEncoder.encode(APIInfo.MAIN_URL+APIInfo.BLIZZAR_LINK, "UTF-8");
+            String redirectUrl = URLEncoder.encode(GeneralConfig.MAIN_URL+GeneralConfig.BLIZZAR_LINK, "UTF-8");
             //prepare info
             String bodyData = "redirect_uri="+redirectUrl+"&"
                     + "scope=wow.profile&"
@@ -168,7 +169,7 @@ public class User
     {
         try {
             //Generate an API URL
-            String urlString = String.format(APIInfo.API_OAUTH_URL, APIInfo.SERVER_LOCATION, APIInfo.API_OAUTH_USERINFO);
+            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.SERVER_LOCATION, APIInfo.API_OAUTH_USERINFO);
             
             if(accessToken.length() > 0)
             {

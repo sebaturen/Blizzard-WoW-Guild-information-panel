@@ -14,7 +14,7 @@
             <% if (user.setUserCode(request.getParameter("code"))) {
                 if(session.getAttribute("internal_redirect") == null)
                 {
-                    response.sendRedirect("/login.jsp");                
+                    response.sendRedirect("login.jsp");                
                 }
                 else
                 {

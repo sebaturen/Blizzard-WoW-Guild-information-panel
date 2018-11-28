@@ -3,11 +3,11 @@
 <% 
 if (! request.getParameter("login_redirect").equals("true")) 
 {
-    response.sendRedirect("/index.jsp");
+    response.sendRedirect("index.jsp");
 } 
 else if ( user.checkUser() ) //login is complate and successful
 {
-    response.sendRedirect("/login.jsp");    
+    response.sendRedirect("login.jsp");    
 }
 
 %>

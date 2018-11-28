@@ -7,6 +7,7 @@ package com.blizzardPanel.blizzardAPI;
 
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
@@ -43,7 +44,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Update implements APIInfo
+public class Update implements APIInfo, GeneralConfig
 {
     //Update interval DB
     public static final String UPDATE_INTERVAL_TABLE_NAME = "update_timeline";
@@ -60,7 +61,7 @@ public class Update implements APIInfo
 
     //Attribute
     private String accesToken = "";
-    private static DBConnect dbConnect;
+    private static final DBConnect dbConnect = new DBConnect();
 
     /**
      * Constructor. Run a generateAccesToken to generate this token
@@ -70,7 +71,6 @@ public class Update implements APIInfo
      */
     public Update() throws IOException, ParseException, DataException
     {
-        dbConnect = new DBConnect();
         generateAccesToken();
     }
 
@@ -78,25 +78,25 @@ public class Update implements APIInfo
      * Run Dynamic element update method and save the register the last update.
      */
     public void updateDynamicAll()
-    {       
+    {
         blizzAPICallCounter = 0; 
                 
         Logs.saveLog("-------Update process is START! (Dynamic)------");
         //Guild information update!
         Logs.saveLog("Guild Information update!");
-        try { getGuildProfile(); } 
+        try { getGuildProfile(); }
         catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Info: "+ ex); }
         //Guild members information update!
         Logs.saveLog("Guild members information update!");
-        try { getGuildMembers(); } 
+        try { getGuildMembers(); }
         catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Members Info: "+ ex); }
         //Character information update!						
         Logs.saveLog("Character information update!");
-        try { getCharacterInfo(); } 
+        try { getCharacterInfo(); }
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
         //Guild challenges update!
         Logs.saveLog("Guild challenges update!");
-        try { getGuildChallenges(); } 
+        try { getGuildChallenges(); }
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
         //Guild news update!
         Logs.saveLog("Guild new update!");
@@ -104,15 +104,15 @@ public class Update implements APIInfo
         catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
         //Wow Token
         Logs.saveLog("Wow token information update!");
-        try { getWowToken(); } 
+        try { getWowToken(); }
         catch (ClassNotFoundException|IOException|ParseException|DataException|SQLException ex) { Logs.saveLog("Fail update Wow Token Info: "+ ex); }		
         //Users player
         Logs.saveLog("Users characters information update!");
-        try { getUsersCharacters(); } 
+        try { getUsersCharacters(); }
         catch (SQLException|DataException|ClassNotFoundException ex) { Logs.saveLog("Fail update user characters Info: "+ ex); }
         //Guild progression RaiderIO
         Logs.saveLog("Guild progression update!");
-        try { getGuildProgression(); } 
+        try { getGuildProgression(); }
         catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update guild progression Info: "+ ex); }
         Logs.saveLog("-------Update process is COMPLATE! (Dynamic)------");	
         Logs.saveLog("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
@@ -125,7 +125,8 @@ public class Update implements APIInfo
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {UPDATE_DYNAMIC +"", getCurrentTimeStamp()});
-        } 
+            dbConnect.closeConnection();
+        }
         catch(DataException|ClassNotFoundException|SQLException e)
         {
             Logs.saveLog("Fail to save update time: "+ e);
@@ -178,6 +179,7 @@ public class Update implements APIInfo
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {UPDATE_STATIC +"", getCurrentTimeStamp()});
+            dbConnect.closeConnection();
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -240,11 +242,12 @@ public class Update implements APIInfo
                 dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                                 UPDATE_INTERVAL_TABLE_KEY,
                                 DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                                new String[] {UPDATE_AUCTION +"", lastUpdate});   
+                                new String[] {UPDATE_AUCTION +"", lastUpdate});  
             }            
         } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
             Logs.saveLog("Fail to get AH "+ ex);
         }
+        dbConnect.closeConnection();
         Logs.saveLog("-------Update process is COMPLATE! (Auction House)------");
     }
     
@@ -302,6 +305,7 @@ public class Update implements APIInfo
         } catch (SQLException | DataException | ClassNotFoundException ex) {
             Logs.saveLog("Fail to get current auc items "+ ex);
         }
+        dbConnect.closeConnection();
         Logs.saveLog("-------Update process is Complete! (Auction House move to History DB)------");
     }
     
@@ -397,6 +401,7 @@ public class Update implements APIInfo
                 apiGuild.saveInDB();
             }
         }
+        dbConnect.closeConnection();
     }
 
     /**
@@ -462,6 +467,7 @@ public class Update implements APIInfo
                 }				
             }
         }
+        dbConnect.closeConnection();
     }
      
     /**
@@ -524,7 +530,18 @@ public class Update implements APIInfo
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
-                getMemberInfoFromBlizzOrDB(member.get("member_name").toString(), member.get("realm").toString());
+                Member mbDB = Member.loadMember(member.get("member_name").toString(), member.get("realm").toString());
+                Member mbBlizz = getMemberFromBlizz(member.get("member_name").toString(), member.get("realm").toString());
+                if(mbDB != null && mbBlizz != null)
+                {//DB member need update!
+                    if (!((Long)mbBlizz.getLastModified()).equals(mbDB.getLastModified()))
+                    {
+                        mbBlizz.setId(mbDB.getId());
+                        mbBlizz.setIsInternalData(true);
+                        mbBlizz.saveInDB();
+                    }
+                }
+                
                 
                 //Show update progress...
                 if ( (((iProgres*2)*10)*members.size())/100 < i )
@@ -535,6 +552,7 @@ public class Update implements APIInfo
             }
             Logs.saveLog("...100%");
         }
+        dbConnect.closeConnection();
     }
     
     public Member getMemberFromBlizz(String name, String realm) throws UnsupportedEncodingException
@@ -558,65 +576,6 @@ public class Update implements APIInfo
             Logs.saveLog("BlizzAPI haven a error to '"+ name +"'\n\t"+ e);
         }
         return blizzPlayer;
-    }    
-    
-    /**
-     * Try load member from DB and if not exist, load from blizzard, if
-     * is load from blizzard, the new player information is save in DB.
-     * @param name
-     * @param realm
-     * @return 
-     */
-    private Member getMemberInfoFromBlizzOrDB(String name, String realm)
-    {       
-        Member mb = null;
-        //1~ get info from DB
-        try
-        {
-            JSONArray inDBgMembersID = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME, 
-                                                        new String[] {"internal_id"}, 
-                                                        "member_name=? AND realm=?",
-                                                        new String[] {name, realm});
-            //if exist, load from DB
-            if(inDBgMembersID.size() > 0)
-            {
-                String memberInternalId = ((JSONObject)inDBgMembersID.get(0)).get("internal_id").toString();
-                mb = new Member( Integer.parseInt(memberInternalId));
-                Member blizzMember = getMemberFromBlizz(name, realm);
-                if(blizzMember != null && blizzMember.isData()) //Error in load from blizz, 
-                {//not have a info or get another error.
-                   //error in load time, is in GMEBERS_ID_TABLE but not have information
-                   if(!mb.isData() || !((Long)blizzMember.getLastModified()).equals(mb.getLastModified())) 
-                    {//add if the member not is update...
-                        blizzMember.setId(memberInternalId);
-                        if(mb.isInternalData()) blizzMember.setIsInternalData(true);
-                        blizzMember.checkSpeckIDInDb();
-                        blizzMember.saveInDB();
-                        mb = blizzMember;
-                    }
-                }
-                
-            }
-            else
-            {   
-                /* {"internal_id", "member_name", "realm", "rank", "in_guild", "user_id"}; */                
-                String id = dbConnect.insert(Member.GMEMBER_ID_NAME_TABLE_NAME, 
-                                Member.GMEMBER_ID_NAME_TABLE_KEY,
-                                new String[] { "member_name", "realm", "in_guild" },
-                                new String[] { name, realm, "0" });//asumed is 0 becouse in frist moment, we get all guilds members.
-                mb = getMemberFromBlizz(name, realm);
-                if(mb != null && mb.isData())
-                {
-                    mb.setId(id);
-                    mb.saveInDB();                    
-                }
-            }
-        }
-        catch (SQLException|DataException|ClassNotFoundException|UnsupportedEncodingException e)
-        {
-            Logs.saveLog("Error get SQL Query member from blizz or DB "+ e);
-        }
-        return mb;
     }
     
 
@@ -757,7 +716,8 @@ public class Update implements APIInfo
                 }              
             }
             Logs.saveLog("...100%");
-        }        
+        }
+        dbConnect.closeConnection();
     }
     
     /**
@@ -793,7 +753,8 @@ public class Update implements APIInfo
                 }              
             }
             Logs.saveLog("...100%");
-        }        
+        } 
+        dbConnect.closeConnection();
     }
     
     /**
@@ -803,6 +764,7 @@ public class Update implements APIInfo
      */
     public Item getItemFromBlizz(int id)
     {
+        Item itemBlizz = null;
         try 
         {
             //Generate an API URL
@@ -812,12 +774,13 @@ public class Update implements APIInfo
             JSONObject blizzItem = curl(urlString, //DataException possible trigger
                     "GET",
                     "Bearer "+ this.accesToken);
-            Item itemBlizz = new Item(blizzItem);
-            return itemBlizz;
+            itemBlizz = new Item(blizzItem);
+            itemBlizz.saveInDB();
         } catch (IOException | ParseException | DataException ex) {
-            System.out.println("Error to get blizzard item information "+ id +" - "+ ex);
+            Logs.saveLog("Error to get blizzard item information "+ id +" - "+ ex);
         }
-        return null;
+        dbConnect.closeConnection();
+        return itemBlizz;
     }
     
     /**
@@ -1003,7 +966,7 @@ public class Update implements APIInfo
                                 JSONObject spec = (JSONObject) inMeb.get("spec");
                                 //Get info about this member.
                                 
-                                Member mb = getMemberInfoFromBlizzOrDB( character.get("name").toString() , character.get("realm").toString() );
+                                Member mb = Member.loadMember(character.get("name").toString() , character.get("realm").toString() );
                                 if (mb != null && mb.isData()) {
                                     mb.setSpec(spec.get("name").toString(), spec.get("role").toString());
                                     //Add Member
@@ -1024,7 +987,8 @@ public class Update implements APIInfo
                 }
             }
             Logs.saveLog("...100%");
-        }		
+        }
+        dbConnect.closeConnection();
     }    
        
     /**
@@ -1089,7 +1053,8 @@ public class Update implements APIInfo
                             new String[] {wowToken.get("last_updated_timestamp").toString(), wowToken.get("price").toString()},
                             "ON DUPLICATE KEY UPDATE price=?",
                             new String[] {wowToken.get("price").toString()});
-        }        
+        }
+        dbConnect.closeConnection();      
     }
     
     /**
@@ -1144,10 +1109,9 @@ public class Update implements APIInfo
                             new String[] {membersRank +""},
                             "id=?",
                             new String[] {uderID +""});
-            }
-            
+            }            
         }
-        
+        dbConnect.closeConnection();        
     }
     
     /**
@@ -1173,7 +1137,7 @@ public class Update implements APIInfo
                     JSONObject pj = (JSONObject) characters.get(i);
                     String name = pj.get("name").toString();
                     String realm = pj.get("realm").toString();
-                    Member mb = getMemberInfoFromBlizzOrDB(name, realm);
+                    Member mb = Member.loadMember(name, realm);
                     
                     if(mb != null && mb.isData())
                     {
@@ -1242,6 +1206,7 @@ public class Update implements APIInfo
         } catch (IOException|ParseException ex) {
             Logs.saveLog("Fail to get user Access Token "+ ex);
         }
+        dbConnect.closeConnection();
     }
     
     /**
@@ -1449,6 +1414,8 @@ public class Update implements APIInfo
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Bad Request request, check the API URL is correct in APIInfo.java");
             case HttpURLConnection.HTTP_NOT_FOUND:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Data not found, check the guild name, server location and realm in APIInfo.java");
+            case HttpURLConnection.HTTP_UNAVAILABLE:
+                throw new DataException("Error: "+ conn.getResponseCode() +" - Blizzard API Error... try again later");
             default:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Internal Code: 0");
         }

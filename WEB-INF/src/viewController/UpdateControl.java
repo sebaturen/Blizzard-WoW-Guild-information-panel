@@ -49,7 +49,7 @@ public class UpdateControl
             try {
                 session.getBasicRemote().sendText("Update is in progress.....");
             } catch (IOException ex) {
-                System.out.println("Fail to send update is progress messaje "+ ex);
+                Logs.saveLog("Fail to send update if is progress messaje "+ ex);
             }
         }
         else if (runUpdate)

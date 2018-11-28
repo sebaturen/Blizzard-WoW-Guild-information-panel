@@ -6,6 +6,7 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
@@ -54,9 +55,8 @@ public class Item extends GameObject
                 this.itemSpell = new Spell(spellId);
                 if(!this.itemSpell.isInternalData())
                 {
-                    Update up;
                     try {
-                        up = new Update();
+                        Update up = new Update();
                         this.itemSpell = up.getSpellInformationBlizz(spellId);
                     } catch (IOException | ParseException | DataException ex) {
                         Logs.saveLog("Fail to get blizzard spell information "+ spellId +" - "+ ex);
@@ -71,12 +71,13 @@ public class Item extends GameObject
         else
         {
             this.id = (Integer) objInfo.get("id");
-            int itemId = 0;
+            int spellId = 0;
             if(objInfo.get("itemSpell") != null)
             {
-                itemId = (Integer) objInfo.get("itemSpell");
+                spellId = (Integer) objInfo.get("itemSpell");
             }
-            this.itemSpell = new Spell(itemId);
+            //allweys is declarate becouse in save we need a spell ID, and spell id 0 is a null spell.
+            this.itemSpell = new Spell(spellId);
         }
         this.name = objInfo.get("name").toString();
         String iconUrl = "";
@@ -122,9 +123,8 @@ public class Item extends GameObject
                 Update up = new Update();
                 it = up.getItemFromBlizz(id);
                 Logs.saveLog("New Item in DB "+ it.getId() +" - "+ it.getName());
-                it.saveInDB();
             } catch (IOException | ParseException | DataException ex) {
-                System.out.println("Fail to get item info from blizzard.");
+                Logs.saveLog("Fail to get item info from blizzard.");
             }
         }
         return it;
@@ -142,7 +142,7 @@ public class Item extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
+        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
     }
     
     

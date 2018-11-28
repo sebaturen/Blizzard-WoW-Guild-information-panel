@@ -8,7 +8,7 @@
     <head>
         <title><%= guild_info.getName() %></title>
         <%@include file="includes/header.jsp" %>
-        <link type="text/css" rel="stylesheet" href="/assets/css/index.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/index.css">
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
@@ -32,7 +32,7 @@
                         <!-- Content... -->
                     </div>
                     <div class="col-4 guild_achievements">
-                        <p class='small_title warcraft_font'>Last News</p>
+                        <p class='small_title warcraft_font'>News</p>
                         <%
                         List<New> news = guild_info.getNews();
                         for(int i = 0; i < news.size() && i <= 6; i++) 

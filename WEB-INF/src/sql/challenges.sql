@@ -38,6 +38,6 @@ CREATE TABLE `challenge_group_members` (
     PRIMARY KEY(member_in_group_id),
     FOREIGN KEY(internal_member_id) REFERENCES gMembers_id_name(internal_id),
     FOREIGN KEY(group_id) REFERENCES challenge_groups(group_id),
-    FOREIGN KEY(spec_id) REFERENCES specs(id),
+    FOREIGN KEY(spec_id) REFERENCES character_specs(id),
     UNIQUE (internal_member_id, group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

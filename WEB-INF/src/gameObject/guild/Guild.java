@@ -7,6 +7,7 @@ package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.Logs;
 import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
@@ -102,7 +103,6 @@ public class Guild extends GameObject
     
     private void loadAchievements()
     {
-        if(dbConnect == null) dbConnect = new DBConnect();
         try {
             JSONArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
                                                 new String[] {GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY},
@@ -115,13 +115,12 @@ public class Guild extends GameObject
                 this.achievements.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to load guild Achievements "+ ex);
+            Logs.saveLog("Fail to load guild Achievements "+ ex);
         }        
     }
     
     private void loadNews()
     {
-        if(dbConnect == null) dbConnect = new DBConnect();
         try {
             JSONArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
                                                 new String[] {New.GUILD_NEWS_TABLE_KEY},
@@ -134,7 +133,7 @@ public class Guild extends GameObject
                 this.news.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            System.out.println("Fail to load guild news "+ ex);
+            Logs.saveLog("Fail to load guild news "+ ex);
         }        
     }
 	

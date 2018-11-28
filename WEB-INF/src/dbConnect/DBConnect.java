@@ -32,10 +32,13 @@ public class DBConnect implements DBConfig
     private static Connection conn = null;
     private PreparedStatement pstmt = null;
     private static boolean statusConnect = false;
+    //Error controller
+    private boolean isErrorDB;
+    private String errorMsg;
 
     public DBConnect()
     {
-        generateConnextion();
+        //generateConnextion();
     }
     
     public void closeConnection()
@@ -59,10 +62,26 @@ public class DBConnect implements DBConfig
                                                     DB_USER,
                                                     DB_PASSWORD);
             statusConnect = true;
+            isErrorDB = false;
         } catch (SQLException e) {
-            Logs.saveLog("Fail to generate DB Connection: "+ e);
+            String error = "Fail to generate DB Connection: "+ e;
+            this.isErrorDB = true;
+            this.errorMsg = error;
+            Logs.saveLog(error);
             statusConnect = false;
         }        
+    }
+    
+    public boolean connectionVerification()
+    {
+        try {
+            if(conn == null || conn.isClosed()) generateConnextion();
+            //String sql = "SHOW TABLES";
+            closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return this.isErrorDB;
     }
 	
     /**
@@ -372,5 +391,8 @@ public class DBConnect implements DBConfig
 
         return json;
     }
+    
+    public boolean isErrorDB() { return this.isErrorDB; }
+    public String getErrorMsg() { return this.errorMsg; }
 	
 }

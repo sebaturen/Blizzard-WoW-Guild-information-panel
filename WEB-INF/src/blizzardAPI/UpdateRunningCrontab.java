@@ -19,7 +19,7 @@ public class UpdateRunningCrontab
         try 
         {
             Update blizzUp = new Update();
-            int upParam = Update.UPDATE_DYNAMIC;
+            int upParam = -1;
             if(args.length > 0) upParam = Integer.parseInt(args[0]);
 
             switch(upParam)
@@ -35,6 +35,10 @@ public class UpdateRunningCrontab
                     break;
                 case Update.UPDATE_CLEAR_AH_HISTORY:
                     blizzUp.moveHistoryAH();
+                    break;
+                default:
+                    Logs.saveLog("Not update parametter detected!");
+                    break;
             }
         } 
         catch (IOException|ParseException|DataException ex)

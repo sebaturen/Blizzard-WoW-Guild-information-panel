@@ -18,6 +18,11 @@ import org.json.simple.JSONObject;
 public class GameInfo 
 {
     private final DBConnect dbConnect = new DBConnect();
+    
+    public GameInfo()
+    {
+        dbConnect.connectionVerification();
+    }
 
     public String getLastDynamicUpdate()
     {
@@ -37,6 +42,7 @@ public class GameInfo
         {
             Logs.saveLog("Fail to get a last dynamic update");
         }
+        this.dbConnect.closeConnection();
         return out;
     }
 
@@ -58,6 +64,7 @@ public class GameInfo
         {
             Logs.saveLog("Fail to get a last dynamic update");
         }
+        this.dbConnect.closeConnection();
         return out;
     }
     
@@ -81,6 +88,10 @@ public class GameInfo
         {
             Logs.saveLog("Fail to get a wow Token price");
         }
+        this.dbConnect.closeConnection();
         return out;
     }
+    
+    public boolean getDBStatus() { return !dbConnect.isErrorDB(); }
+    public String getDBErrorMsg() { return dbConnect.getErrorMsg(); }
 }

@@ -61,7 +61,7 @@ CREATE TABLE `character_info` (
     FOREIGN KEY(race) REFERENCES races(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE `specs` (
+CREATE TABLE `character_specs` (
     `id`            int NOT NULL AUTO_INCREMENT,
     `member_id`     int NOT NULL,
     `name`          varchar(50) NOT NULL,
@@ -103,19 +103,10 @@ CREATE TABLE `guild_news` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `guild_achievements` (
-    `achivement_id`     INT NOT NULL,
+    `achievement_id`     INT NOT NULL,
     `time_completed`         datetime NOT NULL,
-    PRIMARY KEY(achivement_id),
-    FOREIGN KEY(achivement_id) REFERENCES guild_achievements_list(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `raids` (
-    `id`            INT NOT NULL AUTO_INCREMENT,
-    `slug`          VARCHAR(50) NOT NULL,
-    `name`          VARCHAR(50) NOT NULL,
-    `total_boss`    TINYINT DEFAULT -1,
-    PRIMARY KEY(id),
-    UNIQUE(`slug`)
+    PRIMARY KEY(achievement_id),
+    FOREIGN KEY(achievement_id) REFERENCES guild_achievements_list(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `raid_dificults` (
@@ -163,7 +154,7 @@ CREATE TABLE `items_member` (
     FOREIGN KEY(item_id) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `member_stats` (
+CREATE TABLE `character_stats` (
     `member_id` INT NOT NULL,
     `health`    INT NOT NULL,
     `powerType` VARCHAR(20) NOT NULL,

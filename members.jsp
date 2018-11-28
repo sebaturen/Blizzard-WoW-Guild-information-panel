@@ -5,14 +5,14 @@
     <head>
         <title><%= guild_info.getName() %> - Guild members</title>
         <%@include file="includes/header.jsp" %> 
-        <link type="text/css" rel="stylesheet" href="/assets/css/members.css">
-        <script src="/assets/js/members/loadMemberContent.js"></script>
+        <link type="text/css" rel="stylesheet" href="assets/css/members.css">
+        <script src="assets/js/members/loadMemberContent.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
         <div class="container">
             <div id="character-content">
-                <% if(user != null && user.getGuildRank() != -1) { %>
+                <% if(guildMember) { %>
                 <button type="button" class="btn btn-info" id='membersFilters'>Filters</button>
                 <form style="display: none;" id='formFilter'>
                     <br>
@@ -84,7 +84,7 @@
                             <th scope="col" id="classColum" class='pointer'>Class</th>
                             <th scope="col" id="levelColum" class='pointer'>Level</th>
                             <th scope="col" id="specColum" class='pointer'>Current Spec</th>
-                        <% if(user != null && user.getGuildRank() != -1) { %>
+                        <% if(guildMember) { %>
                             <th scope="col" id="iLevelColum" class='pointer'>iLevel</th>
                         <% } %>
                         </tr>

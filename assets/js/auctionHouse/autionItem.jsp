@@ -1,5 +1,5 @@
-<%@include file="/includes/globalObject.jsp" %>
-<%if(user != null && user.getGuildRank() != -1) {%>
+<%@include file="../../../includes/globalObject.jsp" %>
+<%if(guildMember) {%>
 <jsp:useBean id="auctionHouse" class="com.blizzardPanel.viewController.AuctionHouse" scope="session"/>
 <%@ page import ="com.blizzardPanel.gameObject.AuctionItem" %>
 <%@ page import ="java.util.List" %>

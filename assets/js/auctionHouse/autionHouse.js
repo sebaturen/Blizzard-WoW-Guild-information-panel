@@ -7,7 +7,7 @@ function searchItem(itemName)
 {
     if(itemName.length >= 3)
     {
-        $.getScript('/assets/js/auctionHouse/itemsList.jsp?name='+ encodeURIComponent(itemName), function() {
+        $.getScript('assets/js/auctionHouse/itemsList.jsp?name='+ encodeURIComponent(itemName), function() {
             renderItemList();
         });        
     }
@@ -38,7 +38,7 @@ function renderItemList()
         $("#items_ah_content").html("");
         //Search a auc info :D
         $("#items_ah_content").append('<tr><td colspan="6"><div class="row justify-content-md-center"><div class="loader"></div></div></td></tr>');
-        $.getScript('/assets/js/auctionHouse/autionItem.jsp?id='+$(this).data("id"), function() {
+        $.getScript('assets/js/auctionHouse/autionItem.jsp?id='+$(this).data("id"), function() {
             renderAuctions();
         });
     });

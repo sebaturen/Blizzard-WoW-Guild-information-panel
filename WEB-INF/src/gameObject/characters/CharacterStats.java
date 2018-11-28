@@ -8,10 +8,10 @@ package com.blizzardPanel.gameObject.characters;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
-public class StatsMember extends GameObject
+public class CharacterStats extends GameObject
 {
     //Status Member DB
-    public static final String STATUS_MEMBER_TABLE_NAME  = "member_stats";
+    public static final String STATUS_MEMBER_TABLE_NAME  = "character_stats";
     public static final String STATUS_MEMBER_TABLE_KEY   = "member_id";
     public static final String[] STATUS_MEMBER_TABLE_STRUCTURE = {
                     "member_id", "health", "powerType", "power", "str", "agi", "int", "sta","speedRating",
@@ -75,13 +75,13 @@ public class StatsMember extends GameObject
     private double speedRatingBonus;
     private double crit;
     
-    public StatsMember(int memberId)
+    public CharacterStats(int memberId)
     {
         super(STATUS_MEMBER_TABLE_NAME, STATUS_MEMBER_TABLE_KEY, STATUS_MEMBER_TABLE_STRUCTURE);
         loadFromDB(memberId +"");
     }
     
-    public StatsMember(JSONObject info)
+    public CharacterStats(JSONObject info)
     {
         super(STATUS_MEMBER_TABLE_NAME, STATUS_MEMBER_TABLE_KEY, STATUS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(info);

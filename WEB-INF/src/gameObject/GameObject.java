@@ -20,7 +20,7 @@ import java.util.Date;
 public abstract class GameObject implements DBStructure
 {
     //Variable
-    protected static DBConnect dbConnect;
+    protected static final DBConnect dbConnect = new DBConnect();
     protected boolean isData = false;
     protected boolean isInternalData = false;
     private final String tableDB;
@@ -35,7 +35,7 @@ public abstract class GameObject implements DBStructure
     public static final int SAVE_MSG_UPDATE_OK      = 3;
 	
     public GameObject(String tableDB, String tableKey, String[] tableStruct) 
-    { 
+    {
         this.tableDB = tableDB; 
         this.tableKey = tableKey;
         this.tableStruct = tableStruct;
@@ -54,7 +54,6 @@ public abstract class GameObject implements DBStructure
      */
     protected int saveInDBObj(String[] values)
     {
-        if(dbConnect == null) dbConnect = new DBConnect();
         if (this.isData && values.length > 0)
         {
             //Valid if need update or insert...
@@ -83,9 +82,10 @@ public abstract class GameObject implements DBStructure
                                                 this.tableStruct,
                                                 values);
                     setId(id);
+                    this.isInternalData = true;
                     return SAVE_MSG_INSERT_OK;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLog("Fail to insert "+ ex);
+                    Logs.saveLog("Fail to insert '"+ this.getClass() +"' - "+ ex);
                     return SAVE_MSG_INSERT_ERROR;
                 }
             }
@@ -103,7 +103,6 @@ public abstract class GameObject implements DBStructure
     protected boolean loadFromDBUniqued(String[] uniqued, String[] value, boolean disableApostrophe) { return loadFromDBUniqued(uniqued, value, null, disableApostrophe);}
     protected boolean loadFromDBUniqued(String[] uniqued, String[] value, String addWhere, boolean disableApostrophe) 
     {
-        if(dbConnect == null) dbConnect = new DBConnect();
         try
         {
             String whereInSQL = "";
@@ -140,7 +139,6 @@ public abstract class GameObject implements DBStructure
     protected boolean loadFromDB(String id) { return loadFromDB(id, null, false); }
     protected boolean loadFromDB(String id, String andWhere, boolean disableApostrophe)
     {
-        if(dbConnect == null) dbConnect = new DBConnect();
         try
         {
             String whereInSQL = this.tableKey +"=?";

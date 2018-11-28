@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.gameObject;
 
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import org.json.simple.JSONObject;
 
@@ -78,7 +79,7 @@ public class Spell extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
+        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
     }
     @Override
     public void setId(String id) { this.id = Integer.parseInt(id); }

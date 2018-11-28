@@ -14,7 +14,8 @@
     <body>
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
-            <% for(Raid r : progress.getRaids()) {%>                
+            <% if(progress.getRaids() != null) {
+                for(Raid r : progress.getRaids()) {%>                
                 <div class="dungeon-challenge-img" style='background-image: url("assets/img/raids/<%= r.getSlug() %>.jpg");'>
                     <h2 class="dung-title"><%= r.getName() %></h2>
                 </div>                
@@ -47,11 +48,13 @@
                                 <td scope='row'><%= dateFirstDefeated %></td>
                                 <td scope='row'><%= diffBoss.getItemLevelAvg() %></td>
                             </tr>
-                        <%}%>
+                        <%}//Close for diffBoss%>
                         </tbody>
                     </table>
-                <%} }%>
-            <%}%>
+                <%}/*Close IF getDiffBoss have a content*/ }//Close rDiff foreach%>
+            <%}/*Close r (raid foreach)*/ } /*Close IF raid is not null*/ else {%>
+                Not progress detected.
+            <%}//end if else raid not null %>
         </div>
     </body>
 </html>

@@ -8,6 +8,7 @@ package com.blizzardPanel.gameObject.characters;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import java.io.IOException;
@@ -17,6 +18,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
@@ -56,7 +59,7 @@ public class Member extends GameObject
     private int rank;
     private List<Spec> specs = new ArrayList<>();
     private List<ItemMember> items = new ArrayList<>();
-    private StatsMember stats;
+    private CharacterStats stats;
     
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
@@ -110,11 +113,11 @@ public class Member extends GameObject
             this.guildName = "";
             this.isGuildMember = false;
             if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
-            if( this.guildName.length() > 0 && this.guildName.equals(APIInfo.GUILD_NAME)) this.isGuildMember = true;
+            if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.GUILD_NAME)) this.isGuildMember = true;
             //Spec
             loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
             loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
-            this.stats = new StatsMember((JSONObject) playerInfo.get("stats"));
+            this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
         }
         else
         {//if come to DB
@@ -130,7 +133,7 @@ public class Member extends GameObject
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             loadSpecFromDB();
             loadItemsFromDB();
-            this.stats = new StatsMember(this.internalID);
+            this.stats = new CharacterStats(this.internalID);
             this.rank = (Integer) playerInfo.get("rank");
         }
 
@@ -255,9 +258,63 @@ public class Member extends GameObject
         }
     }
     
+    public static Member loadMember(String name, String realm)
+    {
+        Member mb = new Member(name, realm);
+        if(!mb.isInternalData())
+        {
+            try {
+                Update up = new Update();
+                mb = up.getMemberFromBlizz(name, realm);
+                if(mb != null && mb.isData)
+                {
+                    mb.generateMemberID();
+                    mb.saveInDB();   
+                    Logs.saveLog("New Member in DB "+ mb.getId() +" - "+ mb.getName());                 
+                }
+            } catch (IOException | ParseException | DataException ex) {
+                Logs.saveLog("Fail to get member info from blizzard. - "+ ex);
+            }
+        }
+        return mb;
+    }
+    
+    private void generateMemberID()
+    {
+        //check if have and id
+        if(this.isData && this.internalID == 0)
+        {
+            try {
+                JSONArray oldId = dbConnect.select(GMEMBER_ID_NAME_TABLE_NAME, 
+                                                new String[] { GMEMBER_ID_NAME_TABLE_KEY },
+                                                "member_name=? AND realm=?",
+                                                new String[] { this.name, this.realm });
+                if(oldId.size() > 0)
+                {
+                    this.internalID = Integer.parseInt( ((JSONObject)oldId.get(0)).get(GMEMBER_ID_NAME_TABLE_KEY).toString());
+                }
+                else
+                {                    
+                    /* {"internal_id", "member_name", "realm", "rank", "in_guild", "user_id"}; */
+                    String id = dbConnect.insert(GMEMBER_ID_NAME_TABLE_NAME,
+                            GMEMBER_ID_NAME_TABLE_KEY,
+                            new String[] { "member_name", "realm", "in_guild" },
+                            new String[] { name, realm, "0" });//asumed is 0 becouse in frist moment, we get all guilds members.
+                    this.internalID = Integer.parseInt(id);
+                }
+            } catch (DataException | ClassNotFoundException | SQLException ex) {
+                Logs.saveLog("Fail to generate a member ID "+ this.name +" - "+ ex);
+            }
+        } 
+    }
+    
     @Override
     public boolean saveInDB()
     {
+        if(this.isData && this.internalID == 0)
+        {
+            generateMemberID();
+        }
         /* {"internal_id", "battlegroup", "class",
          * "race", "gender", "level", "achievementPoints",
          * "thumbnail", "calcClass", "faction", "totalHonorableKills",
@@ -270,14 +327,28 @@ public class Member extends GameObject
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
-            if (this.isGuildMember && !this.guildName.equals(APIInfo.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
+            if (this.isGuildMember && !this.guildName.equals(GeneralConfig.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
                 //Save specs...
                 this.specs.forEach((spc) -> {
                     spc.setMemberId(this.internalID);
-                    spc.saveInDB();
+                    //valide if this member have a this spec in DB (set Update or Insert)
+                    try
+                    {
+                        JSONArray specMember = dbConnect.select(Spec.SPECS_TABLE_NAME, 
+                                                                new String[] { Spec.SPECS_TABLE_KEY},
+                                                                "member_id=? AND name=? AND role=?",
+                                                                new String[] { spc.getMemberId() +"", spc.getName(), spc.getRole()});
+                        if(specMember.size()>0)
+                        {
+                            spc.setIsInternalData(true);
+                        }
+                        spc.saveInDB();
+                    } catch (DataException | SQLException ex) {
+                        Logs.saveLog("Fail to get specs info in DB from member "+ this.name +" - "+ ex);
+                    }
                 });
                 //Save items...
                 //Clear all old items:                    
@@ -288,7 +359,7 @@ public class Member extends GameObject
                                     "member_id=?",
                                     new String[] {this.internalID +""});                    
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    System.out.println("Fail to update remove old items "+ this.internalID +" - "+ ex);
+                    Logs.saveLog("Fail to update remove old items "+ this.internalID +" - "+ ex);
                 }
                 //Update or insert a new items
                 this.items.forEach((itm) -> {
@@ -303,7 +374,7 @@ public class Member extends GameObject
                 });
                 //Save stats
                 this.stats.setId(this.internalID +"");
-                StatsMember sDB = new StatsMember(this.internalID);
+                CharacterStats sDB = new CharacterStats(this.internalID);
                 if(sDB.isInternalData())
                 {
                     this.stats.setIsInternalData(true);
@@ -341,17 +412,17 @@ public class Member extends GameObject
     public String getName() { return this.name; }
     public String getRealm() { return this.realm; }
     public String getBattleGroup() { return this.battleGroup; }
-    public PlayableClass getmemberClass() { return this.memberClass; }
+    public PlayableClass getMemberClass() { return this.memberClass; }
     public Race getRace() { return this.race; }
     public int getGender() { return this.gender; }
     public int getLevel() { return this.level; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public String getThumbnail() { return this.thumbnail; }
-    public StatsMember getStats() { return this.stats; }
+    public CharacterStats getStats() { return this.stats; }
     public int getRank() { return this.rank; }
     public String getThumbnailURL() 
     {
-        return String.format(APIInfo.API_CHARACTER_RENDER_URL, APIInfo.SERVER_LOCATION, getThumbnail());
+        return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.SERVER_LOCATION, getThumbnail());
     }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }

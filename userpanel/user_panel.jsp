@@ -2,7 +2,7 @@
 <% 
 if (!request.getParameter("login_redirect").equals("true") || !user.checkUser()) 
 {
-    response.sendRedirect("/index.jsp");
+    response.sendRedirect("../index.jsp");
 } 
 else //only show content if is redirect from login.jsp and the user is valid
 {
@@ -19,12 +19,12 @@ else //only show content if is redirect from login.jsp and the user is valid
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
             <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %>
-            <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='/userpanel/update/update_panel.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button></a>":"" %><br/>
+            <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='update/update_panel.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button></a>":"" %><br/>
             <%  
                 if(!user.isCharsReady())
                 {
                     out.write("Your characters are loading, come back in a moment (F5?)...");
-                    out.write("<br><a href='/login.jsp'><button type='button' class='btn btn-info btn-sm'>Reload</button></a>");
+                    out.write("<br><a href='login.jsp'><button type='button' class='btn btn-info btn-sm'>Reload</button></a>");
                 }
                 //User character info~
                 List<Member> memberChars = user.getCharacterList();
@@ -43,9 +43,9 @@ else //only show content if is redirect from login.jsp and the user is valid
                         <tbody>
                           <%for(Member m : memberChars) { %>
                             <tr>
-                                <td class="character-<%= (m.getmemberClass().getEnName()).replaceAll("\\s+","") %>"><%= m.getName() %></td>
+                                <td class="character-<%= (m.getMemberClass().getEnName()).replaceAll("\\s+","") %>"><%= m.getName() %></td>
                                 <% //Get img from speck
-                                String className = ((m.getmemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
+                                String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                 String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
                                 %>
                                 <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>

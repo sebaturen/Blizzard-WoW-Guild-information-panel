@@ -1,15 +1,15 @@
-<%@include file="/includes/globalObject.jsp" %>
+<%@include file="../../../includes/globalObject.jsp" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.ItemMember" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.StatsMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterStats" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
 <%@ page import ="com.blizzardPanel.gameObject.Spell" %>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
 var member = {
-<%if(user != null && user.getGuildRank() != -1) { Member member = members.getMember(Integer.parseInt(request.getParameter("id"))); %>
+<%if(guildMember) { Member member = members.getMember(Integer.parseInt(request.getParameter("id"))); %>
     'stats': {
-        <% StatsMember mStat = member.getStats(); %>
+        <% CharacterStats mStat = member.getStats(); %>
         'health': '<%= String.format("%,d", mStat.getHealth()) %>', 
         'stamina': '<%= String.format("%,d", mStat.getSta()) %>', 
         'crit': '<%= String.format("%.2f", mStat.getCrit())+"%" %>', 
@@ -28,23 +28,22 @@ var member = {
             "mainHand", "offHand"}; 
             for(String post : equip)
             {
-                ItemMember im = member.getItemByPost(post); 
-                session.setAttribute("im", im);
+                ItemMember im = member.getItemByPost(post);
                 if(im != null) {%>
                     '<%= post %>': {
                         'name': "<%= (im.getItem().getName()).replaceAll("\"", "'") %>",
                         'img': '<%= im.getItem().getIconRenderURL() %>',
-                        'ilevel': '${im.ilevel}',
-                        'quality': '${im.quality}',
-                        'azerite_level': '${im.azeriteLevel}',
+                        'ilevel': '<%= im.getIlevel() %>',
+                        'quality': '<%= im.getQuality() %>',
+                        'azerite_level': '<%= im.getAzeriteLevel() %>',
+                        'armor': '<%= im.getArmor() %>',
                         <% if(im.getGem().isInternalData()) { Item gem = im.getGem(); %>
                         'gem': {
                             'name': "<%= (gem.getName()).replaceAll("\"", "'") %>",
                             'bonus': '<%= gem.getGemBonus() %>',
                             'type': '<%= gem.getGemType() %>',
                             'img': '<%= gem.getIconRenderURL() %>'
-                        },<%}%>                                
-                        'armor': '<%= im.getArmor() %>',
+                        },<%}%>
                         'stats': {
                             <% for(Stat s : im.getStats()) {%> 
                                 '<%= s.getEnUs() %>': '<%= s.getAmount() %>', 

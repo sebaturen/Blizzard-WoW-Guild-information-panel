@@ -170,7 +170,7 @@ public class ItemMember extends GameObject
                     if(!azPowerD.isInternalData())
                     {
                         try {
-                            if (up == null) up = new Update();     
+                            if (up == null) up = new Update();  
                             azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
                         } catch (DataException | IOException | ParseException ex) {
                             Logs.saveLog("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);

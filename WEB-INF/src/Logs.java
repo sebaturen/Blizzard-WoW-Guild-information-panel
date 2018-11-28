@@ -5,14 +5,16 @@
  */
 package com.blizzardPanel;
 
+import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Logs {
+public class Logs 
+{
     
-    public static final String LOG_FILE = "/opt/tomcat/logs/artOfWarUpdate.log";
+    public static final String LOG_FILE = GeneralConfig.LOGS_FILE_PATH + GeneralConfig.GUILD_NAME +"-Update.log";
     private static UpdateControl upControl = null;
     
     public static void saveLog(String s) { saveLog(s, true); }

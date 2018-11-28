@@ -6,31 +6,23 @@
 package com.blizzardPanel.blizzardAPI;
 
 public interface APIInfo 
-{
-    //Server information
-    public static final String SERVER_LOCATION  = "";
-    public static final String GUILD_NAME       = "";
-    public static final String GUILD_REALM      = "";
-    //Web main URL
-    public static final String MAIN_URL         = "";
-    public static final String BLIZZAR_LINK     = "blizzLink.jsp";
-    
+{    
     //Aplication Info
     public static final String CLIENT_ID        = "";
     public static final String CLIENT_SECRET    = "";
-
+    
     //-------------------------
     //API Acces
     //-------------------------        
     //-----------------------------------------------------------API Information
-    public static final String API_OAUTH_URL        = "https://%s.battle.net/oauth/%s";
-    public static final String API_OAUTH_AUTHORIZE  = "authorize";
-    public static final String API_OAUTH_TOKEN      = "token";
-    public static final String API_OAUTH_USERINFO   = "userinfo";
-    public static final String API_ROOT_URL         = "https://%s.api.blizzard.com/%s"; //location, api path
-    public static final String API_CHARACTER_RENDER_URL  = "https://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
-    public static final String API_ITEM_RENDER_URL       = "https://render-%s.worldofwarcraft.com/icons/%s/%s"; //{region}, {size 56}, {item icon}
-    public static final String RAIDER_IO_API_URL         = "https://raider.io/api/guilds/%s/%s/%s"; //location, server, guild name
+    public static final String API_OAUTH_URL            = "https://%s.battle.net/oauth/%s";
+    public static final String API_OAUTH_AUTHORIZE      = "authorize";
+    public static final String API_OAUTH_TOKEN          = "token";
+    public static final String API_OAUTH_USERINFO       = "userinfo";
+    public static final String API_ROOT_URL             = "https://%s.api.blizzard.com/%s"; //location, api path
+    public static final String API_CHARACTER_RENDER_URL = "https://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
+    public static final String API_ITEM_RENDER_URL      = "https://render-%s.worldofwarcraft.com/icons/%s/%s"; //{region}, {size 56}, {item icon}
+    public static final String RAIDER_IO_API_URL        = "https://raider.io/api/guilds/%s/%s/%s"; //location, server, guild name
 
     //------------------------------------------World of Warcraft Community APIs
     //Guild Profile API

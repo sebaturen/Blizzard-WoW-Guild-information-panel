@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.gameObject.characters.achievement;
 
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
@@ -81,7 +82,7 @@ public class CharacterAchivementsList extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, APIInfo.SERVER_LOCATION, size, this.icon) +".jpg";
+        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
     }
     public CharacterAchivementsCategory getCategory() { return this.category; }
     
