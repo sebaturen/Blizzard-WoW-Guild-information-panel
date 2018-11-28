@@ -43,11 +43,11 @@ else //only show content if is redirect from login.jsp and the user is valid
                         <tbody>
                           <%for(Member m : memberChars) { %>
                             <tr>
-                                <td class="character-<%= (m.getMemberClass().getEnName()).replaceAll("\\s+","") %>"><%= m.getName() %></td>
                                 <% //Get img from speck
                                 String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                 String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
                                 %>
+                                <td class="character-<%= className %>"><%= m.getName() %></td>
                                 <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 <td><%= m.getLevel() %></td>
                                 <td><%= m.getRealm() %></td>
