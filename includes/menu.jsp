@@ -2,8 +2,8 @@
 String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];%>
 <div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="index.jsp">
-        <img src="assets/img/artofwar_logo.png" height="30" alt="">
+    <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp">
+        <img src="<%= request.getContextPath() %>/assets/img/artofwar_logo.png" height="30" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -12,23 +12,23 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item <% out.write((currentPath.equals("index.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() +"/" %>index.jsp">Home</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/index.jsp">Home</a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("members.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() +"/" %>members.jsp">Members List</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/members.jsp">Members List</a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("guild_challenges.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() +"/" %>guild_challenges.jsp">Guild Challenges</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/guild_challenges.jsp">Guild Challenges</a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("progress.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() +"/" %>progress.jsp">Guild Progress</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp">Guild Progress</a>
             </li>
             <% if(guildMember) { %>
                 <li class="nav-item <% out.write((currentPath.equals("alters.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() +"/" %>alters.jsp">Alters</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp">Alters</a>
                 </li>
                 <li class="nav-item <% out.write((currentPath.equals("auction_house.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() +"/" %>auction_house.jsp">Auction House</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp">Auction House</a>
                 </li>
             <% } %>
             <li class="nav-item">

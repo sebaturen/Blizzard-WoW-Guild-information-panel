@@ -17,8 +17,8 @@
             <%  if (challenges.getChallengesList() != null ) {   
                 for(Challenge ch : challenges.getChallengesList())
                 {%>
-                <div id='dung-<%= ch.getMapId() %>' class='dungeon-challenge'>                        
-                    <div class="dungeon-challenge-img" style='background-image: url("assets/img/dungeon/<%= ch.getMapId() %>.jpg");'>
+                <div id='dung-<%= ch.getId() %>' class='dungeon-challenge'>                        
+                    <div class="dungeon-challenge-img" style='background-image: url("assets/img/dungeon/<%= ch.getId() %>.jpg");'>
                         <h2 class="dung-title"><%= ch.getMapName()%></h2>
                     </div>
                     <div class="row">

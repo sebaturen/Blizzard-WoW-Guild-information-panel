@@ -19,7 +19,7 @@ p {
 }
 /*-------GENERAL------------*/
 .small_title {
-    text-align: center;
+    /*text-align: center;*/
     font-size: 2em;
 }
 .divder {
@@ -231,3 +231,9 @@ p {
     text-align: center;
 }
 /*END------------ALTERS--------------*/
+
+/*-----------------GUILD_RANK--------------*/
+.mem-name {
+    font-size: 0.8em;
+}
+/*END------------GUILD_RANK--------------*/

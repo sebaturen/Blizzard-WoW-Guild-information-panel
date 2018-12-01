@@ -60,7 +60,7 @@ var member_<%= memberID %> = {
                                 },
                             <%i++;}%>
                         },
-                        <% if( im.getItem().getItemSpell().getIntId() > 0 ) { Spell sp = im.getItem().getItemSpell(); %>
+                        <% if( im.getItem().getItemSpell().getId() > 0 ) { Spell sp = im.getItem().getItemSpell(); %>
                         'spell': {
                             'action': '<%= (sp.isPasive())? "Equip":"Use" %>',
                             'desc': "<%= (sp.getDesc()).replaceAll("\"", "'").replaceAll("\n\n", "<br>").replaceAll("\r\r", "<br>") %>"

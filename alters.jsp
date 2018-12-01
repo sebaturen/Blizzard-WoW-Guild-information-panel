@@ -17,7 +17,7 @@
         <div class="container fill">
             <% if (alters.getUsers() != null) { 
                 for(User u : alters.getUsers()) { %>
-                    <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= u.getBattleTag() %>
+                    <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= u.getBattleTag().split("#")[0] %>
                 <%  //User character info~
                     List<Member> memberChars = u.getCharacters();
                     if(memberChars.size() > 0)
@@ -44,7 +44,3 @@
     </body>
 </html>
 <%}%>
-    
-    
-    
-    

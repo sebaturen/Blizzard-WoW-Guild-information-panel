@@ -15,23 +15,23 @@
         <div class="container fill">
             <div id="welcome">
                 <div class="row guild_logoName divder">
-                    <div class="col log_artofwar">
+                    <div class="col-3 log_artofwar">
                         <img src="/assets/img/artofwar_logo.png"/>
                     </div>
                     <div class="col-6 align-self-center">
                         <p class='home_name warcraft_font'><%= guild_info.getName() %></p>
                     </div>
-                    <div class="col log_artofwar">
+                    <div class="col-3 log_artofwar">
                         <img class='flipImg' src="/assets/img/artofwar_logo.png"/>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-md-8">
                         <p class='small_title warcraft_font'>Social Media</p>
                         <iframe src="https://discordapp.com/widget?id=200781976653791232&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
                         <!-- Content... -->
                     </div>
-                    <div class="col-4 guild_achievements">
+                    <div class="col-md-4 guild_achievements">
                         <p class='small_title warcraft_font'>News</p>
                         <%
                         List<New> news = guild_info.getNews();

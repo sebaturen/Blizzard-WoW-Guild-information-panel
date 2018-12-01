@@ -19,7 +19,7 @@ else //only show content if is redirect from login.jsp and the user is valid
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
             <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %>
-            <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='update/update_panel.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button></a>":"" %><br/>
+            <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='userpanel/settings.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Settings</button></a>":"" %><br/>
             <%  
                 if(!user.isCharsReady())
                 {
