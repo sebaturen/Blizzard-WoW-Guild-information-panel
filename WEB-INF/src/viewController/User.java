@@ -37,12 +37,41 @@ public class User
     private int guildRank = -1;
     private boolean isLogin = false;
     private boolean isCharsReady = false;
+    private List<Member> characters;
     
-    private final DBConnect dbConnect;
+    private final DBConnect dbConnect = new DBConnect();
     
     public User()
     {
-        dbConnect = new DBConnect();
+        
+    }
+        
+    public User(int id)
+    {
+        loadFromDB(id);
+    }
+    
+    private void loadFromDB(int id)
+    {
+        try {
+            JSONArray info = dbConnect.select(USER_TABLE_NAME,
+                    USER_TABLE_STRUCTURE,
+                    "id=?",
+                    new String [] {id+""});
+            if(info.size() > 0)
+            {
+                JSONObject userInfo = (JSONObject) info.get(0);
+                this.id = (Integer) userInfo.get("id");
+                this.battleTag = userInfo.get("battle_tag").toString();
+                this.accessToken = userInfo.get("access_token").toString();
+                this.guildRank = (Integer) userInfo.get("guild_rank");
+                this.isLogin = true;
+                loadCharacters();
+                this.isCharsReady = true;
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.saveLogln("Fail to load user from ID "+ id +" - "+ ex);
+        }        
     }
     
     public boolean checkUser() { return checkUser(false); }
@@ -62,10 +91,11 @@ public class User
                 this.battleTag = infoUser.get("battle_tag").toString();
                 this.guildRank = (Integer) infoUser.get("guild_rank");
                 this.isLogin = true;
+                loadCharacters();
                 return true;
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to login "+ this.battleTag +" - "+ ex);
+            Logs.saveLogln("Fail to login "+ this.battleTag +" - "+ ex);
         }
         return false;
     }
@@ -88,7 +118,7 @@ public class User
                         new String[] {this.id +""}); 
                 vRet = true;
             } catch (DataException | ClassNotFoundException | SQLException ex) {
-                Logs.saveLog("Fail to save access token to "+ this.battleTag +" - "+ ex);
+                Logs.saveLogln("Fail to save access token to "+ this.battleTag +" - "+ ex);
             }            
         }
         else
@@ -101,7 +131,7 @@ public class User
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
             } catch (DataException | ClassNotFoundException | SQLException ex) {
-                Logs.saveLog("Fail to insert user "+ this.battleTag);
+                Logs.saveLogln("Fail to insert user "+ this.battleTag);
             }
         }
         //Try get a member rank...   
@@ -121,12 +151,13 @@ public class User
                     Update up = new Update();
                     up.setMemberCharacterInfo(accToken, uId);
                 } catch (IOException | ParseException | DataException ex) {
-                    Logs.saveLog("Fail to seve characters info "+ uId +" - "+ ex);
+                    Logs.saveLogln("Fail to seve characters info "+ uId +" - "+ ex);
                 }
                 checkUser(true);
                 setIsCharsReady(true);
+                loadCharacters();
             }
-        };  
+        };
         upChar.start();
     }
     
@@ -160,7 +191,7 @@ public class User
                 return blizzInfo.get("access_token").toString();
             }
         } catch (IOException|DataException ex) {
-            Logs.saveLog("Fail to get user Access Token "+ ex);
+            Logs.saveLogln("Fail to get user Access Token "+ ex);
         }
         return null;
     }
@@ -183,14 +214,14 @@ public class User
                 }
             }
         } catch (IOException|ParseException|DataException ex) {
-            Logs.saveLog("Fail to get BattleTag "+ ex);
+            Logs.saveLogln("Fail to get BattleTag "+ ex);
         }
         return null;
     }
-       
-    public List<Member> getCharacterList()
+    
+    private void loadCharacters()
     {
-        List<Member> userMember = new ArrayList<>();  
+        this.characters = new ArrayList<>();
         try {
             JSONArray chars = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Member.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
@@ -200,17 +231,17 @@ public class User
             {
                 int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");
                 Member mb = new Member(internalID);
-                if(mb.isData()) userMember.add(mb);
+                if(mb.isData()) this.characters.add(mb);
             }
         } catch (SQLException|DataException ex) {
-            Logs.saveLog("Error get a character user info "+ this.id +" - "+ ex);
+            Logs.saveLogln("Error get a character user info "+ this.id +" - "+ ex);
         }
-        return userMember;
     }
     
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
+    public List<Member> getCharacters() { if(this.characters == null) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
-    private void setIsCharsReady(boolean r) { this.isCharsReady = r; } 
+    private void setIsCharsReady(boolean r) { this.isCharsReady = r; }
     
 }

@@ -41,11 +41,11 @@ public class Stat extends GameObject
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setAmount(int i) { this.amount = i; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getEnUs() { return this.enUs; }
     public int getAmount() { return this.amount; }
     

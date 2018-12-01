@@ -71,8 +71,7 @@ public class Spell extends GameObject
     
     //Getters and Setters
     @Override
-    public String getId() { return this.id +""; }
-    public int getIntId() { return this.id; }
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public String getDesc() { return this.description; }
     public boolean isPasive() { return (this.castTime.equals("Passive")); }
@@ -82,5 +81,5 @@ public class Spell extends GameObject
         return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
     }
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 }

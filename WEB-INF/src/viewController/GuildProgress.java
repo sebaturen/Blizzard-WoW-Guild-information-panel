@@ -39,7 +39,7 @@ public class GuildProgress
                 this.raids[i] = r;
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Error get a guilds raids "+ ex);
+            Logs.saveLogln("Error get a guilds raids "+ ex);
         }
     }
     

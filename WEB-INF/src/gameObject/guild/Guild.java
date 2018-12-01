@@ -9,7 +9,6 @@ import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
-import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
@@ -115,7 +114,7 @@ public class Guild extends GameObject
                 this.achievements.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to load guild Achievements "+ ex);
+            Logs.saveLogln("Fail to load guild Achievements "+ ex);
         }        
     }
     
@@ -133,7 +132,7 @@ public class Guild extends GameObject
                 this.news.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to load guild news "+ ex);
+            Logs.saveLogln("Fail to load guild news "+ ex);
         }        
     }
 	
@@ -164,6 +163,11 @@ public class Guild extends GameObject
     }
 	
     //GETTERS
+    @Override
+    public void setId(int id) { this.id = id; }
+    
+    @Override
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public String getBattleGroup() { return this.battleGroup; }
     public long getLastModified() { return this.lastModified; }
@@ -172,10 +176,6 @@ public class Guild extends GameObject
     public List<New> getNews() { return this.news; }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
-    @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
-    @Override
-    public String getId() { return this.id+""; }
     
     //two guild equals method
     @Override

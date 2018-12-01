@@ -72,7 +72,7 @@ public class AuctionItem extends GameObject
         /* {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
          * "owner", "ownerRealm", "context", "rand", "auc_date"}; 
 `        */
-        switch(saveInDBObj(new String[] { this.auc+"", this.item.getId(), this.buyout +"", this.bid +"", this.quantity +"", this.timeLeft,
+        switch(saveInDBObj(new String[] { this.auc+"", this.item.getId()+"", this.buyout +"", this.bid +"", this.quantity +"", this.timeLeft,
                                         this.owner, this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0", this.aucDate}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
@@ -84,11 +84,11 @@ public class AuctionItem extends GameObject
     //Getters and Setters
 
     @Override
-    public void setId(String id) { this.auc = Integer.parseInt(id); }
+    public void setId(int id) { this.auc = id; }
     public void setAucDate(String date) { this.aucDate = date; }
 
     @Override
-    public String getId() { return this.auc +""; }
+    public int getId() { return this.auc; }
     public Item getItem() { return this.item; }
     public int getQuantity() { return this.quantity; }
     public String getTimeLeft() { return this.timeLeft; }

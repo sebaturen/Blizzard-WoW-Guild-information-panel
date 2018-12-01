@@ -66,7 +66,7 @@ public class Challenge extends GameObject
                 if(cgDb.isData()) chGroups.add(cgDb);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to load Groups from challenge "+ this.mapId);
+            Logs.saveLogln("Fail to load Groups from challenge "+ this.mapId);
         }
     }
     
@@ -158,12 +158,11 @@ public class Challenge extends GameObject
 
     //Getters/Setters
     @Override
-    public void setId(String mapId) { this.mapId = Integer.parseInt(mapId); }
-    @Override
-    public String getId() { return this.mapId +""; }
+    public void setId(int mapId) { this.mapId = mapId; }
     public void setMapName(String mapName) { this.mapName = mapName; }
     public void addChallengeGroup(ChallengeGroup chGroup) { this.chGroups.add(chGroup); }
-    public int getMapId() { return this.mapId; }
+    @Override
+    public int getId() { return this.mapId; }
     public String getMapName() { return this.mapName; }
     public List<ChallengeGroup> getChallengeGroups() { return this.chGroups; }
     public int isUpdateKey(ChallengeGroup cgroup)
@@ -179,7 +178,7 @@ public class Challenge extends GameObject
             if(gTime.before(cSilver)) return 2;
             if(gTime.before(cBronze)) return 1;
         } catch (ParseException ex) {
-            Logs.saveLog("Fail to convert time group "+ ex);
+            Logs.saveLogln("Fail to convert time group "+ ex);
         }
         return -1;
     }

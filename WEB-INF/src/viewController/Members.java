@@ -66,7 +66,7 @@ public class Members
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to load members lists - Members View Controller "+ e);
+            Logs.saveLogln("Fail to load members lists - Members View Controller "+ e);
         }
     }
     

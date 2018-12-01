@@ -59,7 +59,7 @@ public class Item extends GameObject
                         Update up = new Update();
                         this.itemSpell = up.getSpellInformationBlizz(spellId);
                     } catch (IOException | ParseException | DataException ex) {
-                        Logs.saveLog("Fail to get blizzard spell information "+ spellId +" - "+ ex);
+                        Logs.saveLogln("Fail to get blizzard spell information "+ spellId +" - "+ ex);
                     }
                 }
             }
@@ -106,7 +106,7 @@ public class Item extends GameObject
     public boolean saveInDB() 
     {
         //'154129','Masterful Tidal Amethyst',,'+40 Mastery','PRISMATIC','154129'
-        switch(saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.itemSpell.getId(), this.gemInfoBonusName, this.gemInfoType}))
+        switch(saveInDBObj(new String[] {this.id +"", this.name, this.icon, this.itemSpell.getId()+"", this.gemInfoBonusName, this.gemInfoType}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;            
@@ -122,19 +122,19 @@ public class Item extends GameObject
             try {
                 Update up = new Update();
                 it = up.getItemFromBlizz(id);
-                Logs.saveLog("New Item in DB "+ it.getId() +" - "+ it.getName());
+                Logs.saveLogln("New Item in DB "+ it.getId() +" - "+ it.getName());
             } catch (IOException | ParseException | DataException ex) {
-                Logs.saveLog("Fail to get item info from blizzard.");
+                Logs.saveLogln("Fail to get item info from blizzard.");
             }
         }
         return it;
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 
     @Override
-    public String getId() { return id+"";}
+    public int getId() { return id;}
     public String getName() { return this.name; }
     public String getGemBonus() { return this.gemInfoBonusName; }
     public String getGemType() { return this.gemInfoType; }

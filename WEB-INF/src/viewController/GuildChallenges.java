@@ -48,7 +48,7 @@ public class GuildChallenges
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to load members lists - Members View Controller");
+            Logs.saveLogln("Fail to load members lists - Members View Controller");
         }
     }
 	

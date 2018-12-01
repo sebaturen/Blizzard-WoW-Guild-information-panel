@@ -76,9 +76,9 @@ public class GuildAchievementsList extends GameObject
 	
     //Getters AND setters
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getTitle() { return this.title; }
     public String getDescription() { return this.description; }
     public String getClassification() { return this.classification; }

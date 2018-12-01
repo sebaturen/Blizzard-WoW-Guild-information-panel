@@ -40,7 +40,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a last dynamic update");
+            Logs.saveLogln("Fail to get a last dynamic update");
         }
         this.dbConnect.closeConnection();
         return out;
@@ -62,7 +62,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a last dynamic update");
+            Logs.saveLogln("Fail to get a last dynamic update");
         }
         this.dbConnect.closeConnection();
         return out;
@@ -86,7 +86,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a wow Token price");
+            Logs.saveLogln("Fail to get a wow Token price");
         }
         this.dbConnect.closeConnection();
         return out;

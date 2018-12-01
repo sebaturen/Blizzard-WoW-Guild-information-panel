@@ -203,10 +203,10 @@ public class CharacterStats extends GameObject
 
     //Setters and Getters
     @Override
-    public void setId(String id) { this.member_id = Integer.parseInt(id); }
+    public void setId(int id) { this.member_id = id; }
 
     @Override
-    public String getId() { return this.member_id +"";}
+    public int getId() { return this.member_id;}
 
     public int getHealth() { return this.health; }
     public String getPowerType() { return this.powerType; }

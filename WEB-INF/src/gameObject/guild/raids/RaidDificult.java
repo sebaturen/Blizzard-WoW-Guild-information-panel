@@ -89,7 +89,7 @@ public class RaidDificult extends GameObject
                 this.bosses.add(rdBoss);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
+            Logs.saveLogln("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
         }
     }
 
@@ -106,7 +106,7 @@ public class RaidDificult extends GameObject
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.bosses.forEach((rdBoss) -> {
                     rdBoss.setDifiId(this.id);
-                    RaidDificultBoss rdBossDB = new RaidDificultBoss(Integer.parseInt(rdBoss.getBoss().getId()), this.id);
+                    RaidDificultBoss rdBossDB = new RaidDificultBoss(rdBoss.getBoss().getId(), this.id);
                     if(rdBossDB.isInternalData())
                     {
                         rdBoss.setId(rdBossDB.getId());
@@ -121,7 +121,7 @@ public class RaidDificult extends GameObject
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setRankWorld(int c) { this.rankWorld = c; }
     public void setRankRegion(int c) { this.rankRegion = c; }
     public void setRankRealm(int c) { this.rankRealm = c; }
@@ -129,7 +129,7 @@ public class RaidDificult extends GameObject
     public void setName(String name) { this.name = name; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public int getRankWorld() { return this.rankWorld; }
     public int getRankRegion() { return this.rankRegion; }

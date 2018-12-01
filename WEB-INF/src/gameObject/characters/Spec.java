@@ -124,13 +124,13 @@ public class Spec extends GameObject
     public boolean isThisSpec(String sName, String sRole) { return this.name.equals(sName) && this.role.equals(sRole); }
     public boolean isThisSpec(int id) { return (this.id == id); }
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public String getRole() { return this.role; }
     public Spell[] getSpells() { return this.spells; }
     public int getMemberId() { return this.memberId; }
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setEnable(boolean e) { this.enable = e; }
     public void setMemberId(int id) { this.memberId = id; }
         

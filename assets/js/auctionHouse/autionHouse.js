@@ -1,4 +1,6 @@
 /*Auction house*/
+var aucListLoad; //use in ajax server request - item detail
+var itemListLoad; //use in ajax server request - item list
 $(document).ready(function() {    
     $('#itemName').keyup(function () { searchItem($(this).val()); });
 });
@@ -7,14 +9,24 @@ function searchItem(itemName)
 {
     if(itemName.length >= 3)
     {
-        $.getScript('assets/js/auctionHouse/itemsList.jsp?name='+ encodeURIComponent(itemName), function() {
+        if(itemListLoad !== undefined)
+        {
+            itemListLoad.abort();
+        }
+        $('#itemsSuggested').show();
+        $('#itemsSuggested').html('<div class="row justify-content-md-center"><div class="loader itemSuggestLoad"></div></div>');
+        itemListLoad = $.getScript('assets/js/auctionHouse/itemsList.jsp?name='+ encodeURIComponent(itemName), function() {
             renderItemList();
         });        
     }
     if(itemName.length === 0)
     {
+        if(itemListLoad !== undefined)
+        {
+            itemListLoad.abort();
+        }
         $('#itemsSuggested').html("");
-        $('#itemsSuggested').hide();
+        $('#itemsSuggested').hide();        
     }
 }
 
@@ -38,20 +50,22 @@ function renderItemList()
         $("#items_ah_content").html("");
         //Search a auc info :D
         $("#items_ah_content").append('<tr><td colspan="6"><div class="row justify-content-md-center"><div class="loader"></div></div></td></tr>');
-        $.getScript('assets/js/auctionHouse/autionItem.jsp?id='+$(this).data("id"), function() {
-            renderAuctions();
+        var itemId = $(this).data("id");
+        aucListLoad = $.getScript('assets/js/auctionHouse/autionItem.jsp?id='+itemId, function() {
+            var auList = window['auctions_'+ itemId];
+            renderAuctions(auList);
         });
     });
 }
 
-function renderAuctions()
+function renderAuctions(auctionsList)
 {
     $("#items_ah_content").html("");
-    if(auctions.length === 0)
+    if(auctionsList.length === 0)
     {
         $("#items_ah_content").append('<tr><td colspan="6">Data not found</td></tr>');
     }
-    jQuery.each( auctions, function(i, auc) 
+    jQuery.each( auctionsList, function(i, auc) 
     {
         $("#items_ah_content").append
         (

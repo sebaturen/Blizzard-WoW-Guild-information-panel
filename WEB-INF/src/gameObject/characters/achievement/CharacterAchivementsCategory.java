@@ -57,7 +57,7 @@ public class CharacterAchivementsCategory extends GameObject
         }
         else
         {
-            saveParam = new String[] {this.id +"", this.name, this.fatherCategory.getId()};
+            saveParam = new String[] {this.id +"", this.name, this.fatherCategory.getId()+""};
         }
         switch (saveInDBObj(saveParam))
         {
@@ -69,10 +69,10 @@ public class CharacterAchivementsCategory extends GameObject
 
     //Getters and Setters
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public CharacterAchivementsCategory getFatherCategory() { return this.fatherCategory; }
 }

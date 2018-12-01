@@ -5,7 +5,6 @@
  */
 package com.blizzardPanel;
 
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,8 +16,9 @@ public class Logs
     public static final String LOG_FILE = GeneralConfig.LOGS_FILE_PATH + GeneralConfig.GUILD_NAME +"-Update.log";
     private static UpdateControl upControl = null;
     
-    public static void saveLog(String s) { saveLog(s, true); }
-    public static void saveLog(String s, boolean nline)
+    public static void saveLogln(String s) { saveLog(s, true); }
+    public static void saveLog(String s) { saveLog(s, false); }
+    private static void saveLog(String s, boolean nline)
     {        
         try
         {
@@ -29,11 +29,11 @@ public class Logs
                 wS += "\n";
                 System.out.println("");
             }
-            if(upControl != null) upControl.onMessage(wS, null);
+            if(upControl != null) upControl.onMessage(wS, null);            
             //Save in file
-            BufferedWriter out = new BufferedWriter(new FileWriter(LOG_FILE, true));
-            out.write(wS);
-            out.close();
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
+                out.write(wS);
+            }
         } catch (IOException ex) {
             System.out.println("Fail to save log! "+ ex);
         }

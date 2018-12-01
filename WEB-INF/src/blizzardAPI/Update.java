@@ -81,41 +81,41 @@ public class Update implements APIInfo, GeneralConfig
     {
         blizzAPICallCounter = 0; 
                 
-        Logs.saveLog("-------Update process is START! (Dynamic)------");
+        Logs.saveLogln("-------Update process is START! (Dynamic)------");
         //Guild information update!
-        Logs.saveLog("Guild Information update!");
+        Logs.saveLogln("Guild Information update!");
         try { getGuildProfile(); }
-        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLogln("Fail update Guild Info: "+ ex); }
         //Guild members information update!
-        Logs.saveLog("Guild members information update!");
+        Logs.saveLogln("Guild members information update!");
         try { getGuildMembers(); }
-        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLog("Fail update Guild Members Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|ClassNotFoundException|DataException ex) { Logs.saveLogln("Fail update Guild Members Info: "+ ex); }
         //Character information update!						
-        Logs.saveLog("Character information update!");
+        Logs.saveLogln("Character information update!");
         try { getCharacterInfo(); }
-        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail get a CharacterS Info: "+ ex); }
         //Guild challenges update!
-        Logs.saveLog("Guild challenges update!");
+        Logs.saveLogln("Guild challenges update!");
         try { getGuildChallenges(); }
-        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail get a CharacterS Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLogln("Fail get a CharacterS Info: "+ ex); }
         //Guild news update!
-        Logs.saveLog("Guild new update!");
+        Logs.saveLogln("Guild new update!");
         try { getGuildNews();}
-        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLog("Fail update guild news Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException|java.text.ParseException ex) { Logs.saveLogln("Fail update guild news Info: "+ ex); }		
         //Wow Token
-        Logs.saveLog("Wow token information update!");
+        Logs.saveLogln("Wow token information update!");
         try { getWowToken(); }
-        catch (ClassNotFoundException|IOException|ParseException|DataException|SQLException ex) { Logs.saveLog("Fail update Wow Token Info: "+ ex); }		
+        catch (ClassNotFoundException|IOException|ParseException|DataException|SQLException ex) { Logs.saveLogln("Fail update Wow Token Info: "+ ex); }		
         //Users player
-        Logs.saveLog("Users characters information update!");
+        Logs.saveLogln("Users characters information update!");
         try { getUsersCharacters(); }
-        catch (SQLException|DataException|ClassNotFoundException ex) { Logs.saveLog("Fail update user characters Info: "+ ex); }
+        catch (SQLException|DataException|ClassNotFoundException ex) { Logs.saveLogln("Fail update user characters Info: "+ ex); }
         //Guild progression RaiderIO
-        Logs.saveLog("Guild progression update!");
+        Logs.saveLogln("Guild progression update!");
         try { getGuildProgression(); }
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update guild progression Info: "+ ex); }
-        Logs.saveLog("-------Update process is COMPLATE! (Dynamic)------");	
-        Logs.saveLog("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
+        catch (IOException|ParseException|DataException ex) { Logs.saveLogln("Fail update guild progression Info: "+ ex); }
+        Logs.saveLogln("-------Update process is COMPLATE! (Dynamic)------");	
+        Logs.saveLogln("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
 
         //Save log update in DB
         try 
@@ -129,7 +129,7 @@ public class Update implements APIInfo, GeneralConfig
         }
         catch(DataException|ClassNotFoundException|SQLException e)
         {
-            Logs.saveLog("Fail to save update time: "+ e);
+            Logs.saveLogln("Fail to save update time: "+ e);
         }
     }
 
@@ -139,36 +139,36 @@ public class Update implements APIInfo, GeneralConfig
     public void updateStaticAll()
     {
         blizzAPICallCounter = 0;
-        Logs.saveLog("-------Update process is START! (Static)------");
+        Logs.saveLogln("-------Update process is START! (Static)------");
         //Playable Class
-        Logs.saveLog("Playable class Information update!");
+        Logs.saveLogln("Playable class Information update!");
         try { getPlayableClass(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update Playable class Info: "+ ex); }
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update Playable class Info: "+ ex); }
         //Races
-        Logs.saveLog("Races Information update!");
+        Logs.saveLogln("Races Information update!");
         try { getRaces(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update Races Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update Races Info: "+ ex); }		
         //Guild Achivements lists
-        Logs.saveLog("Guild Achievements lists information update!");
+        Logs.saveLogln("Guild Achievements lists information update!");
         try { getGuildAchievementsLists(); } 
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Achievements Info: "+ ex); }		
+        catch (IOException|ParseException|DataException ex) { Logs.saveLogln("Fail update Achievements Info: "+ ex); }		
         //Character Achivements lists
-        Logs.saveLog("Characters Achievements lists information update!");
+        Logs.saveLogln("Characters Achievements lists information update!");
         try { getCharacterAchievementsLists(); } 
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail update Characters Achievements Info: "+ ex); }	
+        catch (IOException|ParseException|DataException ex) { Logs.saveLogln("Fail update Characters Achievements Info: "+ ex); }	
         //Update Spell information
-        Logs.saveLog("Spell information update!");
+        Logs.saveLogln("Spell information update!");
         try { updateSpellInformation(); } 
-        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update spell Info: "+ ex); }		
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update spell Info: "+ ex); }		
         //Boss DB Upate info
-        Logs.saveLog("Boss DB Update");
+        Logs.saveLogln("Boss DB Update");
         try { getBossInformation(); }
-        catch (IOException|ParseException|DataException ex) { Logs.saveLog("Fail get boss DB Info: "+ ex); }
-        Logs.saveLog("Item informatio update!");
+        catch (IOException|ParseException|DataException ex) { Logs.saveLogln("Fail get boss DB Info: "+ ex); }
+        Logs.saveLogln("Item informatio update!");
         try{ updateItemInformation(); }
-        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLog("Fail update item Info: "+ ex); }
-        Logs.saveLog("-------Update process is COMPLATE! (Static)------");	
-        Logs.saveLog("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
+        catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update item Info: "+ ex); }
+        Logs.saveLogln("-------Update process is COMPLATE! (Static)------");	
+        Logs.saveLogln("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
 
         
         //Save log update in DB
@@ -183,7 +183,7 @@ public class Update implements APIInfo, GeneralConfig
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
-            Logs.saveLog("Fail to save update time: "+ e);
+            Logs.saveLogln("Fail to save update time: "+ e);
         }		
     }
 
@@ -192,7 +192,7 @@ public class Update implements APIInfo, GeneralConfig
      */
     public void updateAH()
     {
-        Logs.saveLog("-------Update process is START! (Auction House)------");
+        Logs.saveLogln("-------Update process is START! (Auction House)------");
         try 
         {
             JSONObject genInfo = getURLAH();
@@ -209,13 +209,13 @@ public class Update implements APIInfo, GeneralConfig
                             new String[] {"0"},
                             "status = ?",
                             new String[] {"1"});                
-                Logs.saveLog("AH last update: "+ lastUpdate);
-                Logs.saveLog("Get a AH update...");
+                Logs.saveLogln("AH last update: "+ lastUpdate);
+                Logs.saveLogln("Get a AH update...");
                 JSONObject allAH = curl(genInfo.get("url").toString(), "GET");
                 JSONArray itemsAH = (JSONArray) allAH.get("auctions");
 
                 int iProgres = 1;
-                Logs.saveLog("0%", false);
+                Logs.saveLog("0%");
                 for(int i = 0; i < itemsAH.size(); i++)
                 {
                     JSONObject item = (JSONObject) itemsAH.get(i);
@@ -232,11 +232,11 @@ public class Update implements APIInfo, GeneralConfig
                     //Show update progress...
                     if ( (((iProgres*2)*10)*itemsAH.size())/100 < i )
                     {
-                        Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                        Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                         iProgres++;
                     }
                 }
-                Logs.saveLog("...100%");
+                Logs.saveLogln("...100%");
 
                 /* {"type", "update_time"}; */
                 dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
@@ -245,10 +245,10 @@ public class Update implements APIInfo, GeneralConfig
                                 new String[] {UPDATE_AUCTION +"", lastUpdate});  
             }            
         } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
-            Logs.saveLog("Fail to get AH "+ ex);
+            Logs.saveLogln("Fail to get AH "+ ex);
         }
         dbConnect.closeConnection();
-        Logs.saveLog("-------Update process is COMPLATE! (Auction House)------");
+        Logs.saveLogln("-------Update process is COMPLATE! (Auction House)------");
     }
     
     /**
@@ -256,7 +256,7 @@ public class Update implements APIInfo, GeneralConfig
      */
     public void moveHistoryAH()
     {
-        Logs.saveLog("-------Update process is Start! (Auction House move to History DB)------");
+        Logs.saveLogln("-------Update process is Start! (Auction House move to History DB)------");
         try {
             JSONArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                     new String[] {AuctionItem.AUCTION_ITEMS_KEY},
@@ -264,7 +264,7 @@ public class Update implements APIInfo, GeneralConfig
                     new String[] { "0" });
             //Get and delete all auc need save in history DB
             int iProgres = 1;
-            Logs.saveLog("0%", false);
+            Logs.saveLog("0%");
             for(int i = 0; i < aucItem.size(); i++)
             {
                 int aucId = (Integer) ((JSONObject) aucItem.get(i)).get(AuctionItem.AUCTION_ITEMS_KEY);
@@ -278,24 +278,24 @@ public class Update implements APIInfo, GeneralConfig
                                 DBStructure.AUCTION_HISTORY_TABLE_KEY,
                                 //{"item", "unique_price", "context", "date"};
                                 DBStructure.outKey(DBStructure.AUCTION_HISTORY_TABLE_STRUCTURE),
-                                new String[] { aucItemOLD.getItem().getId(), aucItemOLD.getUniqueBuyoutPrice()+"", 
+                                new String[] { aucItemOLD.getItem().getId()+"", aucItemOLD.getUniqueBuyoutPrice()+"", 
                                                 aucItemOLD.getContext()+"", aucItemOLD.getAucDate() });
                     }
                     //Delete from current AH
                     dbConnect.delete(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                             AuctionItem.AUCTION_ITEMS_KEY +"=?",
-                            new String[] { aucItemOLD.getId() });
+                            new String[] { aucItemOLD.getId()+"" });
                 } catch (ClassNotFoundException|SQLException|DataException ex) {
-                    Logs.saveLog("Fail to save auc history to "+ aucItemOLD.getId() +" - "+ ex);
+                    Logs.saveLogln("Fail to save auc history to "+ aucItemOLD.getId() +" - "+ ex);
                 }                
                 //Show update progress...
                 if ( (((iProgres*2)*10)*aucItem.size())/100 < i )
                 {
-                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                     iProgres++;
                 }
             }
-            Logs.saveLog("...100%");
+            Logs.saveLogln("...100%");
             
             /* {"type", "update_time"}; */
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
@@ -303,10 +303,10 @@ public class Update implements APIInfo, GeneralConfig
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {UPDATE_CLEAR_AH_HISTORY +"", getCurrentTimeStamp()}); 
         } catch (SQLException | DataException | ClassNotFoundException ex) {
-            Logs.saveLog("Fail to get current auc items "+ ex);
+            Logs.saveLogln("Fail to get current auc items "+ ex);
         }
         dbConnect.closeConnection();
-        Logs.saveLog("-------Update process is Complete! (Auction House move to History DB)------");
+        Logs.saveLogln("-------Update process is Complete! (Auction House move to History DB)------");
     }
     
     /**
@@ -391,7 +391,7 @@ public class Update implements APIInfo, GeneralConfig
                 Long blizzUpdateTime = Long.parseLong(((JSONObject)lastModified.get(0)).get("lastModified").toString());
                 if( !blizzUpdateTime.equals(apiGuild.getLastModified()) )
                 {//if last save is diferent, update.
-                    apiGuild.setId(((JSONObject)lastModified.get(0)).get("id").toString());
+                    apiGuild.setId((Integer) ((JSONObject)lastModified.get(0)).get("id"));
                     apiGuild.setIsInternalData(true);
                     apiGuild.saveInDB();
                 }
@@ -503,6 +503,11 @@ public class Update implements APIInfo, GeneralConfig
                 {
                     guildNew = new New(infoNew);
                     guildNew.saveInDB();
+                    //debug mode!
+                    if (guildNew.getType().equals("itemLoot") && guildNew.getItem().getId() == 0)
+                    {
+                        Logs.saveLogln("ERROR GUILD NEW! \t"+ infoNew +"\n\t\t"+ news);
+                    }
                 }
             }
         }
@@ -526,7 +531,7 @@ public class Update implements APIInfo, GeneralConfig
                                                 new String[] {"1"});
 
             int iProgres = 1;
-            Logs.saveLog("0%", false);
+            Logs.saveLog("0%");
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
@@ -546,11 +551,11 @@ public class Update implements APIInfo, GeneralConfig
                 //Show update progress...
                 if ( (((iProgres*2)*10)*members.size())/100 < i )
                 {
-                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                     iProgres++;
                 }
             }
-            Logs.saveLog("...100%");
+            Logs.saveLogln("...100%");
         }
         dbConnect.closeConnection();
     }
@@ -573,7 +578,7 @@ public class Update implements APIInfo, GeneralConfig
         } 
         catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
         {
-            Logs.saveLog("BlizzAPI haven a error to '"+ name +"'\n\t"+ e);
+            Logs.saveLogln("BlizzAPI haven a error to '"+ name +"'\n\t"+ e);
         }
         return blizzPlayer;
     }
@@ -672,7 +677,7 @@ public class Update implements APIInfo, GeneralConfig
                                         "Bearer "+ this.accesToken);
             Spell spBlizz = new Spell(blizzSpell);
             spBlizz.saveInDB(); 
-            Logs.saveLog("New spell is save in DB "+ id +" - "+ spBlizz.getName());
+            Logs.saveLogln("New spell is save in DB "+ id +" - "+ spBlizz.getName());
             return spBlizz;
         }
     }
@@ -694,7 +699,7 @@ public class Update implements APIInfo, GeneralConfig
                                                     "id != 0",
                                                     new String[] {});            
             int iProgres = 1;
-            Logs.saveLog("0%", false);
+            Logs.saveLog("0%");
             for(int i = 0; i < spellInDb.size(); i++)
             {
                 //Generate an API URL
@@ -711,11 +716,11 @@ public class Update implements APIInfo, GeneralConfig
                 //Show update progress...
                 if ( (((iProgres*2)*10)*spellInDb.size())/100 < i )
                 {
-                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                     iProgres++;
                 }              
             }
-            Logs.saveLog("...100%");
+            Logs.saveLogln("...100%");
         }
         dbConnect.closeConnection();
     }
@@ -737,7 +742,7 @@ public class Update implements APIInfo, GeneralConfig
                                                     "id != 0",
                                                     new String[] {});            
             int iProgres = 1;
-            Logs.saveLog("0%", false);
+            Logs.saveLog("0%");
             for(int i = 0; i < itemInDB.size(); i++)
             {
                 int id = (Integer) ((JSONObject) itemInDB.get(i)).get("id");
@@ -748,11 +753,11 @@ public class Update implements APIInfo, GeneralConfig
                 //Show update progress...
                 if ( (((iProgres*2)*10)*itemInDB.size())/100 < i )
                 {
-                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                     iProgres++;
                 }              
             }
-            Logs.saveLog("...100%");
+            Logs.saveLogln("...100%");
         } 
         dbConnect.closeConnection();
     }
@@ -777,7 +782,7 @@ public class Update implements APIInfo, GeneralConfig
             itemBlizz = new Item(blizzItem);
             itemBlizz.saveInDB();
         } catch (IOException | ParseException | DataException ex) {
-            Logs.saveLog("Error to get blizzard item information "+ id +" - "+ ex);
+            Logs.saveLogln("Error to get blizzard item information "+ id +" - "+ ex);
         }
         dbConnect.closeConnection();
         return itemBlizz;
@@ -866,7 +871,7 @@ public class Update implements APIInfo, GeneralConfig
             catInfo.put("id", catId);
             catInfo.put("name", catName);
             if(fatherCat != null)
-                catInfo.put("father_id", Integer.parseInt(fatherCat.getId()));
+                catInfo.put("father_id", fatherCat.getId());
             category = new CharacterAchivementsCategory(catInfo);
             category.saveInDB();
         }
@@ -924,7 +929,7 @@ public class Update implements APIInfo, GeneralConfig
             JSONArray challenges = (JSONArray) respond.get("challenge");
                  
             int iProgres = 1;
-            Logs.saveLog("0%", false);
+            Logs.saveLog("0%");
             for(int i = 0; i < challenges.size(); i++)
             {
                 JSONObject challeng = (JSONObject) challenges.get(i);
@@ -943,15 +948,15 @@ public class Update implements APIInfo, GeneralConfig
                     for(int j = 0; j < groups.size(); j++)
                     {
                         JSONObject group = (JSONObject) groups.get(j);
-                        ChallengeGroup chGroup = new ChallengeGroup(ch.getMapId(), group);
+                        ChallengeGroup chGroup = new ChallengeGroup(ch.getId(), group);
                         //Validate if exist this group.
                         JSONArray idGroup = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
                                                             new String[] { "group_id" },
                                                             "challenge_id=? AND time_date=?",
-                                                            new String[] { ch.getId(), ChallengeGroup.getDBDate(chGroup.getTimeDate()) });
+                                                            new String[] { ch.getId()+"", ChallengeGroup.getDBDate(chGroup.getTimeDate()) });
                         if(idGroup.size() > 0)
                         {
-                            chGroup.setId( ((JSONObject) idGroup.get(0)).get("group_id").toString());
+                            chGroup.setId((Integer) ((JSONObject) idGroup.get(0)).get("group_id"));
                             chGroup.setIsInternalData(true);
                         }
 
@@ -982,11 +987,11 @@ public class Update implements APIInfo, GeneralConfig
                 //Show update progress...
                 if ( (((iProgres*2)*10)*challenges.size())/100 < i )
                 {
-                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%", false);
+                    Logs.saveLog("..."+ ((iProgres*2)*10) +"%");
                     iProgres++;
                 }
             }
-            Logs.saveLog("...100%");
+            Logs.saveLogln("...100%");
         }
         dbConnect.closeConnection();
     }    
@@ -1022,7 +1027,7 @@ public class Update implements APIInfo, GeneralConfig
                 {
                     
                 }
-                Logs.saveLog("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
+                Logs.saveLogln("Newss!!!"+ ((JSONObject)news.get(i)).get("character"));
             }
         }
     }
@@ -1147,9 +1152,9 @@ public class Update implements APIInfo, GeneralConfig
                                             new String[] { "user_id" },
                                             new String[] { userID+""},
                                             "internal_id=?", 
-                                            new String[] { mb.getId()});
+                                            new String[] { mb.getId()+""});
                         } catch (ClassNotFoundException|SQLException ex) {
-                            Logs.saveLog("Fail to insert userID info "+ ex);
+                            Logs.saveLogln("Fail to insert userID info "+ ex);
                         }
                     }
                 }
@@ -1170,11 +1175,11 @@ public class Update implements APIInfo, GeneralConfig
                                     "id=?",
                                     new String[] { userID +"" });
                         } catch (ClassNotFoundException ex) {
-                            Logs.saveLog("Fail to save guild rank from user "+ userID +" - "+ ex);
+                            Logs.saveLogln("Fail to save guild rank from user "+ userID +" - "+ ex);
                         }
                     }
                 } catch (SQLException ex) {
-                    Logs.saveLog("Fail to select characters from user "+ userID +" - "+ ex);
+                    Logs.saveLogln("Fail to select characters from user "+ userID +" - "+ ex);
                 }
                 //Set accessToken is working yet~
                 try 
@@ -1184,15 +1189,15 @@ public class Update implements APIInfo, GeneralConfig
                             new String[] { "1" },
                             "id=?",
                             new String[] { userID +""});
-                    Logs.saveLog("Wow access token is update!");
+                    Logs.saveLogln("Wow access token is update!");
                 } catch (ClassNotFoundException|SQLException ex) {
-                    Logs.saveLog("Fail to set wowinfo is worikng from "+ userID);
+                    Logs.saveLogln("Fail to set wowinfo is worikng from "+ userID);
                 }
             }
         } catch(DataException e) {
             if(e.getErrorCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
             {
-                Logs.saveLog("User block or not get access wow~ "+ e);                    
+                Logs.saveLogln("User block or not get access wow~ "+ e);                    
                 try {
                     dbConnect.update(User.USER_TABLE_NAME,
                             new String[] {"wowinfo"},
@@ -1200,11 +1205,11 @@ public class Update implements APIInfo, GeneralConfig
                             "id=?",
                             new String[] {userID +""});
                 } catch (DataException | ClassNotFoundException |SQLException ex) {
-                    Logs.saveLog("Fail to update wowinfo false from "+ userID +" - "+ ex);
+                    Logs.saveLogln("Fail to update wowinfo false from "+ userID +" - "+ ex);
                 }                                
             }
         } catch (IOException|ParseException ex) {
-            Logs.saveLog("Fail to get user Access Token "+ ex);
+            Logs.saveLogln("Fail to get user Access Token "+ ex);
         }
         dbConnect.closeConnection();
     }

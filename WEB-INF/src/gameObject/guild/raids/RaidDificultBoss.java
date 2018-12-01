@@ -60,7 +60,7 @@ public class RaidDificultBoss extends GameObject
             try { //2018-10-17 02:39:00
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLogln("(DB) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
@@ -70,7 +70,7 @@ public class RaidDificultBoss extends GameObject
             try {
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id);
             }
             
             //Save Item Level AVG            
@@ -134,11 +134,11 @@ public class RaidDificultBoss extends GameObject
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setDifiId(int id) { this.difiId = id; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public Boss getBoss() { return this.boss; }
     public Date getFirstDefeated() { return this.firstDefeated; }
     public double getItemLevelAvg() { return this.itemLevelAvg; }

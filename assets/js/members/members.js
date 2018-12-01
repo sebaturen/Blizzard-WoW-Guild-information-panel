@@ -1,5 +1,6 @@
 //Members jquery
 var visualMember;
+var memberDetailLoad; //use in ajax server request.
 visualMember = members;
 //------------FILTERS-------------------------//
 function loadFilterOptions() {
@@ -49,8 +50,8 @@ function loadFilterOptions() {
 //Sort by rank
 $("#rankColum").click(function() {
     visualMember.sort(function(a, b) {
-        var rankA = parseInt(a.gRank);
-        var rankB = parseInt(b.gRank);
+        var rankA = parseInt(a.gRank_id);
+        var rankB = parseInt(b.gRank_id);
         if (rankA > rankB) {
             return 1;
         }
@@ -145,6 +146,10 @@ $("#iLevelColum").click(function() {
 //-----------PJ INFO--------------------------//
 var lastIdClick = -1;
 $('#charContent').on('click', 'tr.pjInfo', function() {
+    if(memberDetailLoad !== undefined)
+    {
+        memberDetailLoad.abort();
+    }
     if(lastIdClick != $(this).data('id'))
     {
         lastIdClick = $(this).data('id');
@@ -168,26 +173,41 @@ function showMemberDetail(tr, avImg, memeberId)
     var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
-    $.getScript('assets/js/members/memberDetail.jsp?id='+ memeberId, function() {
-        $('.memContent').append('<div class="infoMember"></div>');
-        //Equipo!!!
-        $('.infoMember').append('<div class="itemsMember"></div>');
-        $('.itemsMember').append(renderItem(member));
-            //Floating information
-            $(".itemDetail")
-                .mouseover(function () 
-                {
-                    $(".tooltip-"+ $(this).data("item")).show();
-                })
-                .mouseleave(function () 
-                {
-                    $(".tooltip-"+ $(this).data("item")).hide();
-                });
-        //Status!!!
-        $('.infoMember').append('<div class="statsMember"></div>');
-        $('.statsMember').append(renderStat(member));        
-        $('#memberDetailLoad').remove();
-    });
+    //If member information not exist in this window
+    var memDetail = window['member_'+ memeberId];
+    if(memDetail === undefined )
+    {
+        memberDetailLoad = $.getScript('assets/js/members/memberDetail.jsp?id='+ memeberId, function() {
+            memDetail = window['member_'+ memeberId];
+            prepareRender(memDetail);
+        });
+    }
+    else
+    {
+        prepareRender(memDetail);        
+    }
+}
+
+function prepareRender(mInfo)
+{    
+    $('.memContent').append('<div class="infoMember"></div>');
+    //Equipo!!!
+    $('.infoMember').append('<div class="itemsMember"></div>');
+    $('.itemsMember').append(renderItem(mInfo));
+        //Floating information
+        $(".itemDetail")
+            .mouseover(function () 
+            {
+                $(".tooltip-"+ $(this).data("item")).show();
+            })
+            .mouseleave(function () 
+            {
+                $(".tooltip-"+ $(this).data("item")).hide();
+            });
+    //Status!!!
+    $('.infoMember').append('<div class="statsMember"></div>');
+    $('.statsMember').append(renderStat(mInfo));        
+    $('#memberDetailLoad').remove();
 }
 
 function renderItem(member)
@@ -376,7 +396,7 @@ function putMembers(vMem)
     jQuery.each( vMem, function(i, val) 
     {
         var outForm = 
-                '<tr class="pjInfo" data-id="'+i+'" data-internal_id="'+ val.member_id +'">'+
+                '<tr class="pjInfo pointer" data-id="'+i+'" data-internal_id="'+ val.member_id +'">'+
                     '<td scope="row"><img class="img_profile" src="'+ val.img +'" /></td>'+
                     '<td scope="row" class="character-'+ val.class +'">'+ val.name +'</td>'+
                     '<td scope="row"><img src="assets/img/classes/class_'+ val.class +'.png" style="width: 22px;"/></td>'+
@@ -411,7 +431,7 @@ function runFilter()
     if(gRank_filter !== 0) {
         jQuery.each( visualMember, function(i, val) 
         {
-            if(val.gRank == gRank_select_filter)               
+            if(val.gRank_title == gRank_select_filter)               
                 preMemberGRank.push(val); 
         });
     } else preMemberGRank = visualMember;

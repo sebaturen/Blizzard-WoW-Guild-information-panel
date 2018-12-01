@@ -49,7 +49,7 @@ public class UpdateControl
             try {
                 session.getBasicRemote().sendText("Update is in progress.....");
             } catch (IOException ex) {
-                Logs.saveLog("Fail to send update if is progress messaje "+ ex);
+                Logs.saveLogln("Fail to send update if is progress messaje "+ ex);
             }
         }
         else if (runUpdate)
@@ -84,7 +84,7 @@ public class UpdateControl
                     Update up = new Update();
                     up.updateDynamicAll();
                 } catch (IOException | ParseException | DataException ex) {
-                    Logs.saveLog("fail update...");
+                    Logs.saveLogln("fail update...");
                 }
                 setIsRuning(false);    
                 setRunUpdate(false);

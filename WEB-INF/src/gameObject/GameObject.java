@@ -44,8 +44,8 @@ public abstract class GameObject implements DBStructure
     //Abstract method
     protected abstract void saveInternalInfoObject(JSONObject objInfo);
     public abstract boolean saveInDB();
-    public abstract void setId(String id);
-    public abstract String getId();
+    public abstract void setId(int id);
+    public abstract int getId();
 	
     //Generic function
     /**
@@ -66,10 +66,10 @@ public abstract class GameObject implements DBStructure
                             this.tableStruct,
                             values,
                             this.tableKey +"=?",
-                            new String[] { getId() });
+                            new String[] { getId()+"" });
                     return SAVE_MSG_UPDATE_OK;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLog("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
+                    Logs.saveLogln("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
                     return SAVE_MSG_UPDATE_ERROR;
                 }
             }
@@ -81,18 +81,18 @@ public abstract class GameObject implements DBStructure
                                                 this.tableKey,
                                                 this.tableStruct,
                                                 values);
-                    setId(id);
+                    setId(Integer.parseInt(id));
                     this.isInternalData = true;
                     return SAVE_MSG_INSERT_OK;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLog("Fail to insert '"+ this.getClass() +"' - "+ ex);
+                    Logs.saveLogln("Fail to insert '"+ this.getClass() +"' - "+ ex);
                     return SAVE_MSG_INSERT_ERROR;
                 }
             }
         }
         else
         {
-            Logs.saveLog("Fail to try save!, no data");
+            Logs.saveLogln("Fail to try save!, no data");
         }
         dbConnect.closeConnection();
         return SAVE_MSG_NO_DATA;
@@ -125,7 +125,7 @@ public abstract class GameObject implements DBStructure
                 return false;                
             }
         } catch (DataException|SQLException e) {
-            Logs.saveLog("Error in Load element: "+ e);
+            Logs.saveLogln("Error in Load element: "+ e);
         }
         dbConnect.closeConnection();
         return false;        
@@ -160,7 +160,7 @@ public abstract class GameObject implements DBStructure
                 return false;
             }			
         } catch (DataException|SQLException e) {
-            Logs.saveLog("Error in Load element: "+ e);
+            Logs.saveLogln("Error in Load element: "+ e);
         }
         dbConnect.closeConnection();
         return false;

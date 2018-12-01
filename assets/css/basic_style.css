@@ -221,3 +221,13 @@ p {
   100% { transform: rotate(360deg); }
 }
 /*END-------LOADING SPINNER------------*/
+
+/*-----------------ALTERS--------------*/
+.char-name {
+    /* background-color: rebeccapurple; */
+    width: 150px;
+}
+.char-class {
+    text-align: center;
+}
+/*END------------ALTERS--------------*/

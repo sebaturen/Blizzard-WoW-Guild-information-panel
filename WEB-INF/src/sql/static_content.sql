@@ -106,3 +106,11 @@ CREATE TABLE `raids` (
 INSERT INTO `raids` VALUES (1,'antorus-the-burning-throne','Antorus, the Burning Throne',11);
 INSERT INTO `raids` VALUES (2,'the-emerald-nightmare','The Emerald Nightmare',7);
 INSERT INTO `raids` VALUES (3,'uldir','Uldir',8);
+
+CREATE TABLE `guild_rank` (
+    `id`    INT NOT NULL,
+    `title` VARCHAR(20) NOT NULL,
+    PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+INSERT INTO `guild_rank` VALUES (0, "Guild Master");
+INSERT INTO `guild_rank` VALUES (1, "Officer");

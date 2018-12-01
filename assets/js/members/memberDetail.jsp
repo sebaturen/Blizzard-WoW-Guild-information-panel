@@ -6,8 +6,10 @@
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
 <%@ page import ="com.blizzardPanel.gameObject.Spell" %>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
-var member = {
-<%if(guildMember) { Member member = members.getMember(Integer.parseInt(request.getParameter("id"))); %>
+<%if(guildMember) {
+    int memberID = Integer.parseInt(request.getParameter("id"));
+    Member member = members.getMember(memberID); %>
+var member_<%= memberID %> = {
     'stats': {
         <% CharacterStats mStat = member.getStats(); %>
         'health': '<%= String.format("%,d", mStat.getHealth()) %>', 

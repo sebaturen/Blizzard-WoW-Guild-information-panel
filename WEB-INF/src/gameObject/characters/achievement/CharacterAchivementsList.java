@@ -62,7 +62,7 @@ public class CharacterAchivementsList extends GameObject
     public boolean saveInDB() 
     {
         /* {"id", "category_id", "title", "points", "description", "icon"} */
-        switch (saveInDBObj(new String[] {this.id+"", category.getId(), this.title, this.points +"", this.description, this.icon}))
+        switch (saveInDBObj(new String[] {this.id+"", category.getId()+"", this.title, this.points +"", this.description, this.icon}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
             return true;
@@ -72,10 +72,10 @@ public class CharacterAchivementsList extends GameObject
 
     //Getters and Setters
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getTitle() { return this.title; }
     public int getPoints() { return this.points; }
     public String getDescription() { return this.description; }

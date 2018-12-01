@@ -65,11 +65,11 @@ public class Race extends GameObject
 
     //Getters
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public int getMask() { return this.mask; }
     public String getSide() { return this.side; }
     public String getName() { return this.name; }
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 	
 }

@@ -79,7 +79,7 @@ public class ChallengeGroup extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to load members from challenge group id: "+ this.id);
+            Logs.saveLogln("Fail to load members from challenge group id: "+ this.id);
         }
     }
 
@@ -99,7 +99,7 @@ public class ChallengeGroup extends GameObject
             try {
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         else
@@ -113,7 +113,7 @@ public class ChallengeGroup extends GameObject
             try { //2018-10-17 02:39:00
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
             } catch (ParseException ex) {
-                Logs.saveLog("(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                Logs.saveLogln("(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         this.isData = true;
@@ -143,9 +143,9 @@ public class ChallengeGroup extends GameObject
                             memInGroupId = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                     new String[] { "member_in_group_id" },
                                     "internal_member_id=? AND group_id=?",
-                                    new String[] { m.getId(), this.id +"" } );
+                                    new String[] { m.getId() +"", this.id +"" } );
                         } catch (SQLException ex) {
-                            Logs.saveLog("Fail to get memberInGroupID "+ ex);
+                            Logs.saveLogln("Fail to get memberInGroupID "+ ex);
                         }
                         //Insert or update... if need insert is because not is register :D
                         if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
@@ -153,10 +153,10 @@ public class ChallengeGroup extends GameObject
                             dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                             CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
                                             new String[] { "internal_member_id", "group_id", "spec_id" },
-                                            new String[] { m.getId(), this.id +"", m.getActiveSpec().getId() +"" });
+                                            new String[] { m.getId() +"", this.id +"", m.getActiveSpec().getId() +"" });
                         }
                     } catch (DataException|ClassNotFoundException|SQLException ex) {
-                        Logs.saveLog("Fail to save members in groups: "+ ex);
+                        Logs.saveLogln("Fail to save members in groups: "+ ex);
                     }
                 });
                 return true;
@@ -165,6 +165,8 @@ public class ChallengeGroup extends GameObject
     }
     
     //Getters/Setters
+    @Override
+    public void setId(int id) { this.id = id; }
     public void setTimeDate(Date timDate) { this.timeDate = timDate; }
     public void setTimeHours(int timeHours) { this.timeHours = timeHours; }
     public void setTimeMinutes(int timeMinutes) { this.timeMinutes = timeMinutes; }
@@ -173,9 +175,7 @@ public class ChallengeGroup extends GameObject
     public void setPositive(boolean isPositive) { this.isPositive = isPositive; }
     public void addMember(Member mb) { members.add(mb); }
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
-    @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public Date getTimeDate() { return this.timeDate; }
     public int getTimeHour() { return this.timeHours; }
     public int getTimeMinutes() { return this.timeMinutes; }

@@ -37,13 +37,13 @@ public class UpdateRunningCrontab
                     blizzUp.moveHistoryAH();
                     break;
                 default:
-                    Logs.saveLog("Not update parametter detected!");
+                    Logs.saveLogln("Not update parametter detected!");
                     break;
             }
         } 
         catch (IOException|ParseException|DataException ex)
         {
-            Logs.saveLog("Cant create a Data Update Object! "+ ex);
+            Logs.saveLogln("Cant create a Data Update Object! "+ ex);
         }
     }
 }

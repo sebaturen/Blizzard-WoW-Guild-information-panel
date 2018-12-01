@@ -11,14 +11,6 @@ CREATE TABLE `guild_info` (
     UNIQUE (`name`, `realm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE `guild_rank` (
-    `id`    INT NOT NULL,
-    `title` VARCHAR(20) NOT NULL,
-    PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-INSERT INTO `guild_rank` (`id`,`title`) VALUES (0, "Guild leader");
-INSERT INTO `guild_rank` (`id`,`title`) VALUES (1, "Officer");
-
 CREATE TABLE `users` (
     `id`            INT NOT NULL AUTO_INCREMENT,
     `battle_tag`    varchar(50),

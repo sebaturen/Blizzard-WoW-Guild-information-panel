@@ -91,7 +91,7 @@ public class ItemMember extends GameObject
                     this.azeritePower = (JSONArray) parser.parse(azerita);
                 }
             } catch (ParseException ex) {
-                Logs.saveLog("Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
+                Logs.saveLogln("Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
             }
         }
         else
@@ -142,11 +142,11 @@ public class ItemMember extends GameObject
     
     //Setters and Getters
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setMemberId(int id) { this.memberId = id; }
 
     @Override
-    public String getId() { return this.id+""; }
+    public int getId() { return this.id; }
     public String getPosition() { return this.position; }
     public int getIlevel() { return ilevel; }
     public Item getItem() { return this.item; }
@@ -173,7 +173,7 @@ public class ItemMember extends GameObject
                             if (up == null) up = new Update();  
                             azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
                         } catch (DataException | IOException | ParseException ex) {
-                            Logs.saveLog("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
+                            Logs.saveLogln("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
                         }
                     }
                     azPower[j] = azPowerD;

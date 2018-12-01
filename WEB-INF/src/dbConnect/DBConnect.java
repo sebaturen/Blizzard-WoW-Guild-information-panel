@@ -67,7 +67,7 @@ public class DBConnect implements DBConfig
             String error = "Fail to generate DB Connection: "+ e;
             this.isErrorDB = true;
             this.errorMsg = error;
-            Logs.saveLog(error);
+            Logs.saveLogln(error);
             statusConnect = false;
         }        
     }
@@ -145,11 +145,11 @@ public class DBConnect implements DBConfig
             int columnsNumber = rsmd.getColumnCount();
             while (resultSet.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) Logs.saveLog(",  ", false);
+                    if (i > 1) Logs.saveLog(",  ");
                     String columnValue = resultSet.getString(i);
-                    Logs.saveLog(columnValue + " " + rsmd.getColumnName(i), false);
+                    Logs.saveLog(columnValue + " " + rsmd.getColumnName(i));
                 }
-                Logs.saveLog("");
+                Logs.saveLogln("");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
@@ -242,7 +242,7 @@ public class DBConnect implements DBConfig
                                         stockArr);
                     if(v.isEmpty()) 
                     {
-                        Logs.saveLog("FAIL TO GET ID! "+ this.pstmt);
+                        Logs.saveLogln("FAIL TO GET ID! "+ this.pstmt);
                         System.exit(-1);
                         return null;
                     }

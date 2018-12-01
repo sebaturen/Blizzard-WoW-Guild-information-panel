@@ -30,10 +30,10 @@ if(members.getMembersList() != null)
         {
             iLevel = String.format("%.2f", member.getItemLevel());
             race = member.getRace().getName();        
-            if (!guildRank.contains(member.getRank()))
+            if (!guildRank.contains(member.getRank().getId()))
             {
-                guildRank.add(member.getRank());
-                %>guildRanks.push('<%= member.getRank() %>');<%
+                guildRank.add(member.getRank().getId());
+                %>guildRanks.push('<%= member.getRank().getTitle() %>');<%
             }
             if (!mClass.contains(className)) 
             {
@@ -56,7 +56,8 @@ if(members.getMembersList() != null)
             'img': '<%= member.getThumbnailURL() %>',
             'rol': '<%= member.getActiveSpec().getRole() %>', 
             'member_id': <%= member.getId() %>, 
-            'gRank': <%= member.getRank() %>,
+            'gRank_id': <%= member.getRank().getId() %>,
+            'gRank_title': '<%= member.getRank().getTitle() %>',
             'iLevel': '<%= iLevel %>',
             'race': '<%= race %>',
         });

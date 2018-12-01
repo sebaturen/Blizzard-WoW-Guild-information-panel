@@ -1,10 +1,12 @@
 <%@include file="../../../includes/globalObject.jsp" %>
-<%if(guildMember) {%>
+<%if(guildMember) {
+    int itemID = Integer.parseInt(request.getParameter("id"));
+%>
 <jsp:useBean id="auctionHouse" class="com.blizzardPanel.viewController.AuctionHouse" scope="session"/>
 <%@ page import ="com.blizzardPanel.gameObject.AuctionItem" %>
 <%@ page import ="java.util.List" %>
-var auctions = [
-<%  List<AuctionItem> aucItems = auctionHouse.getAucItem(Integer.parseInt(request.getParameter("id")));
+var auctions_<%= itemID %> = [
+<%  List<AuctionItem> aucItems = auctionHouse.getAucItem(itemID);
     int quantity = 0;
     int stacks = 0;
     long stackPrice = 0;

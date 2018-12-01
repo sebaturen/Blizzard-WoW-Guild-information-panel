@@ -86,7 +86,7 @@ public class Raid extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLog("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
+            Logs.saveLogln("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
         } 
     }
     
@@ -142,12 +142,12 @@ public class Raid extends GameObject
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setTotalBoss(int total) { this.totalBoss = total; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getName() { return this.name; }
     public String getSlug() { return this.slug; }
     public int getTotalBoss() { return this.totalBoss; }

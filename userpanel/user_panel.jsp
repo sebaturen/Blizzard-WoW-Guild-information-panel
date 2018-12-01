@@ -27,7 +27,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                     out.write("<br><a href='login.jsp'><button type='button' class='btn btn-info btn-sm'>Reload</button></a>");
                 }
                 //User character info~
-                List<Member> memberChars = user.getCharacterList();
+                List<Member> memberChars = user.getCharacters();
                 if(memberChars.size() > 0)
                 {%>
                     <table class="table table-dark character-tab">
@@ -53,10 +53,10 @@ else //only show content if is redirect from login.jsp and the user is valid
                                 <td><%= m.getRealm() %></td>
                                 <td><img src="assets/img/icons/Logo-<%= (m.getFaction() == 0)? "alliance":"horde" %>.png" style="width: 22px;"/></td>
                             </tr>
-                          <%}%>
+                          <%}//end foreach member m%>
                         </tbody>
                     </table>
-              <%}%>
+              <%} //close if members character more 0%>
             <form method="post">
                 <input name="logOut" type="hidden" value="true"/>
                 <button type="submit" class="btn btn-primary">Log out</button>

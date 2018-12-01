@@ -37,7 +37,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a last dynamic update");
+            Logs.saveLogln("Fail to get a last dynamic update");
         }
         return out;
     }
@@ -59,7 +59,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get a auction item id "+ itemId +" - "+ e);
+            Logs.saveLogln("Fail to get a auction item id "+ itemId +" - "+ e);
         }
         return auItem;
     }
@@ -82,7 +82,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLog("Fail to get items name like '"+ name +"' - "+ e);
+            Logs.saveLogln("Fail to get items name like '"+ name +"' - "+ e);
         }
         return items;
     }

@@ -8,7 +8,6 @@ package com.blizzardPanel.gameObject.guild;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
@@ -50,11 +49,11 @@ public class New extends GameObject
             timestamp = Update.parseUnixTime(timestamp);
             timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
         } catch (ParseException ex) {
-            Logs.saveLog("Fail to convert date from guild news! "+ this.id +" - "+ ex);
+            Logs.saveLogln("Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
         //Load only if member have a info
         if(loadMember.isInternalData())
-            loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId() });
+            loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId()+"" });
     }
     
     public New(JSONObject inf)
@@ -80,7 +79,7 @@ public class New extends GameObject
         try { //2018-10-17 02:39:00
             this.timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStamp);
         } catch (ParseException ex) {
-            Logs.saveLog("Fail to convert date from guild news! "+ this.id +" - "+ ex);
+            Logs.saveLogln("Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
         this.type = objInfo.get("type").toString();
         this.context = objInfo.get("context").toString();
@@ -127,36 +126,36 @@ public class New extends GameObject
                 if(this.id != 0)
                 {
                     dbStruct = new String[] {"id", "type", "member_id", "timestamp", "context", "item_id"};                    
-                    val = new String[] {this.id +"", this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.item.getId() };
+                    val = new String[] {this.id +"", this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.item.getId()+"" };
                 }
                 else
                 {
                     dbStruct = new String[] {"type", "member_id", "timestamp", "context", "item_id"};     
-                    val = new String[] { this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.item.getId() };               
+                    val = new String[] { this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.item.getId()+"" };               
                 }
                 break;
             case "playerAchievement":
                 if(this.id != 0)
                 {
                     dbStruct = new String[] {"id", "type", "member_id", "timestamp", "context", "player_achievement_id"};
-                    val = new String[] {this.id +"", this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.cAchievement.getId() };
+                    val = new String[] {this.id +"", this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.cAchievement.getId()+"" };
                 }
                 else
                 {
                     dbStruct = new String[] {"type", "member_id", "timestamp", "context", "player_achievement_id"};
-                    val = new String[] {this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.cAchievement.getId() };
+                    val = new String[] {this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.cAchievement.getId()+"" };
                 }
                 break;
             case "guildAchievement":
                 if(this.id != 0)
                 {
                     dbStruct = new String[] {"id", "type", "member_id", "timestamp", "context", "guild_achievement_id"};
-                    val = new String[] {this.id +"", this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.gAchievement.getId() };
+                    val = new String[] {this.id +"", this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.gAchievement.getId()+"" };
                 }
                 else
                 {                    
                     dbStruct = new String[] {"type", "member_id", "timestamp", "context", "guild_achievement_id"};
-                    val = new String[] {this.type, this.member.getId(), getDBDate(this.timeStamp), this.context, this.gAchievement.getId() };
+                    val = new String[] {this.type, this.member.getId()+"", getDBDate(this.timeStamp), this.context, this.gAchievement.getId()+"" };
                 }
                 break;
         }
@@ -174,10 +173,10 @@ public class New extends GameObject
     }
 
     @Override
-    public void setId(String id) { this.id = Integer.parseInt(id); }
+    public void setId(int id) { this.id = id; }
 
     @Override
-    public String getId() { return this.id +""; }
+    public int getId() { return this.id; }
     public String getType() { return this.type; }
     public Member getMember() { return this.member; }
     public String getContext() { return this.context; }

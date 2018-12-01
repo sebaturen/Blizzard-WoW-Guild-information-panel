@@ -29,3 +29,7 @@
 .suggest_item:hover {
     background-color: #e4dcdc;
 }
+.itemSuggestLoad {
+    width: 20px;
+    height: 20px;
+}
