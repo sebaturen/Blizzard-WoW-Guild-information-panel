@@ -17,6 +17,38 @@ p {
 .bold {
     font-weight: bold;
 }
+/*-------FONTS--------------*/
+@font-face {
+    font-family: "LifeCraft";
+    src: url("./../font/LifeCraft_Font.ttf");
+}
+@font-face {
+      font-family: 'iconset';
+      src: url("./../font/iconset.ttf");
+      font-weight: normal;
+      font-style: normal;
+}
+.artOfWar-icon {
+    font-family: "iconset";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    /* opacity: .8; */
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    margin-left: .2em;
+    /* font-size: 120%; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+/*END----FONTS--------------*/
 /*-------GENERAL------------*/
 .small_title {
     /*text-align: center;*/
@@ -34,7 +66,7 @@ p {
     z-index: -1;
     background-size: cover;
     background-position: center center;
-    background-image: url("../img/background/BFA (21).jpg");
+    background-image: url("./../img/background/BFA (21).jpg");
 }
 .pointer {
     cursor: pointer;
@@ -53,24 +85,20 @@ p {
 }
 .moneygold {
     padding-right: 15px;
-    background-image: url("../img/icons/money-gold.gif");
+    background-image: url("./../img/icons/money-gold.gif");
 }
 .moneysilver {
     padding-right: 15px;
-    background-image: url("../img/icons/money-silver.gif");
+    background-image: url("./../img/icons/money-silver.gif");
 }
 .moneycopper {
     padding-right: 15px;
-    background-image: url("../img/icons/money-copper.gif");
+    background-image: url("./../img/icons/money-copper.gif");
 }
 .alert-danger {
     color: #721c24;
     background-color: #bf5861;
     border-color: #ff001b;
-}
-@font-face {
-    font-family: "LifeCraft";
-    src: url("../font/LifeCraft_Font.ttf");
 }
 .warcraft_font {
     font-family: "LifeCraft";
@@ -237,3 +265,9 @@ p {
     font-size: 0.8em;
 }
 /*END------------GUILD_RANK--------------*/
+
+/*-----------------USER PANEL--------------*/
+.main_char:hover {
+    color: #ffd100;
+}
+/*-----------------USER PANEL--------------*/

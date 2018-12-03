@@ -29,8 +29,9 @@
                                     <% //Get img from speck
                                     String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                     String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                    String mainClass = ((m.isMain())? "<i class='artOfWar-icon'>&#xe801;</i>":"");
                                     %>
-                                    <td class="character-<%= className %> char-name"><%= m.getName() %></td>
+                                    <td class="character-<%= className %> char-name"><%= mainClass %> <%= m.getName() %></td>
                                     <td class="char-class"><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                     <td><%= m.getLevel() %></td>
                                     <td class="char-name"><%= m.getRank().getTitle() %></td>

@@ -23,7 +23,7 @@ public class Alters
         try {
             JSONArray alters = dbConnect.select(User.USER_TABLE_NAME,
                     new String[] { "id" },
-                    "guild_rank >= ?",
+                    "guild_rank >= ? ORDER BY guild_rank ASC",
                     new String[] { "0" });
             
             users = new User[alters.size()];

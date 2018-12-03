@@ -8,7 +8,7 @@
     text-align: center;
 }
 .log_artofwar img {
-    width: 100%;
+    max-width: 100%;
 }
 .newDetail {
     /*margin-left: 53px;*/

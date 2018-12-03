@@ -59,6 +59,7 @@ public class Member extends GameObject
     private List<Spec> specs = new ArrayList<>();
     private List<ItemMember> items = new ArrayList<>();
     private CharacterStats stats;
+    private boolean isMain = false;
     
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
@@ -419,6 +420,7 @@ public class Member extends GameObject
     public long getAchievementPoints() { return this.achievementPoints; }
     public String getThumbnail() { return this.thumbnail; }
     public CharacterStats getStats() { return this.stats; }
+    public boolean isMain() { return this.isMain; }
     public Rank getRank() { return this.gRank; }
     public String getThumbnailURL() 
     {
@@ -480,6 +482,7 @@ public class Member extends GameObject
     }
 
     //Setters
+    public void setIsMain(boolean v) { this.isMain = v; }
     public void setSpec(int id) { setSpec(id, null, null); }
     public void setSpec(String sName, String sRole) { setSpec(-1, sName, sRole); }
     public void setSpec(int id, String sName, String sRole)

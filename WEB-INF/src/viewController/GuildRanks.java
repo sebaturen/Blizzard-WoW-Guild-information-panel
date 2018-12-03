@@ -11,8 +11,6 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.gameObject.characters.Member;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

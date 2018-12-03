@@ -125,7 +125,7 @@ public abstract class GameObject implements DBStructure
                 return false;                
             }
         } catch (DataException|SQLException e) {
-            Logs.saveLogln("Error in Load element: "+ e);
+            Logs.saveLogln("Error in Load element: ("+ this.tableDB +") "+ e);
         }
         dbConnect.closeConnection();
         return false;        

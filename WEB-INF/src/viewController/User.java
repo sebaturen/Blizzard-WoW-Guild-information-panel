@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -28,13 +30,14 @@ public class User
     //User
     public static final String USER_TABLE_NAME = "users";
     public static final String USER_TABLE_KEY = "id";
-    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "wowinfo"};
+    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "main_character", "wowinfo"};
     
     //Atribute
     private int id;
     private String battleTag;
     private String accessToken;
     private int guildRank = -1;
+    private int idMainChar;
     private boolean isLogin = false;
     private boolean isCharsReady = false;
     private List<Member> characters;
@@ -51,6 +54,19 @@ public class User
         loadFromDB(id);
     }
     
+    private void loadUser(JSONObject userInfo)
+    {
+        this.id = (Integer) userInfo.get("id");
+        this.battleTag = userInfo.get("battle_tag").toString();
+        this.accessToken = userInfo.get("access_token").toString();
+        this.guildRank = (Integer) userInfo.get("guild_rank");
+        this.isLogin = true;
+        if(userInfo.get("main_character") != null)
+            this.idMainChar = (Integer) userInfo.get("main_character");
+        loadCharacters();
+        this.isCharsReady = true;
+    }
+    
     private void loadFromDB(int id)
     {
         try {
@@ -61,13 +77,7 @@ public class User
             if(info.size() > 0)
             {
                 JSONObject userInfo = (JSONObject) info.get(0);
-                this.id = (Integer) userInfo.get("id");
-                this.battleTag = userInfo.get("battle_tag").toString();
-                this.accessToken = userInfo.get("access_token").toString();
-                this.guildRank = (Integer) userInfo.get("guild_rank");
-                this.isLogin = true;
-                loadCharacters();
-                this.isCharsReady = true;
+                loadUser(userInfo);
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to load user from ID "+ id +" - "+ ex);
@@ -81,17 +91,13 @@ public class User
         if(this.isLogin && !forceCheck) return this.isLogin;
         try {
             JSONArray validUser = dbConnect.select(User.USER_TABLE_NAME,
-                    new String[] {"id", "battle_tag", "access_token", "guild_rank"},
+                    USER_TABLE_STRUCTURE,
                     "battle_tag=?",
                     new String[] {battleTag});
             if(validUser.size() > 0)
             {
                 JSONObject infoUser = (JSONObject) validUser.get(0);
-                this.id = (Integer) infoUser.get("id");
-                this.battleTag = infoUser.get("battle_tag").toString();
-                this.guildRank = (Integer) infoUser.get("guild_rank");
-                this.isLogin = true;
-                loadCharacters();
+                loadUser(infoUser);
                 return true;
             }
         } catch (SQLException | DataException ex) {
@@ -231,7 +237,11 @@ public class User
             {
                 int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");
                 Member mb = new Member(internalID);
-                if(mb.isData()) this.characters.add(mb);
+                if(mb.isData())
+                {
+                    if(mb.getId() == this.idMainChar) mb.setIsMain(true);
+                    this.characters.add(mb);
+                }
             }
         } catch (SQLException|DataException ex) {
             Logs.saveLogln("Error get a character user info "+ this.id +" - "+ ex);
@@ -243,5 +253,32 @@ public class User
     public List<Member> getCharacters() { if(this.characters == null) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
     private void setIsCharsReady(boolean r) { this.isCharsReady = r; }
+    public boolean setMainCharacter(int id) 
+    {
+        if(this.characters == null) loadCharacters();
+        boolean stateChange = false;
+        //valid if this id is from this member and remove old main Character
+        for(Member m : this.characters) 
+        {
+            if(m.getId() == id && m.isGuildMember())
+            {
+                try {
+                    m.setIsMain(true);
+                    dbConnect.update(USER_TABLE_NAME,
+                            new String[] {"main_character"},
+                            new String[] {id+""}, 
+                            USER_TABLE_KEY+"=?",
+                            new String[] {this.id+""});
+                    stateChange = true;
+                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                    Logs.saveLogln("Fail to save main character from user - "+ ex);
+                }
+            }
+            else
+                m.setIsMain(false);
+        }
+        return stateChange;
+        
+    }
     
 }

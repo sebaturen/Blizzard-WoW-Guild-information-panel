@@ -14,6 +14,7 @@ else //only show content if is redirect from login.jsp and the user is valid
     <head>
         <title><%= guild_info.getName() %> - User Panel</title>
         <%@include file="../includes/header.jsp" %>
+        <script src="assets/js/user_panel.js"></script>
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>
@@ -33,11 +34,12 @@ else //only show content if is redirect from login.jsp and the user is valid
                     <table class="table table-dark character-tab">
                         <thead>
                             <tr>
+                                <th scope="col">Main</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Spec</th>
                                 <th scope="col">Level</th>
                                 <th scope="col">Server</th>
-                                <th scope="col"></th> 
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,7 +48,9 @@ else //only show content if is redirect from login.jsp and the user is valid
                                 <% //Get img from speck
                                 String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
                                 String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                String mainClassCode = (m.isMain())? "&#xe801;":"&#xe800;";
                                 %>
+                                <td><i class="main_char artOfWar-icon pointer" data-member_id="<%= m.getId() %>"><%= mainClassCode %></i></td>
                                 <td class="character-<%= className %>"><%= m.getName() %></td>
                                 <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 <td><%= m.getLevel() %></td>

@@ -3,7 +3,7 @@
 <%
 if(!guildMember)
 {  
-    response.sendRedirect("login.jsp?rdir="+URLEncoder.encode("userpanel/settings.jsp", "UTF-8"));
+    response.sendRedirect("login.jsp?rdir="+URLEncoder.encode("userpanel/create_poll.jsp", "UTF-8"));
 }
 else
 {
@@ -23,15 +23,7 @@ else
     <body>
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
-            <p>Update all page information (re-load all from Blizzard)</p>
-            <a href='blizzard_update/update_panel.jsp'>
-                <button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button>
-            </a>
-            <br><br>
-            <p>Setting Guild Ranks</p>
-            <a href='guildRank/guild_rank.jsp'>
-                <button type='submit' class='btn btn-outline-warning btn-sm'>Guild Rank</button>
-            </a>
+            En construccion
         </div>
     </body>
 </html>

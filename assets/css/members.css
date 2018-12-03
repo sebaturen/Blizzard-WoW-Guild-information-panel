@@ -68,7 +68,7 @@
     display: none;
     position: fixed;
     overflow: hidden;
-    background-image: url('../img/tooltip.png');
+    background-image: url('./../img/tooltip.png');
 }
 .tooltipDesc {
     text-align: left !important;

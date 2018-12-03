@@ -12,12 +12,14 @@ CREATE TABLE `guild_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `users` (
-    `id`            INT NOT NULL AUTO_INCREMENT,
-    `battle_tag`    varchar(50),
-    `access_token`  varchar(50),
-    `guild_rank`    TINYINT DEFAULT -1,
-    `wowinfo`       TINYINT(1) DEFAULT 0,
+    `id`                INT NOT NULL AUTO_INCREMENT,
+    `battle_tag`        varchar(50),
+    `access_token`      varchar(50),
+    `guild_rank`        TINYINT DEFAULT -1,
+    `main_character`    INT,
+    `wowinfo`           TINYINT(1) DEFAULT 0,
     PRIMARY KEY(id),
+    FOREIGN KEY(main_character) REFERENCES gMembers_id_name(internal_id),
     UNIQUE(battle_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -227,3 +229,38 @@ CREATE TABLE `auction_history` (
     PRIMARY KEY (id),
     FOREIGN KEY(item) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `polls` (
+    `id`            INT NULL AUTO_INCREMENT,
+    `user_id`       INT NOT NULL,
+    `poll_question` TEXT NOT NULL,
+    `min_rank`      INT,
+    `multi_select`  TINYINT(1) NOT NULL,
+    `can_add_more_option`  TINYINT(1) NOT NULL,
+	`start_date`	DATETIME NOT NULL,
+	`end_date`	    DATETIME,
+    PRIMARY KEY (id),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(min_rank) REFERENCES guild_rank(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `poll_options` (
+    `id`         INT NOT NULL AUTO_INCREMENT,
+    `poll_id`    INT NOT NULL,
+    `option_txt` TINYTEXT NOT NULL,
+    `owner_id`   INT NOT NULL,
+    `date`       DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY(poll_id) REFERENCES polls(id),
+    FOREIGN KEY(owner_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `poll_option_result` (
+    `id`             INT NOT NULL AUTO_INCREMENT,
+    `poll_option_id` INT NOT NULL,
+    `owner_id`       INT NOT NULL,
+    `date`           DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY(owner_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

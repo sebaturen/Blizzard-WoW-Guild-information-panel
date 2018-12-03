@@ -1,11 +1,19 @@
 <%@include file="../../includes/globalObject.jsp" %>
+<%@ page import ="java.net.URLEncoder" %>
 <%
-if(user.getGuildRank() != 0 && user.getGuildRank() != 1)
-{//Validate user is Guild Lider or Officer %><%@ page import ="java.net.URLEncoder" %><%
+if(!guildMember)
+{  
     response.sendRedirect("../../login.jsp?rdir="+URLEncoder.encode("userpanel/guildRank/guild_rank.jsp", "UTF-8"));
 }
 else
-{%>
+{
+    if(user.getGuildRank() != 0 && user.getGuildRank() != 1)
+    {//Validate user is Guild Lider or Officer 
+        out.write("Only Guild Leader or Officers can access from this page.");
+    }
+    else
+    {
+%>
 <%@ page import ="com.blizzardPanel.gameObject.guild.Rank" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import = "java.util.Map" %>
@@ -53,4 +61,4 @@ else
         </div>
     </body>
 </html>
-<%}%>
+<%}/*if is guild leader or officer*/}/*if is guild member*/%>
