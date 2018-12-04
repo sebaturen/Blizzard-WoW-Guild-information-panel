@@ -18,12 +18,16 @@ public class GuildRanks
 {    
     private final DBConnect dbConnect = new DBConnect();
     
-    public Rank[] getRanks()
+    public Rank[] getRanks( ) { return getRanks(true); }
+    public Rank[] getRanks(boolean orderStat)
     {
+        String order = (orderStat)? "ASC":"DESC";
         Rank[] ranks = null;
         try {
             JSONArray rankDB = dbConnect.select(Rank.GUILD_RANK_TABLE_NAME,
-                    new String[] { Rank.GUILD_RANK_TABLE_KEY });
+                    new String[] { Rank.GUILD_RANK_TABLE_KEY },
+                    "1=? ORDER BY id "+ order,
+                    new String[] {"1"});
             ranks = new Rank[rankDB.size()];
             for(int i = 0; i < rankDB.size(); i++)
             {

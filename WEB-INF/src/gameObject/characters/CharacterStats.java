@@ -78,7 +78,7 @@ public class CharacterStats extends GameObject
     public CharacterStats(int memberId)
     {
         super(STATUS_MEMBER_TABLE_NAME, STATUS_MEMBER_TABLE_KEY, STATUS_MEMBER_TABLE_STRUCTURE);
-        loadFromDB(memberId +"");
+        loadFromDB(memberId);
     }
     
     public CharacterStats(JSONObject info)

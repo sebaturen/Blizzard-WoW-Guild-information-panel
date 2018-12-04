@@ -28,7 +28,7 @@ public class GuildAchievementsList extends GameObject
     public GuildAchievementsList(int id)
     {
         super(GUILD_ACHIEVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIEVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIEVEMENTS_LISTS_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
 
     public GuildAchievementsList(JSONObject exInfo)

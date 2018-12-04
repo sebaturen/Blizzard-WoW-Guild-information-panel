@@ -22,7 +22,7 @@ public class PlayableClass extends GameObject
     public PlayableClass(int id)
     {
         super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
 	
     public PlayableClass(JSONObject exInfo)

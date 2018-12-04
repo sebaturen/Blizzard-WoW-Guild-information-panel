@@ -24,7 +24,7 @@ public class Race extends GameObject
     public Race(int id)
     {
         super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
 
     public Race(JSONObject exInfo)

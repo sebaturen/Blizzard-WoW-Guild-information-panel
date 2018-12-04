@@ -23,7 +23,7 @@ public class Stat extends GameObject
     public Stat(int id)
     {
         super(STATS_TABLE_NAME, STATS_TABLE_KEY, STATS_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
 
     @Override

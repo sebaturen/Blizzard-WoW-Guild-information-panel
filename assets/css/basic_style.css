@@ -50,6 +50,11 @@ p {
 }
 /*END----FONTS--------------*/
 /*-------GENERAL------------*/
+.right_small_date {
+    font-size: 0.7em;
+    color: #a3a7ab;
+    float: right;
+}
 .small_title {
     /*text-align: center;*/
     font-size: 2em;
@@ -270,4 +275,28 @@ p {
 .main_char:hover {
     color: #ffd100;
 }
-/*-----------------USER PANEL--------------*/
+/*END-----------------USER PANEL--------------*/
+
+/*-----------------CREATE POLL--------------*/
+.col-2 > .form-check-label {
+    margin-left: 0.96rem;
+}
+.addOption {
+    margin-right: 1em;
+}
+/*END-----------------CREATE POLL--------------*/
+
+/*-----------------POLL--------------*/
+.btn_poll_option {
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    padding: 0;
+}
+.poll_options {
+    margin: 1em;
+}
+.poll_options > div {
+    margin-bottom: 0.5em;
+}
+/*END-----------------POLL--------------*/

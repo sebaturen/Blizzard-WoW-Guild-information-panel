@@ -23,7 +23,7 @@ public class Boss extends GameObject
     public Boss(int id)
     {
         super(BOSS_LIST_TABLE_NAME, BOSS_LIST_TABLE_KEY, BOSS_LIST_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
     
     public Boss(String slug)

@@ -27,7 +27,7 @@ public class GuildAchievement extends GameObject
     public GuildAchievement(int ahId)
     {
         super(GUILD_ACHIEVEMENTS_TABLE_NAME, GUILD_ACHIEVEMENTS_TABLE_KEY, GUILD_ACHIEVEMENTS_TABLE_STRUCTURE);
-        loadFromDB(ahId +"");
+        loadFromDB(ahId);
     }
     
     public GuildAchievement(JSONObject info)

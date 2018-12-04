@@ -25,7 +25,7 @@ import com.blizzardPanel.gameObject.guild.New;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
-import com.blizzardPanel.viewController.User;
+import com.blizzardPanel.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;

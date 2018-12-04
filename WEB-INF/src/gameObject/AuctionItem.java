@@ -30,7 +30,7 @@ public class AuctionItem extends GameObject
     public AuctionItem(int auc)
     {
         super(AUCTION_ITEMS_TABLE_NAME, AUCTION_ITEMS_KEY, AUCTION_ITEMS_TABLE_STRUCTURE);
-        loadFromDB(auc +"");
+        loadFromDB(auc);
     }
     
     public AuctionItem(JSONObject info)

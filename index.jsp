@@ -62,7 +62,7 @@
                             <div class="new divder row">
                                 <div class="col-2"><img src="<%= img %>"/></div>
                                 <div class="newDetail col-10">
-                                    <p><%= inf.getMember().getName() %> <span  class="new_date"><%= inf.getTimeStampString() %></span></p>
+                                    <p><%= inf.getMember().getName() %> <span  class="right_small_date"><%= inf.getTimeStampString() %></span></p>
                                     <p class="desc"><%= desc %> <%= inf.getContext() %></p>
                                     <p class="desc"><%= iaDetail %></p>
                                 </div>

@@ -3,7 +3,7 @@
 <%
 if(!guildMember)
 {  
-    response.sendRedirect("login.jsp?rdir="+URLEncoder.encode("userpanel/settings.jsp", "UTF-8"));
+    response.sendRedirect("../login.jsp?rdir="+URLEncoder.encode("userpanel/settings.jsp", "UTF-8"));
 }
 else
 {

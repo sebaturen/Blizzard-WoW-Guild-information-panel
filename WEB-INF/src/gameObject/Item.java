@@ -33,7 +33,7 @@ public class Item extends GameObject
     public Item(int id)
     {
         super(ITEM_TABLE_NAME,ITEM_TABLE_KEY,ITEM_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
     
     public Item(JSONObject inf)

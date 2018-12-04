@@ -40,7 +40,7 @@ public class Challenge extends GameObject
     public Challenge(int id)
     {
         super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
         loadGroups();
     }
     

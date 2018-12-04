@@ -34,7 +34,7 @@ public class RaidDificult extends GameObject
     public RaidDificult(int id)
     {
         super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
     
     public RaidDificult(String name, int raiderId)

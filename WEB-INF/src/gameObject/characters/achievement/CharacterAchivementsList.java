@@ -29,7 +29,7 @@ public class CharacterAchivementsList extends GameObject
     public CharacterAchivementsList(int id)
     {
         super(PLAYER_ACHIEVEMENT_LIST_TABLE_NAME, PLAYER_ACHIEVEMENT_LIST_TABLE_KEY, PLAYER_ACHIEVEMENT_LIST_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
     
     public CharacterAchivementsList(JSONObject info)

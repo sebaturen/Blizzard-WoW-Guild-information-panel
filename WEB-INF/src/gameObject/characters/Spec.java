@@ -35,7 +35,7 @@ public class Spec extends GameObject
     public Spec(int specId)
     {        
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
-        loadFromDB(specId +"");
+        loadFromDB(specId);
     }
     
     public Spec(int memberId, JSONObject specInfo, JSONArray talentsInfo)

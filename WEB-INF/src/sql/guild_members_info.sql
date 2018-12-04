@@ -238,8 +238,10 @@ CREATE TABLE `polls` (
     `min_rank`      INT,
     `multi_select`  TINYINT(1) NOT NULL,
     `can_add_more_option`  TINYINT(1) NOT NULL,
-	`start_date`	DATETIME NOT NULL,
-	`end_date`	    DATETIME,
+    `start_date`    DATETIME NOT NULL,
+    `is_limit_date` TINYINT(1) NOT NULL,     
+    `end_date`	    DATETIME,
+    `isEnable`      TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(min_rank) REFERENCES guild_rank(id)

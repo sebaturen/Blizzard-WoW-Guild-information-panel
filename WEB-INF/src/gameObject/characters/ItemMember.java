@@ -48,7 +48,7 @@ public class ItemMember extends GameObject
     public ItemMember(int id)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
     
     public ItemMember(String position, int memberId)

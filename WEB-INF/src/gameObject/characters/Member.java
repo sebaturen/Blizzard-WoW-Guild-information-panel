@@ -73,7 +73,7 @@ public class Member extends GameObject
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         //Load Character from DB
-        loadFromDB(internalID+"", "gm.internal_id = c.internal_id", true);
+        loadFromDB(internalID, "gm.internal_id = c.internal_id", true);
     }
     
     public Member(String name, String realm)

@@ -32,7 +32,7 @@ public class RaidDificultBoss extends GameObject
     public RaidDificultBoss(int id)
     {
         super(RAID_DIFICULT_BOSSES_TABLE_NAME, RAID_DIFICULT_BOSSES_TABLE_KEY, RAID_DIFICULT_BOSSES_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
     
     public RaidDificultBoss(int bossId, int diffId)

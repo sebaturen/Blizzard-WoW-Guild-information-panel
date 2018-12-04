@@ -98,6 +98,12 @@ public abstract class GameObject implements DBStructure
         return SAVE_MSG_NO_DATA;
     }
     
+    /**
+     * Load from DB use unique values
+     * @param uniqued
+     * @param uniquedValues
+     * @return 
+     */
     protected boolean loadFromDBUniqued(String uniqued, String uniquedValues) { return loadFromDBUniqued(new String[] { uniqued }, new String[] {uniquedValues}); }
     protected boolean loadFromDBUniqued(String[] uniqued, String[] value) { return loadFromDBUniqued(uniqued, value, false);}
     protected boolean loadFromDBUniqued(String[] uniqued, String[] value, boolean disableApostrophe) { return loadFromDBUniqued(uniqued, value, null, disableApostrophe);}
@@ -136,13 +142,13 @@ public abstract class GameObject implements DBStructure
      * @id element identifier (primary key!)
      * @where add a where clause
      */
-    protected boolean loadFromDB(String id) { return loadFromDB(id, null, false); }
-    protected boolean loadFromDB(String id, String andWhere, boolean disableApostrophe)
+    protected boolean loadFromDB(int id) { return loadFromDB(id, null, false); }
+    protected boolean loadFromDB(int id, String andWhere, boolean disableApostrophe)
     {
         try
         {
             String whereInSQL = this.tableKey +"=?";
-            String[] whereValues = {id};
+            String[] whereValues = {id+""};
             if(andWhere != null) whereInSQL += " AND "+ andWhere;
             JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues, disableApostrophe);
 
@@ -176,7 +182,7 @@ public abstract class GameObject implements DBStructure
     //Get/Set method
     public boolean isData() { return this.isData; }
     public boolean isInternalData() { return this.isInternalData; }
-    public void setData(boolean isData) { this.isData = isData; }
+    public void setIsData(boolean isData) { this.isData = isData; }
     public void setTableStructur(String[] tabStruc) { this.tableStruct = tabStruc; }
     public void setIsInternalData(boolean stat) { this.isInternalData = stat; }
 	

@@ -22,7 +22,7 @@ public class Rank extends GameObject
     public Rank(int id)
     {
         super(GUILD_RANK_TABLE_NAME, GUILD_RANK_TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
         if(!this.isInternalData)
         {
             this.id = id;
@@ -40,7 +40,7 @@ public class Rank extends GameObject
     public Rank(int id, boolean validExit)
     {
         super(GUILD_RANK_TABLE_NAME, GUILD_RANK_TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
-        loadFromDB(id+"");      
+        loadFromDB(id);      
     }
 
     @Override

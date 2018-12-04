@@ -3,11 +3,8 @@
  * Desc : User controller~
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.viewController;
+package com.blizzardPanel;
 
-import com.blizzardPanel.DataException;
-import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -19,8 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -41,14 +36,16 @@ public class User
     private boolean isLogin = false;
     private boolean isCharsReady = false;
     private List<Member> characters;
+    private Member mainCharacter;
     
     private final DBConnect dbConnect = new DBConnect();
     
+    //Empty constructor NEED FROM SERVERLET!, becouse the serverlet automaticale instance a object.
     public User()
     {
-        
+        //NOT DELETE NEED FROM SERVERLET!
     }
-        
+            
     public User(int id)
     {
         loadFromDB(id);
@@ -239,7 +236,11 @@ public class User
                 Member mb = new Member(internalID);
                 if(mb.isData())
                 {
-                    if(mb.getId() == this.idMainChar) mb.setIsMain(true);
+                    if(mb.getId() == this.idMainChar) 
+                    {
+                        mb.setIsMain(true);
+                        mainCharacter = mb;
+                    }
                     this.characters.add(mb);
                 }
             }
@@ -248,10 +249,13 @@ public class User
         }
     }
     
+    public int getId() { return this.id; }
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
     public List<Member> getCharacters() { if(this.characters == null) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
+    public Member getMainCharacter() { return this.mainCharacter; }
+    
     private void setIsCharsReady(boolean r) { this.isCharsReady = r; }
     public boolean setMainCharacter(int id) 
     {
@@ -270,6 +274,7 @@ public class User
                             USER_TABLE_KEY+"=?",
                             new String[] {this.id+""});
                     stateChange = true;
+                    this.mainCharacter = m;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
                     Logs.saveLogln("Fail to save main character from user - "+ ex);
                 }
@@ -277,8 +282,19 @@ public class User
             else
                 m.setIsMain(false);
         }
+        if(!stateChange) this.mainCharacter = null;
         return stateChange;
         
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o == this) return true;
+        if(o == null || (this.getClass() != o.getClass())) return false;
+
+        int oId = ((User) o).getId();
+        return (oId == this.id);
     }
     
 }

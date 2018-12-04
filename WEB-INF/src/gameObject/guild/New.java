@@ -38,7 +38,7 @@ public class New extends GameObject
     public New(int id)
     {
         super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
-        loadFromDB(id+"");
+        loadFromDB(id);
     }
     
     public New(String type, String timestamp, String member_name)

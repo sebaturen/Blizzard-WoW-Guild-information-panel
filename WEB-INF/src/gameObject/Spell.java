@@ -28,7 +28,7 @@ public class Spell extends GameObject
     public Spell(int id)
     {
         super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
-        loadFromDB(id +"");   
+        loadFromDB(id);   
     }
     
     public Spell(JSONObject inf)

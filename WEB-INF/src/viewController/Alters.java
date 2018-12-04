@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
+import com.blizzardPanel.User;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;

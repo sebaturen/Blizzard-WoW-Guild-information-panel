@@ -44,7 +44,8 @@ else
         <div class="container fill">
             <p>List of ranks detected</p>
             <form id='formRanks' method="post">
-            <% for(Rank r : ranks.getRanks()){ %>
+            <%  if(ranks.getRanks() != null) {
+                for(Rank r : ranks.getRanks()){ %>
                 <div class="form-group">
                     <label><%= r.getTitle() %> (<%= r.getId() %>)</label>
                     <input class="form-control" type="text" value="<%= r.getTitle() %>" name="title_<%= r.getId() %>" <%= (r.getId() == 0 || r.getId() == 1)? "disabled":"" %>/>
@@ -54,7 +55,7 @@ else
                         <span class="character-<%= clasName %> mem-name"><%= m.getName() %></span>,
                     <%} //end foreach members %>
                 </div>
-          <%}//end foreach ranks%>
+          <%}/*end foreach ranks*/ } /*End if is getRanks null*/%>
                 <input type="hidden" value="true" name="save_apply" />
                 <button type="submit" class="btn btn-primary">Save change</button>
             </form>

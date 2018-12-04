@@ -24,7 +24,7 @@ public class CharacterAchivementsCategory extends GameObject
     public CharacterAchivementsCategory(int id)
     {
         super(PLAYER_ACHIEVEMENT_CATEGORY_TABLE_NAME, PLAYER_ACHIEVEMENT_CATEGORY_TABLE_KEY, PLAYER_ACHIEVEMENT_CATEGORY_TABLE_STRUCTURE);
-        loadFromDB(id +"");
+        loadFromDB(id);
     }
     
     public CharacterAchivementsCategory(JSONObject info)

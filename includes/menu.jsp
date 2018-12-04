@@ -30,8 +30,8 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 <li class="nav-item <% out.write((currentPath.equals("auction_house.jsp"))? "active":""); %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp">Auction House</a>
                 </li>
-                <li class="nav-item <% out.write((currentPath.equals("poll.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/poll.jsp">Poll</a>
+                <li class="nav-item <% out.write((currentPath.equals("polls.jsp"))? "active":""); %>">
+                    <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp">Polls</a>
                 </li>
             <% } %>
             <li class="nav-item">

@@ -32,7 +32,7 @@ public class Raid extends GameObject
     public Raid(int id)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
-        loadFromDB(id +"");        
+        loadFromDB(id);        
     }
     
     public Raid(String slug)
