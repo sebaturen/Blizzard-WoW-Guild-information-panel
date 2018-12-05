@@ -20,7 +20,6 @@
             <div id="AH_searchSection">                
                 <div class="form-group">
                     <div id="itemSearchImag"></div>
-                    <div id="itemSearchGraph"><canvas id="myChart" width="400" height="400"></canvas></div>
                     <label>Item name:</label>
                     <input class="form-control" type="text" value="" id="itemName"/>
                     <div id="itemsSuggested" style="display: none;"></div>

@@ -3,7 +3,7 @@
 <%
 if(!guildMember)
 {  
-    response.sendRedirect("../login.jsp?rdir="+URLEncoder.encode("userpanel/create_poll.jsp", "UTF-8"));
+    response.sendRedirect("../login.jsp?rdir="+URLEncoder.encode("userpanel/poll_create.jsp", "UTF-8"));
 }
 else
 {
@@ -102,7 +102,7 @@ else
                         </div>
                     </div>
                     <div class="row form-group justify-content-end">
-                        <button type="button" class="col-1 btn btn-success addOption">+ Option</button>                        
+                        <button type="button" class="col-3 btn btn-success addOption">+ Option</button>
                     </div>
                 </div>
                 <!-- Settings -->

@@ -9,6 +9,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.User;
+import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;
 import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
@@ -129,6 +130,19 @@ public class Poll extends GameObject
         return false;
     }
     
+    public boolean removeOptionDB(int id)
+    {
+        for(PollOption opt : this.options)
+        {
+            if(opt.getId() == id)
+            {
+                this.options.remove(opt);
+                return opt.removeOption();
+            }
+        }
+        return false;
+    }
+    
     //Getters and Setters
     @Override
     public int getId() { return this.id; }
@@ -138,6 +152,14 @@ public class Poll extends GameObject
     public String getStartDate() { return this.startDate; }
     public String getEndDate() { return this.endDate; }
     public List<PollOption> getOptions() { return this.options; }
+    public PollOption getOption(int id) 
+    {
+        for(PollOption opt : this.options)
+        {
+            if(opt.getId() == id) return opt;
+        }
+        return null;
+    }
     public boolean isMultiSelect() { return this.multiSelect; }
     public boolean isCanAddMoreOptions() { return this.canAddMoreOptions; }
     public boolean isEnable() 
@@ -174,5 +196,42 @@ public class Poll extends GameObject
     public void setEndDate(String endDate) { this.endDate = endDate; }
     public void setIsEnable(boolean isEnable) { this.isEnable = isEnable; }
     public void addOption(PollOption op) { this.options.add(op); }
+    public int addOption(String s, User u) 
+    {
+        PollOption addOption = new PollOption();
+        addOption.setPollId(this.id);
+        addOption.setOptionText(s);
+        addOption.setOwner(u);
+        addOption.setDate(Update.getCurrentTimeStamp());
+        addOption.setIsData(true);
+        addOption.saveInDB();
+        addOption.addResult(u);
+        this.options.add(addOption);
+        return addOption.getId();
+    }
+    
+    public boolean addResult(int optId, User u)
+    {
+        for(PollOption opt : this.options)
+        {
+            if(opt.getId() == optId)
+            {
+                return opt.addResult(u);
+            }
+        }
+        return false;
+    }
+    
+    public boolean removeResult(int optId, User u)
+    {
+        for(PollOption opt : this.options)
+        {
+            if(opt.getId() == optId)
+            {
+                return opt.removeResult(u);
+            }
+        }
+        return false;
+    }
     
 }

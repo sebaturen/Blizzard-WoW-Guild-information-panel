@@ -8,6 +8,7 @@ package com.blizzardPanel.poll;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
+import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
@@ -25,6 +26,16 @@ public class PollOptionResult extends GameObject
     private int pollOptionId;
     private User owner;
     private String date;   
+    
+    public PollOptionResult(int pollOption, User owner)
+    {
+        super(POLL_OPTION_RESULTS_TABLE_NAME, POLL_OPTION_RESULTS_TABLE_KEY, POLL_OPTION_RESULTS_TABLE_STRUCTURE);
+        this.pollOptionId = pollOption;
+        this.owner = owner;
+        this.date = Update.getCurrentTimeStamp();
+        this.isData = true;
+        saveInDB();
+    }
     
     public PollOptionResult(int id)
     {
@@ -81,7 +92,7 @@ public class PollOptionResult extends GameObject
     public void setPollOptionId(int id) { this.pollOptionId = id; }
     public void setOwner(User u) { this.owner = u; }
     public void setDate(String s) { this.date = s; }
-
+    
     
     
 }

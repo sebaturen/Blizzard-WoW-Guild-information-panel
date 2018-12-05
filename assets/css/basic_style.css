@@ -287,16 +287,24 @@ p {
 /*END-----------------CREATE POLL--------------*/
 
 /*-----------------POLL--------------*/
-.btn_poll_option {
+.btn_poll_option, btn_poll_option_delete {
     border-radius: 50%;
-    height: 25px;
-    width: 25px;
+    height: 31px;
+    width: 31px;
     padding: 0;
+}
+.deleteOption {
+    float: right;
 }
 .poll_options {
     margin: 1em;
 }
 .poll_options > div {
     margin-bottom: 0.5em;
+}
+.ajaxLoad {
+    float: left;
+    width: 20px;
+    height: 20px;
 }
 /*END-----------------POLL--------------*/

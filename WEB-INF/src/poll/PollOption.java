@@ -85,6 +85,22 @@ public class PollOption extends GameObject
         return false;
     }
     
+    public boolean removeOption()
+    {
+        try {
+            this.results.forEach((resl) -> {
+                resl.deleteFromDB();
+            });
+            dbConnect.delete(POLL_OPTION_TABLE_NAME,
+                    POLL_OPTION_TABLE_KEY +"=?",
+                    new String[] { this.id+"" });
+            return true;
+        } catch (SQLException | DataException ex) {
+            Logs.saveLogln("Fail to delete option in poll> "+ this.pollId +" opt> "+ this.id +" - "+ ex);
+        }
+        return false;
+    }
+    
     //Getters and Setters
     @Override
     public int getId() { return this.id; }
@@ -100,5 +116,40 @@ public class PollOption extends GameObject
     public void setOptionText(String text) { this.optionText = text; }
     public void setOwner(User u) { this.owner = u; }
     public void setDate(String date) { this.date = date; }
+    public boolean addResult(User u)
+    {
+        boolean existUser = false;
+        for(PollOptionResult oldRes : this.results)
+        {
+            if (oldRes.getOwner().equals(u))
+            {
+                existUser = true;
+            }
+        }
+        if(!existUser)
+        {
+            PollOptionResult res = new PollOptionResult(this.id, u);
+            if(res.isInternalData())
+            {
+                this.results.add(res);
+                return true;
+            } 
+        }
+        return false;        
+    }
+    
+    public boolean removeResult(User u)
+    {
+        for(PollOptionResult oldRes : this.results)
+        {
+            if(oldRes.getOwner().equals(u))
+            {
+                oldRes.deleteFromDB();
+                this.results.remove(oldRes);
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

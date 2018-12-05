@@ -74,9 +74,10 @@ INSERT INTO stats (`id`, `en_US`) VALUES (32, "Critical Strike");
 INSERT INTO stats (`id`, `en_US`) VALUES (36, "Haste");
 INSERT INTO stats (`id`, `en_US`) VALUES (49, "Mastery");
 INSERT INTO stats (`id`, `en_US`) VALUES (40, "Versatility");
-INSERT INTO stats (`id`, `en_US`) VALUES (71, "Agility or Strength or Intellect");
-INSERT INTO stats (`id`, `en_US`) VALUES (72, "Agility or Strength");
-INSERT INTO stats (`id`, `en_US`) VALUES (74, "Strength or Intellect");
+INSERT INTO stats (`id`, `en_US`) VALUES (62, "Leech");
+INSERT INTO stats (`id`, `en_US`) VALUES (71, "[Agility or Strength or Intellect]");
+INSERT INTO stats (`id`, `en_US`) VALUES (72, "[Agility or Strength]");
+INSERT INTO stats (`id`, `en_US`) VALUES (74, "[Strength or Intellect]");
 
 CREATE TABLE `enchants` (
     `id`    INT NOT NULL,

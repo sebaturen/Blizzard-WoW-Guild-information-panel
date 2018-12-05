@@ -2,7 +2,7 @@
 <% if (!guildMember) {%><%@ page import ="java.net.URLEncoder" %><%
     response.sendRedirect("login.jsp?rdir="+URLEncoder.encode("alters.jsp", "UTF-8"));
 } else {%>
-<%@ page import ="com.blizzardPanel.viewController.User" %>
+<%@ page import ="com.blizzardPanel.User" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="java.util.List" %>
 <jsp:useBean id="alters" class="com.blizzardPanel.viewController.Alters"/>

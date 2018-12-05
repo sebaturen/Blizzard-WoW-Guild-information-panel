@@ -78,6 +78,6 @@ public class PollController
             System.out.println("opt> "+ pollOp.getOptionText());
         }
         newPoll.setIsData(true);
-        return false; // newPoll.saveInDB();
+        return newPoll.saveInDB();
     }
 }
