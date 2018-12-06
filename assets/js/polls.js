@@ -1,5 +1,6 @@
 //Send a ajax request to server...
-var currentAdd = 0;
+var currentAdd = [];
+var optSelecStatus = [];
 //Session user
 var userId;
 var userNameShow;
@@ -10,37 +11,41 @@ $(document).ready(function() {
     userNameShow = $("#currentUserInfo").data("user_show");
     userClass = $("#currentUserInfo").data("user_class");
     //Options selected
-    $('.poll_opt_span, .btn_poll_option')
+    $('.poll_opt_mask').click(function() {
+        //console.log("clicked!"); 
+        clickOption(this);
+    });
+    $('.poll_opt_mask')
     .mouseover(function() {
-        $(this).parent().children(".btn_poll_option").html('<i class="artOfWar-icon">&#xe802;</i>');
+        $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('<i class="artOfWar-icon">&#xe802;</i>');
     })
     .mouseleave(function() {
-        if($(this).parent().children(".btn_poll_option").hasClass("btn-outline-success"))
+        if($("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).hasClass("btn-outline-success"))
         {
-            $(this).parent().children(".btn_poll_option").html('');
+            $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('');
         }
-    })
-    .click(function() {
-        clickOption($(this).parent());
     });
     //Add option button
     $('.addOption').click(function() {
-        currentAdd++;
         var isMultiSelect = ($(this).parent(".poll_options").data("is_multi"));
         var pollId = ($(this).parent(".poll_options").data("poll_id"));
-        var userAdd = "<span id='poll_"+ pollId +"_opt_add_"+ currentAdd +"_user_"+ userId +"'"+
+        if(isNaN(currentAdd[pollId]))
+            currentAdd[pollId] = 1; 
+        else 
+            currentAdd[pollId]++;
+        var userAdd = "<span id='poll_"+ pollId +"_opt_add_"+ currentAdd[pollId] +"_user_"+ userId +"'"+
                       "  class='mem-name character-"+ userClass +" char-name'>&nbsp;";
         userAdd += (userClass == "BATTLE_TAG")? "<img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>":"";
         userAdd += userNameShow +",";
         userAdd += "</span>";
-        var optionAdded = " <div id='poll_"+ pollId +"_opt_add_"+ currentAdd +"' class='poll_"+ pollId +"_opts' data-opt_add_id='"+ currentAdd +"'>"+
+        var optionAdded = " <div id='poll_"+ pollId +"_opt_add_"+ currentAdd[pollId] +"' class='poll_"+ pollId +"_opts' data-opt_add_id='"+ currentAdd[pollId] +"'>"+
                                 "<div class='poll_option pointer row'>"+
                                     "<div class='col-2 optSelectControl'>"+
-                                        "<button onclick='addOptionButton(this)' type='button' class='btn_poll_option btn btn-success'><i class='artOfWar-icon'>&#xe802;</i></button>"+
-                                        "<button onclick='removeAddOption(this)' type='button' class='btn_poll_option btn btn-outline-danger deleteOption' data-poll_id='"+ pollId +"' data-opt_add_id='poll_"+ pollId +"_opt_add_"+ currentAdd +"'><i class='artOfWar-icon'>&#xe803;</i></button>"+
+                                        "<div type='button' class='btn_poll_option btn btn-success'><i class='artOfWar-icon'>&#xe802;</i></div>"+
+                                        "<button onclick='removeAddOption(this)' type='button' class='btn_poll_option btn btn-outline-danger deleteOption' data-poll_id='"+ pollId +"' data-opt_add_id='poll_"+ pollId +"_opt_add_"+ currentAdd[pollId] +"'><i class='artOfWar-icon'>&#xe803;</i></button>"+
                                     "</div>"+
-                                    "<div class='col-9 infoOpt'><input class='form-control infoOptText' type='text' value='' name='option_1' id='poll_"+ pollId +"_opt_add_"+ currentAdd +"_input'/></div>"+
-                                    "<div class='col-1'><button onclick='addOption(this)' class='btn btn-outline-warning right' data-opt_add_id='poll_"+ pollId +"_opt_add_"+ currentAdd +"' data-poll_id='"+ pollId +"'>Save</button></div>"+
+                                    "<div class='col-9 infoOpt'><input class='form-control infoOptText' type='text' value='' name='option_1' id='poll_"+ pollId +"_opt_add_"+ currentAdd[pollId] +"_input'/></div>"+
+                                    "<div class='col-1'><button onclick='addOption(this)' class='btn btn-outline-warning right' data-opt_add_id='poll_"+ pollId +"_opt_add_"+ currentAdd[pollId] +"' data-poll_id='"+ pollId +"'>Save</button></div>"+
                                 "</div>"+
                                 userAdd+
                             "</div>";
@@ -55,28 +60,38 @@ $(document).ready(function() {
     
 });
 
-function addOptionButton(elem)
-{
-    clickOption($(elem).parent(".poll_option"));
-}
-
 function clickOption(elem)
 {
-    var isMultiSelect = ($(elem).parent().parent(".poll_options").data("is_multi"));
-    var pollId = ($(elem).parent().parent(".poll_options").data("poll_id"));
-    var idClicked = $(elem).parent().data("opt_id");
-    if($(elem).children(".btn_poll_option").hasClass("btn-outline-success"))
+    //Option selected info
+    var pollId = $(elem).data("poll_id");
+    var idClicked = $(elem).data("poll_op_id");
+    //Save in window RAM if is click or no, edit the DOM not is change in data element information
+    if(optSelecStatus[pollId] == undefined)
     {
-        if(!isMultiSelect && currentAdd > 0)
+        optSelecStatus[pollId] = [];
+        optSelecStatus[pollId][idClicked] = $(elem).data("is_enable");
+    }
+    else if(optSelecStatus[pollId][idClicked] == undefined)
+    {
+        optSelecStatus[pollId][idClicked] = $(elem).data("is_enable");
+    }
+    var isMultiSelect = ($("#poll_"+ pollId +"_options").data("is_multi"));
+    var btnOption = $("#btn_poll_"+ pollId +"_opt_"+ idClicked);
+    //If is clicked or no
+    if(!optSelecStatus[pollId][idClicked])
+    {
+        if(!isMultiSelect && currentAdd[pollId] > 0)
         {
             alert("You can't select more options in this poll, remove add option if you want change selection");
         }
         else
         {
             //Change CSS from clicked element
-            $(elem).children(".btn_poll_option").removeClass("btn-outline-success");
-            $(elem).children(".btn_poll_option").addClass("btn-success");
-            $(elem).children(".btn_poll_option").html('<i class="artOfWar-icon">&#xe802;</i>');
+            $(btnOption).removeClass("btn-outline-success");
+            $(btnOption).addClass("btn-success");
+            $(btnOption).html('<i class="artOfWar-icon">&#xe802;</i>');
+            $(elem).attr("data-is_enable","true");
+            optSelecStatus[pollId][idClicked] = true;
             //If multi selecction is disabled, clear old selections
             if(!isMultiSelect) clearSelected(userId, pollId, idClicked);
             //Add a current user clicked.
@@ -85,20 +100,20 @@ function clickOption(elem)
             userAdd += (userClass == "BATTLE_TAG")? "<img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>":"";
             userAdd += userNameShow +",";
             userAdd += "</span>";
-            $(elem).parent().children(".userSelect").append(userAdd);
+            $("#users_poll_"+ pollId +"_opt_"+ idClicked).append(userAdd);
             addResult(pollId, idClicked, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
         }
     }
     else
     {
-        var selectDiv = $(elem).children(".btn_poll_option");
-        $(selectDiv).removeClass("btn-success");
-        $(selectDiv).addClass("btn-outline-success");
-        $(selectDiv).html('');
+        $(btnOption).removeClass("btn-success");
+        $(btnOption).addClass("btn-outline-success");
+        $(btnOption).html('');
+        $(elem).attr("data-is_enable","false");
+        optSelecStatus[pollId][idClicked] = false;
         //Remove current user selected
         $("#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId).hide();
-        removeResult(pollId, idClicked, selectDiv, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
-
+        removeResult(pollId, idClicked, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
     }
 }
 
@@ -106,7 +121,7 @@ function removeAddOption(elem)
 {
     $("#"+ $(elem).data("opt_add_id")).remove();
     $("#addOption_poll_"+ $(elem).data("poll_id")).attr("disabled", false);
-    currentAdd--;
+    currentAdd[$(elem).data("poll_id")]--;
 }
 
 function removeOption(elem)
@@ -117,7 +132,7 @@ function removeOption(elem)
         var pollOptId = $(elem).data("opt_id_db");
         $(".ajaxLoad").show();
         $.ajax({
-            method: "GET",
+            method: "POST",
             url: "userpanel/poll_controller.jsp",
             data: { poll_action: "removeOption", 
                     poll_id: pollId,
@@ -155,7 +170,7 @@ function addOption(elem)
         var pollId = $(elem).data("poll_id");
         $(".ajaxLoad").show();
         $.ajax({
-            method: "GET",
+            method: "POST",
             url: "userpanel/poll_controller.jsp",
             data: { poll_action: "addOption", 
                     poll_id: pollId, 
@@ -163,10 +178,9 @@ function addOption(elem)
             dataType: "json"
         })
         .done(function(mData) {
-            $(".ajaxLoad").hide();
             if(mData.status == "ok")
             {
-                $("#poll_"+ pollId +"_opt_add_"+ currentAdd).remove();
+                $("#poll_"+ pollId +"_opt_add_"+ currentAdd[pollId]).remove();
                 //Add a current user clicked.
                 var userAdd = "<span id='poll_"+ pollId +"_opt_"+ mData.option_id +"_user_"+ userId +"'"+
                               "  class='mem-name character-"+ userClass +" char-name'>";
@@ -174,13 +188,14 @@ function addOption(elem)
                 userAdd += userNameShow +",";
                 userAdd += "</span>";
                 
-                var optAdd = "<div id='poll_"+ pollId +"_opt_"+ mData.option_id +"' class='divder row justify-content-between poll_"+ pollId +"_opts' data-opt_id='"+ mData.option_id +"'>"+
+                var optAdd = "<div id='poll_"+ pollId +"_opt_"+ mData.option_id +"' class='poll_opts divder row justify-content-between poll_"+ pollId +"_opts' data-opt_id='"+ mData.option_id +"'>"+
                                 "<div class='poll_option pointer col-10'>"+
-                                    "<button type='button' class='btn_poll_option btn btn-success'><i class='artOfWar-icon'>&#xe802;</i></button>"+
+                                    "<div id='mask_poll_"+ pollId +"_opt_"+ mData.option_id +"' class='poll_opt_mask' data-poll_id='"+ pollId +"' data-poll_op_id='"+ mData.option_id +"' data-is_enable='true'></div>"+
+                                    "<div id='btn_poll_"+ pollId +"_opt_"+ mData.option_id +"' class='btn_poll_option btn btn-success'><i class='artOfWar-icon'>&#xe802;</i></div>"+
                                     "&nbsp;<span>"+ optionText +"</span>"+
                                 "</div>"+
                                 "<div class='col-2'><button onclick='removeOption(this)' type='button' class='btn_poll_option_delete btn btn-outline-danger deleteOption' data-poll_id='"+ pollId +"' data-opt_id='poll_"+ pollId +"_opt_"+ mData.option_id +"' data-opt_id_db='"+ mData.option_id +"'><i class='artOfWar-icon'>&#xe803;</i></button></div>"+
-                                "<div class='userSelect'>"+ userAdd +"</div>"+
+                                "<div id='users_poll_"+ pollId +"_opt_"+ mData.option_id +"' class='userSelect'>"+ userAdd +"</div>"+
                             " </div>";
                 $("#addOption_poll_"+ pollId).before(optAdd);
             }
@@ -194,11 +209,13 @@ function addOption(elem)
             }
         })
         .fail(function() {
-            $(".ajaxLoad").hide();
             alert("Fail to save poll option - Error 001");
             $(elem).attr("enable", false);
             $(inputOption).attr("enable", false);
             $("#"+ $(elem).data("opt_add_id")).children(".poll_option").children(".optSelectControl").children(".deleteOption").attr("disabled", false);
+        })
+        .always(function() {
+            $(".ajaxLoad").hide();            
         });
         $(elem).attr("disabled", true);
         $(inputOption).attr("disabled", true);
@@ -213,8 +230,15 @@ function addOption(elem)
 function addResult(pollId, optId, userShowDiv)
 {
     $(".ajaxLoad").show();
+    var buttonSelectResult = $("#poll_"+pollId+"_opt_"+optId).children(".poll_option").children(".btn_poll_option");
+    var failAction = function() {
+        $(buttonSelectResult).removeClass("btn-success");
+        $(buttonSelectResult).addClass("btn-outline-success");
+        $(buttonSelectResult).html('');
+        $(userShowDiv).remove();        
+    };
     $.ajax({
-        method: "GET",
+        method: "POST",
         url: "userpanel/poll_controller.jsp",
         data: { poll_action: "addResult", 
                 poll_id: pollId, 
@@ -222,26 +246,34 @@ function addResult(pollId, optId, userShowDiv)
         dataType: "json"
     })
     .done(function(mData) {
-        $(".ajaxLoad").hide();
         if(mData.status != true)
         {
             alert("Fail to save your choise - Error: 201");
             console.log(mData);
-            $(userShowDiv).remove();
+            failAction();
         }
     })
     .fail(function() {
-        $(".ajaxLoad").hide();
         alert("Fail to save your choise - Error: 202");
-        $(userShowDiv).remove();
+        failAction();
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();        
     });
 }
 
-function removeResult(pollId, optId, selecDiv, userShowDiv, forceShow = false)
+function removeResult(pollId, optId, userShowDiv, forceShow = false)
 {    
     $(".ajaxLoad").show();
+    var buttonSelectResult = $("#poll_"+pollId+"_opt_"+optId).children(".poll_option").children(".btn_poll_option");
+    var failAction = function() {
+        $(userShowDiv).show();
+        $(buttonSelectResult).removeClass("btn-outline-success");
+        $(buttonSelectResult).addClass("btn-success");
+        $(buttonSelectResult).html('<i class="artOfWar-icon">&#xe802;</i>');          
+    };
     $.ajax({
-        method: "GET",
+        method: "POST",
         url: "userpanel/poll_controller.jsp",
         data: { poll_action: "removeResult", 
                 poll_id: pollId, 
@@ -249,7 +281,6 @@ function removeResult(pollId, optId, selecDiv, userShowDiv, forceShow = false)
         dataType: "json"
     })
     .done(function(mData) {
-        $(".ajaxLoad").hide();
         if(mData.status == true)
         {            
             $(userShowDiv).remove();
@@ -259,24 +290,20 @@ function removeResult(pollId, optId, selecDiv, userShowDiv, forceShow = false)
             if(!forceShow)
             {
                 alert("Fail to save your choise - Error: 301");
-                console.log(mData);
-                $(userShowDiv).show();
-                $(selecDiv).removeClass("btn-outline-success");
-                $(selecDiv).addClass("btn-success");
-                $(selecDiv).html('<i class="artOfWar-icon">&#xe802;</i>');                
+                failAction();
             }
+            console.log(mData);
         }
     })
     .fail(function() {
-        $(".ajaxLoad").hide();
         alert("Fail to save your choise - Error: 302");
         if(!forceShow)
         {
-            $(userShowDiv).show();
-            $(selecDiv).removeClass("btn-outline-success");
-            $(selecDiv).addClass("btn-success");
-            $(selecDiv).html('<i class="artOfWar-icon">&#xe802;</i>');            
+            failAction();
         }
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();        
     });
 }
 
@@ -293,8 +320,7 @@ function clearSelected(userId, pollId, idOmited)
                 $(selecDiv).removeClass("btn-success");
                 $(selecDiv).addClass("btn-outline-success");
                 $(selecDiv).html('');
-                $("#poll_"+ pollId +"_opt_"+ currentOpt +"_user_"+ userId).hide();            
-                removeResult(pollId, currentOpt, selecDiv, "#poll_"+ pollId +"_opt_"+ currentOpt +"_user_"+ userId, true);                
+                $("#poll_"+ pollId +"_opt_"+ currentOpt +"_user_"+ userId).hide();
             }
         }
     });

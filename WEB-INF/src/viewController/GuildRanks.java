@@ -23,7 +23,8 @@ public class GuildRanks
     {
         String order = (orderStat)? "ASC":"DESC";
         Rank[] ranks = null;
-        try {
+        try 
+        {
             JSONArray rankDB = dbConnect.select(Rank.GUILD_RANK_TABLE_NAME,
                     new String[] { Rank.GUILD_RANK_TABLE_KEY },
                     "1=? ORDER BY id "+ order,

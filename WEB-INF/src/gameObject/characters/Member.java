@@ -131,8 +131,6 @@ public class Member extends GameObject
             classID = (Integer) playerInfo.get("class");
             raceID = (Integer) playerInfo.get("race");
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
-            loadSpecFromDB();
-            loadItemsFromDB();
             this.stats = new CharacterStats(this.internalID);
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
         }
@@ -210,6 +208,31 @@ public class Member extends GameObject
                                                     new String[] { "id" },
                                                     "member_id=?",
                                                     new String[] { this.internalID +""});
+            if(memberSpec.size() > 0)
+            {
+                for(int i = 0; i < memberSpec.size(); i++)
+                {
+                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") ); 
+                    this.specs.add(i, sp);   
+                }
+            }
+            else //No have a specs in DB!!!!
+            {
+                Logs.saveLogln("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
+                loadSpecFromUpdate();
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.saveLogln("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+        }
+    }
+    
+    private void loadActiveSpecFromDB()
+    {
+        try {
+            JSONArray memberSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
+                                                    new String[] { "id" },
+                                                    "member_id=? AND enable=?",
+                                                    new String[] { this.internalID +"", "1"});
             if(memberSpec.size() > 0)
             {
                 for(int i = 0; i < memberSpec.size(); i++)
@@ -332,6 +355,7 @@ public class Member extends GameObject
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
                 //Save specs...
+                if(this.specs.isEmpty()) loadSpecFromDB();
                 this.specs.forEach((spc) -> {
                     spc.setMemberId(this.internalID);
                     //valide if this member have a this spec in DB (set Update or Insert)
@@ -351,7 +375,8 @@ public class Member extends GameObject
                     }
                 });
                 //Save items...
-                //Clear all old items:                    
+                //Clear all old items:   
+                if(this.items.isEmpty()) loadItemsFromDB();
                 try {
                     dbConnect.update(ItemMember.ITEMS_MEMBER_TABLE_NAME,
                                     ItemMember.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
@@ -438,9 +463,10 @@ public class Member extends GameObject
         return new Date((Long.parseLong(val))*1000); 
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
-    public List<Spec> getSpecs() { return this.specs; }
+    public List<Spec> getSpecs() { loadSpecFromDB(); return this.specs; }
     public Spec getActiveSpec() 
     {
+        if(this.specs.isEmpty()) loadActiveSpecFromDB();
         for(Spec sp: this.specs) {            
             if(sp.isEnable()) {
             
@@ -459,6 +485,7 @@ public class Member extends GameObject
     {
         int sumItemLevl = 0;
         int count = 0;
+        if(this.items.isEmpty()) loadItemsFromDB();
         for(ItemMember item : this.items)
         {
             if(!item.getPosition().equals("tabard") && !item.getPosition().equals("shirt"))
@@ -473,6 +500,7 @@ public class Member extends GameObject
     }
     public ItemMember getItemByPost(String post) 
     {
+        if(this.items.isEmpty()) loadItemsFromDB();
         for(ItemMember im : this.items) 
         {
             if(im.getPosition().equals(post))

@@ -1,12 +1,13 @@
 <%@include file="../includes/globalObject.jsp" %>
 <% 
-if (!request.getParameter("login_redirect").equals("true") || !user.checkUser()) 
+if (    request.getParameter("login_redirect") == null || 
+        !request.getParameter("login_redirect").equals("true") || 
+        !user.checkUser()) 
 {
-    response.sendRedirect("../index.jsp");
+    response.sendRedirect("../login.jsp");
 } 
 else //only show content if is redirect from login.jsp and the user is valid
-{
-%>
+{%>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

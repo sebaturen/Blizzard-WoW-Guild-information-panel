@@ -12,21 +12,27 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class GameInfo 
 {
     private final DBConnect dbConnect = new DBConnect();
+    private String lastDynamicUpdate;
+    private Date lastDynamicUpdateUpdate;
+    private int[] outWowToken;
+    private Date lastWowTokenUpdate;
     
     public GameInfo()
     {
         dbConnect.connectionVerification();
+        getWowTokenValue();
     }
-
-    public String getLastDynamicUpdate()
+    
+    private void loadLastDynamicUpdate()
     {
-        String out = "";
         try
         {		
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
@@ -35,15 +41,32 @@ public class GameInfo
                                                     new String[] {Update.UPDATE_DYNAMIC +""});
             if (dateUpdate.size() > 0)
             {
-                out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
+                this.lastDynamicUpdate = (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
             }
         }
         catch (SQLException|DataException e)
         {
             Logs.saveLogln("Fail to get a last dynamic update");
         }
-        this.dbConnect.closeConnection();
-        return out;
+        this.lastDynamicUpdateUpdate = new Date();
+    }
+
+    public String getLastDynamicUpdate()
+    {
+        if(this.lastDynamicUpdate == null) 
+            loadLastDynamicUpdate();
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastDynamicUpdateUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                loadLastDynamicUpdate( );
+            }            
+        }
+        return this.lastDynamicUpdate;
     }
 
     public String getLastStaticUpdate()
@@ -64,14 +87,12 @@ public class GameInfo
         {
             Logs.saveLogln("Fail to get a last dynamic update");
         }
-        this.dbConnect.closeConnection();
         return out;
     }
     
-    public int[] getTokenWow()
+    private void getWowTokenValue()
     {
-        int[] out = new int[3]; //[0-gold][1-silver][2-copper]
-        
+        this.outWowToken = new int[3]; //[0-gold][1-silver][2-copper]
         try
         {
             JSONArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
@@ -81,15 +102,34 @@ public class GameInfo
             if (dateUpdate.size() > 0)
             {
                 String actuapPrice = (((JSONObject)dateUpdate.get(0)).get("price")).toString();
-                out = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
+                this.outWowToken = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
             }
         }
         catch (SQLException|DataException e)
         {
             Logs.saveLogln("Fail to get a wow Token price");
         }
-        this.dbConnect.closeConnection();
-        return out;
+        lastWowTokenUpdate = new Date();
+    }
+    
+    public int[] getTokenWow() 
+    {
+        if(this.outWowToken == null)
+        {
+            getWowTokenValue( );        
+        }
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastWowTokenUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                getWowTokenValue( );
+            }            
+        }
+        return this.outWowToken;
     }
     
     public boolean getDBStatus() { return !dbConnect.isErrorDB(); }

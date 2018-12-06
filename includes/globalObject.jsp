@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <jsp:useBean id="gameInfo" class="com.blizzardPanel.viewController.GameInfo" scope="application"/>
-<jsp:useBean id="guild_info" class="com.blizzardPanel.gameObject.guild.Guild" scope="request"/>
+<jsp:useBean id="guild_info" class="com.blizzardPanel.gameObject.guild.Guild" scope="application"/>
 <jsp:useBean id="user" class="com.blizzardPanel.User" scope="session" />
 <% 
     //Setting if user is a guild member, or blizzardPanel is setting all information is public.

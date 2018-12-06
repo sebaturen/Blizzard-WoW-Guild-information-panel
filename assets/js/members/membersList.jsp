@@ -2,7 +2,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
-<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
+<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 var members = [];
 var guildRanks = [];
 var mClass = [];

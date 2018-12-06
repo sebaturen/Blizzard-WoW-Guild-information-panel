@@ -13,6 +13,8 @@ import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.json.simple.JSONArray;
 
@@ -35,6 +37,7 @@ public class Guild extends GameObject
     private int level;
     private int side;
     private List<GuildAchievement> achievements = new ArrayList<>();
+    private Date lastNewsUpdate;
     private List<New> news = new ArrayList<>();
 	
     //Constructor
@@ -71,8 +74,6 @@ public class Guild extends GameObject
             this.id = (Integer) guildInfo.get("id");
             this.level = (Integer) guildInfo.get("level");	
             this.side =  (Integer) guildInfo.get("side");
-            loadAchievements();	
-            loadNews();
         }		
         this.isData = true;
     }
@@ -100,7 +101,7 @@ public class Guild extends GameObject
         }
     }
     
-    private void loadAchievements()
+    private void loadAchievementsFromDB()
     {
         try {
             JSONArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
@@ -118,12 +119,12 @@ public class Guild extends GameObject
         }        
     }
     
-    private void loadNews()
+    private void loadNews(int cant)
     {
         try {
             JSONArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
                                                 new String[] {New.GUILD_NEWS_TABLE_KEY},
-                                                "1=? ORDER BY timestamp DESC LIMIT 50",
+                                                "1=? ORDER BY timestamp DESC LIMIT "+ cant,
                                                 new String[] {"1"});
             for(int i = 0; i < dbAchiv.size(); i++)
             {
@@ -133,7 +134,8 @@ public class Guild extends GameObject
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to load guild news "+ ex);
-        }        
+        }
+        this.lastNewsUpdate = new Date(); 
     }
 	
     @Override
@@ -172,8 +174,26 @@ public class Guild extends GameObject
     public String getBattleGroup() { return this.battleGroup; }
     public long getLastModified() { return this.lastModified; }
     public long getAchievementPoints() { return this.achievementPoints; }
-    public List<GuildAchievement> getAchievements() { return this.achievements; }
-    public List<New> getNews() { return this.news; }
+    public List<GuildAchievement> getAchievements() { loadAchievementsFromDB(); return this.achievements; }
+    public List<New> getNews(int cant) 
+    {
+        if(this.news.isEmpty())
+        {
+            loadNews(cant);        
+        }
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastNewsUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                loadNews(cant);
+            }            
+        }
+        return this.news;
+    }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
     

@@ -1,5 +1,4 @@
 <%@include file="includes/globalObject.jsp" %>
-<jsp:setProperty name="user" property="*" />
 <% 
 //Log-out    
 if(request.getParameter("logOut") != null && request.getParameter("logOut").equals("true")) 

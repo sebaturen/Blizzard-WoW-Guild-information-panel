@@ -21,8 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -70,15 +69,15 @@ public class Poll extends GameObject
         this.canAddMoreOptions = (Boolean) objInfo.get("can_add_more_option");
         this.startDate = objInfo.get("start_date").toString();
         this.isLimitDate = (Boolean) objInfo.get("is_limit_date");
-        if(objInfo.containsKey("end_data"))
+        if(this.isLimitDate)
             this.endDate = objInfo.get("end_date").toString();
         this.isEnable = (Boolean) objInfo.get("isEnable");
-        loadOptions();
         this.isData = true;
     }
     
     private void loadOptions()
     {
+        this.options = new ArrayList<>();
         try {
             JSONArray opDB = dbConnect.select(PollOption.POLL_OPTION_TABLE_NAME,
                     new String[] { PollOption.POLL_OPTION_TABLE_KEY },
@@ -86,7 +85,7 @@ public class Poll extends GameObject
                     new String[] {this.id+""});
             for(int i = 0; i < opDB.size(); i++)
             {
-                options.add(new PollOption((Integer) ((JSONObject)opDB.get(i)).get(PollOption.POLL_OPTION_TABLE_KEY) ));
+                this.options.add(new PollOption((Integer) ((JSONObject)opDB.get(i)).get(PollOption.POLL_OPTION_TABLE_KEY) ));
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to get options in poll - "+ this.id +" - "+ ex);
@@ -121,6 +120,7 @@ public class Poll extends GameObject
         switch (saveInDBObj(info))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
+                if(this.options.isEmpty()) loadOptions();
                 this.options.forEach((op) -> {
                     op.setPollId(this.id);
                     op.saveInDB();
@@ -132,6 +132,7 @@ public class Poll extends GameObject
     
     public boolean removeOptionDB(int id)
     {
+        if(this.options.isEmpty()) loadOptions();
         for(PollOption opt : this.options)
         {
             if(opt.getId() == id)
@@ -151,9 +152,15 @@ public class Poll extends GameObject
     public Rank getMinRank() { return this.minRank; }
     public String getStartDate() { return this.startDate; }
     public String getEndDate() { return this.endDate; }
-    public List<PollOption> getOptions() { return this.options; }
+    public List<PollOption> getOptions() 
+    { 
+        loadOptions();        
+        Collections.sort(this.options);
+        return this.options; 
+    }
     public PollOption getOption(int id) 
     {
+        if(this.options.isEmpty()) loadOptions();
         for(PollOption opt : this.options)
         {
             if(opt.getId() == id) return opt;
@@ -204,6 +211,13 @@ public class Poll extends GameObject
         addOption.setOwner(u);
         addOption.setDate(Update.getCurrentTimeStamp());
         addOption.setIsData(true);
+        if(!this.multiSelect)
+        {
+            for(PollOption opt : this.options)
+            {
+                opt.removeResult(u);
+            }
+        }
         addOption.saveInDB();
         addOption.addResult(u);
         this.options.add(addOption);
@@ -212,18 +226,25 @@ public class Poll extends GameObject
     
     public boolean addResult(int optId, User u)
     {
+        if(this.options.isEmpty()) loadOptions();  
+        boolean r = false;
         for(PollOption opt : this.options)
         {
+            if(!this.multiSelect)
+            {
+                opt.removeResult(u);
+            }
             if(opt.getId() == optId)
             {
-                return opt.addResult(u);
+                r = opt.addResult(u);
             }
         }
-        return false;
+        return r;
     }
     
     public boolean removeResult(int optId, User u)
     {
+        if(this.options.isEmpty()) loadOptions();
         for(PollOption opt : this.options)
         {
             if(opt.getId() == optId)

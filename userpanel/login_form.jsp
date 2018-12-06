@@ -1,5 +1,4 @@
 <%@include file="../includes/globalObject.jsp" %>
-<jsp:setProperty name="user" property="*" />
 <% 
 if (! request.getParameter("login_redirect").equals("true")) 
 {

@@ -125,7 +125,6 @@ public class Update implements APIInfo, GeneralConfig
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {UPDATE_DYNAMIC +"", getCurrentTimeStamp()});
-            dbConnect.closeConnection();
         }
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -179,7 +178,6 @@ public class Update implements APIInfo, GeneralConfig
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                             new String[] {UPDATE_STATIC +"", getCurrentTimeStamp()});
-            dbConnect.closeConnection();
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -247,7 +245,6 @@ public class Update implements APIInfo, GeneralConfig
         } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
             Logs.saveLogln("Fail to get AH "+ ex);
         }
-        dbConnect.closeConnection();
         Logs.saveLogln("-------Update process is COMPLATE! (Auction House)------");
     }
     
@@ -305,7 +302,6 @@ public class Update implements APIInfo, GeneralConfig
         } catch (SQLException | DataException | ClassNotFoundException ex) {
             Logs.saveLogln("Fail to get current auc items "+ ex);
         }
-        dbConnect.closeConnection();
         Logs.saveLogln("-------Update process is Complete! (Auction House move to History DB)------");
     }
     
@@ -401,7 +397,6 @@ public class Update implements APIInfo, GeneralConfig
                 apiGuild.saveInDB();
             }
         }
-        dbConnect.closeConnection();
     }
 
     /**
@@ -467,7 +462,6 @@ public class Update implements APIInfo, GeneralConfig
                 }				
             }
         }
-        dbConnect.closeConnection();
     }
      
     /**
@@ -557,7 +551,6 @@ public class Update implements APIInfo, GeneralConfig
             }
             Logs.saveLogln("...100%");
         }
-        dbConnect.closeConnection();
     }
     
     public Member getMemberFromBlizz(String name, String realm) throws UnsupportedEncodingException
@@ -722,7 +715,6 @@ public class Update implements APIInfo, GeneralConfig
             }
             Logs.saveLogln("...100%");
         }
-        dbConnect.closeConnection();
     }
     
     /**
@@ -758,8 +750,7 @@ public class Update implements APIInfo, GeneralConfig
                 }              
             }
             Logs.saveLogln("...100%");
-        } 
-        dbConnect.closeConnection();
+        }
     }
     
     /**
@@ -784,7 +775,6 @@ public class Update implements APIInfo, GeneralConfig
         } catch (IOException | ParseException | DataException ex) {
             Logs.saveLogln("Error to get blizzard item information "+ id +" - "+ ex);
         }
-        dbConnect.closeConnection();
         return itemBlizz;
     }
     
@@ -993,7 +983,6 @@ public class Update implements APIInfo, GeneralConfig
             }
             Logs.saveLogln("...100%");
         }
-        dbConnect.closeConnection();
     }    
        
     /**
@@ -1051,15 +1040,22 @@ public class Update implements APIInfo, GeneralConfig
             JSONObject wowToken = curl(urlString, //DataException possible trigger
                                         "GET",
                                         "Bearer "+ this.accesToken,
-                                        new String[] {"namespace=dynamic-us"});            
-            dbConnect.insert(DBStructure.WOW_TOKEN_TABLE_NAME,
-                            DBStructure.WOW_TOKEN_TABLE_KEY,
-                            DBStructure.WOW_TOKEN_TABLE_STRUCTURE,
-                            new String[] {wowToken.get("last_updated_timestamp").toString(), wowToken.get("price").toString()},
-                            "ON DUPLICATE KEY UPDATE price=?",
-                            new String[] {wowToken.get("price").toString()});
+                                        new String[] {"namespace=dynamic-us"});
+            String lastUpdate = wowToken.get("last_updated_timestamp").toString();
+            String priceUpdate = wowToken.get("price").toString();
+            
+            JSONArray oldValue = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
+                                                    new String[] {"last_updated_timestamp"},
+                                                    "last_updated_timestamp=?",
+                                                    new String[] {lastUpdate});
+            if(oldValue.isEmpty())
+            {//Not exit this update, save a new infor
+                dbConnect.insert(DBStructure.WOW_TOKEN_TABLE_NAME, 
+                                DBStructure.WOW_TOKEN_TABLE_KEY, 
+                                DBStructure.WOW_TOKEN_TABLE_STRUCTURE, 
+                                new String[] { lastUpdate, priceUpdate });
+            }
         }
-        dbConnect.closeConnection();      
     }
     
     /**
@@ -1115,8 +1111,7 @@ public class Update implements APIInfo, GeneralConfig
                             "id=?",
                             new String[] {uderID +""});
             }            
-        }
-        dbConnect.closeConnection();        
+        }       
     }
     
     /**
@@ -1211,7 +1206,6 @@ public class Update implements APIInfo, GeneralConfig
         } catch (IOException|ParseException ex) {
             Logs.saveLogln("Fail to get user Access Token "+ ex);
         }
-        dbConnect.closeConnection();
     }
     
     /**
@@ -1221,7 +1215,7 @@ public class Update implements APIInfo, GeneralConfig
      * @throws ParseException 
      */
     private void getGuildProgression() throws DataException, IOException, ParseException
-    {                
+    {
         //Generate an API URL
         String urlString = String.format(RAIDER_IO_API_URL, 
                                     SERVER_LOCATION, 

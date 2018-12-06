@@ -32,10 +32,10 @@ public class User
     private String battleTag;
     private String accessToken;
     private int guildRank = -1;
-    private int idMainChar;
+    private int idMainChar = -1;
     private boolean isLogin = false;
     private boolean isCharsReady = false;
-    private List<Member> characters;
+    private List<Member> characters = new ArrayList<>();
     private Member mainCharacter;
     
     private final DBConnect dbConnect = new DBConnect();
@@ -60,7 +60,6 @@ public class User
         this.isLogin = true;
         if(userInfo.get("main_character") != null)
             this.idMainChar = (Integer) userInfo.get("main_character");
-        loadCharacters();
         this.isCharsReady = true;
     }
     
@@ -158,7 +157,6 @@ public class User
                 }
                 checkUser(true);
                 setIsCharsReady(true);
-                loadCharacters();
             }
         };
         upChar.start();
@@ -222,9 +220,13 @@ public class User
         return null;
     }
     
+    private void loadMainCharFromDB()
+    {
+        this.mainCharacter = new Member(this.idMainChar);
+    }
+    
     private void loadCharacters()
     {
-        this.characters = new ArrayList<>();
         try {
             JSONArray chars = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Member.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
@@ -252,14 +254,21 @@ public class User
     public int getId() { return this.id; }
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
-    public List<Member> getCharacters() { if(this.characters == null) loadCharacters(); return this.characters; }
+    public List<Member> getCharacters() { if(this.characters.isEmpty()) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
-    public Member getMainCharacter() { return this.mainCharacter; }
+    public Member getMainCharacter() 
+    {
+        if(this.mainCharacter == null && this.idMainChar > 0)
+        {
+            loadMainCharFromDB();
+        } 
+        return this.mainCharacter; 
+    }
     
     private void setIsCharsReady(boolean r) { this.isCharsReady = r; }
     public boolean setMainCharacter(int id) 
     {
-        if(this.characters == null) loadCharacters();
+        if(this.characters.isEmpty()) loadCharacters();
         boolean stateChange = false;
         //valid if this id is from this member and remove old main Character
         for(Member m : this.characters) 

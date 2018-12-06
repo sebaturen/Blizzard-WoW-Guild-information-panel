@@ -57,7 +57,7 @@ public class Challenge extends GameObject
             //dbConnect, select * from challenge_groups where challenge_id = this.mapId;
             JSONArray dbGroups = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
                                                 new String[] {"group_id"},
-                                                "challenge_id=? order by time_date desc limit 3;", //cargando los ulimots 3
+                                                "challenge_id=? order by time_date desc limit 3;", //Load last 3 groups
                                                 new String[] {this.mapId +""});
             for(int i = 0; i < dbGroups.size(); i++)
             {

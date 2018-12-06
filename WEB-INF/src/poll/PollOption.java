@@ -18,7 +18,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class PollOption extends GameObject
+public class PollOption extends GameObject implements Comparable<PollOption>
 {
     //DB Structure
     public static final String POLL_OPTION_TABLE_NAME = "poll_options";
@@ -150,6 +150,15 @@ public class PollOption extends GameObject
             }
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(PollOption o) 
+    {
+        int compareCuantity = o.getResult().size();
+        
+        //DESC
+        return compareCuantity - this.results.size();
     }
     
 }

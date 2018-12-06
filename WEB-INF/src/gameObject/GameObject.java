@@ -50,7 +50,8 @@ public abstract class GameObject implements DBStructure
     //Generic function
     /**
      * Save Game object element in DB
-     * @values values from object we need save, use in query.
+     * @param values from object we need save, use in query.
+     * @return status query
      */
     protected int saveInDBObj(String[] values)
     {
@@ -94,7 +95,6 @@ public abstract class GameObject implements DBStructure
         {
             Logs.saveLogln("Fail to try save!, no data");
         }
-        dbConnect.closeConnection();
         return SAVE_MSG_NO_DATA;
     }
     
@@ -131,9 +131,8 @@ public abstract class GameObject implements DBStructure
                 return false;                
             }
         } catch (DataException|SQLException e) {
-            Logs.saveLogln("Error in Load element: ("+ this.getClass() +") "+ e);
+            Logs.saveLogln("Error in Load element: 'from Uniqued' ("+ this.getClass() +") "+ e);
         }
-        dbConnect.closeConnection();
         return false;        
     }
 	
@@ -166,9 +165,8 @@ public abstract class GameObject implements DBStructure
                 return false;
             }			
         } catch (DataException|SQLException e) {
-            Logs.saveLogln("Error in Load element: ("+ this.getClass() +") "+ e);
+            Logs.saveLogln("Error in Load element 'from ID': ("+ this.getClass() +") "+ e);
         }
-        dbConnect.closeConnection();
         return false;
     }
     

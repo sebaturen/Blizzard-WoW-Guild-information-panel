@@ -28,7 +28,6 @@ public class Members
     public Members()
     {
         dbConnect = new DBConnect();
-        generateMembersList();
     }
     
     private void generateMembersList()
@@ -72,8 +71,18 @@ public class Members
     
     public Member getMember(int id) 
     {
+        if(this.membersList == null) return new Member(id);
+        for(Member m : this.membersList)
+        {
+            if(m.getId() == id) return m;
+        }
         return new Member(id);
     }
-	
-    public Member[] getMembersList() { return this.membersList; }
+    
+    public Member[] getMembersList() 
+    { 
+        if(this.membersList == null) 
+            generateMembersList(); 
+        return this.membersList; 
+    }
 }

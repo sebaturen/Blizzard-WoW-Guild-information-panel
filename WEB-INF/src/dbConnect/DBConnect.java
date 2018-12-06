@@ -41,7 +41,7 @@ public class DBConnect implements DBConfig
         //generateConnextion();
     }
     
-    public void closeConnection()
+    private void closeConnection()
     {
         if(conn != null)
         {            
@@ -84,84 +84,56 @@ public class DBConnect implements DBConfig
         return this.isErrorDB;
     }
 	
+    
     /**
      * Run Select Query 
-     * @table table
-     * @values array how want select 
-     * @where where
+     * @param table
+     * @param selected
+     * @return JSONArray Select content
+     * @throws SQLException
+     * @throws DataException 
      */
     public JSONArray select(String table, String[] selected) throws SQLException, DataException { return select(table, selected, null, null, false); }
     public JSONArray select(String table, String[] selected, String where, String[] whereValues) throws SQLException, DataException { return select(table, selected, where, whereValues, false); }
     public JSONArray select(String table, String[] selected, String where, String[] whereValues, boolean disableAphostro) throws SQLException, DataException
     {
+        JSONArray result = null;
         if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {
+            System.out.print("is close? "+ conn.isClosed());
             //Prepare QUERY
             String sql = "SELECT ";
             String aphost = (disableAphostro)? "":"`";
-            for(String v : selected) { sql += aphost+ v +aphost+","; }
+            for(String v : selected) { sql += aphost + v + aphost +","; }
             sql = sql.substring(0,sql.length()-1);
-            sql += " FROM "+aphost+ table +aphost;
+            sql += " FROM "+ aphost + table + aphost;
             
             if(where != null) sql += " WHERE "+ where;
             this.pstmt = conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
             //Logs.saveLog("PSTMT: "+ this.pstmt);
-            return resultToJsonConvert(this.pstmt.executeQuery());
+            System.out.println(" - "+ conn.isClosed());
+            result = resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
-        {			
-            throw new DataException("DB can't connect");
-        }
-    }
-    
-    private String selectLastID() throws SQLException, DataException
-    {
-        if(conn == null || conn.isClosed()) generateConnextion();
-        if (statusConnect == true)
         {
-            //Prepare QUERY
-            String sql = "SELECT LAST_INSERT_ID()";
-            this.pstmt = conn.prepareStatement(sql);          
-            ResultSet rs = this.pstmt.executeQuery();
-            rs.next();
-            return rs.getString("LAST_INSERT_ID()");
-        }
-        else
-        {			
             throw new DataException("DB can't connect");
-        }        
+        }
+        closeConnection();
+        return result;
     }
+    	
     
     /**
-     *Show a ResultSet complate
+     * Delete data from DB Query
+     * @param table
+     * @param where
+     * @param whereValues
+     * @throws SQLException
+     * @throws DataException 
      */
-    private void testRs(ResultSet rs)
-    {
-        try {
-            ResultSet resultSet = rs;
-            ResultSetMetaData rsmd = resultSet.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-            while (resultSet.next()) {
-                for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) Logs.saveLog(",  ");
-                    String columnValue = resultSet.getString(i);
-                    Logs.saveLog(columnValue + " " + rsmd.getColumnName(i));
-                }
-                Logs.saveLogln("");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-	
-    /**
-     * Delete data from DB, run a query
-     * @table table
-     * @where where in SQL, IS MANDAROTY!
-     */
-    public JSONArray delete(String table, String where, String[] whereValues) throws SQLException, DataException
+    public void delete(String table, String where, String[] whereValues) throws SQLException, DataException
     {
         if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
         if(conn == null || conn.isClosed()) generateConnextion();
@@ -171,7 +143,8 @@ public class DBConnect implements DBConfig
             String sql = "DELETE FROM "+ table +" WHERE "+ where;
             this.pstmt = conn.prepareStatement(sql);
             for(int i = 0; i < whereValues.length; i++) { this.pstmt.setString(i+1,whereValues[i]); }
-            return resultToJsonConvert(this.pstmt.executeQuery());
+            this.pstmt.executeQuery();
+            closeConnection();
         }
         else
         {
@@ -180,14 +153,19 @@ public class DBConnect implements DBConfig
     }
 	
     /**
-     * Insert Query construct.
-     * @table Tabla
-     * @columns name of value is change
-     * @values values from this insert
+     * Insert SQL Query.
+     * @param table
+     * @param idColum
+     * @param columns
+     * @param values
+     * @return insert ID
+     * @throws DataException
+     * @throws ClassNotFoundException
+     * @throws SQLException 
      */
-    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException { return insert(table, idColum, columns, values, null, null); }
-    public String insert(String table, String idColum, String[] columns, String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException, SQLException
+    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException
     {
+        String id = null;
         if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {        		
@@ -203,7 +181,7 @@ public class DBConnect implements DBConfig
                     
                     String sql = "INSERT INTO "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
                     String[] valuesWithWhereValues = values;
-                    if(where != null)
+                    /*if(where != null)
                     {
                         String[] valInSql = new String[values.length + whereValues.length];
                         int i = 0;
@@ -211,7 +189,7 @@ public class DBConnect implements DBConfig
                         for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
                         sql += " "+ where;
                         valuesWithWhereValues = valInSql;
-                    }
+                    }*/
                     
                     //Load JDBC Driver
                     Class.forName(JDBC_DRIVER);
@@ -244,15 +222,15 @@ public class DBConnect implements DBConfig
                     {
                         Logs.saveLogln("FAIL TO GET ID! "+ this.pstmt);
                         System.exit(-1);
-                        return null;
                     }
                     else
                     {                    
-                        return ((JSONObject) v.get(0)).get(idColum).toString();
+                        id = ((JSONObject) v.get(0)).get(idColum).toString();
                     }
                 } catch (SQLException ex) {
                     DataException er = new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
                     er.setErrorCode(ex.getErrorCode());
+                    closeConnection();
                     throw er;
                 }
 
@@ -266,17 +244,22 @@ public class DBConnect implements DBConfig
         {
             throw new DataException("DB can't connect");
         }
+        closeConnection();
+        return id;
     }
     
     /**
      * Update Query
-     * @table Tabla
-     * @columns name of value is change
-     * @values values from this insert
+     * @param table
+     * @param columns
+     * @param values
+     * @param where
+     * @param whereValues
+     * @throws DataException
+     * @throws ClassNotFoundException
+     * @throws SQLException 
      */
-    public void update(String table, String[] columns, 
-                        String[] values, String where, String[] whereValues) 
-            throws DataException, ClassNotFoundException, SQLException
+    public void update(String table, String[] columns,String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException, SQLException
     {
         if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
@@ -308,7 +291,9 @@ public class DBConnect implements DBConfig
                     //Logs.saveLog("PSTMT: "+ this.pstmt);
                     //Run Update
                     this.pstmt.executeUpdate();
+                    closeConnection();
                 } catch (SQLException ex) {
+                    closeConnection();
                     throw new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
                 }
             }
@@ -325,6 +310,9 @@ public class DBConnect implements DBConfig
 	
     /**
      * Convert SQL Result to JSONArray
+     * @param result set
+     * @return
+     * @throws SQLException 
      */
     private static JSONArray resultToJsonConvert(ResultSet rs) throws SQLException
     {
@@ -388,7 +376,6 @@ public class DBConnect implements DBConfig
             }
             json.add(obj);
         }
-
         return json;
     }
     

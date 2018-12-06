@@ -34,7 +34,7 @@
                     <div class="col-md-4 guild_achievements">
                         <p class='small_title warcraft_font'>News</p>
                         <%
-                        List<New> news = guild_info.getNews();
+                        List<New> news = guild_info.getNews(7);
                         for(int i = 0; i < news.size() && i <= 6; i++) 
                         {
                             New inf = news.get(i);

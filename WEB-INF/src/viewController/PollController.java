@@ -23,15 +23,15 @@ public class PollController
 {    
     //Variable
     private final DBConnect dbConnect;
+    private List<Poll> polls = new ArrayList<>();
     
     public PollController()
     {
         dbConnect = new DBConnect();
     }
     
-    public List<Poll> getPolls()
+    private void getPollsDB()
     {
-        List<Poll> polls = new ArrayList<>();
         try {
             JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
@@ -42,13 +42,28 @@ public class PollController
                 Poll p = new Poll( (Integer) ((JSONObject)pollsDB.get(i)).get(Poll.POLLS_TABLE_KEY));
                 if(p.isEnable())
                 {
-                    polls.add(p);
+                    this.polls.add(p);
                 }
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to load polls - "+ ex);
+        }    
+    }
+    
+    public List<Poll> getPolls()
+    {
+        if(this.polls.isEmpty()) getPollsDB();
+        return this.polls;
+    }
+    
+    public Poll getPoll(int id)
+    {
+        for(Poll p : this.polls)
+        {
+            if(p.getId() == id)
+                return p;
         }
-        return polls;
+        return null;
     }
     
     public boolean newPoll(User owner, String pollQuest, int guildLevel, boolean moreOptions, 
@@ -62,9 +77,14 @@ public class PollController
         newPoll.setCanAddMoreOptions(moreOptions);
         newPoll.setMultiSelect(multiOptions);
         newPoll.setIsLimitDate(limiDate);
+        if(limiDate)
+        {
+            if(limitDateSet != null && limitDateSet.length() > 0)
+                newPoll.setEndDate(limitDateSet);
+            else
+                return false;
+        }
         newPoll.setIsEnable(true);
-        if(limitDateSet.length() > 0)
-            newPoll.setEndDate(limitDateSet);
         newPoll.setStartDate(Update.getCurrentTimeStamp());
         //Add options
         for(String op : options)

@@ -5,7 +5,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
 <%@ page import ="com.blizzardPanel.gameObject.Spell" %>
-<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members"/>
+<jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 <%if(guildMember) {
     int memberID = Integer.parseInt(request.getParameter("id"));
     Member member = members.getMember(memberID); %>
