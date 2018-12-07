@@ -24,6 +24,9 @@ else
         <title><%= guild_info.getName() %> - Create poll panel</title>
         <%@include file="../includes/header.jsp" %>
         <script src="../assets/js/poll_create.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet"/>
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>
@@ -80,13 +83,16 @@ else
                             Limit Date?
                         </label>  
                     </div> 
-                    <div class="col-10">
-                        <input class="form-control" type="datetime-local" id="dateLimitSelect" value="<%= (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")).format(new Date()) %>" id="example-datetime-local-input" name="set_date_limit" disabled>
+                    <div class="col-10" id="divDataPicker" style="display: none;">                        
+                        <div class="input-group date" data-provide="datepicker">
+                            <input id="dateLimitSelect" type="text" class="form-control" name="set_date_limit" disable>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>                      
                     </div>
                 </div>
                 <input type="hidden" value="true" name="save_apply" />
                 <button type="submit" class="btn btn-primary">Save</button>
-            </form>
+            </form> 
         </div>
     </body>
 </html>

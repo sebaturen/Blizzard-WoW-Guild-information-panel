@@ -230,7 +230,6 @@ CREATE TABLE `auction_history` (
     FOREIGN KEY(item) REFERENCES items(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE `polls` (
     `id`            INT NULL AUTO_INCREMENT,
     `user_id`       INT NOT NULL,

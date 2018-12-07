@@ -1,5 +1,6 @@
 //Send a ajax request to server...
 $(document).ready(function() {
+    $('#sandbox-container .input-group.date').datepicker({ });
     var totalOption = 1;
     $(".addOption").click(function() {
         var addOption = totalOption + 1;
@@ -13,7 +14,7 @@ $(document).ready(function() {
         totalOption++;
     });
     $("#limitDate").change(function() {
-        $("#dateLimitSelect").prop("disabled", !$('#limitDate').is(':checked'));
+        $("#divDataPicker").toggle();
     });
     
     //Create poll form!

@@ -32,6 +32,7 @@ public class PollController
     
     private void getPollsDB()
     {
+        this.polls = new ArrayList<>();
         try {
             JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
@@ -52,7 +53,8 @@ public class PollController
     
     public List<Poll> getPolls()
     {
-        if(this.polls.isEmpty()) getPollsDB();
+        //if(this.polls.isEmpty()) 
+            getPollsDB();
         return this.polls;
     }
     

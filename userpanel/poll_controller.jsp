@@ -7,6 +7,7 @@
         <%@ page import = "com.blizzardPanel.poll.Poll" %>
         <%@ page import ="java.util.ArrayList" %>
         <%@ page import ="java.util.List" %>
+        <%@ page import ="java.text.SimpleDateFormat" %>
         <jsp:useBean id="pollControl" class="com.blizzardPanel.viewController.PollController" scope="session"/><%
 
 
@@ -102,19 +103,31 @@
                     }
                     i++;
                 }
-                if(pollQuest != null && options.size() > 0)
+                if(pollQuest != null && pollQuest.length() > 0 && options.size() > 0)
                 {
-                    if(pollControl.newPoll(
-                        user, pollQuest, minGuildLevel, moreOptions,
-                        multiOptions, limitDate, 
-                        limitDateSet, options))
-                    {                    
-                        json.put("status", "ok");
-                    }
-                    else
-                    {                    
+                    //Try parse date time:
+                    try 
+                    {
+                        if(limitDateSet.length() == 10)
+                            limitDateSet = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(limitDateSet +" 00:00:00"));
+                        else
+                            limitDateSet = null;
+                        //Try save in DB
+                        if(pollControl.newPoll(
+                            user, pollQuest, minGuildLevel, moreOptions,
+                            multiOptions, limitDate, 
+                            limitDateSet, options))
+                        {                    
+                            json.put("status", "ok");
+                        }
+                        else
+                        {                    
+                            json.put("status", "fail");
+                            json.put("msg", "Fail to save in DB");
+                        }
+                    } catch (java.text.ParseException ex) {
                         json.put("status", "fail");
-                        json.put("msg", "Fail to save in DB");
+                        json.put("msg", "Fail limit date not correct");                        
                     }
                 }
                 else

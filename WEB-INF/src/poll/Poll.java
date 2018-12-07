@@ -205,52 +205,66 @@ public class Poll extends GameObject
     public void addOption(PollOption op) { this.options.add(op); }
     public int addOption(String s, User u) 
     {
-        PollOption addOption = new PollOption();
-        addOption.setPollId(this.id);
-        addOption.setOptionText(s);
-        addOption.setOwner(u);
-        addOption.setDate(Update.getCurrentTimeStamp());
-        addOption.setIsData(true);
-        if(!this.multiSelect)
-        {
-            for(PollOption opt : this.options)
+        if(this.isEnable)
+        {            
+            PollOption addOption = new PollOption();
+            addOption.setPollId(this.id);
+            addOption.setOptionText(s);
+            addOption.setOwner(u);
+            addOption.setDate(Update.getCurrentTimeStamp());
+            addOption.setIsData(true);
+            if(!this.multiSelect)
             {
-                opt.removeResult(u);
+                for(PollOption opt : this.options)
+                {
+                    opt.removeResult(u);
+                }
             }
+            addOption.saveInDB();
+            addOption.addResult(u);
+            this.options.add(addOption);
+            return addOption.getId();
         }
-        addOption.saveInDB();
-        addOption.addResult(u);
-        this.options.add(addOption);
-        return addOption.getId();
+        else
+        {
+            return -1;
+        }
     }
     
     public boolean addResult(int optId, User u)
     {
-        if(this.options.isEmpty()) loadOptions();  
-        boolean r = false;
-        for(PollOption opt : this.options)
-        {
-            if(!this.multiSelect)
+        if(this.isEnable)
+        {            
+            if(this.options.isEmpty()) loadOptions();  
+            boolean r = false;
+            for(PollOption opt : this.options)
             {
-                opt.removeResult(u);
+                if(!this.multiSelect)
+                {
+                    opt.removeResult(u);
+                }
+                if(opt.getId() == optId)
+                {
+                    r = opt.addResult(u);
+                }
             }
-            if(opt.getId() == optId)
-            {
-                r = opt.addResult(u);
-            }
+            return r;
         }
-        return r;
+        return false;
     }
     
     public boolean removeResult(int optId, User u)
     {
-        if(this.options.isEmpty()) loadOptions();
-        for(PollOption opt : this.options)
+        if(this.isEnable)
         {
-            if(opt.getId() == optId)
+            if(this.options.isEmpty()) loadOptions();
+            for(PollOption opt : this.options)
             {
-                return opt.removeResult(u);
-            }
+                if(opt.getId() == optId)
+                {
+                    return opt.removeResult(u);
+                }
+            }            
         }
         return false;
     }
