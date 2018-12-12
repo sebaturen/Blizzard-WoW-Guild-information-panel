@@ -16,13 +16,13 @@
             <div id="welcome">
                 <div class="row guild_logoName divder">
                     <div class="col-3 log_artofwar">
-                        <img src="/assets/img/artofwar_logo.png"/>
+                        <img src="assets/img/artofwar_logo.png"/>
                     </div>
                     <div class="col-6 align-self-center">
                         <p class='home_name warcraft_font'><%= guild_info.getName() %></p>
                     </div>
                     <div class="col-3 log_artofwar">
-                        <img class='flipImg' src="/assets/img/artofwar_logo.png"/>
+                        <img class='flipImg' src="assets/img/artofwar_logo.png"/>
                     </div>
                 </div>
                 <div class="row">
@@ -62,7 +62,10 @@
                             <div class="new divder row">
                                 <div class="col-2"><img src="<%= img %>"/></div>
                                 <div class="newDetail col-10">
-                                    <p><%= inf.getMember().getName() %> <span  class="right_small_date"><%= inf.getTimeStampString() %></span></p>
+                                    <p class="character-<%= inf.getMember().getMemberClass().getSlug() %>">
+                                        <%= inf.getMember().getName() %> 
+                                        <span  class="right_small_date"><%= inf.getTimeStampString() %></span>
+                                    </p>
                                     <p class="desc"><%= desc %> <%= inf.getContext() %></p>
                                     <p class="desc"><%= iaDetail %></p>
                                 </div>

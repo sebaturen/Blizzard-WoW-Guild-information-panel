@@ -27,8 +27,8 @@
                               <%for(Member m : memberChars) { if (m.isGuildMember() ) {%>
                                 <tr>
                                     <% //Get img from speck
-                                    String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
-                                    String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                    String className = m.getMemberClass().getSlug();                                    
+                                    String specName = m.getActiveSpec().getSpec().getSlug();
                                     String mainClass = ((m.isMain())? "<i class='artOfWar-icon'>&#xe801;</i>":"");
                                     %>
                                     <td class="character-<%= className %> char-name"><%= mainClass %> <%= m.getName() %></td>

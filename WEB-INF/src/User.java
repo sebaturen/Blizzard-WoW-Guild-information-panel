@@ -166,7 +166,7 @@ public class User
     {
         try {
             String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.SERVER_LOCATION, APIInfo.API_OAUTH_TOKEN);
-            String apiInfo = Base64.getEncoder().encodeToString((APIInfo.CLIENT_ID+":"+APIInfo.CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
+            String apiInfo = Base64.getEncoder().encodeToString((GeneralConfig.CLIENT_ID+":"+GeneralConfig.CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
          
             String redirectUrl = URLEncoder.encode(GeneralConfig.MAIN_URL+GeneralConfig.BLIZZAR_LINK, "UTF-8");
             //prepare info
@@ -208,7 +208,8 @@ public class User
                 //Call Blizzard API
                 JSONObject respond = Update.curl(urlString, 
                                             "GET",
-                                            "Bearer "+ accessToken);
+                                            "Bearer "+ accessToken,
+                                            new String[] {"locale="+ GeneralConfig.LENGUAJE_API_LOCALE});
                 if(respond.containsKey("battletag"))
                 {
                     return respond.get("battletag").toString();

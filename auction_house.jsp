@@ -16,7 +16,7 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div id="AH_timeUpdate">Last update [<%= auctionHouse.getLastAHUpdate() %>]</div>
-            <div class="alert alert-danger" role="alert">This functio is IN BETA!</div>
+            <div class="alert alert-danger" role="alert">This function is IN BETA!</div>
             <div id="AH_searchSection">                
                 <div class="form-group">
                     <div id="itemSearchImag"></div>

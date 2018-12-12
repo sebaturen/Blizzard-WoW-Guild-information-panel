@@ -23,8 +23,8 @@ public abstract class GameObject implements DBStructure
     protected static final DBConnect dbConnect = new DBConnect();
     protected boolean isData = false;
     protected boolean isInternalData = false;
-    private final String tableDB;
-    private final String tableKey;
+    private String tableDB;
+    private String tableKey;
     private String[] tableStruct;
 
     //Constant save data info
@@ -40,7 +40,7 @@ public abstract class GameObject implements DBStructure
         this.tableKey = tableKey;
         this.tableStruct = tableStruct;
     }
-	
+    
     //Abstract method
     protected abstract void saveInternalInfoObject(JSONObject objInfo);
     public abstract boolean saveInDB();
@@ -181,6 +181,8 @@ public abstract class GameObject implements DBStructure
     public boolean isData() { return this.isData; }
     public boolean isInternalData() { return this.isInternalData; }
     public void setIsData(boolean isData) { this.isData = isData; }
+    public void setTableName(String tabName) { this.tableDB = tabName; }
+    public void setTableKey(String tableKey) { this.tableKey = tableKey; }
     public void setTableStructur(String[] tabStruc) { this.tableStruct = tabStruc; }
     public void setIsInternalData(boolean stat) { this.isInternalData = stat; }
 	

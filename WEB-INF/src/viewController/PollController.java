@@ -23,44 +23,57 @@ public class PollController
 {    
     //Variable
     private final DBConnect dbConnect;
-    private List<Poll> polls = new ArrayList<>();
+    private List<Poll> activePolls = new ArrayList<>();
+    private List<Poll> disablePolls = new ArrayList<>();
     
     public PollController()
     {
         dbConnect = new DBConnect();
     }
     
-    private void getPollsDB()
+    private void getPollsDB(boolean status)
     {
-        this.polls = new ArrayList<>();
+        List<Poll> polls = new ArrayList<>();
         try {
             JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
-                    "isEnable=?",
-                    new String[] {"1"});
+                    "isEnable=? LIMIT 3",
+                    new String[] {status? "1":"0"});
             for(int i = 0; i < pollsDB.size(); i++)
             {
                 Poll p = new Poll( (Integer) ((JSONObject)pollsDB.get(i)).get(Poll.POLLS_TABLE_KEY));
-                if(p.isEnable())
+                if(p.isEnable() == status)
                 {
-                    this.polls.add(p);
+                    polls.add(p);
                 }
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to load polls - "+ ex);
-        }    
+        }
+        if(status)
+            this.activePolls = polls;
+        else
+            this.disablePolls = polls;
     }
     
-    public List<Poll> getPolls()
+    public List<Poll> getActivePolls()
     {
         //if(this.polls.isEmpty()) 
-            getPollsDB();
-        return this.polls;
+            getPollsDB(true);
+        return this.activePolls;
+    }
+    
+    public List<Poll> getDisablePolls()
+    {
+        //if(this.polls.isEmpty()) 
+            getPollsDB(false);
+            System.out.println("Disables> "+ this.disablePolls.size());
+        return this.disablePolls;        
     }
     
     public Poll getPoll(int id)
     {
-        for(Poll p : this.polls)
+        for(Poll p : this.activePolls)
         {
             if(p.getId() == id)
                 return p;

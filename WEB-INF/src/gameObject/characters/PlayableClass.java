@@ -5,6 +5,7 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
@@ -13,11 +14,12 @@ public class PlayableClass extends GameObject
     //Playable Class DB
     public static final String PLAYABLE_CLASS_TABLE_NAME = "playable_class";
     public static final String PLAYABLE_CLASS_TABLE_KEY = "id";
-    public static final String[] PLAYABLE_CLASS_TABLE_STRUCTURE = {"id", "en_US"};
+    public static final String[] PLAYABLE_CLASS_TABLE_STRUCTURE = {"id", "slug", "name"};
     
     //Attribute
     private int id;
-    private String enName;
+    private String slug;
+    private String name;
 
     public PlayableClass(int id)
     {
@@ -34,15 +36,17 @@ public class PlayableClass extends GameObject
     @Override
     protected void saveInternalInfoObject(JSONObject exInfo)
     {		
-        if(exInfo.containsKey("name")) //if info come to blizzAPI or DB
+        if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
         {
-            this.id = ((Long) exInfo.get("id")).intValue();
-            this.enName = ((JSONObject) exInfo.get("name")).get("en_US").toString();
+            this.id = ((Long) exInfo.get("id")).intValue();        
+            this.slug = ((JSONObject) exInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
+            this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.LENGUAJE_API_LOCALE).toString();
         }
         else
         {
             this.id = (Integer) exInfo.get("id");
-            this.enName = exInfo.get("en_US").toString();
+            this.slug = exInfo.get("slug").toString();
+            this.name = exInfo.get("name").toString();
         }
         this.isData = true;
     }
@@ -51,7 +55,7 @@ public class PlayableClass extends GameObject
     public boolean saveInDB()
     {
         /* {"id", "en_US"}; */
-        switch (saveInDBObj(new String[] {this.id +"", this.enName}))
+        switch (saveInDBObj(new String[] {this.id +"", this.slug, this.name}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
             return true;
@@ -60,8 +64,10 @@ public class PlayableClass extends GameObject
     }	
 	
     //Getters
+    @Override
     public int getId() { return this.id; }
-    public String getEnName() { return this.enName; }
+    public String getName() { return this.name; }
+    public String getSlug() { return this.slug; }
     @Override
     public void setId(int id) { this.id = id; }
 	

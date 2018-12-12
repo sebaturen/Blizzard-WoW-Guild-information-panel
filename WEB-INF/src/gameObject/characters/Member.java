@@ -43,7 +43,7 @@ public class Member extends GameObject
     private String realm;
     private String battleGroup;
     private PlayableClass memberClass;
-    private Race race;
+    private PlayableRace race;
     private int gender;
     private int level;
     private long achievementPoints;
@@ -56,7 +56,7 @@ public class Member extends GameObject
     private boolean isGuildMember;
     private int userID;
     private Rank gRank;
-    private List<Spec> specs = new ArrayList<>();
+    private List<CharacterSpec> specs = new ArrayList<>();
     private List<ItemMember> items = new ArrayList<>();
     private CharacterStats stats;
     private boolean isMain = false;
@@ -80,6 +80,15 @@ public class Member extends GameObject
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] {"gm.member_name", "gm.realm"}, new String[] {name, realm}, "gm.internal_id = c.internal_id", true);
+        if(!this.isInternalData)
+        {
+            try {
+                Update up = new Update();
+                cloneMember(up.getMemberFromBlizz(name, realm));
+            } catch (IOException | ParseException | DataException ex) {
+                Logs.saveLogln("Fail to get member info from blizzard. - "+ ex);
+            }
+        }
     }
 
     //Load to JSON
@@ -100,20 +109,22 @@ public class Member extends GameObject
         this.lastModified = (long) playerInfo.get("lastModified");
         this.totalHonorableKills = (long) playerInfo.get("totalHonorableKills");
 
-        int classID, raceID;
+        int raceID;
         if(playerInfo.get("gender").getClass() == java.lang.Long.class)
         {//if info come to blizzAPI
             this.name = playerInfo.get("name").toString();
             this.gender = ((Long) playerInfo.get("gender")).intValue();
             this.level = ((Long) playerInfo.get("level")).intValue();
             this.faction = ((Long) playerInfo.get("faction")).intValue();
-            classID = ((Long) playerInfo.get("class")).intValue();
-            raceID = ((Long) playerInfo.get("race")).intValue();
+            this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
+            this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
             //If have a guild...
             this.guildName = "";
             this.isGuildMember = false;
             if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
             if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.GUILD_NAME)) this.isGuildMember = true;
+            //Generate member id:            
+            generateMemberID();
             //Spec
             loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
             loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
@@ -128,15 +139,13 @@ public class Member extends GameObject
             this.level = (Integer) playerInfo.get("level");
             this.faction = (Integer) playerInfo.get("faction");
             this.guildName = playerInfo.get("guild_name").toString();
-            classID = (Integer) playerInfo.get("class");
-            raceID = (Integer) playerInfo.get("race");
+            this.memberClass = new PlayableClass((Integer) playerInfo.get("class"));
+            this.race = new PlayableRace((Integer) playerInfo.get("race"));
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             this.stats = new CharacterStats(this.internalID);
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
         }
 
-        this.memberClass = new PlayableClass(classID);
-        this.race = new Race(raceID);
 
         this.isData = true;	
     }
@@ -157,7 +166,7 @@ public class Member extends GameObject
             if(specInfoBlizz != null) //Blizzard codio la API para retornar muchas posibles especializaciones
             {
                 //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
-                Spec spec = new Spec(this.internalID, specInfoBlizz, spellTalents);
+                CharacterSpec spec = new CharacterSpec(this, specInfoBlizz, spellTalents);
                 if(specsAvailable.containsKey("selected")) spec.setEnable(true);
                 this.specs.add(spec);
             }
@@ -178,41 +187,21 @@ public class Member extends GameObject
             }
         }
     }
-    
-    public void checkSpeckIDInDb()
-    {
-        for(int i = 0; i < this.specs.size(); i++)
-        {
-           try 
-            {
-                //UNIQUE (member_id,name,role)   
-                JSONArray dbSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
-                                                    new String[] {"id"},
-                                                    "member_id=? AND name=? AND role=?",
-                                                    new String[] { this.internalID +"", this.specs.get(i).getName(), this.specs.get(i).getRole() });
-                if(dbSpec.size() > 0)
-                {
-                    this.specs.get(i).setId( (Integer) ((JSONObject) dbSpec.get(0)).get("id"));
-                    this.specs.get(i).setIsInternalData(true);
-                }
-            } catch (SQLException | DataException ex) {
-                Logs.saveLogln("Fail to get old spec info in DB "+ ex);
-            } 
-        }
-    }
 
-    private void loadSpecFromDB()
+    private void loadSpecFromDB() { loadSpecFromDB(null); }
+    private void loadActiveSpecFromDB() {loadSpecFromDB("AND enable=1");}
+    private void loadSpecFromDB(String extraWhere)
     {
         try {
-            JSONArray memberSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
+            JSONArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
                                                     new String[] { "id" },
-                                                    "member_id=?",
+                                                    "member_id=? "+ extraWhere,
                                                     new String[] { this.internalID +""});
             if(memberSpec.size() > 0)
             {
                 for(int i = 0; i < memberSpec.size(); i++)
                 {
-                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") ); 
+                    CharacterSpec sp = new CharacterSpec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") ); 
                     this.specs.add(i, sp);   
                 }
             }
@@ -222,33 +211,22 @@ public class Member extends GameObject
                 loadSpecFromUpdate();
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+            Logs.saveLogln("Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
         }
     }
     
-    private void loadActiveSpecFromDB()
+    
+    private void loadSpecFromUpdate()
     {
-        try {
-            JSONArray memberSpec = dbConnect.select(Spec.SPECS_TABLE_NAME,
-                                                    new String[] { "id" },
-                                                    "member_id=? AND enable=?",
-                                                    new String[] { this.internalID +"", "1"});
-            if(memberSpec.size() > 0)
-            {
-                for(int i = 0; i < memberSpec.size(); i++)
-                {
-                    Spec sp = new Spec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") ); 
-                    this.specs.add(i, sp);   
-                }
-            }
-            else //No have a specs in DB!!!!
-            {
-                Logs.saveLogln("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
-                loadSpecFromUpdate();
-            }
-        } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
-        }        
+        try
+        {
+            Update up = new Update();
+            specs = up.getMemberFromBlizz(this.name, this.realm).getSpecs();
+        }
+        catch (IOException|ParseException|DataException ex)
+        {
+            Logs.saveLogln("Fail to get a spec info in member "+ this.name);
+        }
     }
     
     private void loadItemsFromDB()
@@ -264,50 +242,17 @@ public class Member extends GameObject
                 this.items.add(sp);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'Specs' from Member "+ this.name +" e: "+ ex);
+            Logs.saveLogln("Fail to get a 'items' from DB Member "+ this.name +" e: "+ ex);
         } 
-    }
-    
-    private void loadSpecFromUpdate()
-    {
-        try
-        {
-            Update up = new Update();
-            specs = up.getMemberFromBlizz(this.name, this.realm).getSpecs();
-        }
-        catch (IOException|ParseException|DataException ex)
-        {
-            Logs.saveLogln("Fail to get a spec info in member "+ this.name);
-        }
-    }
-    
-    public static Member loadMember(String name, String realm)
-    {
-        Member mb = new Member(name, realm);
-        if(!mb.isInternalData())
-        {
-            try {
-                Update up = new Update();
-                mb = up.getMemberFromBlizz(name, realm);
-                if(mb != null && mb.isData)
-                {
-                    mb.generateMemberID();
-                    mb.saveInDB();   
-                    Logs.saveLogln("New Member in DB "+ mb.getId() +" - "+ mb.getName());                 
-                }
-            } catch (IOException | ParseException | DataException ex) {
-                Logs.saveLogln("Fail to get member info from blizzard. - "+ ex);
-            }
-        }
-        return mb;
     }
     
     private void generateMemberID()
     {
         //check if have and id
-        if(this.isData && this.internalID == 0)
+        if(this.name != null && this.realm != null && this.internalID == 0)
         {
-            try {
+            try 
+            {
                 JSONArray oldId = dbConnect.select(GMEMBER_ID_NAME_TABLE_NAME, 
                                                 new String[] { GMEMBER_ID_NAME_TABLE_KEY },
                                                 "member_name=? AND realm=?",
@@ -317,7 +262,7 @@ public class Member extends GameObject
                     this.internalID = Integer.parseInt( ((JSONObject)oldId.get(0)).get(GMEMBER_ID_NAME_TABLE_KEY).toString());
                 }
                 else
-                {                    
+                {
                     /* {"internal_id", "member_name", "realm", "rank", "in_guild", "user_id"}; */
                     String id = dbConnect.insert(GMEMBER_ID_NAME_TABLE_NAME,
                             GMEMBER_ID_NAME_TABLE_KEY,
@@ -343,6 +288,9 @@ public class Member extends GameObject
          * "thumbnail", "calcClass", "faction", "totalHonorableKills",
          * "guild_name", "lastModified"};
          */
+        setTableName(CHARACTER_INFO_TABLE_NAME);
+        setTableKey(CHARACTER_INFO_TABLE_KEY);
+        setTableStructur(CHARACTER_INFO_TABLE_STRUCTURE);
         String[] val = new String[] {this.internalID +"", this.battleGroup, this.memberClass.getId() +"",
                                     this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"", 
                                     this.thumbnail, this.calcClass +"", this.faction +"", this.totalHonorableKills +"",
@@ -361,10 +309,10 @@ public class Member extends GameObject
                     //valide if this member have a this spec in DB (set Update or Insert)
                     try
                     {
-                        JSONArray specMember = dbConnect.select(Spec.SPECS_TABLE_NAME, 
-                                                                new String[] { Spec.SPECS_TABLE_KEY},
-                                                                "member_id=? AND name=? AND role=?",
-                                                                new String[] { spc.getMemberId() +"", spc.getName(), spc.getRole()});
+                        JSONArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME, 
+                                                                new String[] { CharacterSpec.SPECS_TABLE_KEY},
+                                                                "member_id=? AND spec_id=?",
+                                                                new String[] { spc.getMemberId() +"", spc.getSpec().getId() +""});
                         if(specMember.size()>0)
                         {
                             spc.setIsInternalData(true);
@@ -432,6 +380,46 @@ public class Member extends GameObject
             return false;
         }				
     }
+    
+    public void cloneMember(Member mb)
+    {
+        if(mb != null && mb.isData())
+        {          
+            //Attribute    
+            this.name = mb.getName();
+            this.realm = mb.getRealm();
+            this.battleGroup = mb.getBattleGroup();
+            this.memberClass = mb.getMemberClass();
+            this.race = mb.getRace();
+            this.gender = mb.getGender();
+            this.level = mb.getLevel();
+            this.achievementPoints = mb.getAchievementPoints();
+            this.thumbnail = mb.getThumbnail();
+            this.calcClass = mb.getCalcClass();
+            this.faction = mb.getFaction();
+            this.guildName = mb.getGuildName();
+            this.lastModified = mb.getLastModified();
+            this.totalHonorableKills = mb.getTotalHonorableKills();
+            this.isGuildMember = mb.isGuildMember();
+            this.userID = mb.getUserID();
+            this.gRank = mb.getRank();
+            this.specs = mb.getSpecs();
+            this.items = mb.getItems();
+            this.stats = mb.getStats();
+            this.isMain = mb.isMain();
+            this.isInternalData = mb.isInternalData();
+            this.isData = mb.isData(); 
+            //Try save if not exist in DB
+            if(this.isInternalData)
+                this.internalID = mb.getId();
+            else
+            {
+                generateMemberID();
+                saveInDB();
+                Logs.saveLogln("New Member in DB "+ this.internalID +" - "+ this.name);                 
+            }
+        }
+    }
 	
     //GETTERS
     public boolean isGuildMember() { return this.isGuildMember; }
@@ -439,7 +427,7 @@ public class Member extends GameObject
     public String getRealm() { return this.realm; }
     public String getBattleGroup() { return this.battleGroup; }
     public PlayableClass getMemberClass() { return this.memberClass; }
-    public Race getRace() { return this.race; }
+    public PlayableRace getRace() { return this.race; }
     public int getGender() { return this.gender; }
     public int getLevel() { return this.level; }
     public long getAchievementPoints() { return this.achievementPoints; }
@@ -463,24 +451,29 @@ public class Member extends GameObject
         return new Date((Long.parseLong(val))*1000); 
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
-    public List<Spec> getSpecs() { loadSpecFromDB(); return this.specs; }
-    public Spec getActiveSpec() 
+    public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty()) loadSpecFromDB(); return this.specs; }
+    public CharacterSpec getActiveSpec() 
     {
         if(this.specs.isEmpty()) loadActiveSpecFromDB();
-        for(Spec sp: this.specs) {            
+        for(CharacterSpec sp: this.specs) {            
             if(sp.isEnable()) {
             
             return sp;
         }}
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
-        Logs.saveLogln("No se encontre la spec activa de "+ this.name +" cargnadola de blizz...");
+        Logs.saveLogln("Not active spec detected "+ this.name +" try load again from blizz...");
         loadSpecFromUpdate();
-        for(Spec sp: this.specs) if(sp.isEnable()) {
+        for(CharacterSpec sp: this.specs) if(sp.isEnable()) {
             return sp;
         }
         return null;
     }
+    public List<ItemMember> getItems()
+    {
+        return this.items;
+    }
+    
     public double getItemLevel()
     {
         int sumItemLevl = 0;
@@ -517,10 +510,12 @@ public class Member extends GameObject
     {
         for(int i = 0; i < specs.size(); i++)
         {
-            Spec sp = specs.get(i);
+            CharacterSpec sp = specs.get(i);
+            PlayableSpec pSlec = null;
+            if(sName != null && sRole != null) pSlec = new PlayableSpec(sName, sRole, this.getMemberClass().getId());
             boolean isEnable = false; 
             if(id != -1 && id == sp.getId()) isEnable = true;
-            if(sName != null && sp.isThisSpec(sName, sRole)) isEnable = true;
+            if(pSlec != null && sp.isThisSpec(pSlec.getId())) isEnable = true;
             specs.get(i).setEnable(isEnable);
         }
     }
@@ -550,9 +545,9 @@ public class Member extends GameObject
     public String toString()
     {
         String out = "Member: "+ this.name +" ("+ this.internalID +" - "+ this.realm +")";
-        for(Spec sp : specs)
+        for(CharacterSpec sp : specs)
         {
-            out += "\nSpec> "+ sp.getName() +"-"+ sp.getRole() +" (Enable "+ sp.isEnable() +" "+ sp.getId() +")";
+           // out += "\nSpec> "+ sp.getName() +"-"+ sp.getRole() +" (Enable "+ sp.isEnable() +" "+ sp.getId() +")";
         }
         return out;
     }

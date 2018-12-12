@@ -34,6 +34,16 @@ public class Item extends GameObject
     {
         super(ITEM_TABLE_NAME,ITEM_TABLE_KEY,ITEM_TABLE_STRUCTURE);
         loadFromDB(id);
+        if(!this.isInternalData)
+        {
+            try 
+            {
+                Update up = new Update();
+                cloneItem(up.getItemFromBlizz(id));
+            } catch (IOException | ParseException | DataException ex) {
+                Logs.saveLogln("Fail to get item info from blizzard. - "+ ex);
+            }
+        }
     }
     
     public Item(JSONObject inf)
@@ -114,22 +124,28 @@ public class Item extends GameObject
         return false;
     }
     
-    public static Item loadItem(int id)
+    public void cloneItem(Item i)
     {
-        Item it = new Item(id);
-        if(!it.isInternalData())
+        if(i != null && i.isData())
         {
-            try {
-                Update up = new Update();
-                it = up.getItemFromBlizz(id);
-                Logs.saveLogln("New Item in DB "+ it.getId() +" - "+ it.getName());
-            } catch (IOException | ParseException | DataException ex) {
-                Logs.saveLogln("Fail to get item info from blizzard.");
+            //Copi atribute
+            this.id = i.getId();
+            this.name = i.getName();
+            this.icon = i.getIcon();
+            this.itemSpell = i.getItemSpell();
+            this.gemInfoBonusName = i.getGemBonus();
+            this.gemInfoType = i.getGemType();
+            this.isInternalData = i.isInternalData();
+            this.isData = i.isData();
+            //Try save in DB if not exist
+            if(!this.isInternalData)
+            {
+                saveInDB();
+                Logs.saveLogln("New Item in DB "+ this.id +" - "+ this.name);
             }
         }
-        return it;
     }
-
+    
     @Override
     public void setId(int id) { this.id = id; }
 
@@ -139,11 +155,11 @@ public class Item extends GameObject
     public String getGemBonus() { return this.gemInfoBonusName; }
     public String getGemType() { return this.gemInfoType; }
     public Spell getItemSpell() { return this.itemSpell; }
+    public String getIcon() { return this.icon; }
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
         return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
     }
-    
     
 }

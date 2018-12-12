@@ -5,51 +5,57 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
+import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class Spec extends GameObject
+public class CharacterSpec extends GameObject
 {
     //Specs  DB
     public static final String SPECS_TABLE_NAME = "character_specs";
     public static final String SPECS_TABLE_KEY = "id";
-    public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "name", "role", "enable",
+    public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "spec_id", "enable",
                                                             "tier_0", "tier_1", "tier_2",
                                                             "tier_3", "tier_4", "tier_5",
-                                                            "tier_6"};
-    
+                                                            "tier_6"};    
     //Atribute
     private int id;
     private int memberId;
-    private String name;
-    private String role;
+    private PlayableSpec spec;
     private boolean enable;
     private Spell[] spells;
  
     //Constant
     public static final int MAX_SPELL_TALENTS = 7; //Actualy u can get max 6 differents talents
 
-    public Spec(int specId)
+    public CharacterSpec(int specId)
     {        
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         loadFromDB(specId);
     }
     
-    public Spec(int memberId, JSONObject specInfo, JSONArray talentsInfo)
+    public CharacterSpec(Member member, JSONObject specInfo, JSONArray talentsInfo)
     {
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
-        this.memberId = memberId;
-        saveInfoFromBlizz(specInfo, talentsInfo);
+        this.memberId = member.getId();
+        saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
-    private void saveInfoFromBlizz(JSONObject specInfo, JSONArray talentsInfo)
+    private void saveInfoFromBlizz(Member member, JSONObject specInfo, JSONArray talentsInfo)
     {
         this.spells = new Spell[MAX_SPELL_TALENTS];
-        this.name = specInfo.get("name").toString();
-        this.role = specInfo.get("role").toString();
+        this.spec = new PlayableSpec(specInfo.get("name").toString(), specInfo.get("role").toString(), member.getMemberClass().getId());
+        if(this.spec.getName() == null)
+        {
+            Logs.saveLogln("Fail to get Spec Member> "+ this.memberId);
+            Logs.saveLogln("\tSpec Name: "+ specInfo.get("name").toString());
+            Logs.saveLogln("\tSpec Role: "+ specInfo.get("role").toString());
+            Logs.saveLogln("\tClass ID: "+ member.getMemberClass().getId());
+            System.exit(-1);
+        }
         for(int i = 0; i < talentsInfo.size(); i++)
         {
             JSONObject talentLevl = (JSONObject) talentsInfo.get(i); //get("tier") talent level 
@@ -74,8 +80,7 @@ public class Spec extends GameObject
     {        
         this.id = (Integer) specInfo.get("id");
         this.memberId = (Integer) specInfo.get("member_id");
-        this.name = specInfo.get("name").toString();
-        this.role = specInfo.get("role").toString();
+        this.spec = new PlayableSpec((Integer) specInfo.get("spec_id"));
         this.enable = (Boolean) specInfo.get("enable");
         this.spells = new Spell[MAX_SPELL_TALENTS];
         if((Integer) specInfo.get("tier_0") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_0") );
@@ -107,7 +112,7 @@ public class Spec extends GameObject
          * "tier_6"};
          */
         setTableStructur(DBStructure.outKey(SPECS_TABLE_STRUCTURE));
-        int valSave = saveInDBObj(new String[] { this.memberId +"", this.name, this.role, isEnable,
+        int valSave = saveInDBObj(new String[] { this.memberId +"", this.spec.getId() +"", isEnable,
                                                 spellID[0], spellID[1], spellID[2], 
                                                 spellID[3], spellID[4], spellID[5],
                                                 spellID[6]});
@@ -121,12 +126,11 @@ public class Spec extends GameObject
 
     //Getters and Setters
     public boolean isEnable() { return this.enable; }
-    public boolean isThisSpec(String sName, String sRole) { return this.name.equals(sName) && this.role.equals(sRole); }
-    public boolean isThisSpec(int id) { return (this.id == id); }
+    public boolean isThisSpec(int specId) { return this.spec.getId() == specId; }
+    public boolean isThisCharSpec(int id) { return (this.id == id); }
     @Override
     public int getId() { return this.id; }
-    public String getName() { return this.name; }
-    public String getRole() { return this.role; }
+    public PlayableSpec getSpec() { return this.spec; }
     public Spell[] getSpells() { return this.spells; }
     public int getMemberId() { return this.memberId; }
     @Override

@@ -48,7 +48,7 @@ public class AuctionItem extends GameObject
             this.quantity = ((Long) objInfo.get("quantity")).intValue();
             this.context = ((Long) objInfo.get("context")).intValue();
             this.rand = ((Long) objInfo.get("rand")).intValue();
-            this.item = Item.loadItem(((Long) objInfo.get("item")).intValue());
+            this.item = new Item(((Long) objInfo.get("item")).intValue());
         }
         else
         {//info come to DB
@@ -56,7 +56,7 @@ public class AuctionItem extends GameObject
             this.quantity = (Integer) objInfo.get("quantity");
             this.context = (Integer) objInfo.get("context");
             this.rand = (Integer) objInfo.get("rand");
-            this.item = Item.loadItem((Integer) objInfo.get("item"));
+            this.item = new Item((Integer) objInfo.get("item"));
             this.aucDate = objInfo.get("auc_date").toString();
         }
         this.buyout = (long) objInfo.get("buyout");

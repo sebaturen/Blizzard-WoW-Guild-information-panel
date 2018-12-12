@@ -32,7 +32,7 @@ public class Raid extends GameObject
     public Raid(int id)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
-        loadFromDB(id);        
+        loadFromDB(id);
     }
     
     public Raid(String slug)
@@ -59,13 +59,12 @@ public class Raid extends GameObject
             loadRaidDificultFromDB();
         }
         else
-        {
+        {//info from raiderIO
             this.name = "NOT DEFINED";
             this.slug = objInfo.get("raid").toString();
             JSONObject dificult = (JSONObject) objInfo.get("encountersDefeated");
             JSONObject rank = (JSONObject) objInfo.get("rank");
-            loadRaidDificultFromRaiderIO(dificult, rank);
-            
+            loadRaidDificultFromRaiderIO(dificult, rank);            
         }
         this.isData = true;
     }
@@ -115,7 +114,7 @@ public class Raid extends GameObject
         mythic.setRankWorld( ((Long) ((JSONObject)rank.get("mythic")).get("world")).intValue() );
         mythic.setRankRegion( ((Long) ((JSONObject)rank.get("mythic")).get("region")).intValue() );
         mythic.setRankRealm( ((Long) ((JSONObject)rank.get("mythic")).get("realm")).intValue() );   
-        this.dificults.add(mythic);    
+        this.dificults.add(mythic);  
     }
 
     @Override

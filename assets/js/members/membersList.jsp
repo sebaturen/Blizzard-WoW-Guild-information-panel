@@ -22,8 +22,8 @@ if(members.getMembersList() != null)
 {
     for(Member member : members.getMembersList())
     {
-        String className = ((member.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase(); 
-        String specName = ((member.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase(); 
+        String className = member.getMemberClass().getSlug();
+        String specName = member.getActiveSpec().getSpec().getSlug();
         String iLevel = "0";
         String race = "";
         if(guildMember)
@@ -38,9 +38,9 @@ if(members.getMembersList() != null)
             if (!mClass.contains(className)) 
             {
                 mClass.add(className);
-                txtClass.add(member.getMemberClass().getEnName());
+                txtClass.add(member.getMemberClass().getName());
                 %>mClass.push('<%= className %>');
-                textClass.push('<%= member.getMemberClass().getEnName() %>');<%
+                textClass.push('<%= member.getMemberClass().getName() %>');<%
             }
             if (!races.contains(member.getRace().getName()))
             {
@@ -54,7 +54,7 @@ if(members.getMembersList() != null)
             'spec': '<%= specName %>', 
             'level': <%= member.getLevel() %>, 
             'img': '<%= member.getThumbnailURL() %>',
-            'rol': '<%= member.getActiveSpec().getRole() %>', 
+            'rol': '<%= member.getActiveSpec().getSpec().getRole() %>', 
             'member_id': <%= member.getId() %>, 
             'gRank_id': <%= member.getRank().getId() %>,
             'gRank_title': '<%= member.getRank().getTitle() %>',

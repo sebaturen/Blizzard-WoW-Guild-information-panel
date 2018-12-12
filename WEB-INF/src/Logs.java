@@ -8,7 +8,13 @@ package com.blizzardPanel;
 import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.nio.file.Files;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.UserPrincipal;
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,7 +22,7 @@ public class Logs
 {
     
     public static final String LOG_FILE_PREFIX = GeneralConfig.LOGS_FILE_PATH + GeneralConfig.GUILD_NAME;
-    public static final String LOG_FILE_EXTENCION = "-Update.log";
+    public static final String LOG_FILE_EXTENCION = "Update.log";
     private static UpdateControl upControl = null;
     
     public static void saveLogln(String s) { saveLog(s, true); }
@@ -34,7 +40,7 @@ public class Logs
             }
             if(upControl != null) upControl.onMessage(wS, null);            
             //Save in file
-            try (BufferedWriter out = new BufferedWriter(new FileWriter(getFailLog(), true))) {
+            try (BufferedWriter out = new BufferedWriter(getFile())) {
                 out.write(wS);
             }
         } catch (IOException ex) {
@@ -42,9 +48,21 @@ public class Logs
         }
     }
     
-    private static String getFailLog()
+    private static FileWriter getFile() throws IOException
     {
-        return LOG_FILE_PREFIX+getCurrentTimeStamp()+LOG_FILE_EXTENCION;
+        FileWriter logFile = new FileWriter(getFileLogPath(), true);
+        //Set file owner!
+        Path path = Paths.get(getFileLogPath());
+        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+        UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(GeneralConfig.LOGS_FILE_USER_OWNER);
+        Files.setOwner(path, userPrincipal);
+
+        return logFile;        
+    }
+    
+    private static String getFileLogPath()
+    {
+        return LOG_FILE_PREFIX +"."+ getCurrentTimeStamp() +"."+ LOG_FILE_EXTENCION;
     }
     
     public static void publicLog(UpdateControl up) { upControl = up; }

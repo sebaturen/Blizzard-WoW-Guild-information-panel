@@ -6,11 +6,8 @@
 package com.blizzardPanel.blizzardAPI;
 
 public interface APIInfo 
-{    
-    //Aplication Info
-    public static final String CLIENT_ID        = "";
-    public static final String CLIENT_SECRET    = "";
-    
+{        
+    public static final int API_SECOND_LIMIT_ERROR = 429;
     //-------------------------
     //API Acces
     //-------------------------        
@@ -45,6 +42,8 @@ public interface APIInfo
     //------------------------------------------World of Warcraft Game Data APIs
     //Playable Class API
     public static final String API_PLAYABLE_CLASS = "data/wow/playable-class/";
+    //Playable Races API
+    public static final String API_PLAYEBLE_SPECIALIZATION = "data/wow/playable-specialization/";
     //WoW Token API
     public static final String API_WOW_TOKEN = "data/wow/token/";
     

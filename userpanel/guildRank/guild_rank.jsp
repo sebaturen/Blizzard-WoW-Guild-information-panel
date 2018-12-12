@@ -50,9 +50,9 @@ else
                     <label><%= r.getTitle() %> (<%= r.getId() %>)</label>
                     <input class="form-control" type="text" value="<%= r.getTitle() %>" name="title_<%= r.getId() %>" <%= (r.getId() == 0 || r.getId() == 1)? "disabled":"" %>/>
                     <% for (Member m : ranks.getMemberByRank(r.getId())) {
-                        String clasName = m.getMemberClass().getEnName().toLowerCase();
+                        String className = m.getMemberClass().getSlug();
                     %>
-                        <span class="character-<%= clasName %> mem-name"><%= m.getName() %></span>,
+                        <span class="character-<%= className %> mem-name"><%= m.getName() %></span>,
                     <%} //end foreach members %>
                 </div>
           <%}/*end foreach ranks*/ } /*End if is getRanks null*/%>

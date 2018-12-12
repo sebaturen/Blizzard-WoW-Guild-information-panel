@@ -17,7 +17,7 @@ import com.blizzardPanel.gameObject.guild.Guild;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.gameObject.characters.Member;
 import com.blizzardPanel.gameObject.characters.PlayableClass;
-import com.blizzardPanel.gameObject.characters.Race;
+import com.blizzardPanel.gameObject.characters.PlayableRace;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsCategory;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;
@@ -26,6 +26,7 @@ import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
 import com.blizzardPanel.User;
+import com.blizzardPanel.gameObject.characters.PlayableSpec;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +43,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Update implements APIInfo, GeneralConfig
 {
@@ -60,7 +63,7 @@ public class Update implements APIInfo, GeneralConfig
     private static int blizzAPICallCounter = 0;
 
     //Attribute
-    private String accesToken = "";
+    private static String accesToken = null;
     private static final DBConnect dbConnect = new DBConnect();
 
     /**
@@ -144,8 +147,8 @@ public class Update implements APIInfo, GeneralConfig
         try { getPlayableClass(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update Playable class Info: "+ ex); }
         //Races
-        Logs.saveLogln("Races Information update!");
-        try { getRaces(); } 
+        Logs.saveLogln("Playable Races Information update!");
+        try { getPlayableRaces(); } 
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update Races Info: "+ ex); }		
         //Guild Achivements lists
         Logs.saveLogln("Guild Achievements lists information update!");
@@ -166,6 +169,9 @@ public class Update implements APIInfo, GeneralConfig
         Logs.saveLogln("Item informatio update!");
         try{ updateItemInformation(); }
         catch (IOException|ParseException|SQLException|DataException ex) { Logs.saveLogln("Fail update item Info: "+ ex); }
+        Logs.saveLogln("Playable Spec update!");
+        try{ getPlayableSpec(); }
+        catch (IOException|ParseException|DataException ex) { Logs.saveLogln("Fail update playable spec Info: "+ ex); }
         Logs.saveLogln("-------Update process is COMPLATE! (Static)------");	
         Logs.saveLogln("TOTAL Blizzard API Call: "+ blizzAPICallCounter);
 
@@ -314,19 +320,22 @@ public class Update implements APIInfo, GeneralConfig
      */
     private void generateAccesToken() throws IOException, ParseException, DataException
     {
-        String urlString = String.format(API_OAUTH_URL, SERVER_LOCATION, API_OAUTH_TOKEN);
-        String apiInfo = Base64.getEncoder().encodeToString((CLIENT_ID+":"+CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
+        if(accesToken == null)
+        {
+            String urlString = String.format(API_OAUTH_URL, SERVER_LOCATION, API_OAUTH_TOKEN);
+            String apiInfo = Base64.getEncoder().encodeToString((CLIENT_ID+":"+CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
 
-        //prepare info
-        String boodyDate = "grant_type=client_credentials";
-        byte[] postDataBytes = boodyDate.getBytes("UTF-8");
+            //prepare info
+            String boodyDate = "grant_type=client_credentials";
+            byte[] postDataBytes = boodyDate.getBytes("UTF-8");
 
-        //Get an Access Token
-        this.accesToken = (String) (curl(urlString,
-                                        "POST",
-                                        "Basic "+ apiInfo,
-                                        null,
-                                        postDataBytes)).get("access_token");
+            //Get an Access Token
+            accesToken = (String) (curl(urlString,
+                                            "POST",
+                                            "Basic "+ apiInfo,
+                                            null,
+                                            postDataBytes)).get("access_token");            
+        }
     }
     
     /**
@@ -338,7 +347,7 @@ public class Update implements APIInfo, GeneralConfig
      */
     private JSONObject getURLAH() throws DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
+        if(accesToken == null) throw new DataException("Access Token Not Found");
         else
         {
             //Generate an API URL
@@ -347,7 +356,7 @@ public class Update implements APIInfo, GeneralConfig
             //Call blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken);
+                                    "Bearer "+ accesToken);
             
             return ((JSONObject)((JSONArray) respond.get("files")).get(0));
             
@@ -362,9 +371,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws ClassNotFoundException
      * @throws DataException 
      */
-    private void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
+    public void getGuildProfile() throws IOException, ParseException, SQLException, ClassNotFoundException, DataException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
+        if(accesToken == null) throw new DataException("Access Token Not Found");
         else
         {
             //Generate an API URL
@@ -374,8 +383,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=achievements"});
+                                    "Bearer "+ accesToken,
+                                    new String[] {"fields=achievements", "locale="+ LENGUAJE_API_LOCALE});
             //Chek if is in db
             JSONArray lastModified = dbConnect.select(Guild.GUILD_TABLE_NAME,
                                                     new String[] {"id", "lastModified"},
@@ -407,9 +416,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws SQLException
      * @throws ClassNotFoundException 
      */
-    private void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
+    public void getGuildMembers() throws DataException, IOException, ParseException, SQLException, ClassNotFoundException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
+        if(accesToken == null) throw new DataException("Access Token Not Found");
         else
         {
             //Generate an API URL
@@ -419,8 +428,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=members"});
+                                    "Bearer "+ accesToken,
+                                    new String[] {"fields=members", "locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray members = (JSONArray) respond.get("members");
 
@@ -472,9 +481,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws java.text.ParseException
      * @throws SQLException 
      */
-    private void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
+    public void getGuildNews() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -484,11 +493,10 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=news"});
+                                    "Bearer "+ accesToken,
+                                    new String[] {"fields=news", "locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray news = (JSONArray) respond.get("news");
-            //System.out.println("respond "+ respond);
             for(int i = 0; i < news.size(); i++)
             {
                 JSONObject infoNew = (JSONObject)news.get(i);
@@ -514,9 +522,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
+    public void getCharacterInfo() throws SQLException, DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Access Token Not Found");
+        if(accesToken == null) throw new DataException("Access Token Not Found");
         else
         {
             JSONArray members = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME,
@@ -529,14 +537,14 @@ public class Update implements APIInfo, GeneralConfig
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
-                Member mbDB = Member.loadMember(member.get("member_name").toString(), member.get("realm").toString());
+                Member mbDB = new Member((Integer) member.get(Member.GMEMBER_ID_NAME_TABLE_KEY));
                 Member mbBlizz = getMemberFromBlizz(member.get("member_name").toString(), member.get("realm").toString());
-                if(mbDB != null && mbBlizz != null)
+                if(mbBlizz != null)
                 {//DB member need update!
                     if (!((Long)mbBlizz.getLastModified()).equals(mbDB.getLastModified()))
                     {
                         mbBlizz.setId(mbDB.getId());
-                        mbBlizz.setIsInternalData(true);
+                        mbBlizz.setIsInternalData(mbDB.isInternalData());
                         mbBlizz.saveInDB();
                     }
                 }
@@ -565,8 +573,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzPlayerInfo = curl(urlString, //DataException possible trigger
                                             "GET",
-                                            "Bearer "+ this.accesToken,
-                                            new String[] {"fields=guild,talents,items,stats"});
+                                            "Bearer "+ accesToken,
+                                            new String[] {"fields=guild,talents,items,stats", "locale="+ LENGUAJE_API_LOCALE});
             blizzPlayer = new Member(blizzPlayerInfo);
         } 
         catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
@@ -584,9 +592,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void getPlayableClass() throws SQLException, DataException, IOException, ParseException
+    public void getPlayableClass() throws SQLException, DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -594,8 +602,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzPlayableClass = curl(urlString, //DataException possible trigger
                                                 "GET",
-                                                "Bearer "+ this.accesToken,
-                                                new String[] {"namespace=static-us"});
+                                                "Bearer "+ accesToken,
+                                                new String[] {"namespace=static-"+ SERVER_LOCATION});
 
             JSONArray playClass = (JSONArray) blizzPlayableClass.get("classes");
             for(int i = 0; i < playClass.size(); i++)
@@ -612,6 +620,48 @@ public class Update implements APIInfo, GeneralConfig
             }
         }
     }
+    
+    public void getPlayableSpec() throws DataException, IOException, ParseException
+    {
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Generate an API URL
+            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, API_PLAYEBLE_SPECIALIZATION);
+            //Call Blizzard API
+            JSONObject blizzPlayableSpec = curl(urlString, //DataException possible trigger
+                                                "GET",
+                                                "Bearer "+ accesToken,
+                                                new String[] {"namespace=static-"+ SERVER_LOCATION});
+
+            JSONArray playClass = (JSONArray) blizzPlayableSpec.get("character_specializations");
+            for(int i = 0; i < playClass.size(); i++)
+            {
+                JSONObject info = (JSONObject) playClass.get(i);
+                String urlDetail = ((JSONObject) info.get("key")).get("href").toString();
+                loadPlayableSpecDetail(urlDetail);
+            }
+        }        
+    }
+    
+    private void loadPlayableSpecDetail(String url) throws DataException, IOException, ParseException
+    {
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
+        else
+        {
+            //Call Blizzard API
+            JSONObject specInfoBlizz = curl(url,
+                                                "GET",
+                                                "Bearer "+ accesToken);
+            PlayableSpec pSpecBlizz = new PlayableSpec(specInfoBlizz);
+            PlayableSpec pSpecDB = new PlayableSpec(((Long) specInfoBlizz.get("id")).intValue());
+            if(pSpecDB.isInternalData())
+            {
+                pSpecBlizz.setIsInternalData(true);
+            }
+            pSpecBlizz.saveInDB();
+        }
+    }
 
     /**
      * Get a Characters races information 
@@ -620,9 +670,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void getRaces() throws SQLException, DataException, IOException, ParseException
+    public void getPlayableRaces() throws SQLException, DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -630,14 +680,15 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzRaces = curl(urlString, //DataException possible trigger
                                         "GET",
-                                        "Bearer "+ this.accesToken);
+                                        "Bearer "+ accesToken,
+                                        new String[] {"locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray races = (JSONArray) blizzRaces.get("races");
             for(int i = 0; i < races.size(); i++)
             {
                 JSONObject info = (JSONObject) races.get(i);
-                Race raceDB = new Race(((Long) info.get("id")).intValue());
-                Race raceBlizz = new Race(info);
+                PlayableRace raceDB = new PlayableRace(((Long) info.get("id")).intValue());
+                PlayableRace raceBlizz = new PlayableRace(info);
                 if(raceDB.isInternalData())
                 {
                     raceBlizz.setId(raceDB.getId());
@@ -658,7 +709,7 @@ public class Update implements APIInfo, GeneralConfig
      */
     public Spell getSpellInformationBlizz(int id) throws DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -667,7 +718,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzSpell = curl(urlString, //DataException possible trigger
                                         "GET",
-                                        "Bearer "+ this.accesToken);
+                                        "Bearer "+ accesToken,
+                                        new String[] {"locale="+ LENGUAJE_API_LOCALE});
             Spell spBlizz = new Spell(blizzSpell);
             spBlizz.saveInDB(); 
             Logs.saveLogln("New spell is save in DB "+ id +" - "+ spBlizz.getName());
@@ -682,9 +734,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void updateSpellInformation() throws DataException, SQLException, IOException, ParseException
+    public void updateSpellInformation() throws DataException, SQLException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             JSONArray spellInDb = dbConnect.select(Spell.SPELLS_TABLE_NAME,
@@ -701,10 +753,11 @@ public class Update implements APIInfo, GeneralConfig
                 //Call Blizzard API
                 JSONObject blizzSpell = curl(urlString, //DataException possible trigger
                                             "GET",
-                                            "Bearer "+ this.accesToken);
+                                            "Bearer "+ accesToken,
+                                            new String[] {"locale="+ LENGUAJE_API_LOCALE});
                 Spell spBlizz = new Spell(blizzSpell);
                 spBlizz.setIsInternalData(true);
-                spBlizz.saveInDB();  
+                spBlizz.saveInDB();
                 
                 //Show update progress...
                 if ( (((iProgres*2)*10)*spellInDb.size())/100 < i )
@@ -724,9 +777,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void updateItemInformation() throws DataException, SQLException, IOException, ParseException
+    public void updateItemInformation() throws DataException, SQLException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             JSONArray itemInDB = dbConnect.select(Item.ITEM_TABLE_NAME,
@@ -769,9 +822,9 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzItem = curl(urlString, //DataException possible trigger
                     "GET",
-                    "Bearer "+ this.accesToken);
+                    "Bearer "+ accesToken,
+                    new String[] {"locale="+ LENGUAJE_API_LOCALE});
             itemBlizz = new Item(blizzItem);
-            itemBlizz.saveInDB();
         } catch (IOException | ParseException | DataException ex) {
             Logs.saveLogln("Error to get blizzard item information "+ id +" - "+ ex);
         }
@@ -784,9 +837,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws ParseException
      * @throws DataException 
      */
-    private void getGuildAchievementsLists() throws IOException, ParseException, DataException
+    public void getGuildAchievementsLists() throws IOException, ParseException, DataException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -794,7 +847,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzAchiv = curl(urlString, //DataException possible trigger
                                         "GET",
-                                        "Bearer "+ this.accesToken);
+                                        "Bearer "+ accesToken,
+                                        new String[] {"locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray achivGroup = (JSONArray) blizzAchiv.get("achievements");
             saveGuildAchievements(achivGroup);
@@ -829,9 +883,9 @@ public class Update implements APIInfo, GeneralConfig
         }
     }
     
-    private void getCharacterAchievementsLists() throws IOException, ParseException, DataException
+    public void getCharacterAchievementsLists() throws IOException, ParseException, DataException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -839,7 +893,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject blizzAchiv = curl(urlString, //DataException possible trigger
                                         "GET",
-                                        "Bearer "+ this.accesToken);
+                                        "Bearer "+ accesToken,
+                                        new String[] {"locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray achivGroup = (JSONArray) blizzAchiv.get("achievements");
             for(int i = 0; i < achivGroup.size(); i++)
@@ -901,9 +956,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws java.text.ParseException
      * @throws SQLException 
      */
-    private void getGuildChallenges() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
+    public void getGuildChallenges() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -913,8 +968,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=challenge"});
+                                    "Bearer "+ accesToken,
+                                    new String[] {"fields=challenge", "locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray challenges = (JSONArray) respond.get("challenge");
                  
@@ -961,8 +1016,9 @@ public class Update implements APIInfo, GeneralConfig
                                 JSONObject spec = (JSONObject) inMeb.get("spec");
                                 //Get info about this member.
                                 
-                                Member mb = Member.loadMember(character.get("name").toString() , character.get("realm").toString() );
-                                if (mb != null && mb.isData()) {
+                                Member mb = new Member(character.get("name").toString() , character.get("realm").toString() );
+                                if (mb.isData()) 
+                                {
                                     mb.setSpec(spec.get("name").toString(), spec.get("role").toString());
                                     //Add Member
                                     chGroup.addMember(mb);								
@@ -995,7 +1051,7 @@ public class Update implements APIInfo, GeneralConfig
      */
     private void getPlayerAchivements() throws IOException, ParseException, DataException, java.text.ParseException, SQLException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -1005,8 +1061,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken,
-                                    new String[] {"fields=news"});
+                                    "Bearer "+ accesToken,
+                                    new String[] {"fields=news", "locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray news = (JSONArray) respond.get("news");
             for(int i = 0; i < news.size(); i++)
@@ -1029,9 +1085,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws ClassNotFoundException
      * @throws SQLException 
      */
-    private void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException, SQLException
+    public void getWowToken() throws DataException, IOException, ParseException, ClassNotFoundException, SQLException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {            
             //Generate an API URL
@@ -1039,8 +1095,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject wowToken = curl(urlString, //DataException possible trigger
                                         "GET",
-                                        "Bearer "+ this.accesToken,
-                                        new String[] {"namespace=dynamic-us"});
+                                        "Bearer "+ accesToken,
+                                        new String[] {"namespace=dynamic-"+ SERVER_LOCATION, "locale="+ LENGUAJE_API_LOCALE});
             String lastUpdate = wowToken.get("last_updated_timestamp").toString();
             String priceUpdate = wowToken.get("price").toString();
             
@@ -1064,7 +1120,7 @@ public class Update implements APIInfo, GeneralConfig
      * @throws DataException
      * @throws ClassNotFoundException 
      */
-    private void getUsersCharacters() throws SQLException, DataException, ClassNotFoundException
+    public void getUsersCharacters() throws SQLException, DataException, ClassNotFoundException
     {
         JSONArray users = dbConnect.select(User.USER_TABLE_NAME, 
                                            new String[] {"id", "access_token"},
@@ -1137,7 +1193,7 @@ public class Update implements APIInfo, GeneralConfig
                     JSONObject pj = (JSONObject) characters.get(i);
                     String name = pj.get("name").toString();
                     String realm = pj.get("realm").toString();
-                    Member mb = Member.loadMember(name, realm);
+                    Member mb = new Member(name, realm);
                     
                     if(mb != null && mb.isData())
                     {
@@ -1214,7 +1270,7 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void getGuildProgression() throws DataException, IOException, ParseException
+    public void getGuildProgression() throws DataException, IOException, ParseException
     {
         //Generate an API URL
         String urlString = String.format(RAIDER_IO_API_URL, 
@@ -1251,9 +1307,9 @@ public class Update implements APIInfo, GeneralConfig
      * @throws IOException
      * @throws ParseException 
      */
-    private void getBossInformation() throws DataException, IOException, ParseException
+    public void getBossInformation() throws DataException, IOException, ParseException
     {
-        if(this.accesToken.length() == 0) throw new DataException("Acces Token Not Found");
+        if(accesToken == null) throw new DataException("Acces Token Not Found");
         else
         {
             //Generate an API URL
@@ -1261,7 +1317,8 @@ public class Update implements APIInfo, GeneralConfig
             //Call Blizzard API
             JSONObject respond = curl(urlString, 
                                     "GET",
-                                    "Bearer "+ this.accesToken);
+                                    "Bearer "+ accesToken,
+                                    new String[] {"locale="+ LENGUAJE_API_LOCALE});
 
             JSONArray bossList = (JSONArray) respond.get("bosses");
             for(int i = 0; i < bossList.size(); i++)
@@ -1351,16 +1408,18 @@ public class Update implements APIInfo, GeneralConfig
      * @throws DataException 
      */
     public static JSONObject curl(String urlString, String method, String authorization, String[] parameters, byte[] bodyData) throws IOException, DataException
-    {
+    {        
         //Add parameters
+        String urlPrepared = urlString;
         if(parameters != null)
         {
-            String url = urlString +"?";
-            for(String param : parameters) { url += param +"&"; }
-            urlString = url.substring(0,url.length()-1);
+            urlPrepared += "?";
+            for(String param : parameters) { urlPrepared += param +"&"; }
+            urlPrepared = urlPrepared.substring(0,urlPrepared.length()-1);
         }
 
-        URL url = new URL(urlString);
+        URL url = new URL(urlPrepared);
+        //System.out.println("Url> "+ url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         //set Connection
@@ -1381,7 +1440,7 @@ public class Update implements APIInfo, GeneralConfig
         //return Object
         JSONObject json;
         blizzAPICallCounter++;
-
+        
         //Error Request controller
         switch(conn.getResponseCode())
         {
@@ -1415,10 +1474,24 @@ public class Update implements APIInfo, GeneralConfig
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Data not found, check the guild name, server location and realm in APIInfo.java");
             case HttpURLConnection.HTTP_UNAVAILABLE:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Blizzard API Error... try again later");
+            case API_SECOND_LIMIT_ERROR:
+                try {
+                    Logs.saveLogln("Too many call to API Blizz... wait a second");
+                    TimeUnit.SECONDS.sleep(1);
+                    return curl(urlString, method, authorization, parameters, bodyData);
+                } catch (InterruptedException e) { }
             default:
-                throw new DataException("Error: "+ conn.getResponseCode() +" - Internal Code: 0");
+                throw new DataException("Error: "+ conn.getResponseCode() +" - Internal Code: 0 - URL> "+ urlString);
         }
-    }    
+    }
+    
+    private static Date addSeconds(Date date, int second)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.SECOND, second);
+        return cal.getTime();
+    }
     
     /**
      * Get a current time string yyyy-MM-dd HH:mm:ss

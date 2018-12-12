@@ -11,18 +11,6 @@ CREATE TABLE `guild_info` (
     UNIQUE (`name`, `realm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE `users` (
-    `id`                INT NOT NULL AUTO_INCREMENT,
-    `battle_tag`        varchar(50),
-    `access_token`      varchar(50),
-    `guild_rank`        TINYINT DEFAULT -1,
-    `main_character`    INT,
-    `wowinfo`           TINYINT(1) DEFAULT 0,
-    PRIMARY KEY(id),
-    FOREIGN KEY(main_character) REFERENCES gMembers_id_name(internal_id),
-    UNIQUE(battle_tag)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 CREATE TABLE `gMembers_id_name` (
     `internal_id`   int NOT NULL AUTO_INCREMENT,
     `member_name`   varchar(20) NOT NULL,
@@ -31,9 +19,21 @@ CREATE TABLE `gMembers_id_name` (
     `rank`          int,
     `user_id`       int,
     PRIMARY KEY(internal_id),
-    FOREIGN KEY(user_id) REFERENCES users(id),
     UNIQUE (member_name, realm)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `users` (
+    `id`                INT NOT NULL AUTO_INCREMENT,
+    `battle_tag`        varchar(50),
+    `access_token`      varchar(50),
+    `guild_rank`        TINYINT DEFAULT -1,
+    `main_character`    INT,
+    `wowinfo`           TINYINT(1) DEFAULT 0,
+    PRIMARY KEY(id),
+    UNIQUE(battle_tag)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+ALTER TABLE `gMembers_id_name` ADD FOREIGN KEY(user_id) REFERENCES users(id);
+ALTER TABLE `users` ADD FOREIGN KEY(main_character) REFERENCES gMembers_id_name(internal_id);
 
 CREATE TABLE `character_info` (
     `internal_id`       int NOT NULL,
@@ -52,14 +52,13 @@ CREATE TABLE `character_info` (
     PRIMARY KEY(internal_id),
     FOREIGN KEY(internal_id) REFERENCES gMembers_id_name(internal_id),
     FOREIGN KEY(class) REFERENCES playable_class(id),
-    FOREIGN KEY(race) REFERENCES races(id)
+    FOREIGN KEY(race) REFERENCES playable_races(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `character_specs` (
     `id`            int NOT NULL AUTO_INCREMENT,
     `member_id`     int NOT NULL,
-    `name`          varchar(50) NOT NULL,
-    `role`          varchar(20) NOT NULL,
+    `spec_id`       INT NOT NULL,
     `enable`        TINYINT(1) NOT NULL,
     `tier_0`        int,
     `tier_1`        int,
@@ -70,6 +69,7 @@ CREATE TABLE `character_specs` (
     `tier_6`        int,
     PRIMARY KEY(id),
     FOREIGN KEY(member_id) REFERENCES gMembers_id_name(internal_id),
+    FOREIGN KEY(spec_id) REFERENCES playable_spec(id),    
     FOREIGN KEY(tier_0) REFERENCES spells(id),
     FOREIGN KEY(tier_1) REFERENCES spells(id),
     FOREIGN KEY(tier_2) REFERENCES spells(id),
@@ -77,7 +77,7 @@ CREATE TABLE `character_specs` (
     FOREIGN KEY(tier_4) REFERENCES spells(id),
     FOREIGN KEY(tier_5) REFERENCES spells(id),
     FOREIGN KEY(tier_6) REFERENCES spells(id),
-    UNIQUE (member_id,name,role)
+    UNIQUE (member_id,spec_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `guild_news` (
@@ -103,7 +103,7 @@ CREATE TABLE `guild_achievements` (
     FOREIGN KEY(achievement_id) REFERENCES guild_achievements_list(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `raid_dificults` (
+CREATE TABLE `guild_raid_dificults` (
     `difi_id`       INT NOT NULL AUTO_INCREMENT,
     `raid_id`       INT NOT NULL,
     `name`          varchar(50) NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `raid_dificults` (
     UNIQUE(`raid_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `raid_dificult_bosses` (
+CREATE TABLE `guild_raid_dificult_bosses` (
     `r_d_boss_id`       INT NOT NULL AUTO_INCREMENT,
     `boss_id`           INT NOT NULL,
     `difi_id`           INT NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE `raid_dificult_bosses` (
     `artifactPowerAvg`  DOUBLE,
     PRIMARY KEY(r_d_boss_id),
     FOREIGN KEY(boss_id) REFERENCES boss_list(id),
-    FOREIGN KEY(difi_id) REFERENCES raid_dificults(difi_id),
+    FOREIGN KEY(difi_id) REFERENCES guild_raid_dificults(difi_id),
     UNIQUE (boss_id,difi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

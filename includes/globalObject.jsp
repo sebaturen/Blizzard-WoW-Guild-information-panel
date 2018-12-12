@@ -16,9 +16,12 @@
     }
 
     //Verify if DB is correct (like configuration is correct)
-    if(!gameInfo.getDBStatus())
+    if(!gameInfo.getDBStatus() || guild_info.getName() == null)
     {
-        session.setAttribute("errorMsg", gameInfo.getDBErrorMsg());
+        String errorMsg = "Fail to get guild information";
+        if(gameInfo.getDBErrorMsg() != null)
+            errorMsg = gameInfo.getDBErrorMsg();
+        session.setAttribute("errorMsg", errorMsg);
         %><jsp:forward page="${contextPath}/internal_error.jsp">
             <jsp:param name="db_error_msg" value="${errorMsg}" />
         </jsp:forward><%

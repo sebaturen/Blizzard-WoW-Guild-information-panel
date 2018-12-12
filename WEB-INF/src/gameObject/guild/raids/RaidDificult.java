@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 public class RaidDificult extends GameObject
 {
     //Raid dificult DB
-    public static final String RAID_DIFICULTS_TABLE_NAME = "raid_dificults";
+    public static final String RAID_DIFICULTS_TABLE_NAME = "guild_raid_dificults";
     public static final String RAID_DIFICULTS_TABLE_KEY  = "difi_id";
     public static final String[] RAID_DIFICULTS_TABLE_STRUCTURE = {"difi_id", "raid_id", "name", 
                                                                 "rank_world", "rank_region", "rank_realm"};

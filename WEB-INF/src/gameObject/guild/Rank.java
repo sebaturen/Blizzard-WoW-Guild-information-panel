@@ -1,6 +1,6 @@
 /**
  * File : Rank.java
- * Desc : Guild Ranks
+ * Desc : Guild Ranks (Officer, Member, GuildLeader, etc)
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.blizzardPanel.gameObject.guild;

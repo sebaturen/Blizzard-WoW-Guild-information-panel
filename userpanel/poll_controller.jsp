@@ -1,6 +1,7 @@
 <%@include file="../includes/globalObject.jsp" %>
 <%@page import="org.json.simple.JSONObject"%>
 <%
+    request.setCharacterEncoding("UTF-8");
     JSONObject json = new JSONObject();
     if(guildMember)
     {%> 

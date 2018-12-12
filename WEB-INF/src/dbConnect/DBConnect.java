@@ -6,6 +6,7 @@
 package com.blizzardPanel.dbConnect;
 
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class DBConnect implements DBConfig 
+public class DBConnect implements DBConfig, GeneralConfig
 {
     //error SQL constant
     public static final int ERROR_FOREIGN_KEY   = 1452;
@@ -101,7 +102,7 @@ public class DBConnect implements DBConfig
         if(conn == null || conn.isClosed()) generateConnextion();
         if (statusConnect == true)
         {
-            System.out.print("is close? "+ conn.isClosed());
+            //System.out.print("is close? "+ conn.isClosed());
             //Prepare QUERY
             String sql = "SELECT ";
             String aphost = (disableAphostro)? "":"`";
@@ -113,7 +114,7 @@ public class DBConnect implements DBConfig
             this.pstmt = conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
             //Logs.saveLog("PSTMT: "+ this.pstmt);
-            System.out.println(" - "+ conn.isClosed());
+            //System.out.println(" - "+ conn.isClosed());
             result = resultToJsonConvert(this.pstmt.executeQuery());
         }
         else
@@ -181,15 +182,6 @@ public class DBConnect implements DBConfig
                     
                     String sql = "INSERT INTO "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
                     String[] valuesWithWhereValues = values;
-                    /*if(where != null)
-                    {
-                        String[] valInSql = new String[values.length + whereValues.length];
-                        int i = 0;
-                        for(; i < values.length; i++) valInSql[i] = values[i];
-                        for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
-                        sql += " "+ where;
-                        valuesWithWhereValues = valInSql;
-                    }*/
                     
                     //Load JDBC Driver
                     Class.forName(JDBC_DRIVER);
@@ -220,7 +212,7 @@ public class DBConnect implements DBConfig
                                         stockArr);
                     if(v.isEmpty()) 
                     {
-                        Logs.saveLogln("FAIL TO GET ID! "+ this.pstmt);
+                        Logs.saveLogln("FAIL (EXIT) TO GET ID! "+ this.pstmt);
                         System.exit(-1);
                     }
                     else

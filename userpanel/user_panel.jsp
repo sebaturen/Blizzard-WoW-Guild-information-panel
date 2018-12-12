@@ -47,7 +47,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                           <%for(Member m : memberChars) { %>
                             <tr>
                                 <% //Get img from speck
-                                String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
+                                String className = m.getMemberClass().getSlug();
                                 String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
                                 String mainClassCode = (m.isMain())? "&#xe801;":"&#xe800;";
                                 %>

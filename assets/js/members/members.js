@@ -206,7 +206,7 @@ function prepareRender(mInfo)
             });
     //Status!!!
     $('.infoMember').append('<div class="statsMember"></div>');
-    $('.statsMember').append(renderStat(mInfo));        
+    $('.statsMember').append(renderStat(mInfo));
     $('#memberDetailLoad').remove();
 }
 
@@ -353,7 +353,7 @@ function renderItem(member)
 
 function renderStat(member)
 {
-    var iconMedia = '<div class="Media-image"><span class="Icon Media-icon"><svg class="Icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><use xlink:href="/assets/img/icons/stat-icon.svg#PUT_STAT"></use></svg></span></div>';
+    var iconMedia = '<div class="Media-image"><span class="Icon Media-icon"><svg class="Icon-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><use xlink:href="assets/img/icons/stat-icon.svg#PUT_STAT"></use></svg></span></div>';
     var statsMember = {
         'health': member.stats.health,
         'powerType': member.stats.powerType,

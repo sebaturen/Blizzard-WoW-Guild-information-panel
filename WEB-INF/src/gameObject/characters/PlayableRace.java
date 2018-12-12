@@ -8,10 +8,10 @@ package com.blizzardPanel.gameObject.characters;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
-public class Race extends GameObject
+public class PlayableRace extends GameObject
 {	
     //Races DB
-    public static final String RACES_TABLE_NAME = "races";
+    public static final String RACES_TABLE_NAME = "playable_races";
     public static final String RACES_TABLE_KEY = "id";
     public static final String[] RACES_TABLE_STRUCTURE = {"id", "mask", "side", "name"};
     
@@ -21,13 +21,13 @@ public class Race extends GameObject
     private String side;
     private String name;
 
-    public Race(int id)
+    public PlayableRace(int id)
     {
         super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
         loadFromDB(id);
     }
 
-    public Race(JSONObject exInfo)
+    public PlayableRace(JSONObject exInfo)
     {
         super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);

@@ -44,12 +44,12 @@
                             <% for(Member m : groupCh.getMembers())
                             {%>
                                 <tr>
-                                    <td class="character-<%= ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase() %>"><%= m.getName() %></td>
-                                    <td><img src="assets/img/icons/<%= m.getActiveSpec().getRole() %>.png" style="width: 22px;"/></td>
                                     <% //Get img from speck
-                                        String className = ((m.getMemberClass().getEnName()).replaceAll("\\s+","-")).toLowerCase();
-                                        String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                        String className = m.getMemberClass().getSlug();
+                                        String specName = m.getActiveSpec().getSpec().getSlug();
                                     %>
+                                    <td class="character-<%= className %>"><%= m.getName() %></td>
+                                    <td><img src="assets/img/icons/<%= m.getActiveSpec().getSpec().getRole() %>.png" style="width: 22px;"/></td>
                                     <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 </tr>
                           <%}//end foreach member 'm'%>

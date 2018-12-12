@@ -32,7 +32,7 @@ public class ChallengeGroup extends GameObject
     public static final String CHALLENGE_GROUP_MEMBERS_TABLE_NAME = "challenge_group_members";
     public static final String CHALLENGE_GROUP_MEMBERS_TABLE_KEY = "member_in_group_id";
     public static final String[] CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE = {"member_in_group_id", "internal_member_id",
-                                                                            "group_id", "spec_id"};
+                                                                            "group_id", "character_spec_id"};
     
     //Attribute
     private int id;
@@ -74,7 +74,7 @@ public class ChallengeGroup extends GameObject
                 Member cMem = new Member( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
                 if(cMem.isData())
                 {
-                    cMem.setSpec( (Integer) ((JSONObject) dbMem.get(i)).get("spec_id"));
+                    cMem.setSpec( (Integer) ((JSONObject) dbMem.get(i)).get("character_spec_id"));
                     members.add(cMem);                    
                 }
             }
@@ -152,7 +152,7 @@ public class ChallengeGroup extends GameObject
                         {//insert
                             dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                             CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
-                                            new String[] { "internal_member_id", "group_id", "spec_id" },
+                                            new String[] { "internal_member_id", "group_id", "character_spec_id" },
                                             new String[] { m.getId() +"", this.id +"", m.getActiveSpec().getId() +"" });
                         }
                     } catch (DataException|ClassNotFoundException|SQLException ex) {

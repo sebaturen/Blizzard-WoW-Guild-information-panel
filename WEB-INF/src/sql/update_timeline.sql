@@ -7,6 +7,6 @@ CREATE TABLE `update_timeline` (
 
 CREATE TABLE `wow_token` (
     `last_updated_timestamp`    bigint(20) NOT NULL,
-    `price`                     int NOT NULL,
+    `price`                     bigint(20) NOT NULL,
     PRIMARY KEY(last_updated_timestamp)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

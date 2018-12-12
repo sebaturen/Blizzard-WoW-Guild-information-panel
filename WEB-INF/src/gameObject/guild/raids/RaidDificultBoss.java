@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
 public class RaidDificultBoss extends GameObject
 {
     //Raid dificult bosses DB
-    public static final String RAID_DIFICULT_BOSSES_TABLE_NAME = "raid_dificult_bosses";
+    public static final String RAID_DIFICULT_BOSSES_TABLE_NAME = "guild_raid_dificult_bosses";
     public static final String RAID_DIFICULT_BOSSES_TABLE_KEY  = "r_d_boss_id";
     public static final String[] RAID_DIFICULT_BOSSES_TABLE_STRUCTURE = {"r_d_boss_id", "boss_id", "difi_id",
                                                                     "firstDefeated", "itemLevelAvg", "artifactPowerAvg"};
@@ -66,11 +66,15 @@ public class RaidDificultBoss extends GameObject
         else
         {//load from RaiderIO      
             this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
-            if(!this.boss.isData()) System.exit(-1);
+            if(!this.boss.isData())
+            {
+                Logs.saveLogln("FAIL (EXIT) TO GET BOSS INFO!! "+ getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
+                System.exit(-1);
+            }
             try {
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id);
+                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
             
             //Save Item Level AVG            
@@ -100,6 +104,14 @@ public class RaidDificultBoss extends GameObject
     {
         switch(slug)
         {
+            //******************Battle For Azeroth****************************//
+            //-----------Uldir    
+            case "zekvoz-herald-of-nzoth":
+                return "zekvoz";
+            case "zul-reborn":
+                return "zul";
+            //******************Legion****************************************//
+            //-----------Antorus, the Burning Throne
             case "felhounds-of-sargeras":
                 return "fharg";
             case "antoran-high-command":
@@ -108,10 +120,21 @@ public class RaidDificultBoss extends GameObject
                 return "essence-of-eonar";
             case "the-coven-of-shivarra":
                 return "noura-mother-of-flames";
-            case "zekvoz-herald-of-nzoth":
-                return "zekvoz";
-            case "zul-reborn":
-                return "zul";
+            //----------The Emerald Nightmare
+            case "dragons-of-nightmare":
+                return "ysondre";
+            case "ilgynoth-the-heart-of-corruption":
+                return "ilgynoth";
+            //----------The Nighthold
+            case "grand-magistrix-elisande":
+                return "elisande";
+            //----------Tomb of Sargeras
+            case "demonic-inquisition":
+                return "atrigan";
+            case "sisters-of-the-moon":
+                return "huntress-kasparian";
+            case "the-desolate-host":
+                return "engine-of-souls";
             default:
                 return slug;
         }

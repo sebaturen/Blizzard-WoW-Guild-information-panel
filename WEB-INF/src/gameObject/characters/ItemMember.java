@@ -71,7 +71,7 @@ public class ItemMember extends GameObject
             //load from DB
             this.id = (Integer) objInfo.get("id");
             this.memberId = (Integer) objInfo.get("member_id");
-            this.item = Item.loadItem((Integer) objInfo.get("item_id"));
+            this.item = new Item((Integer) objInfo.get("item_id"));
             this.quality = (Integer) objInfo.get("quality");            
             this.ilevel = (Integer) objInfo.get("ilevel");
             this.armor = (Integer) objInfo.get("armor");
@@ -96,7 +96,7 @@ public class ItemMember extends GameObject
         }
         else
         {//load from blizzard
-            this.item = Item.loadItem(((Long) objInfo.get("id")).intValue());  
+            this.item = new Item(((Long) objInfo.get("id")).intValue());
             this.quality = ((Long) objInfo.get("quality")).intValue();
             this.ilevel = ((Long) objInfo.get("itemLevel")).intValue();   
             this.stats = (JSONArray) objInfo.get("stats");
