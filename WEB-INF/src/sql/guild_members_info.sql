@@ -51,7 +51,7 @@ CREATE TABLE `character_info` (
     `lastModified`          bigint(20) NOT NULL,
     PRIMARY KEY(internal_id),
     FOREIGN KEY(internal_id) REFERENCES gMembers_id_name(internal_id),
-    FOREIGN KEY(class) REFERENCES playable_class(id),
+    FOREIGN KEY(`class`) REFERENCES playable_class(id),
     FOREIGN KEY(race) REFERENCES playable_races(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -128,7 +128,7 @@ CREATE TABLE `guild_raid_dificult_bosses` (
     UNIQUE (boss_id,difi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `items_member` (
+CREATE TABLE `character_items` (
     `id`                    INT NOT NULL AUTO_INCREMENT,
     `member_id`             INT NOT NULL,
     `item_id`               INT NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE `items_member` (
     `armor`                 INT NOT NULL,
     `context`               VARCHAR(50) NOT NULL,
     `azerite_level`         INT NOT NULL,
-    `azerite_power`         TINYTEXT,
+    `azerite_power`         TEXT,
     `tooltipGem_id`         INT,
     `toolTipEnchant_id`     INT,
     PRIMARY KEY(id),

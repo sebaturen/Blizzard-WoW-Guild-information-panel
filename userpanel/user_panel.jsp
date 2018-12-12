@@ -48,7 +48,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                             <tr>
                                 <% //Get img from speck
                                 String className = m.getMemberClass().getSlug();
-                                String specName = ((m.getActiveSpec().getName()).replaceAll("\\s+","-")).toLowerCase();
+                                String specName = m.getActiveSpec().getSpec().getSlug();
                                 String mainClassCode = (m.isMain())? "&#xe801;":"&#xe800;";
                                 %>
                                 <td><i class="main_char artOfWar-icon pointer" data-member_id="<%= m.getId() %>"><%= mainClassCode %></i></td>

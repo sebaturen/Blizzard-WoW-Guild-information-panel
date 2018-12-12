@@ -69,7 +69,7 @@ public class Item extends GameObject
                         Update up = new Update();
                         this.itemSpell = up.getSpellInformationBlizz(spellId);
                     } catch (IOException | ParseException | DataException ex) {
-                        Logs.saveLogln("Fail to get blizzard spell information "+ spellId +" - "+ ex);
+                        Logs.saveLogln("Fail to get blizzard spell information "+ spellId +" - (spell in item) - "+ ex);
                     }
                 }
             }

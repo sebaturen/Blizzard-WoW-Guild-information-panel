@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
 public class UpdateRunningCrontab
 {
     public static void main(String[] args)
-    {
+    { 
         try 
         {
             Update blizzUp = new Update();
@@ -50,8 +50,8 @@ public class UpdateRunningCrontab
                         case "PlayableRaces": Logs.saveLogln("Playable Races Update...");  blizzUp.getPlayableRaces(); break;
                         case "GuildAchievementsLists": Logs.saveLogln("Guild Achievements Update...");  blizzUp.getGuildAchievementsLists(); break;
                         case "CharacterAchievementsLists": Logs.saveLogln("Character Achievements Update...");  blizzUp.getCharacterAchievementsLists(); break;
-                        case "updateSpellInformation": Logs.saveLogln("Spells info Update...");  blizzUp.updateSpellInformation(); break;
                         case "BossInformation": Logs.saveLogln("Bosses info Update...");  blizzUp.getBossInformation(); break;
+                        case "updateSpellInformation": Logs.saveLogln("Spells info Update...");  blizzUp.updateSpellInformation(); break;
                         case "updateItemInformation": Logs.saveLogln("Items info Update...");  blizzUp.updateItemInformation(); break;
                         default:                    
                             blizzUp.updateStaticAll();                      

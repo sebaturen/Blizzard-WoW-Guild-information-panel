@@ -18,10 +18,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class ItemMember extends GameObject
+public class CharacterItems extends GameObject
 {
     //Item Member DB
-    public static final String ITEMS_MEMBER_TABLE_NAME  = "items_member";
+    public static final String ITEMS_MEMBER_TABLE_NAME  = "character_items";
     public static final String ITEMS_MEMBER_TABLE_KEY   = "id";
     public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "quality", "post_item",
                                                                 "ilevel", "stats", "armor", "context", 
@@ -45,19 +45,19 @@ public class ItemMember extends GameObject
     private int tooltipGemId = -1;
     private int tooltipEnchantId = -1;
     
-    public ItemMember(int id)
+    public CharacterItems(int id)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
-    public ItemMember(String position, int memberId)
+    public CharacterItems(String position, int memberId)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] { "post_item", "member_id" }, new String[] { position, memberId+"" });
     }
     
-    public ItemMember (JSONObject inf)
+    public CharacterItems (JSONObject inf)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
@@ -152,7 +152,7 @@ public class ItemMember extends GameObject
     public Item getItem() { return this.item; }
     public int getQuality() { return this.quality; }
     public int getArmor() { return this.armor; }
-    public Item getGem() { return new Item(this.tooltipGemId); }
+    public Item getGem() { if(this.tooltipGemId != -1) return new Item(this.tooltipGemId); else return null; }
     public int getAzeriteLevel() { return this.azeriteLevel; }
     public Spell[] getAzeritePower() 
     {

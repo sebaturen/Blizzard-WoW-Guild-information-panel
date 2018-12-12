@@ -57,7 +57,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     redirectUri += "&scope=wow.profile";
                     redirectUri += "&state=%7B%22region%22%3A%22"+ com.blizzardPanel.GeneralConfig.SERVER_LOCATION +"%22%7D";
                     redirectUri += "&response_type=code";
-                    redirectUri += "&client_id=" + com.blizzardPanel.GeneralConfig.CLIENT_ID;                    
+                    redirectUri += "&client_id=" + com.blizzardPanel.GeneralConfig.CLIENT_ID;
                 }
             %>
             &nbsp;<a href="<%= redirectUri %>"><button class="btn btn-outline-success" type="button"><%= (!user.checkUser())? "Login":"Account Info" %></button></a>

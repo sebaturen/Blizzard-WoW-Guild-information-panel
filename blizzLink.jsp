@@ -11,8 +11,9 @@
     <body>
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
-            <% if (user.setUserCode(request.getParameter("code"))) {
-                if(session.getAttribute("internal_redirect") == null)
+            <% if (user.setUserCode(request.getParameter("code")))
+            {
+                if (session.getAttribute("internal_redirect") == null)
                 {
                     response.sendRedirect("login.jsp");                
                 }
@@ -22,7 +23,9 @@
                     session.removeAttribute("internal_redirect");
                     response.sendRedirect(dirRed);
                 }
-            } else {
+            }
+            else 
+            {
                 out.write("ERROR! when try save your blizzard information!");
             }%>
         </div>

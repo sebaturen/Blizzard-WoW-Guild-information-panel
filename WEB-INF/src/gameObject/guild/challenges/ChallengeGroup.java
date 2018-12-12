@@ -74,7 +74,7 @@ public class ChallengeGroup extends GameObject
                 Member cMem = new Member( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
                 if(cMem.isData())
                 {
-                    cMem.setSpec( (Integer) ((JSONObject) dbMem.get(i)).get("character_spec_id"));
+                    cMem.setActiveSpec( (Integer) ((JSONObject) dbMem.get(i)).get("character_spec_id") );
                     members.add(cMem);                    
                 }
             }
@@ -135,7 +135,7 @@ public class ChallengeGroup extends GameObject
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 //Save members
-                members.forEach((m) -> {                    
+                this.members.forEach((m) -> {                    
                     try {
                         JSONArray memInGroupId = null;
                         try {

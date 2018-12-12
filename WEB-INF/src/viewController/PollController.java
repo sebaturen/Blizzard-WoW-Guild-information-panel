@@ -67,7 +67,6 @@ public class PollController
     {
         //if(this.polls.isEmpty()) 
             getPollsDB(false);
-            System.out.println("Disables> "+ this.disablePolls.size());
         return this.disablePolls;        
     }
     

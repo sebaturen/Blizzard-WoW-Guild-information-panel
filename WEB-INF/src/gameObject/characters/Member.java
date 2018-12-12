@@ -57,7 +57,7 @@ public class Member extends GameObject
     private int userID;
     private Rank gRank;
     private List<CharacterSpec> specs = new ArrayList<>();
-    private List<ItemMember> items = new ArrayList<>();
+    private List<CharacterItems> items = new ArrayList<>();
     private CharacterStats stats;
     private boolean isMain = false;
     
@@ -183,7 +183,7 @@ public class Member extends GameObject
             {
                 JSONObject item = (JSONObject) allItems.get(postItem);
                 item.put("post_item", postItem);
-                this.items.add(new ItemMember(item));
+                this.items.add(new CharacterItems(item));
             }
         }
     }
@@ -192,10 +192,11 @@ public class Member extends GameObject
     private void loadActiveSpecFromDB() {loadSpecFromDB("AND enable=1");}
     private void loadSpecFromDB(String extraWhere)
     {
-        try {
+        try 
+        {
             JSONArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
                                                     new String[] { "id" },
-                                                    "member_id=? "+ extraWhere,
+                                                    "member_id=? "+ ((extraWhere != null)? extraWhere:""),
                                                     new String[] { this.internalID +""});
             if(memberSpec.size() > 0)
             {
@@ -207,7 +208,8 @@ public class Member extends GameObject
             }
             else //No have a specs in DB!!!!
             {
-                Logs.saveLogln("Fallo al cargar las spec porque el size era menor o igual a cero "+ this.name + " - "+ this.internalID);
+                Logs.saveLogln("Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
+                Logs.saveLogln("\tTry get spec again from update...");
                 loadSpecFromUpdate();
             }
         } catch (SQLException | DataException ex) {
@@ -221,7 +223,10 @@ public class Member extends GameObject
         try
         {
             Update up = new Update();
-            specs = up.getMemberFromBlizz(this.name, this.realm).getSpecs();
+            Member tempMember = up.getMemberFromBlizz(this.name, this.realm);
+            this.specs = tempMember.getSpecs();
+            //Save new info in DB
+            saveInDB();
         }
         catch (IOException|ParseException|DataException ex)
         {
@@ -232,13 +237,13 @@ public class Member extends GameObject
     private void loadItemsFromDB()
     {
         try {
-            JSONArray itemDB = dbConnect.select(ItemMember.ITEMS_MEMBER_TABLE_NAME,
+            JSONArray itemDB = dbConnect.select(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
                                                     new String[] { "id" },
                                                     "member_id=? AND item_id != 0",
                                                     new String[] { this.internalID +""});            
             for(int i = 0; i < itemDB.size(); i++)
             {
-                ItemMember sp = new ItemMember( (Integer) ((JSONObject) itemDB.get(i)).get("id") ); 
+                CharacterItems sp = new CharacterItems( (Integer) ((JSONObject) itemDB.get(i)).get("id") ); 
                 this.items.add(sp);
             }
         } catch (SQLException | DataException ex) {
@@ -326,9 +331,9 @@ public class Member extends GameObject
                 //Clear all old items:   
                 if(this.items.isEmpty()) loadItemsFromDB();
                 try {
-                    dbConnect.update(ItemMember.ITEMS_MEMBER_TABLE_NAME,
-                                    ItemMember.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
-                                    ItemMember.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
+                    dbConnect.update(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
+                                    CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
+                                    CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
                                     "member_id=?",
                                     new String[] {this.internalID +""});                    
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
@@ -337,7 +342,7 @@ public class Member extends GameObject
                 //Update or insert a new items
                 this.items.forEach((itm) -> {
                     itm.setMemberId(this.internalID);
-                    ItemMember iMemberDB = new ItemMember(itm.getPosition(), this.internalID);
+                    CharacterItems iMemberDB = new CharacterItems(itm.getPosition(), this.internalID);
                     if(iMemberDB.isInternalData())
                     {
                         itm.setId(iMemberDB.getId());
@@ -455,21 +460,19 @@ public class Member extends GameObject
     public CharacterSpec getActiveSpec() 
     {
         if(this.specs.isEmpty()) loadActiveSpecFromDB();
-        for(CharacterSpec sp: this.specs) {            
-            if(sp.isEnable()) {
-            
-            return sp;
-        }}
+        for(CharacterSpec sp: this.specs) 
+            if(sp.isEnable())            
+                return sp;
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
         Logs.saveLogln("Not active spec detected "+ this.name +" try load again from blizz...");
         loadSpecFromUpdate();
-        for(CharacterSpec sp: this.specs) if(sp.isEnable()) {
-            return sp;
-        }
+        for(CharacterSpec sp: this.specs) 
+            if(sp.isEnable())
+                return sp;
         return null;
     }
-    public List<ItemMember> getItems()
+    public List<CharacterItems> getItems()
     {
         return this.items;
     }
@@ -479,7 +482,7 @@ public class Member extends GameObject
         int sumItemLevl = 0;
         int count = 0;
         if(this.items.isEmpty()) loadItemsFromDB();
-        for(ItemMember item : this.items)
+        for(CharacterItems item : this.items)
         {
             if(!item.getPosition().equals("tabard") && !item.getPosition().equals("shirt"))
             {
@@ -491,32 +494,38 @@ public class Member extends GameObject
         double iLeve = (double)sumItemLevl/(double)count;
         return iLeve;
     }
-    public ItemMember getItemByPost(String post) 
+    
+    public CharacterItems getItemByPost(String post) 
     {
-        if(this.items.isEmpty()) loadItemsFromDB();
-        for(ItemMember im : this.items) 
-        {
+        if(this.items.isEmpty())
+            loadItemsFromDB();
+        for(CharacterItems im : this.items)
             if(im.getPosition().equals(post))
                 return im;
-        }
         return null;
     }
 
     //Setters
-    public void setIsMain(boolean v) { this.isMain = v; }
-    public void setSpec(int id) { setSpec(id, null, null); }
-    public void setSpec(String sName, String sRole) { setSpec(-1, sName, sRole); }
-    public void setSpec(int id, String sName, String sRole)
+    public void setIsMain(boolean v) { this.isMain = v; }    
+    public void setActiveSpec(String sName, String sRole)
     {
-        for(int i = 0; i < specs.size(); i++)
+        if(this.specs.isEmpty())
+            loadSpecFromDB();
+        for(int i = 0; i < this.specs.size(); i++)
         {
-            CharacterSpec sp = specs.get(i);
-            PlayableSpec pSlec = null;
-            if(sName != null && sRole != null) pSlec = new PlayableSpec(sName, sRole, this.getMemberClass().getId());
-            boolean isEnable = false; 
-            if(id != -1 && id == sp.getId()) isEnable = true;
-            if(pSlec != null && sp.isThisSpec(pSlec.getId())) isEnable = true;
-            specs.get(i).setEnable(isEnable);
+            PlayableSpec pSpec = new PlayableSpec(sName, sRole, getMemberClass().getId());
+            boolean isEnableSpec = (this.specs.get(i).getSpec().getId() == pSpec.getId());
+            this.specs.get(i).setEnable(isEnableSpec);
+        }
+    }
+    public void setActiveSpec(int specId)
+    {
+        if(this.specs.isEmpty())
+            loadSpecFromDB();
+        for(int i = 0; i < this.specs.size(); i++)
+        {            
+            boolean isEnableSpec = (specId == this.specs.get(i).getId());
+            this.specs.get(i).setEnable(isEnableSpec);
         }
     }
     

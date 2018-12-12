@@ -113,7 +113,7 @@ public class DBConnect implements DBConfig, GeneralConfig
             if(where != null) sql += " WHERE "+ where;
             this.pstmt = conn.prepareStatement(sql);
             if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
-            //Logs.saveLog("PSTMT: "+ this.pstmt);
+            //System.out.println("PSTMT: "+ this.pstmt);
             //System.out.println(" - "+ conn.isClosed());
             result = resultToJsonConvert(this.pstmt.executeQuery());
         }

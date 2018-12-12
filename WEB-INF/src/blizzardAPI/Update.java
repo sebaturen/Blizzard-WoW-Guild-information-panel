@@ -751,13 +751,18 @@ public class Update implements APIInfo, GeneralConfig
                 String urlString = String.format(API_ROOT_URL, SERVER_LOCATION, 
                                             String.format(API_SPELL, (Integer) ((JSONObject) spellInDb.get(i)).get("id") ));
                 //Call Blizzard API
-                JSONObject blizzSpell = curl(urlString, //DataException possible trigger
-                                            "GET",
-                                            "Bearer "+ accesToken,
-                                            new String[] {"locale="+ LENGUAJE_API_LOCALE});
-                Spell spBlizz = new Spell(blizzSpell);
-                spBlizz.setIsInternalData(true);
-                spBlizz.saveInDB();
+                try
+                {
+                    JSONObject blizzSpell = curl(urlString, //DataException possible trigger
+                                                "GET",
+                                                "Bearer "+ accesToken,
+                                                new String[] {"locale="+ LENGUAJE_API_LOCALE});
+                    Spell spBlizz = new Spell(blizzSpell);
+                    spBlizz.setIsInternalData(true);
+                    spBlizz.saveInDB();                    
+                } catch(DataException e) {
+                    Logs.saveLogln("Fail to get information Spell URL ("+ urlString +") - "+ e);
+                }
                 
                 //Show update progress...
                 if ( (((iProgres*2)*10)*spellInDb.size())/100 < i )
@@ -814,11 +819,11 @@ public class Update implements APIInfo, GeneralConfig
     public Item getItemFromBlizz(int id)
     {
         Item itemBlizz = null;
+        //Generate an API URL
+        String urlString = String.format(API_ROOT_URL, SERVER_LOCATION,
+                String.format(API_ITEM, id));
         try 
         {
-            //Generate an API URL
-            String urlString = String.format(API_ROOT_URL, SERVER_LOCATION,
-                    String.format(API_ITEM, id));
             //Call Blizzard API
             JSONObject blizzItem = curl(urlString, //DataException possible trigger
                     "GET",
@@ -826,7 +831,7 @@ public class Update implements APIInfo, GeneralConfig
                     new String[] {"locale="+ LENGUAJE_API_LOCALE});
             itemBlizz = new Item(blizzItem);
         } catch (IOException | ParseException | DataException ex) {
-            Logs.saveLogln("Error to get blizzard item information "+ id +" - "+ ex);
+            Logs.saveLogln("Fail to get information item URL ("+ urlString +") - "+ ex);
         }
         return itemBlizz;
     }
@@ -945,8 +950,7 @@ public class Update implements APIInfo, GeneralConfig
                 saveCharacterAchivements( (JSONObject) subCat.get(i), category );
             }
         }
-    }
-    
+    }    
     
     /**
      * Guild challenges information
@@ -1019,7 +1023,7 @@ public class Update implements APIInfo, GeneralConfig
                                 Member mb = new Member(character.get("name").toString() , character.get("realm").toString() );
                                 if (mb.isData()) 
                                 {
-                                    mb.setSpec(spec.get("name").toString(), spec.get("role").toString());
+                                    mb.setActiveSpec(spec.get("name").toString(), spec.get("role").toString());
                                     //Add Member
                                     chGroup.addMember(mb);								
                                 }

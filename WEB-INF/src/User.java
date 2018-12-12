@@ -105,7 +105,7 @@ public class User
     public boolean setUserCode(String code)
     {
         this.accessToken = getAccessToken(code);
-        this.battleTag = getBlizzBattleTag(accessToken);
+        this.battleTag = getBlizzBattleTag(this.accessToken);
         //If have a info~
         if(this.accessToken == null || this.battleTag == null) return false;
         //Save a info~

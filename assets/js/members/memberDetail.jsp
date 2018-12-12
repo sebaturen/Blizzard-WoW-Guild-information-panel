@@ -1,6 +1,6 @@
 <%@include file="../../../includes/globalObject.jsp" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.ItemMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItems" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterStats" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
@@ -30,7 +30,7 @@ var member_<%= memberID %> = {
             "mainHand", "offHand"}; 
             for(String post : equip)
             {
-                ItemMember im = member.getItemByPost(post);
+                CharacterItems im = member.getItemByPost(post);
                 if(im != null) {%>
                     '<%= post %>': {
                         'name': "<%= (im.getItem().getName()).replaceAll("\"", "'") %>",
@@ -39,7 +39,7 @@ var member_<%= memberID %> = {
                         'quality': '<%= im.getQuality() %>',
                         'azerite_level': '<%= im.getAzeriteLevel() %>',
                         'armor': '<%= im.getArmor() %>',
-                        <% if(im.getGem().isInternalData()) { Item gem = im.getGem(); %>
+                        <% if(im.getGem() != null) { Item gem = im.getGem(); %>
                         'gem': {
                             'name': "<%= (gem.getName()).replaceAll("\"", "'") %>",
                             'bonus': '<%= gem.getGemBonus() %>',
