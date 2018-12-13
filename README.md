@@ -78,7 +78,7 @@ updateItemInformation</p>
 <code>$ ./updateCrontab.sh 1</code></p>
 <blockquote>
 <p>or if you want, can run one by one, use parameter:<br>
-<code>$ ./updateCrontab.sh 0 [&lt;param&gt;]</code><br>
+<code>$ ./updateCrontab.sh 1 [&lt;param&gt;]</code><br>
 #Dynamic</p>
 <blockquote>
 <p>GuildProfile<br>
