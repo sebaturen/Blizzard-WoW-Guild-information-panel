@@ -33,6 +33,7 @@ else
                 <button type='submit' class='btn btn-outline-warning btn-sm'>Guild Rank</button>
             </a>
         </div>
+        <%@include file="../includes/footer.jsp" %>
     </body>
 </html>
 <%}/*if is guild leader or officer */}/*if is guild member*/%>

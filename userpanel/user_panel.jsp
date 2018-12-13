@@ -67,6 +67,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                 <button type="submit" class="btn btn-primary">Log out</button>
             </form>                
         </div>
+        <%@include file="../includes/footer.jsp" %>
     </body>
 </html>
 <%}%>

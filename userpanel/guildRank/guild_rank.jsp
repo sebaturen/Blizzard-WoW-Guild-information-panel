@@ -60,6 +60,7 @@ else
                 <button type="submit" class="btn btn-primary">Save change</button>
             </form>
         </div>
+        <%@include file="../../includes/footer.jsp" %>
     </body>
 </html>
 <%}/*if is guild leader or officer*/}/*if is guild member*/%>

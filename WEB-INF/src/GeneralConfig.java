@@ -13,18 +13,8 @@ public interface GeneralConfig
     public static final String SERVER_LOCATION  = "us";
     /**
      * LOCALES:
-     * "en_US": "Horde",
-     * "es_MX": "Horda",
-     * "pt_BR": "Horda",
-     * "de_DE": "Horde",
-     * "es_ES": "Horda",
-     * "fr_FR": "Horde",
-     * "it_IT": "Orda",
-     * "pt_PT": "Horda",
-     * "ru_RU": "Орда",
-     * "ko_KR": "호드",
-     * "zh_TW": "部落",
-     * "zh_CN": "部落"
+     * "en_US", "es_MX", "pt_BR", "de_DE", "es_ES", "fr_FR", "it_IT",
+     * "pt_PT", "ru_RU", "ko_KR", "zh_TW", "zh_CN"
      */
     public static final String LENGUAJE_API_LOCALE  = "en_US";
     //Web main URL
@@ -33,7 +23,7 @@ public interface GeneralConfig
     //If in page you want all visitor can see all members information, or only guild members
     public static final boolean REQUERID_LOGIN_TO_INFO = true;
     //Logs info
-    public static final String LOGS_FILE_PATH   = "/opt/tomcat/logs/";
+    public static final String LOGS_FILE_PATH       = "/opt/tomcat/logs/";
     public static final String LOGS_FILE_USER_OWNER = "tomcat";
     
     /**

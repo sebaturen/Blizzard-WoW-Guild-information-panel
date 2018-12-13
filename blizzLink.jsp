@@ -29,6 +29,7 @@
                 out.write("ERROR! when try save your blizzard information!");
             }%>
         </div>
+        <%@include file="includes/footer.jsp" %>
     </body>
 </html>
 <%}%>

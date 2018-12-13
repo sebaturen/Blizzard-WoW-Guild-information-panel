@@ -10,5 +10,6 @@
         <div class="container fill">
             ... 404 error.... please look again
         </div>
+        <%@include file="includes/footer.jsp" %>
     </body>
 </html>

@@ -1,8 +1,12 @@
 /*Art of War Style page...*/
-body {
-    width: 100%;
+html {
     height: 100%;
+}
+body {
     color: #fff;
+    position: relative;
+    padding-bottom: 13rem;
+    min-height: 100%;
 }
 p {
     margin-top: 0;
@@ -50,6 +54,23 @@ p {
 }
 /*END----FONTS--------------*/
 /*-------GENERAL------------*/
+.navbar {
+    box-shadow: 0 3px 8px 4px rgba(0,0,0,.5);
+}
+#footer {
+    background-color: #212529;
+    box-shadow: 0 -3px 8px 4px rgba(0,0,0,.5);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2rem;
+}
+
+.copyRight {
+    color: rgba(255,255,255,.25);
+    text-align: center;
+}
 .right_small_date {
     font-size: 0.7em;
     color: #a3a7ab;
@@ -77,12 +98,13 @@ p {
 .pointer {
     cursor: pointer;
 }
-.container {    
+body > .container {    
     background-color: #212529;
     margin-top: 21px;
     padding: 25px;
     /* border: 1px solid; */
     box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
+    margin-bottom: 21px;
 }
 .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta, 
 .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
@@ -182,7 +204,8 @@ p {
 /*-------GUILD CHALLENGE------------*/
 .dungeon-challenge-img {
     background-size: cover;
-    background-position: center center;    
+    background-position: center center;   
+    margin: -25px -25px 0 -25px; 
 }
 .dung-title {
     padding: 50px;

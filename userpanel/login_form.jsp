@@ -26,6 +26,7 @@ else if ( user.checkUser() ) //login is complate and successful
                     </a><br><br>
             </div>
         </div>
+        <%@include file="../includes/footer.jsp" %>
     </body>
 </html>
 <%%>

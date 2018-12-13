@@ -65,5 +65,6 @@
               <%} //else if challenge not null%>
             </div>
         </div>
+        <%@include file="includes/footer.jsp" %>
     </body>
 </html>

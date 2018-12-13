@@ -56,5 +56,6 @@
                 Not progress detected.
             <%}//end if else raid not null %>
         </div>
+        <%@include file="includes/footer.jsp" %>
     </body>
 </html>

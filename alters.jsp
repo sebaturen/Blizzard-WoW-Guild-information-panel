@@ -42,6 +42,7 @@
                   <%} //close if members character more 0%>
             <%  } /* End foreach Users */ } /*End if alters is not null */%>
         </div>
+        <%@include file="includes/footer.jsp" %>
     </body>
 </html>
 <%}%>

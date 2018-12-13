@@ -23,7 +23,7 @@ import org.json.simple.JSONObject;
 public class Challenge extends GameObject
 {
     //Challenges DB
-    public static final String CHALLENGES_TABLE_NAME = "challenges";
+    public static final String CHALLENGES_TABLE_NAME = "guild_challenges";
     public static final String CHALLENGES_TABLE_KEY = "id";
     public static final String[] CHALLENGES_TABLE_STRUCTURE = {"id", "map_name",
                                                         "bronze_hours", "bronze_minutes", "bronze_seconds", "bronze_milliseconds",
