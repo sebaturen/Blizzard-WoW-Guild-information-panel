@@ -121,6 +121,7 @@ public class Guild extends GameObject
     
     private void loadNews(int cant)
     {
+        this.news = new ArrayList<>();
         try {
             JSONArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
                                                 new String[] {New.GUILD_NEWS_TABLE_KEY},

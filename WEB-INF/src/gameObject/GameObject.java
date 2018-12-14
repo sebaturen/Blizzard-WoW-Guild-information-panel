@@ -93,7 +93,7 @@ public abstract class GameObject implements DBStructure
         }
         else
         {
-            Logs.saveLogln("Fail to try save!, no data");
+            Logs.saveLogln("Fail to try save!, no data '"+ this.getClass() +"' - isData> "+ this.isData +" valueLeng> "+ values.length);
         }
         return SAVE_MSG_NO_DATA;
     }

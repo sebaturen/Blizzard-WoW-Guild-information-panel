@@ -25,12 +25,14 @@ public class User
     //User
     public static final String USER_TABLE_NAME = "users";
     public static final String USER_TABLE_KEY = "id";
-    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "main_character", "wowinfo"};
+    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "main_character", "wowinfo", "last_login", "last_alters_update"};
     
     //Atribute
     private int id;
     private String battleTag;
     private String accessToken;
+    private String lastLogin;
+    private String lastAlterUpdate;
     private int guildRank = -1;
     private int idMainChar = -1;
     private boolean isLogin = false;
@@ -55,12 +57,17 @@ public class User
     {
         this.id = (Integer) userInfo.get("id");
         this.battleTag = userInfo.get("battle_tag").toString();
-        this.accessToken = userInfo.get("access_token").toString();
+        if(this.accessToken == null) //not load old AccToken if new exist
+            this.accessToken = userInfo.get("access_token").toString();
         this.guildRank = (Integer) userInfo.get("guild_rank");
         this.isLogin = true;
         if(userInfo.get("main_character") != null)
             this.idMainChar = (Integer) userInfo.get("main_character");
         this.isCharsReady = true;
+        if(userInfo.get("last_login") != null)
+            this.lastLogin = userInfo.get("last_login").toString();
+        if(userInfo.get("last_alters_update") != null)
+            this.lastAlterUpdate = userInfo.get("last_alters_update").toString();
     }
     
     private void loadFromDB(int id)
@@ -85,11 +92,13 @@ public class User
     {
         if(this.battleTag == null) return false;
         if(this.isLogin && !forceCheck) return this.isLogin;
-        try {
-            JSONArray validUser = dbConnect.select(User.USER_TABLE_NAME,
+        try 
+        {
+            JSONArray validUser = dbConnect.select(
+                    User.USER_TABLE_NAME,
                     USER_TABLE_STRUCTURE,
                     "battle_tag=?",
-                    new String[] {battleTag});
+                    new String[] {this.battleTag});
             if(validUser.size() > 0)
             {
                 JSONObject infoUser = (JSONObject) validUser.get(0);
@@ -112,10 +121,12 @@ public class User
         boolean vRet = false;
         if(checkUser()) //Valid if account exit in DB
         {//exist... 
-            try {                
-                dbConnect.update(User.USER_TABLE_NAME,
-                        new String[] {"access_token"},
-                        new String[] {this.accessToken},
+            try 
+            {
+                dbConnect.update(
+                        User.USER_TABLE_NAME,
+                        new String[] {"access_token", "last_login"},
+                        new String[] {this.accessToken, Update.getCurrentTimeStamp()},
                         "id=?",
                         new String[] {this.id +""}); 
                 vRet = true;
@@ -125,11 +136,13 @@ public class User
         }
         else
         {//not exist...   
-            try {            
-                String userIdDB = dbConnect.insert(User.USER_TABLE_NAME,
-                        User.USER_TABLE_KEY,
-                        new String[] {"battle_tag", "access_token"},
-                        new String[] { this.battleTag, this.accessToken});
+            try 
+            {            
+                String userIdDB = dbConnect.insert(
+                                User.USER_TABLE_NAME,
+                                User.USER_TABLE_KEY,
+                                new String[] {"battle_tag", "access_token", "last_login"},
+                                new String[] { this.battleTag, this.accessToken, Update.getCurrentTimeStamp()});
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
             } catch (DataException | ClassNotFoundException | SQLException ex) {
@@ -253,6 +266,8 @@ public class User
     }
     
     public int getId() { return this.id; }
+    public String getLastLogin() { return this.lastLogin; }
+    public String getLastAltersUpdate() { return this.lastAlterUpdate; }
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
     public List<Member> getCharacters() { if(this.characters.isEmpty()) loadCharacters(); return this.characters; }

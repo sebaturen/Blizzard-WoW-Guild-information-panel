@@ -1208,6 +1208,11 @@ public class Update implements APIInfo, GeneralConfig
                                             new String[] { userID+""},
                                             "internal_id=?", 
                                             new String[] { mb.getId()+""});
+                            dbConnect.update(User.USER_TABLE_NAME,
+                                            new String[] {"last_alters_update"},
+                                            new String[] { getCurrentTimeStamp() },
+                                            User.USER_TABLE_KEY+"=?",
+                                            new String[] { userID+"" } );
                         } catch (ClassNotFoundException|SQLException ex) {
                             Logs.saveLogln("Fail to insert userID info "+ ex);
                         }
@@ -1423,7 +1428,6 @@ public class Update implements APIInfo, GeneralConfig
         }
 
         URL url = new URL(urlPrepared);
-        //System.out.println("Url> "+ url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         //set Connection

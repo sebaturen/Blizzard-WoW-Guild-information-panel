@@ -29,6 +29,8 @@ CREATE TABLE `users` (
     `guild_rank`        TINYINT DEFAULT -1,
     `main_character`    INT,
     `wowinfo`           TINYINT(1) DEFAULT 0,
+    `last_login`         DATETIME,
+    `last_alters_update`    DATETIME,
     PRIMARY KEY(id),
     UNIQUE(battle_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

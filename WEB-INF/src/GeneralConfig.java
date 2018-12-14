@@ -34,14 +34,4 @@ public interface GeneralConfig
     //Aplication Info
     public static final String CLIENT_ID        = "";
     public static final String CLIENT_SECRET    = "";
-    /** 
-     * AND SET A DATA BASE INFORMATION IN.
-     * dbConnect/DBConfig.java
-     */
-    
-    //DB information
-    public static final String DB_NAME      = "";
-    public static final String DB_USER      = "";
-    public static final String DB_PASSWORD  = "";
-    
 }

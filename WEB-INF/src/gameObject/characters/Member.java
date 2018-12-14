@@ -128,6 +128,7 @@ public class Member extends GameObject
             //Spec
             loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
             loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
+            //Status
             this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
         }
         else
@@ -214,6 +215,22 @@ public class Member extends GameObject
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
+        }
+    }
+    
+    private void loadStats()
+    {
+        try
+        {
+            Update up = new Update();
+            Member tempMember = up.getMemberFromBlizz(this.name, this.realm);
+            this.stats = tempMember.getStats();
+            //Save new info in DB
+            saveInDB();
+        }
+        catch (IOException|ParseException|DataException ex)
+        {
+            Logs.saveLogln("Fail to get a spec info in member "+ this.name);
         }
     }
     
@@ -357,6 +374,8 @@ public class Member extends GameObject
                 {
                     this.stats.setIsInternalData(true);
                 }
+                if(!this.stats.isData())
+                    loadStats();
                 this.stats.saveInDB();
                 return true;
             }
@@ -437,7 +456,7 @@ public class Member extends GameObject
     public int getLevel() { return this.level; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public String getThumbnail() { return this.thumbnail; }
-    public CharacterStats getStats() { return this.stats; }
+    public CharacterStats getStats() { if(!this.stats.isData()) loadStats(); return this.stats; }
     public boolean isMain() { return this.isMain; }
     public Rank getRank() { return this.gRank; }
     public String getThumbnailURL() 

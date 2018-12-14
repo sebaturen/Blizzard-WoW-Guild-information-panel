@@ -109,7 +109,6 @@ public class PollController
             pollOp.setDate(Update.getCurrentTimeStamp());
             pollOp.setIsData(true);
             newPoll.addOption(pollOp);
-            System.out.println("opt> "+ pollOp.getOptionText());
         }
         newPoll.setIsData(true);
         return newPoll.saveInDB();

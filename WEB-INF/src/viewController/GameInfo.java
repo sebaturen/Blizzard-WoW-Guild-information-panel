@@ -132,6 +132,5 @@ public class GameInfo
         return this.outWowToken;
     }
     
-    public boolean getDBStatus() { return !dbConnect.isErrorDB(); }
-    public String getDBErrorMsg() { return dbConnect.getErrorMsg(); }
+    public boolean getDBStatus() { return dbConnect.connectionVerification(); }
 }

@@ -76,7 +76,7 @@ public class ServerMonitor
                     System.out.println("Run 1@");
                     String s;
                     try {
-                        String[] cmdline = { "sh", "-c", "echo", "q | htop | aha --black --line-fix" }; 
+                        String[] cmdline = { "/bin/sh", "-c", "top" }; 
                         System.out.println("Creando proceso....");
                         htopProcess = Runtime.getRuntime().exec(cmdline);
                         System.out.println("Proces is ejecutado");

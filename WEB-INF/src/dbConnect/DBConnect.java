@@ -11,78 +11,35 @@ import com.blizzardPanel.Logs;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class DBConnect implements DBConfig, GeneralConfig
+public class DBConnect implements GeneralConfig
 {
     //error SQL constant
     public static final int ERROR_FOREIGN_KEY   = 1452;
     public static final int ERROR_NULL_ELEMENT  = 1048;
     public static final int ERROR_DUPLICATE_KEY = 1062;
 
-    //access info
-    private static Connection conn = null;
-    private PreparedStatement pstmt = null;
-    private static boolean statusConnect = false;
-    //Error controller
-    private boolean isErrorDB;
-    private String errorMsg;
-
     public DBConnect()
     {
         //generateConnextion();
     }
     
-    private void closeConnection()
-    {
-        if(conn != null)
-        {            
-            try {
-                conn.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    private void generateConnextion()
-    {
-        try
-        {
-            //Driver connection
-            conn = DriverManager.getConnection(JDBC_URL + DB_NAME,
-                                                    DB_USER,
-                                                    DB_PASSWORD);
-            statusConnect = true;
-            isErrorDB = false;
-        } catch (SQLException e) {
-            String error = "Fail to generate DB Connection: "+ e;
-            this.isErrorDB = true;
-            this.errorMsg = error;
-            Logs.saveLogln(error);
-            statusConnect = false;
-        }        
-    }
-    
     public boolean connectionVerification()
     {
-        try {
-            if(conn == null || conn.isClosed()) generateConnextion();
-            //String sql = "SHOW TABLES";
-            closeConnection();
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnect.class.getName()).log(Level.SEVERE, null, ex);
+        try(
+            Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+        ) {
+            return true;
+        } catch (DataException | SQLException e) {
+           return false;
         }
-        return this.isErrorDB;
     }
 	
     
@@ -99,29 +56,27 @@ public class DBConnect implements DBConfig, GeneralConfig
     public JSONArray select(String table, String[] selected, String where, String[] whereValues, boolean disableAphostro) throws SQLException, DataException
     {
         JSONArray result = null;
-        if(conn == null || conn.isClosed()) generateConnextion();
-        if (statusConnect == true)
-        {
-            //System.out.print("is close? "+ conn.isClosed());
-            //Prepare QUERY
-            String sql = "SELECT ";
-            String aphost = (disableAphostro)? "":"`";
-            for(String v : selected) { sql += aphost + v + aphost +","; }
-            sql = sql.substring(0,sql.length()-1);
-            sql += " FROM "+ aphost + table + aphost;
-            
-            if(where != null) sql += " WHERE "+ where;
-            this.pstmt = conn.prepareStatement(sql);
-            if(where != null) for(int i = 0; i < whereValues.length; i++) this.pstmt.setString(i+1,whereValues[i]);
-            //System.out.println("PSTMT: "+ this.pstmt);
-            //System.out.println(" - "+ conn.isClosed());
-            result = resultToJsonConvert(this.pstmt.executeQuery());
+        //Prepare QUERY
+        String sql = "SELECT ";
+        String aphost = (disableAphostro)? "":"`";
+        for(String v : selected) { sql += aphost + v + aphost +","; }
+        sql = sql.substring(0,sql.length()-1);
+        sql += " FROM "+ aphost + table + aphost;
+
+        if(where != null) sql += " WHERE "+ where;
+
+        //Prepare Connection and excetute
+        try(
+            Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            if(where != null) for(int i = 0; i < whereValues.length; i++) pstmt.setString(i+1,whereValues[i]);
+            //System.out.println("pstms"+ pstmt);
+            result = resultToJsonConvert(pstmt.executeQuery());
+        } catch (DataException e) {
+           throw e; //Can get a connection
         }
-        else
-        {
-            throw new DataException("DB can't connect");
-        }
-        closeConnection();
+        
         return result;
     }
     	
@@ -137,19 +92,18 @@ public class DBConnect implements DBConfig, GeneralConfig
     public void delete(String table, String where, String[] whereValues) throws SQLException, DataException
     {
         if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
-        if(conn == null || conn.isClosed()) generateConnextion();
-        if (statusConnect == true)
-        {
-            //Prepare QUERY
-            String sql = "DELETE FROM "+ table +" WHERE "+ where;
-            this.pstmt = conn.prepareStatement(sql);
-            for(int i = 0; i < whereValues.length; i++) { this.pstmt.setString(i+1,whereValues[i]); }
-            this.pstmt.executeQuery();
-            closeConnection();
-        }
-        else
-        {
-            throw new DataException("DB can't connect");
+        //Prepare QUERY
+        String sql = "DELETE FROM "+ table +" WHERE "+ where;
+        
+        //Prepare Connection and excetute
+        try(
+            Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            for(int i = 0; i < whereValues.length; i++) { pstmt.setString(i+1,whereValues[i]); }
+            pstmt.executeQuery();
+        } catch (DataException e) {
+           throw e; //Can get a connection
         }
     }
 	
@@ -166,77 +120,62 @@ public class DBConnect implements DBConfig, GeneralConfig
      */
     public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException
     {
-        String id = null;
-        if(conn == null || conn.isClosed()) generateConnextion();
-        if (statusConnect == true)
-        {        		
-            if ((columns.length > 0 && values.length > 0) && 
+        String id = null;		
+        if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
-            {
-                try {
-                    String columnsSQL = "";
-                    String valuesSQL = "";
-                    for(String c: columns) { columnsSQL += "`"+ c +"`,"; valuesSQL += "?,"; }
-                    columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
-                    valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
-                    
-                    String sql = "INSERT INTO "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
-                    String[] valuesWithWhereValues = values;
-                    
-                    //Load JDBC Driver
-                    Class.forName(JDBC_DRIVER);
-                    
-                    this.pstmt = conn.prepareStatement(sql);
-                    for(int i = 0; i < valuesWithWhereValues.length; i++) { this.pstmt.setString(i+1,valuesWithWhereValues[i]); }
-                    //Logs.saveLog("PSTMT: "+ this.pstmt);
-                    //Run Update
-                    this.pstmt.executeUpdate();
-                    
-                    //Get a ID correspondin to this insert
-                    String whereID = "";
-                    List<String> valusSelect = new ArrayList<>();
-                    for(int i = 0; i < columns.length; i++)
-                    {
-                       if(values[i] != null)
-                        {
-                            whereID += "`"+ columns[i] +"`=? AND ";
-                            valusSelect.add(values[i]);                          
-                        } 
-                    }
-                    String[] stockArr = new String[valusSelect.size()];
-                    stockArr = valusSelect.toArray(stockArr);
-                    whereID = whereID.substring(0,whereID.length()-5);
-                    JSONArray v = select(table,
-                                        new String[] { idColum },
-                                        whereID,
-                                        stockArr);
-                    if(v.isEmpty()) 
-                    {
-                        Logs.saveLogln("FAIL (EXIT) TO GET ID! "+ this.pstmt);
-                        System.exit(-1);
-                    }
-                    else
-                    {                    
-                        id = ((JSONObject) v.get(0)).get(idColum).toString();
-                    }
-                } catch (SQLException ex) {
-                    DataException er = new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
-                    er.setErrorCode(ex.getErrorCode());
-                    closeConnection();
-                    throw er;
-                }
+        {
+            String columnsSQL = "";
+            String valuesSQL = "";
+            for(String c: columns) { columnsSQL += "`"+ c +"`,"; valuesSQL += "?,"; }
+            columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);
+            valuesSQL = valuesSQL.substring(0,valuesSQL.length()-1);
 
+            String sql = "INSERT INTO "+ table +" ("+ columnsSQL +") values ("+ valuesSQL +")";
+            String[] valuesWithWhereValues = values;
+            
+            //Run insert...
+            try(
+                Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+            ) {
+                for(int i = 0; i < valuesWithWhereValues.length; i++) { pstmt.setString(i+1,valuesWithWhereValues[i]); }
+                //Logs.saveLog("PSTMT: "+ this.pstmt);
+                pstmt.executeUpdate();                
+            } catch (DataException e) {
+               throw e; //Can get a connection
+            }
+            //Get ID after insert...
+            String whereID = "";
+            List<String> valusSelect = new ArrayList<>();
+            for(int i = 0; i < columns.length; i++)
+            {
+               if(values[i] != null)
+                {
+                    whereID += "`"+ columns[i] +"`=? AND ";
+                    valusSelect.add(values[i]);                          
+                } 
+            }
+            String[] stockArr = new String[valusSelect.size()];
+            stockArr = valusSelect.toArray(stockArr);
+            whereID = whereID.substring(0,whereID.length()-5);
+            JSONArray v = select(table,
+                                new String[] { idColum },
+                                whereID,
+                                stockArr);
+            if(v.isEmpty()) 
+            {
+                Logs.saveLogln("FAIL (EXIT) TO GET ID! '"+ this.getClass() +"' - "+ sql);
+                System.exit(-1);
             }
             else
-            {
-                throw new DataException("Invalid data in SQL Insert");
+            {                    
+                id = ((JSONObject) v.get(0)).get(idColum).toString();
             }
         }
         else
         {
-            throw new DataException("DB can't connect");
+            throw new DataException("Invalid data in SQL Insert '"+ this.getClass() +"'");
         }
-        closeConnection();
         return id;
     }
     
@@ -252,51 +191,41 @@ public class DBConnect implements DBConfig, GeneralConfig
      * @throws SQLException 
      */
     public void update(String table, String[] columns,String[] values, String where, String[] whereValues) throws DataException, ClassNotFoundException, SQLException
-    {
-        if(conn == null || conn.isClosed()) generateConnextion();
-        if (statusConnect == true)
-        {		
-            if ((columns.length > 0 && values.length > 0) && 
+    {	
+        if ((columns.length > 0 && values.length > 0) && 
             (columns.length == values.length))
+        {            
+            String columnsSQL = "";
+            for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
+            columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);                
+
+            String sql = "UPDATE "+ table +" SET "+ columnsSQL;
+            if(where != null)
             {
-                try {
-                    String columnsSQL = "";
-                    for(String c: columns) { columnsSQL += "`"+ c +"` = ?,";}
-                    columnsSQL = columnsSQL.substring(0,columnsSQL.length()-1);                
-                    
-                    String sql = "UPDATE "+ table +" SET "+ columnsSQL;
-                    if(where != null)
-                    {
-                        sql += " WHERE "+ where;
-                        String[] valInSql = new String[values.length + whereValues.length];
-                        int i = 0;
-                        for(; i < values.length; i++) valInSql[i] = values[i];
-                        for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
-                        values = valInSql;
-                    }
-                    
-                    //Load JDBC Driver
-                    Class.forName(JDBC_DRIVER);
-                    
-                    this.pstmt = conn.prepareStatement(sql);
-                    for(int i = 0; i < values.length; i++) { this.pstmt.setString(i+1,values[i]); }
-                    //Logs.saveLog("PSTMT: "+ this.pstmt);
-                    //Run Update
-                    this.pstmt.executeUpdate();
-                    closeConnection();
-                } catch (SQLException ex) {
-                    closeConnection();
-                    throw new DataException("Fail to insert "+ ex +"\n\t"+ this.pstmt);
-                }
+                sql += " WHERE "+ where;
+                String[] valInSql = new String[values.length + whereValues.length];
+                int i = 0;
+                for(; i < values.length; i++) valInSql[i] = values[i];
+                for(int j = 0; j < whereValues.length; j++,i++) valInSql[i] = whereValues[j];
+                values = valInSql;
             }
-            else
-            {
-                throw new DataException("Invalid data in SQL Insert");
+            
+            //Run update...
+            try(
+                Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+            ) {
+                for(int i = 0; i < values.length; i++) { pstmt.setString(i+1,values[i]); }
+                //Logs.saveLog("PSTMT: "+ this.pstmt);
+                //Run Update
+                pstmt.executeUpdate();               
+            } catch (DataException e) {
+               throw e; //Can get a connection
             }
         }
         else
         {
-            throw new DataException("DB can't connect");
+            throw new DataException("Invalid data in SQL Insert");
         }
     }
 	
@@ -369,9 +298,5 @@ public class DBConnect implements DBConfig, GeneralConfig
             json.add(obj);
         }
         return json;
-    }
-    
-    public boolean isErrorDB() { return this.isErrorDB; }
-    public String getErrorMsg() { return this.errorMsg; }
-	
+    }	
 }

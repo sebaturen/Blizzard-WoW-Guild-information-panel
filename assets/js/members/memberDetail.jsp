@@ -2,6 +2,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItems" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterStats" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterSpec" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
 <%@ page import ="com.blizzardPanel.gameObject.Spell" %>
@@ -10,6 +11,20 @@
     int memberID = Integer.parseInt(request.getParameter("id"));
     Member member = members.getMember(memberID); %>
 var member_<%= memberID %> = {
+    'm_info': {
+        'name': '<%= member.getName() %>', 
+        'class': '<%= member.getMemberClass().getName() %>', 
+        'class_slug': '<%= member.getMemberClass().getSlug() %>', 
+        'spec': '<%= member.getActiveSpec().getSpec().getName() %>', 
+        'spec_slug': '<%= member.getActiveSpec().getSpec().getSlug() %>', 
+        'level': <%= member.getLevel() %>, 
+        'img': '<%= member.getThumbnailURL() %>',
+        'rol': '<%= member.getActiveSpec().getSpec().getRole() %>', 
+        'member_id': <%= member.getId() %>, 
+        'gRank_id': <%= member.getRank().getId() %>,
+        'gRank_title': '<%= member.getRank().getTitle() %>',
+        'race': '<%= member.getRace().getName() %>'
+    },
     'stats': {
         <% CharacterStats mStat = member.getStats(); %>
         'health': '<%= String.format("%,d", mStat.getHealth()) %>', 
@@ -22,6 +37,34 @@ var member_<%= memberID %> = {
         'power': '<%= String.format("%,d", mStat.getPower()) %>', 
         'primaryStatType': '<%= mStat.getBestStat()[0] %>', 
         'primaryStat': '<%= String.format("%,d", Integer.parseInt(mStat.getBestStat()[1])) %>' 
+    },
+    'active_spec_spells': {
+        <% CharacterSpec acSpec = member.getActiveSpec();
+            if (acSpec != null)
+            {%>
+                'desc': "<%= (acSpec.getSpec().getDescript(member.getGender())).replaceAll("\"", "'").replaceAll("\r\n", "<br>").replaceAll("\r\n", "<br>") %>",
+                'spells': {
+                  <%int i = 0;
+                    for(Spell sp : acSpec.getSpells())
+                    {%>
+                        'sp_<%= i %>': {
+                      <%if(sp != null)
+                        {%>
+                            'name': "<%= (sp.getName()).replaceAll("\"", "'") %>",
+                            'action': '<%= (sp.isPasive())? "Equip":"Use" %>',
+                            'desc': "<%= (sp.getDesc()).replaceAll("\"", "'").replaceAll("\n\n", "<br>").replaceAll("\r\r", "<br>") %>",
+                            'img': '<%= sp.getIconRenderURL() %>'
+                      <%} else {%>
+                            'name': 'UNSELECTED',
+                            'desc': '',
+                            'img': 'error.jpg'
+                      <%}%>
+                        },
+                  <%i++;
+                    }%> 
+                }
+          <%}
+        %>
     },
     'items': {
         <%  String[] equip = {
@@ -71,5 +114,5 @@ var member_<%= memberID %> = {
             }
         %>
     }   
-<%}%>
 }
+<%} else { out.write("Only from user members..."); }%>

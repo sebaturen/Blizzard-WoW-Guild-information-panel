@@ -84,12 +84,12 @@ public class CharacterSpec extends GameObject
         this.enable = (Boolean) specInfo.get("enable");
         this.spells = new Spell[MAX_SPELL_TALENTS];
         if((Integer) specInfo.get("tier_0") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_0") );
-        if((Integer) specInfo.get("tier_1") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_1") );
-        if((Integer) specInfo.get("tier_2") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_2") );
-        if((Integer) specInfo.get("tier_3") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_3") );
-        if((Integer) specInfo.get("tier_4") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_4") );
-        if((Integer) specInfo.get("tier_5") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_5") );
-        if((Integer) specInfo.get("tier_6") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_6") );
+        if((Integer) specInfo.get("tier_1") != 0) this.spells[1] = new Spell( (Integer) specInfo.get("tier_1") );
+        if((Integer) specInfo.get("tier_2") != 0) this.spells[2] = new Spell( (Integer) specInfo.get("tier_2") );
+        if((Integer) specInfo.get("tier_3") != 0) this.spells[3] = new Spell( (Integer) specInfo.get("tier_3") );
+        if((Integer) specInfo.get("tier_4") != 0) this.spells[4] = new Spell( (Integer) specInfo.get("tier_4") );
+        if((Integer) specInfo.get("tier_5") != 0) this.spells[5] = new Spell( (Integer) specInfo.get("tier_5") );
+        if((Integer) specInfo.get("tier_6") != 0) this.spells[6] = new Spell( (Integer) specInfo.get("tier_6") );
         this.isData = true;
     }
 

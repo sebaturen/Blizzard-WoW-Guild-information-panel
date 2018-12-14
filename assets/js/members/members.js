@@ -194,7 +194,7 @@ function prepareRender(mInfo)
     //Equipo!!!
     $('.infoMember').append('<div class="itemsMember"></div>');
     $('.itemsMember').append(renderItem(mInfo));
-        //Floating information
+        //Tooltip information
         $(".itemDetail")
             .mouseover(function () 
             {
@@ -207,6 +207,19 @@ function prepareRender(mInfo)
     //Status!!!
     $('.infoMember').append('<div class="statsMember"></div>');
     $('.statsMember').append(renderStat(mInfo));
+    //Spec!!!    
+    $('.infoMember').append('<div class="spec" style="clear:both;"></div>');
+    $('.spec').append(renderSpec(mInfo));
+        //Tooltip information
+        $(".spell_inf")
+            .mouseover(function () 
+            {
+                $(".tooltip-"+ $(this).data("tier")).show();
+            })
+            .mouseleave(function () 
+            {
+                $(".tooltip-"+ $(this).data("tier")).hide();
+            });
     $('#memberDetailLoad').remove();
 }
 
@@ -364,7 +377,8 @@ function renderStat(member)
         'critical-strike': member.stats.crit,
         'haste': member.stats.haste, 
         'mastery': member.stats.mastery, 
-        'versatility': member.stats.versatility };
+        'versatility': member.stats.versatility 
+    };
     var outStatus = '';
     jQuery.each( statsMember, function(i, val) 
     {
@@ -388,6 +402,56 @@ function renderStat(member)
         }
     });
     return outStatus;
+}
+
+function renderSpec(member)
+{
+    var spellTier = {
+        'tier_0': member.active_spec_spells.spells.sp_0,
+        'tier_1': member.active_spec_spells.spells.sp_1,
+        'tier_2': member.active_spec_spells.spells.sp_2,
+        'tier_3': member.active_spec_spells.spells.sp_3,
+        'tier_4': member.active_spec_spells.spells.sp_4,
+        'tier_5': member.active_spec_spells.spells.sp_5,
+        'tier_6': member.active_spec_spells.spells.sp_6
+    };
+    var output ='<div class="active_spec_spells row">'+
+                    '<div class="col-3 spell_inf" data-tier="spec_des">'+
+                        '<img src="assets/img/classes/specs/spec_'+ member.m_info.class_slug +'_'+ member.m_info.spec_slug +'.png" style="width: 40px;"/>'+
+                        '&nbsp;'+ member.m_info.spec +
+                        '<div  class="item-floting-desc tooltip-spec_des">'+
+                            '<div class="itemDesc tooltipDesc">'+ 
+                                '<p>'+ member.m_info.spec +'</p>'+
+                                '<p class="tooltip-yellow itemSpellDetail">'+  member.active_spec_spells.desc +"</p>"+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="col">';
+    jQuery.each( spellTier, function(i, val) 
+    {
+        if(val.name === 'UNSELECTED')
+        {
+            output += 
+                '<div class="spell_inf" data-tier="'+ i +'">'+
+                    '<img class="img_spell" src="assets/img/icons/inv_misc_questionmark.jpg"/>'+
+                '</div>';
+        }
+        else
+        {
+            output += 
+                '<div class="spell_inf" data-tier="'+ i +'">'+
+                    '<img class="img_spell" src="'+ val.img +'"/>'+
+                    '<div  class="item-floting-desc tooltip-'+ i +'">'+
+                        '<div class="itemDesc tooltipDesc">'+ 
+                            '<p>'+ val.name +'</p>'+
+                            '<p class="tooltip-yellow itemSpellDetail">'+ val.action +': '+ val.desc +"</p>"+
+                        '</div>'+
+                    '</div>'+
+                '</div>';   
+        }
+    });    
+    output += '</div></div>';
+    return output;
 }
 
 function putMembers(vMem)

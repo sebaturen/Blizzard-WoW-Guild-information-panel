@@ -19,6 +19,8 @@ CREATE TABLE `playable_spec` (
     `class` INT NOT NULL,
     `name`  VARCHAR(50) NOT NULL,
     `role`  VARCHAR(50) NOT NULL,
+    `desc_male`     TEXT NOT NULL,
+    `desc_female`   TEXT NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY(`class`) REFERENCES playable_class(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

@@ -44,7 +44,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                             </tr>
                         </thead>
                         <tbody>
-                          <%for(Member m : memberChars) { %>
+                          <% for(Member m : memberChars) { %>
                             <tr>
                                 <% //Get img from speck
                                 String className = m.getMemberClass().getSlug();

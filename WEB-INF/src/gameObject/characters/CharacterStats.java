@@ -24,7 +24,7 @@ public class CharacterStats extends GameObject
                     "offHandDmgMax", "offHandSpeed", "offHandDps", "rangedDmgMin", "rangedDmgMax", "rangedSpeed",
                     "rangedDps"};
     
-    private int member_id;
+    private int memberId;
     private String powerType;
     private int health;
     private int power;
@@ -92,7 +92,7 @@ public class CharacterStats extends GameObject
     {
         if(objInfo.containsKey("member_id"))
         {//From DB
-            this.member_id = (Integer) objInfo.get("member_id");
+            this.memberId = (Integer) objInfo.get("member_id");
             this.health = (Integer) objInfo.get("health");
             this.power = (Integer) objInfo.get("power");
             this.str = (Integer) objInfo.get("str");
@@ -182,7 +182,7 @@ public class CharacterStats extends GameObject
     public boolean saveInDB() 
     {
         String[] values = {
-                    this.member_id+"", this.health+"", this.powerType, this.power+"", this.str+"", this.agi+"", this.intStat+"", this.sta+"", this.speedRating+"",
+                    this.memberId+"", this.health+"", this.powerType, this.power+"", this.str+"", this.agi+"", this.intStat+"", this.sta+"", this.speedRating+"",
                     this.speedRatingBonus+"", this.crit+"", this.critRating+"", this.haste+"", this.hasteRating+"", this.hasteRatingPercent+"",
                     this.mastery+"", this.masteryRating+"", this.leech+"", this.leechRating+"", this.leechRatingBonus+"", this.versatility+"",
                     this.versatilityDamageDoneBonus+"", this.versatilityHealingDoneBonus+"", this.versatilityDamageTakenBonus+"",
@@ -203,10 +203,10 @@ public class CharacterStats extends GameObject
 
     //Setters and Getters
     @Override
-    public void setId(int id) { this.member_id = id; }
+    public void setId(int memberId) { this.memberId = memberId; }
 
     @Override
-    public int getId() { return this.member_id;}
+    public int getId() { return this.memberId;}
 
     public int getHealth() { return this.health; }
     public String getPowerType() { return this.powerType; }

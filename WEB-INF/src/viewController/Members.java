@@ -46,8 +46,8 @@ public class Members
             //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
             JSONArray dbList = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Member.CHARACTER_INFO_TABLE_NAME +" c", 
                                                 new String[] {"gm.internal_id"},
-                                                "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ?"
-                                                        + "ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
+                                                "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ?"+
+                                                " ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
                                                 new String[] {"1", oneMotheAgo.getTime() +""}, true);	
             for(int i = 0; i < dbList.size(); i++)
             {
