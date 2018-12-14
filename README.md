@@ -1,6 +1,6 @@
 <h1 id="blizzard-wow-guild-information-panel">Blizzard WoW Guild Information Panel</h1>
-<p>This panel is create for center all information of the guild in only one page, guild members, guild challenges, and raid progression.<br>
-User system is include, for set polls or more information about the members. (member details as item level, equip, etc).</p>
+<p>This panel was created to center all information of the guild in only one page, guild members, guild challenges, and raid progression.<br>
+User system is included, for set polls or more information about the members. (Member details like item level, equipment, etc...).</p>
 <h1 id="requirements">Requirements</h1>
 <ul>
 <li>Tomcat 8+</li>
