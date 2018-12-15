@@ -29,7 +29,7 @@ public class AuctionHouse
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
-                                                    new String[] {Update.UPDATE_AUCTION +""});
+                                                    new String[] {Update.UPDATE_TYPE_AUCTION +""});
             if (dateUpdate.size() > 0)
             {
                 out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();

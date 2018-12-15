@@ -29,9 +29,17 @@ public interface GeneralConfig
     /**
      * SET AN API ACCESS INFORMATION IN.
      * blizzardAPI/APIInfo.java
-     */ 
-    
+     */    
     //Aplication Info
     public static final String CLIENT_ID        = "";
     public static final String CLIENT_SECRET    = "";
+    
+    /** 
+     * Update interval
+     */
+    public static final int TIME_INTERVAL_DYNAMIC_UPDATE        = 60; //MINUTE
+    public static final int TIME_INTERVAL_STATIC_UPDATE         = 30; //DAYS
+    public static final int TIME_INTERVAL_GUILD_NEW_UPDATE      = 10; //MINUTE
+    public static final int TIME_INTERVAL_AUCTION_HOUSE_UPDATE  = 10; //MINUTE
+
 }

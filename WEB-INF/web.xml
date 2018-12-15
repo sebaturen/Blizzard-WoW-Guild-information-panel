@@ -31,6 +31,10 @@
       <servlet-name>ArtOfWar</servlet-name>
       <servlet-class>com.artOfWar</servlet-class>
     </servlet>
+
+    <listener>
+        <listener-class>com.blizzardPanel.blizzardAPI.UpdateRunning</listener-class>
+    </listener>
 		
     <servlet-mapping>
         <servlet-name>ArtOfWar</servlet-name>

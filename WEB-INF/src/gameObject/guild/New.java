@@ -86,7 +86,7 @@ public class New extends GameObject
         
         switch(this.type)
         {
-            case "itemLoot":
+            case "itemLoot": case "itemCraft":
                 if(objInfo.containsKey("id")) //load from DB
                     this.item = new Item((Integer) objInfo.get("item_id"));
                 else
@@ -122,7 +122,7 @@ public class New extends GameObject
         String[] val = new String[0];
         switch(this.type)
         {
-            case "itemLoot":
+            case "itemLoot": case "itemCraft":
                 if(this.id != 0)
                 {
                     dbStruct = new String[] {"id", "type", "member_id", "timestamp", "context", "item_id"};                    

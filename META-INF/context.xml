@@ -3,7 +3,7 @@
     <Resource
         name="jdbc/db" type="javax.sql.DataSource"
         maxActive="100" maxIdle="30" maxWait="10000" 
-        url="jdbc:mysql://127.0.0.1/artofdb"
+        url="jdbc:mysql://127.0.0.1/<DATABASE>"
         driverClassName="org.mariadb.jdbc.Driver"
         username="" password=""
     />

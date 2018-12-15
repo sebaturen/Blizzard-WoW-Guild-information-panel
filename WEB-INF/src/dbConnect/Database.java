@@ -35,6 +35,5 @@ public class Database
         } catch (SQLException ex) {
             throw new DataException("DB can't connect");
         }
-    }
-    
+    }    
 }

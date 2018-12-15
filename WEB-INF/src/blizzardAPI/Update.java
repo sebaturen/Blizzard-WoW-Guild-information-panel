@@ -55,10 +55,12 @@ public class Update implements APIInfo, GeneralConfig
     public static final String[] UPDATE_INTERVAL_TABLE_STRUCTURE = {"id", "type", "update_time"};
 
     //Constant	
-    public static final int UPDATE_DYNAMIC  = 0;
-    public static final int UPDATE_STATIC   = 1;
-    public static final int UPDATE_AUCTION  = 2;
-    public static final int UPDATE_CLEAR_AH_HISTORY = 3;
+    public static final int UPDATE_TYPE_DYNAMIC  = 0;
+    public static final int UPDATE_TYPE_STATIC   = 1;
+    public static final int UPDATE_TYPE_AUCTION  = 2;
+    public static final int UPDATE_TYPE_CLEAR_AH_HISTORY = 3;
+    public static final int UPDATE_TYPE_GUILD_NEWS = 4;
+    public static final int UPDATE_TYPE_AUCTION_CHECK = 5;
     
     private static int blizzAPICallCounter = 0;
 
@@ -127,7 +129,7 @@ public class Update implements APIInfo, GeneralConfig
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                            new String[] {UPDATE_DYNAMIC +"", getCurrentTimeStamp()});
+                            new String[] {UPDATE_TYPE_DYNAMIC +"", getCurrentTimeStamp()});
         }
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -183,7 +185,7 @@ public class Update implements APIInfo, GeneralConfig
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                            new String[] {UPDATE_STATIC +"", getCurrentTimeStamp()});
+                            new String[] {UPDATE_TYPE_STATIC +"", getCurrentTimeStamp()});
         } 
         catch(DataException|ClassNotFoundException|SQLException e)
         {
@@ -204,7 +206,7 @@ public class Update implements APIInfo, GeneralConfig
             JSONArray getLastUpdateInDB = dbConnect.select(UPDATE_INTERVAL_TABLE_NAME, 
                                                             UPDATE_INTERVAL_TABLE_STRUCTURE, 
                                                             "type=? AND update_time=?", 
-                                                            new String[] { UPDATE_AUCTION+"", lastUpdate });
+                                                            new String[] { UPDATE_TYPE_AUCTION+"", lastUpdate });
             if(getLastUpdateInDB.isEmpty()) 
             {
                 //Clear last auItems
@@ -246,11 +248,16 @@ public class Update implements APIInfo, GeneralConfig
                 dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                                 UPDATE_INTERVAL_TABLE_KEY,
                                 DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                                new String[] {UPDATE_AUCTION +"", lastUpdate});  
-            }            
+                                new String[] {UPDATE_TYPE_AUCTION +"", lastUpdate});  
+            }
+            /* {"type", "update_time"}; */
+            dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
+                            UPDATE_INTERVAL_TABLE_KEY,
+                            DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
+                            new String[] {UPDATE_TYPE_AUCTION_CHECK +"", getCurrentTimeStamp()});
         } catch (DataException | IOException | ParseException |ClassNotFoundException|SQLException ex) {
             Logs.saveLogln("Fail to get AH "+ ex);
-        }
+        }  
         Logs.saveLogln("-------Update process is COMPLATE! (Auction House)------");
     }
     
@@ -304,7 +311,7 @@ public class Update implements APIInfo, GeneralConfig
             dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
                             UPDATE_INTERVAL_TABLE_KEY,
                             DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
-                            new String[] {UPDATE_CLEAR_AH_HISTORY +"", getCurrentTimeStamp()}); 
+                            new String[] {UPDATE_TYPE_CLEAR_AH_HISTORY +"", getCurrentTimeStamp()}); 
         } catch (SQLException | DataException | ClassNotFoundException ex) {
             Logs.saveLogln("Fail to get current auc items "+ ex);
         }
@@ -511,6 +518,19 @@ public class Update implements APIInfo, GeneralConfig
                         Logs.saveLogln("ERROR GUILD NEW! \t"+ infoNew +"\n\t\t"+ news);
                     }
                 }
+            }
+            //Save update time in DB
+            try 
+            {
+                /* {"type", "update_time"}; */
+                dbConnect.insert(UPDATE_INTERVAL_TABLE_NAME,
+                                UPDATE_INTERVAL_TABLE_KEY,
+                                DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
+                                new String[] {UPDATE_TYPE_GUILD_NEWS +"", getCurrentTimeStamp()});
+            }
+            catch(DataException|ClassNotFoundException|SQLException e)
+            {
+                Logs.saveLogln("Fail to save update guild new time: "+ e);
             }
         }
     }

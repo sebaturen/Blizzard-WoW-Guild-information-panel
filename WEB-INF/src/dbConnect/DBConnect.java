@@ -25,6 +25,8 @@ public class DBConnect implements GeneralConfig
     public static final int ERROR_FOREIGN_KEY   = 1452;
     public static final int ERROR_NULL_ELEMENT  = 1048;
     public static final int ERROR_DUPLICATE_KEY = 1062;
+    
+    private String lastQuery = null;
 
     public DBConnect()
     {
@@ -72,6 +74,7 @@ public class DBConnect implements GeneralConfig
         ) {
             if(where != null) for(int i = 0; i < whereValues.length; i++) pstmt.setString(i+1,whereValues[i]);
             //System.out.println("pstms"+ pstmt);
+            this.lastQuery = pstmt.toString();
             result = resultToJsonConvert(pstmt.executeQuery());
         } catch (DataException e) {
            throw e; //Can get a connection
@@ -101,6 +104,7 @@ public class DBConnect implements GeneralConfig
             PreparedStatement pstmt = conn.prepareStatement(sql);
         ) {
             for(int i = 0; i < whereValues.length; i++) { pstmt.setString(i+1,whereValues[i]); }
+            this.lastQuery = pstmt.toString();
             pstmt.executeQuery();
         } catch (DataException e) {
            throw e; //Can get a connection
@@ -134,13 +138,15 @@ public class DBConnect implements GeneralConfig
             String[] valuesWithWhereValues = values;
             
             //Run insert...
+            String tempLastQuery = sql;
             try(
                 Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
             ) {
                 for(int i = 0; i < valuesWithWhereValues.length; i++) { pstmt.setString(i+1,valuesWithWhereValues[i]); }
                 //Logs.saveLog("PSTMT: "+ this.pstmt);
-                pstmt.executeUpdate();                
+                tempLastQuery = pstmt.toString();
+                pstmt.executeUpdate();  
             } catch (DataException e) {
                throw e; //Can get a connection
             }
@@ -162,6 +168,7 @@ public class DBConnect implements GeneralConfig
                                 new String[] { idColum },
                                 whereID,
                                 stockArr);
+            this.lastQuery = tempLastQuery + this.lastQuery; //save insert and select
             if(v.isEmpty()) 
             {
                 Logs.saveLogln("FAIL (EXIT) TO GET ID! '"+ this.getClass() +"' - "+ sql);
@@ -217,8 +224,9 @@ public class DBConnect implements GeneralConfig
             ) {
                 for(int i = 0; i < values.length; i++) { pstmt.setString(i+1,values[i]); }
                 //Logs.saveLog("PSTMT: "+ this.pstmt);
-                //Run Update
-                pstmt.executeUpdate();               
+                //Run Update  
+                this.lastQuery = pstmt.toString();
+                pstmt.executeUpdate(); 
             } catch (DataException e) {
                throw e; //Can get a connection
             }
@@ -299,4 +307,9 @@ public class DBConnect implements GeneralConfig
         }
         return json;
     }	
+    
+    public String getLastQuery()
+    {
+        return this.lastQuery;
+    }
 }

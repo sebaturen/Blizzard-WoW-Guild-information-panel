@@ -75,5 +75,4 @@ public class Logs
     {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
-
 }

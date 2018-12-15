@@ -38,7 +38,7 @@ public class GameInfo
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
-                                                    new String[] {Update.UPDATE_DYNAMIC +""});
+                                                    new String[] {Update.UPDATE_TYPE_DYNAMIC +""});
             if (dateUpdate.size() > 0)
             {
                 this.lastDynamicUpdate = (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
@@ -77,7 +77,7 @@ public class GameInfo
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
-                                                    new String[] {Update.UPDATE_STATIC +""});
+                                                    new String[] {Update.UPDATE_TYPE_STATIC +""});
             if (dateUpdate.size() > 0)
             {
                 out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
