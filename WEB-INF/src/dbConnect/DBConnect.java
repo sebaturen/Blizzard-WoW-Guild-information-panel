@@ -31,7 +31,7 @@ public class DBConnect
     {
         //generateConnextion();
     }
-    
+
     public boolean connectionVerification()
     {
         try(
@@ -42,8 +42,7 @@ public class DBConnect
            return false;
         }
     }
-	
-    
+
     /**
      * Run Select Query 
      * @param table
@@ -81,8 +80,7 @@ public class DBConnect
         
         return result;
     }
-    	
-    
+
     /**
      * Delete data from DB Query
      * @param table
@@ -109,7 +107,7 @@ public class DBConnect
            throw e; //Can get a connection
         }
     }
-	
+
     /**
      * Insert SQL Query.
      * @param table
@@ -184,7 +182,7 @@ public class DBConnect
         }
         return id;
     }
-    
+
     /**
      * Update Query
      * @param table
@@ -235,7 +233,7 @@ public class DBConnect
             throw new DataException("Invalid data in SQL Insert");
         }
     }
-	
+
     /**
      * Convert SQL Result to JSONArray
      * @param result set
@@ -306,7 +304,7 @@ public class DBConnect
         }
         return json;
     }	
-    
+
     public String getLastQuery()
     {
         return this.lastQuery;

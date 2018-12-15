@@ -21,7 +21,7 @@ public class GeneralConfig
         }
     }
     
-    public static int getINTConfig(String properity) throws ConfigurationException
+    public static int getIntConfig(String properity) throws ConfigurationException
     {
         try {
             return(Integer) new InitialContext().lookup("java:comp/env/"+ properity);

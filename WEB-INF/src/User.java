@@ -90,7 +90,7 @@ public class User
     }
     
     public boolean checkUser() { return checkUser(false); }
-    public boolean checkUser(boolean forceCheck)
+    private boolean checkUser(boolean forceCheck)
     {
         if(this.battleTag == null) return false;
         if(this.isLogin && !forceCheck) return this.isLogin;

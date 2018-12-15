@@ -6,7 +6,6 @@
 package com.blizzardPanel;
 
 import com.blizzardPanel.exceptions.ConfigurationException;
-import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;

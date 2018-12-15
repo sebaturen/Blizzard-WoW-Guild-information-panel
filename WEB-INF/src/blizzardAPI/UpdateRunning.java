@@ -110,7 +110,7 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_DYNAMIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_DYNAMIC_UPDATE"));
+            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
@@ -122,14 +122,13 @@ public class UpdateRunning implements ServletContextListener
             return false;
         }
     }
-    
-    
+        
     private boolean needGuildNewUpdate()
     {        
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_GUILD_NEWS);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_GUILD_NEW_UPDATE"));
+            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
@@ -147,7 +146,7 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_STATIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, - GeneralConfig.getINTConfig("TIME_INTERVAL_STATIC_UPDATE"));
+            cal.add(Calendar.DAY_OF_MONTH, - GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
@@ -165,7 +164,7 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_AUCTION_CHECK);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE"));
+            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
