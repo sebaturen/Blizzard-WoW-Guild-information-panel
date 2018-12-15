@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;

@@ -3,7 +3,7 @@
  * Desc : Control a sistem Exceptions
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel;
+package com.blizzardPanel.exceptions;
 
 public class DataException extends Exception
 {
@@ -20,6 +20,5 @@ public class DataException extends Exception
     
     public void setErrorCode(int i) { this.errorCode = i; }
     public int getErrorCode() { return this.errorCode; }
-	
-} 
+}
 

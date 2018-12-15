@@ -7,9 +7,10 @@ package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.guild.Rank;
 import java.io.IOException;
@@ -87,6 +88,9 @@ public class Member extends GameObject
                 cloneMember(up.getMemberFromBlizz(name, realm));
             } catch (IOException | ParseException | DataException ex) {
                 Logs.saveLogln("Fail to get member info from blizzard. - "+ ex);
+            } catch (ConfigurationException e) {
+                Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
+                System.exit(-1);
             }
         }
     }
@@ -111,25 +115,31 @@ public class Member extends GameObject
 
         int raceID;
         if(playerInfo.get("gender").getClass() == java.lang.Long.class)
-        {//if info come to blizzAPI
-            this.name = playerInfo.get("name").toString();
-            this.gender = ((Long) playerInfo.get("gender")).intValue();
-            this.level = ((Long) playerInfo.get("level")).intValue();
-            this.faction = ((Long) playerInfo.get("faction")).intValue();
-            this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
-            this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
-            //If have a guild...
-            this.guildName = "";
-            this.isGuildMember = false;
-            if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
-            if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.GUILD_NAME)) this.isGuildMember = true;
-            //Generate member id:            
-            generateMemberID();
-            //Spec
-            loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
-            loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
-            //Status
-            this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
+        {   
+            try {
+                //if info come to blizzAPI
+                this.name = playerInfo.get("name").toString();
+                this.gender = ((Long) playerInfo.get("gender")).intValue();
+                this.level = ((Long) playerInfo.get("level")).intValue();
+                this.faction = ((Long) playerInfo.get("faction")).intValue();
+                this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
+                this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
+                //If have a guild...
+                this.guildName = "";
+                this.isGuildMember = false;
+                if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
+                if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.getStringConfig("GUILD_NAME"))) this.isGuildMember = true;
+                //Generate member id:            
+                generateMemberID();
+                //Spec
+                loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
+                loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
+                //Status
+                this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
+            } catch (ConfigurationException ex) {
+                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+                System.exit(-1);
+            }
         }
         else
         {//if come to DB
@@ -232,6 +242,11 @@ public class Member extends GameObject
         {
             Logs.saveLogln("Fail to get a spec info in member "+ this.name);
         }
+        catch (ConfigurationException e)
+        {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
+            System.exit(-1);
+        }
     }
     
     
@@ -248,6 +263,11 @@ public class Member extends GameObject
         catch (IOException|ParseException|DataException ex)
         {
             Logs.saveLogln("Fail to get a spec info in member "+ this.name);
+        }
+        catch (ConfigurationException e)
+        {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
+            System.exit(-1);
         }
     }
     
@@ -320,7 +340,13 @@ public class Member extends GameObject
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
-            if (this.isGuildMember && !this.guildName.equals(GeneralConfig.GUILD_NAME)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
+            try {
+                String guildName = GeneralConfig.getStringConfig("GUILD_NAME");
+            } catch (ConfigurationException ex) {
+                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+                System.exit(-1);
+            }
+            if (this.isGuildMember && !this.guildName.equals(guildName)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
             {
@@ -461,7 +487,13 @@ public class Member extends GameObject
     public Rank getRank() { return this.gRank; }
     public String getThumbnailURL() 
     {
-        return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.SERVER_LOCATION, getThumbnail());
+        try {
+            return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return null;
+        }
     }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }

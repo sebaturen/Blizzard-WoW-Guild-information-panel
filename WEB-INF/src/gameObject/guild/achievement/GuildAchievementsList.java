@@ -6,7 +6,9 @@
 package com.blizzardPanel.gameObject.guild.achievement;
 
 import com.blizzardPanel.GeneralConfig;
+import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
@@ -85,6 +87,12 @@ public class GuildAchievementsList extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.SERVER_LOCATION, size, this.icon) +".jpg";
+        try {
+            return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return null;
+        }
     }
 }

@@ -5,10 +5,11 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.Spell;
@@ -174,6 +175,9 @@ public class CharacterItems extends GameObject
                             azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
                         } catch (DataException | IOException | ParseException ex) {
                             Logs.saveLogln("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
+                        } catch (ConfigurationException ex) {
+                            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+                            System.exit(-1);
                         }
                     }
                     azPower[j] = azPowerD;

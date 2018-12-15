@@ -5,6 +5,8 @@
  */
 package com.blizzardPanel;
 
+import com.blizzardPanel.exceptions.ConfigurationException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.viewController.UpdateControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -21,7 +23,6 @@ import java.util.Date;
 public class Logs 
 {
     
-    public static final String LOG_FILE_PREFIX = GeneralConfig.LOGS_FILE_PATH + GeneralConfig.GUILD_NAME;
     public static final String LOG_FILE_EXTENCION = "Update.log";
     private static UpdateControl upControl = null;
     
@@ -45,24 +46,28 @@ public class Logs
             }
         } catch (IOException ex) {
             System.out.println("Fail to save log! "+ ex);
+        } catch (ConfigurationException ex) {
+            System.out.println("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
         }
     }
     
-    private static FileWriter getFile() throws IOException
+    private static FileWriter getFile() throws IOException, ConfigurationException
     {
         FileWriter logFile = new FileWriter(getFileLogPath(), true);
         //Set file owner!
         Path path = Paths.get(getFileLogPath());
         UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-        UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(GeneralConfig.LOGS_FILE_USER_OWNER);
+        UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(GeneralConfig.getStringConfig("LOGS_FILE_USER_OWNER"));
         Files.setOwner(path, userPrincipal);
 
         return logFile;        
     }
     
-    private static String getFileLogPath()
+    private static String getFileLogPath() throws ConfigurationException
     {
-        return LOG_FILE_PREFIX +"."+ getCurrentTimeStamp() +"."+ LOG_FILE_EXTENCION;
+        String logFilePrefix = GeneralConfig.getStringConfig("LOGS_FILE_PATH") + GeneralConfig.getStringConfig("GUILD_NAME");
+        return logFilePrefix +"."+ getCurrentTimeStamp() +"."+ LOG_FILE_EXTENCION;
     }
     
     public static void publicLog(UpdateControl up) { upControl = up; }

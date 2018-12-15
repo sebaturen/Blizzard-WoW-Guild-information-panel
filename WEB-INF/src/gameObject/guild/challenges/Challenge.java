@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.challenges;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;

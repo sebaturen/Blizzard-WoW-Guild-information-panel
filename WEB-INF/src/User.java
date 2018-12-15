@@ -5,9 +5,11 @@
  */
 package com.blizzardPanel;
 
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.characters.Member;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -114,6 +116,7 @@ public class User
     public boolean setUserCode(String code)
     {
         this.accessToken = getAccessToken(code);
+        if(this.accessToken == null) return false;
         this.battleTag = getBlizzBattleTag(this.accessToken);
         //If have a info~
         if(this.accessToken == null || this.battleTag == null) return false;
@@ -178,10 +181,10 @@ public class User
     private String getAccessToken(String code)
     {
         try {
-            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.SERVER_LOCATION, APIInfo.API_OAUTH_TOKEN);
-            String apiInfo = Base64.getEncoder().encodeToString((GeneralConfig.CLIENT_ID+":"+GeneralConfig.CLIENT_SECRET).getBytes(StandardCharsets.UTF_8));
+            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), APIInfo.API_OAUTH_TOKEN);
+            String apiInfo = Base64.getEncoder().encodeToString((GeneralConfig.getStringConfig("CLIENT_ID")+":"+GeneralConfig.getStringConfig("CLIENT_SECRET")).getBytes(StandardCharsets.UTF_8));
          
-            String redirectUrl = URLEncoder.encode(GeneralConfig.MAIN_URL+GeneralConfig.BLIZZAR_LINK, "UTF-8");
+            String redirectUrl = URLEncoder.encode(GeneralConfig.getStringConfig("MAIN_URL")+GeneralConfig.getStringConfig("BLIZZAR_LINK"), "UTF-8");
             //prepare info
             String bodyData = "redirect_uri="+redirectUrl+"&"
                     + "scope=wow.profile&"
@@ -200,12 +203,16 @@ public class User
              * "token_type":"bearer",
              * "expires_in":86399}
              */
-            if(blizzInfo.size()>0)
+            if(blizzInfo.size() > 0)
             {
                 return blizzInfo.get("access_token").toString();
             }
         } catch (IOException|DataException ex) {
             Logs.saveLogln("Fail to get user Access Token "+ ex);
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return null;
         }
         return null;
     }
@@ -214,7 +221,7 @@ public class User
     {
         try {
             //Generate an API URL
-            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.SERVER_LOCATION, APIInfo.API_OAUTH_USERINFO);
+            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), APIInfo.API_OAUTH_USERINFO);
             
             if(accessToken.length() > 0)
             {
@@ -222,7 +229,7 @@ public class User
                 JSONObject respond = Update.curl(urlString, 
                                             "GET",
                                             "Bearer "+ accessToken,
-                                            new String[] {"locale="+ GeneralConfig.LENGUAJE_API_LOCALE});
+                                            new String[] {"locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")});
                 if(respond.containsKey("battletag"))
                 {
                     return respond.get("battletag").toString();
@@ -230,6 +237,10 @@ public class User
             }
         } catch (IOException|ParseException|DataException ex) {
             Logs.saveLogln("Fail to get BattleTag "+ ex);
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return null;
         }
         return null;
     }

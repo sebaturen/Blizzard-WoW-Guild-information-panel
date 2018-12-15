@@ -6,6 +6,8 @@
 package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.GeneralConfig;
+import com.blizzardPanel.Logs;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
@@ -46,16 +48,21 @@ public class PlayableSpec extends GameObject
     protected void saveInternalInfoObject(JSONObject objInfo) 
     {
         if(objInfo.get("id").getClass() == Long.class)
-        {//Info come from blizz API
-            this.id = ((Long) objInfo.get("id")).intValue();
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.LENGUAJE_API_LOCALE).toString();
-            this.slug = ((JSONObject) objInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
-            this.pClass = new PlayableClass(((Long) ((JSONObject) objInfo.get("playable_class")).get("id")).intValue());
-            this.role = ((JSONObject) objInfo.get("role")).get("type").toString();
-            if(this.role.equals("DAMAGE")) this.role = "DPS";
-            if(this.role.equals("HEALER")) this.role = "HEALING";
-            this.desc_male = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.LENGUAJE_API_LOCALE).toString();
-            this.desc_female = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.LENGUAJE_API_LOCALE).toString();
+        {//Info come from blizz API        
+            try {
+                this.id = ((Long) objInfo.get("id")).intValue();    
+                this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+                this.slug = ((JSONObject) objInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
+                this.pClass = new PlayableClass(((Long) ((JSONObject) objInfo.get("playable_class")).get("id")).intValue());
+                this.role = ((JSONObject) objInfo.get("role")).get("type").toString();
+                if(this.role.equals("DAMAGE")) this.role = "DPS";
+                if(this.role.equals("HEALER")) this.role = "HEALING";
+                this.desc_male = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+                this.desc_female = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            } catch (ConfigurationException ex) {
+                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+                System.exit(-1);
+            }
         }
         else
         {//Info come from DB

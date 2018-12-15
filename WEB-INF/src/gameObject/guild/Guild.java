@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
 import com.blizzardPanel.dbConnect.DBStructure;

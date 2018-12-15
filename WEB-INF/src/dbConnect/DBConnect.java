@@ -5,8 +5,7 @@
  */
 package com.blizzardPanel.dbConnect;
 
-import com.blizzardPanel.DataException;
-import com.blizzardPanel.GeneralConfig;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 
 import java.sql.Connection;
@@ -19,7 +18,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class DBConnect implements GeneralConfig
+public class DBConnect
 {
     //error SQL constant
     public static final int ERROR_FOREIGN_KEY   = 1452;

@@ -48,16 +48,24 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 String redirectUri = request.getContextPath() +"/login.jsp";
                 if(!user.checkUser())
                 {
-                    redirectUri = String.format(com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_URL, 
-                                                com.blizzardPanel.GeneralConfig.SERVER_LOCATION,
-                                                com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
-                    String urlRedirectGenerator = com.blizzardPanel.GeneralConfig.MAIN_URL+com.blizzardPanel.GeneralConfig.BLIZZAR_LINK;
-                    if (request.getParameter("rdir") != null) { session.setAttribute("internal_redirect", request.getParameter("rdir")); }
-                    redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(urlRedirectGenerator, "UTF-8");
-                    redirectUri += "&scope=wow.profile";
-                    redirectUri += "&state=%7B%22region%22%3A%22"+ com.blizzardPanel.GeneralConfig.SERVER_LOCATION +"%22%7D";
-                    redirectUri += "&response_type=code";
-                    redirectUri += "&client_id=" + com.blizzardPanel.GeneralConfig.CLIENT_ID;
+                    try 
+                    {
+                        redirectUri = String.format(com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_URL, 
+                                                    general_config.getStringConfig("SERVER_LOCATION"),
+                                                    com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
+                        String urlRedirectGenerator = general_config.getStringConfig("MAIN_URL")+general_config.getStringConfig("BLIZZAR_LINK");
+                        if (request.getParameter("rdir") != null) { session.setAttribute("internal_redirect", request.getParameter("rdir")); }
+                        redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(urlRedirectGenerator, "UTF-8");
+                        redirectUri += "&scope=wow.profile";
+                        redirectUri += "&state=%7B%22region%22%3A%22"+ general_config.getStringConfig("SERVER_LOCATION") +"%22%7D";
+                        redirectUri += "&response_type=code";
+                        redirectUri += "&client_id=" + general_config.getStringConfig("CLIENT_ID");                    
+                    } catch (ConfigurationException ex) {
+                        String errorMsg = "CONFIGURATION FAIL ERROR!";
+                        %><jsp:forward page="${contextPath}/internal_error.jsp">
+                            <jsp:param name="db_error_msg" value="${errorMsg}" />
+                        </jsp:forward><%
+                    }
                 }
             %>
             &nbsp;<a href="<%= redirectUri %>"><button class="btn btn-outline-success" type="button"><%= (!user.checkUser())? "Login":"Account Info" %></button></a>

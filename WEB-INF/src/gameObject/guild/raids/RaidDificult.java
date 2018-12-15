@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.raids;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;

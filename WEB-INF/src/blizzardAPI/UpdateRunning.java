@@ -5,10 +5,11 @@
  */
 package com.blizzardPanel.blizzardAPI;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.exceptions.ConfigurationException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -109,12 +110,16 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_DYNAMIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.TIME_INTERVAL_DYNAMIC_UPDATE);
+            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_DYNAMIC_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.saveLogln(ex.getMessage());
             return true;
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return false;
         }
     }
     
@@ -124,12 +129,16 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_GUILD_NEWS);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.TIME_INTERVAL_GUILD_NEW_UPDATE);
+            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_GUILD_NEW_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.saveLogln(ex.getMessage());
             return true;
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return false;
         }
     }
     
@@ -138,12 +147,16 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_STATIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, - GeneralConfig.TIME_INTERVAL_STATIC_UPDATE);
+            cal.add(Calendar.DAY_OF_MONTH, - GeneralConfig.getINTConfig("TIME_INTERVAL_STATIC_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.saveLogln(ex.getMessage());
             return true;
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return false;
         }
     }   
     
@@ -152,12 +165,16 @@ public class UpdateRunning implements ServletContextListener
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_AUCTION_CHECK);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.TIME_INTERVAL_AUCTION_HOUSE_UPDATE);
+            cal.add(Calendar.MINUTE, - GeneralConfig.getINTConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE"));
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.saveLogln(ex.getMessage());
             return true;
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
+            return false;
         }
     }    
             
@@ -233,8 +250,11 @@ public class UpdateRunning implements ServletContextListener
                     Logs.saveLogln("Not update parametter detected!");
                     break;
             }
-        } catch (IOException|ParseException|DataException|SQLException | ClassNotFoundException | java.text.ParseException ex) {
+        } catch (IOException|ParseException|DataException|SQLException | ClassNotFoundException ex) {
             Logs.saveLogln("Fail to update information - "+ ex);
+        } catch (ConfigurationException ex) {
+            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
+            System.exit(-1);
         }
     }
 }

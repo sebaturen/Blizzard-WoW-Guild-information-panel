@@ -5,41 +5,37 @@
  */
 package com.blizzardPanel;
 
-public interface GeneralConfig 
+import com.blizzardPanel.exceptions.ConfigurationException;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class GeneralConfig 
 {    
     //Server information
-    public static final String GUILD_NAME       = "Art of War";
-    public static final String GUILD_REALM      = "Ragnaros";
-    public static final String SERVER_LOCATION  = "us";
-    /**
-     * LOCALES:
-     * "en_US", "es_MX", "pt_BR", "de_DE", "es_ES", "fr_FR", "it_IT",
-     * "pt_PT", "ru_RU", "ko_KR", "zh_TW", "zh_CN"
-     */
-    public static final String LENGUAJE_API_LOCALE  = "en_US";
-    //Web main URL
-    public static final String MAIN_URL         = "http://artofwar.cl/";
-    public static final String BLIZZAR_LINK     = "blizzLink.jsp";
-    //If in page you want all visitor can see all members information, or only guild members
-    public static final boolean REQUERID_LOGIN_TO_INFO = true;
-    //Logs info
-    public static final String LOGS_FILE_PATH       = "/opt/tomcat/logs/";
-    public static final String LOGS_FILE_USER_OWNER = "tomcat";
+    public static String getStringConfig(String properity) throws ConfigurationException
+    {
+        try {
+            return(String) new InitialContext().lookup("java:comp/env/"+ properity);
+        } catch (NamingException ex) {
+            throw new ConfigurationException("NOT CORRECT CONFIGURATION! - "+ properity);
+        }
+    }
     
-    /**
-     * SET AN API ACCESS INFORMATION IN.
-     * blizzardAPI/APIInfo.java
-     */    
-    //Aplication Info
-    public static final String CLIENT_ID        = "";
-    public static final String CLIENT_SECRET    = "";
+    public static int getINTConfig(String properity) throws ConfigurationException
+    {
+        try {
+            return(Integer) new InitialContext().lookup("java:comp/env/"+ properity);
+        } catch (NamingException ex) {
+            throw new ConfigurationException("NOT CORRECT CONFIGURATION! - "+ properity);
+        }        
+    }
     
-    /** 
-     * Update interval
-     */
-    public static final int TIME_INTERVAL_DYNAMIC_UPDATE        = 60; //MINUTE
-    public static final int TIME_INTERVAL_STATIC_UPDATE         = 30; //DAYS
-    public static final int TIME_INTERVAL_GUILD_NEW_UPDATE      = 10; //MINUTE
-    public static final int TIME_INTERVAL_AUCTION_HOUSE_UPDATE  = 10; //MINUTE
-
+    public static boolean getBooleanConfig(String properity) throws ConfigurationException
+    {
+        try {
+            return(Boolean) new InitialContext().lookup("java:comp/env/"+ properity);
+        } catch (NamingException ex) {
+            throw new ConfigurationException("NOT CORRECT CONFIGURATION! - "+ properity);
+        }        
+    }
 }

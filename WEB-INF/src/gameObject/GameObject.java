@@ -7,7 +7,7 @@ package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 
 import org.json.simple.JSONObject;

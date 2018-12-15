@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.dbConnect;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.naming.InitialContext;

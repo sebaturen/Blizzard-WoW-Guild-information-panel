@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.poll;
 
-import com.blizzardPanel.DataException;
+import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.User;
