@@ -1,8 +1,3 @@
----
-
-
----
-
 <h1 id="blizzard-wow-guild-information-panel">Blizzard WoW Guild Information Panel</h1>
 <p>This panel is create for center all information of the guild in only one page, guild members, guild challenges, and raid progression.<br>
 User system is include, for set polls or more information about the members. (member details as item level, equip, etc).</p>
@@ -54,7 +49,7 @@ LOGS_FILE_USER_OWNER<br>
 CLIENT_SECRET</p>
 </blockquote>
 <h3 id="other-options">Other options:</h3>
-<p>Interval update. (Automatically the panel update the game and guild information, you can change the time in <code>GeneralConfig.java</code>)</p>
+<p>Interval update. (Automatically the panel update the game and guild information, you can change the time)</p>
 <blockquote>
 <p><code>TIME_INTERVAL_DYNAMIC_UPDATE</code> (60 min)<br>
 <code>TIME_INTERVAL_STATIC_UPDATE</code> (30 days)<br>
