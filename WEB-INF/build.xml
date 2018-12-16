@@ -1,0 +1,45 @@
+<?xml version="1.0" ?> 
+<project name="BlizzardPanel" default="war">
+
+    <path id="compile.classpath">
+        <fileset dir="WEBContent/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="WEBContent/WEB-INF/classes"/>
+        <mkdir dir="dist" />
+    </target>
+    
+    <presetdef name="javac">
+        <javac includeantruntime="false" />
+    </presetdef>
+    
+    
+    <echo message="Using Java version ${ant.java.version}."/>
+
+
+    <target name="compile" depends="init" >
+        <javac 
+            destdir="WEBContent/WEB-INF/classes" 
+            debug="true" 
+            srcdir="src">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <target name="war" depends="compile">
+        <war destfile="dist/BlizzardPanel.war" webxml="WEBContent/WEB-INF/web.xml">
+            <fileset dir="WEBContent"/>
+                <lib dir="WEBContent/WEB-INF/lib"/>
+            <classes dir="build/classes"/>
+        </war>
+    </target>
+
+    <target name="clean">
+        <delete dir="dist" />
+        <delete dir="build" />
+    </target>
+
+</project>

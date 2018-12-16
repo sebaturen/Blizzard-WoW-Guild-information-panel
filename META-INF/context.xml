@@ -6,28 +6,28 @@
     <Resource
         name="jdbc/db" type="javax.sql.DataSource"
         maxActive="100" maxIdle="30" maxWait="10000" 
-        url="jdbc:mysql://127.0.0.1/DATABASE"
+        url="jdbc:mysql://127.0.0.1/artofdb"
         driverClassName="org.mariadb.jdbc.Driver"
-        username="" 
-        password=""
+        username="artofwar" 
+        password="art954of759"
     />
     
     <!-- ******************************************************************* -->
     <!-- ***************** Enviroment variables **************************** -->
     <!-- ******************************************************************* -->
     <!--  Server information -->
-    <Environment name="GUILD_NAME"      value="" override="false" type="java.lang.String" />
-    <Environment name="GUILD_REALM"     value="" override="false" type="java.lang.String" />
-    <Environment name="SERVER_LOCATION" value="" override="false" type="java.lang.String" />
+    <Environment name="GUILD_NAME"      value="Art of War" override="false" type="java.lang.String" />
+    <Environment name="GUILD_REALM"     value="Ragnaros" override="false" type="java.lang.String" />
+    <Environment name="SERVER_LOCATION" value="us" override="false" type="java.lang.String" />
     
     <!--  Locales:
      "en_US", "es_MX", "pt_BR", "de_DE", "es_ES", "fr_FR", "it_IT",
      "pt_PT", "ru_RU", "ko_KR", "zh_TW", "zh_CN"                             -->
-    <Environment name="LENGUAJE_API_LOCALE" value="" override="false" type="java.lang.String" />
+    <Environment name="LENGUAJE_API_LOCALE" value="en_US" override="false" type="java.lang.String" />
     
     <!--  Web main URL -->
-    <Environment name="MAIN_URL"        value="" override="false" type="java.lang.String" />
-    <Environment name="BLIZZAR_LINK"    value="" override="false" type="java.lang.String" />
+    <Environment name="MAIN_URL"        value="http://artofwar.cl/" override="false" type="java.lang.String" />
+    <Environment name="BLIZZAR_LINK"    value="blizzLink.jsp" override="false" type="java.lang.String" />
     <!-- If in page you want all visitor can see all members information, or only guild members -->
     <Environment name="REQUERID_LOGIN_TO_INFO" value="true" override="false" type="java.lang.Boolean" />
     
@@ -36,8 +36,8 @@
     <Environment name="LOGS_FILE_USER_OWNER"    value="tomcat" override="false" type="java.lang.String" />
     
     <!-- SET AN API ACCESS INFORMATION -->
-    <Environment name="CLIENT_ID"       value="" override="false" type="java.lang.String" />
-    <Environment name="CLIENT_SECRET"   value="" override="false" type="java.lang.String" />
+    <Environment name="CLIENT_ID"       value="9a30069bb8254369abffe72ea2d8758c" override="false" type="java.lang.String" />
+    <Environment name="CLIENT_SECRET"   value="5U3ck5MHURdmHlcBb6HUFk5NajluowE5" override="false" type="java.lang.String" />
     
     <!-- UPDATE INTERVAL -->
     <Environment name="TIME_INTERVAL_DYNAMIC_UPDATE"        value="60" override="false" type="java.lang.Integer" />
