@@ -8,7 +8,7 @@ if (    request.getParameter("login_redirect") == null ||
 } 
 else //only show content if is redirect from login.jsp and the user is valid
 {%>
-<%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Character" %>
 <%@ page import ="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
@@ -29,7 +29,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                     out.write("<br><a href='login.jsp'><button type='button' class='btn btn-info btn-sm'>Reload</button></a>");
                 }
                 //User character info~
-                List<Member> memberChars = user.getCharacters();
+                List<Character> memberChars = user.getCharacters();
                 if(memberChars.size() > 0)
                 {%>
                     <table class="table table-dark character-tab">
@@ -44,7 +44,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                             </tr>
                         </thead>
                         <tbody>
-                          <% for(Member m : memberChars) { %>
+                          <% for(Character m : memberChars) { %>
                             <tr>
                                 <% //Get img from speck
                                 String className = m.getMemberClass().getSlug();

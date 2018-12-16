@@ -165,7 +165,7 @@ public class Challenge extends GameObject
     public int getId() { return this.mapId; }
     public String getMapName() { return this.mapName; }
     public List<ChallengeGroup> getChallengeGroups() { return this.chGroups; }
-    public int isUpdateKey(ChallengeGroup cgroup)
+    public int isUpdateKey(ChallengeGroup cGroup)
     {
         try {
             //Gold
@@ -173,7 +173,7 @@ public class Challenge extends GameObject
             Date cSilver = new SimpleDateFormat("HH:mm:ss.SSS").parse(this.silverTime[0]+":"+this.silverTime[1]+":"+this.silverTime[2]+"."+this.silverTime[3]);
             Date cBronze = new SimpleDateFormat("HH:mm:ss.SSS").parse(this.bronzeTime[0]+":"+this.bronzeTime[1]+":"+this.bronzeTime[2]+"."+this.bronzeTime[3]);
             //Group time
-            Date gTime = new SimpleDateFormat("HH:mm:ss.SSS").parse(cgroup.getTimeHour()+":"+cgroup.getTimeMinutes()+":"+cgroup.getTimeSeconds()+"."+cgroup.getTimeMilliseconds());
+            Date gTime = new SimpleDateFormat("HH:mm:ss.SSS").parse(cGroup.getTimeHour()+":"+cGroup.getTimeMinutes()+":"+cGroup.getTimeSeconds()+"."+cGroup.getTimeMilliseconds());
             if(gTime.before(cGold)) return 3;
             if(gTime.before(cSilver)) return 2;
             if(gTime.before(cBronze)) return 1;

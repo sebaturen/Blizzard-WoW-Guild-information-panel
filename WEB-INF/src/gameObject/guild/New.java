@@ -13,7 +13,7 @@ import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;
-import com.blizzardPanel.gameObject.characters.Member;
+import com.blizzardPanel.gameObject.characters.Character;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +29,7 @@ public class New extends GameObject
     //Atributes
     private int id;
     private String type;
-    private Member member;
+    private Character member;
     private String context;
     private Date timeStamp;
     private Item item;
@@ -47,7 +47,7 @@ public class New extends GameObject
         super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         
         try {
-            Member loadMember = new Member(member_name, GeneralConfig.getStringConfig("GUILD_REALM"));    
+            Character loadMember = new Character(member_name, GeneralConfig.getStringConfig("GUILD_REALM"));    
             try { //2018-10-17 02:39:00
                 timestamp = Update.parseUnixTime(timestamp);
                 timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
@@ -77,13 +77,13 @@ public class New extends GameObject
         if(objInfo.containsKey("id"))
         {//Load from dB
             this.id = (Integer) objInfo.get("id");
-            this.member = new Member((Integer) objInfo.get("member_id"));
+            this.member = new Character((Integer) objInfo.get("member_id"));
         }
         else
         {//Load from blizz
             dateStamp = Update.parseUnixTime(objInfo.get("timestamp").toString());  
             try {
-                this.member = new Member(objInfo.get("character").toString(), GeneralConfig.getStringConfig("GUILD_REALM"));
+                this.member = new Character(objInfo.get("character").toString(), GeneralConfig.getStringConfig("GUILD_REALM"));
             } catch (ConfigurationException ex) {
                 Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
                 System.exit(-1);
@@ -191,7 +191,7 @@ public class New extends GameObject
     @Override
     public int getId() { return this.id; }
     public String getType() { return this.type; }
-    public Member getMember() { return this.member; }
+    public Character getMember() { return this.member; }
     public String getContext() { return this.context; }
     public Date getTimeStamp() { return this.timeStamp; }
     public String getTimeStampString() { return getDBDate(this.timeStamp); }

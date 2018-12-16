@@ -15,7 +15,7 @@ import com.blizzardPanel.gameObject.Boss;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.guild.Guild;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
-import com.blizzardPanel.gameObject.characters.Member;
+import com.blizzardPanel.gameObject.characters.Character;
 import com.blizzardPanel.gameObject.characters.PlayableClass;
 import com.blizzardPanel.gameObject.characters.PlayableRace;
 import com.blizzardPanel.gameObject.Spell;
@@ -459,7 +459,7 @@ public class Update implements APIInfo
             JSONArray members = (JSONArray) respond.get("members");
 
             //Reset 0 in_guild all members...
-            dbConnect.update(Member.GMEMBER_ID_NAME_TABLE_NAME,
+            dbConnect.update(Character.GMEMBER_ID_NAME_TABLE_NAME,
                             new String[] {"in_guild"},
                             new String[] {"0"},
                             "in_guild > ?",
@@ -474,13 +474,13 @@ public class Update implements APIInfo
                     String rankMember = ((JSONObject) members.get(i)).get("rank").toString();
                     String name = info.get("name").toString();
                     //See if need update or insert
-                    JSONArray inDBgMembersID = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME, 
+                    JSONArray inDBgMembersID = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME, 
                                                         new String[] {"internal_id"}, 
                                                         "member_name=? AND realm=?",
                                                         new String[] {name, GeneralConfig.getStringConfig("GUILD_REALM")});
                     if(inDBgMembersID.size() > 0)
                     {//Update
-                        dbConnect.update(Member.GMEMBER_ID_NAME_TABLE_NAME, 
+                        dbConnect.update(Character.GMEMBER_ID_NAME_TABLE_NAME, 
                                         new String[] {"rank", "in_guild"},
                                         new String[] {rankMember, "1"},
                                         "internal_id=?",
@@ -488,8 +488,8 @@ public class Update implements APIInfo
                     }
                     else
                     {//Insert
-                        dbConnect.insert(Member.GMEMBER_ID_NAME_TABLE_NAME, 
-                                        Member.GMEMBER_ID_NAME_TABLE_KEY,
+                        dbConnect.insert(Character.GMEMBER_ID_NAME_TABLE_NAME, 
+                                        Character.GMEMBER_ID_NAME_TABLE_KEY,
                                         new String[] { "member_name", "realm", "rank", "in_guild" },
                                         new String[] { name, GeneralConfig.getStringConfig("GUILD_REALM"), rankMember, "1" });
                     }
@@ -565,8 +565,8 @@ public class Update implements APIInfo
         if(accesToken == null) throw new DataException("Access Token Not Found");
         else
         {
-            JSONArray members = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME,
-                                                Member.GMEMBER_ID_NAME_TABLE_STRUCTURE,
+            JSONArray members = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME,
+                                                Character.GMEMBER_ID_NAME_TABLE_STRUCTURE,
                                                 "in_guild=?",
                                                 new String[] {"1"});
 
@@ -575,8 +575,8 @@ public class Update implements APIInfo
             for(int i = 0; i < members.size(); i++)
             {
                 JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
-                Member mbDB = new Member((Integer) member.get(Member.GMEMBER_ID_NAME_TABLE_KEY));
-                Member mbBlizz = getMemberFromBlizz(member.get("member_name").toString(), member.get("realm").toString());
+                Character mbDB = new Character((Integer) member.get(Character.GMEMBER_ID_NAME_TABLE_KEY));
+                Character mbBlizz = getMemberFromBlizz(member.get("member_name").toString(), member.get("realm").toString());
                 if(mbBlizz != null)
                 {//DB member need update!
                     if (!((Long)mbBlizz.getLastModified()).equals(mbDB.getLastModified()))
@@ -599,9 +599,9 @@ public class Update implements APIInfo
         }
     }
     
-    public Member getMemberFromBlizz(String name, String realm) throws UnsupportedEncodingException, ConfigurationException 
+    public Character getMemberFromBlizz(String name, String realm) throws UnsupportedEncodingException, ConfigurationException 
     {
-        Member blizzPlayer = null;
+        Character blizzPlayer = null;
         //Generate an API URL
         String urlString = String.format(API_ROOT_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), String.format(API_CHARACTER_PROFILE, 
                                         URLEncoder.encode(realm, "UTF-8").replace("+", "%20"), 
@@ -613,7 +613,7 @@ public class Update implements APIInfo
                                             "GET",
                                             "Bearer "+ accesToken,
                                             new String[] {"fields=guild,talents,items,stats", "locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")});
-            blizzPlayer = new Member(blizzPlayerInfo);
+            blizzPlayer = new Character(blizzPlayerInfo);
         } 
         catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
         {
@@ -1061,7 +1061,7 @@ public class Update implements APIInfo
                                 JSONObject spec = (JSONObject) inMeb.get("spec");
                                 //Get info about this member.
                                 
-                                Member mb = new Member(character.get("name").toString() , character.get("realm").toString() );
+                                Character mb = new Character(character.get("name").toString() , character.get("realm").toString() );
                                 if (mb.isData()) 
                                 {
                                     mb.setActiveSpec(spec.get("name").toString(), spec.get("role").toString());
@@ -1196,7 +1196,7 @@ public class Update implements APIInfo
             int membersRank = -1;
             //Select player have a better guild rank 
             //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
-            JSONArray charRank = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME, 
+            JSONArray charRank = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME, 
                                                 new String[] {"rank"},
                                                 "user_id=? AND rank is not null order by rank limit 1",
                                                 new String[] { uderID +"" });
@@ -1239,13 +1239,13 @@ public class Update implements APIInfo
                     JSONObject pj = (JSONObject) characters.get(i);
                     String name = pj.get("name").toString();
                     String realm = pj.get("realm").toString();
-                    Member mb = new Member(name, realm);
+                    Character mb = new Character(name, realm);
                     
                     if(mb != null && mb.isData())
                     {
                         try 
                         {
-                            dbConnect.update(Member.GMEMBER_ID_NAME_TABLE_NAME,
+                            dbConnect.update(Character.GMEMBER_ID_NAME_TABLE_NAME,
                                             new String[] { "user_id" },
                                             new String[] { userID+""},
                                             "internal_id=?", 
@@ -1263,7 +1263,7 @@ public class Update implements APIInfo
                 //Get a most elevet rank member, like 0 is GM, 1 is officers ... 
                 try 
                 {
-                    JSONArray guildRank = dbConnect.select(Member.GMEMBER_ID_NAME_TABLE_NAME,
+                    JSONArray guildRank = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME,
                                                         new String[] {"rank"},
                                                         "in_guild=? AND user_id=? ORDER BY rank ASC LIMIT 1",
                                                         new String[] {"1", userID +""});
@@ -1518,7 +1518,7 @@ public class Update implements APIInfo
                     throw new DataException("Fail to parse result!, check the URL"+ urlString +" - "+ ex);
                 }
             case HttpURLConnection.HTTP_UNAUTHORIZED:
-                DataException ex = new DataException("Error: "+ conn.getResponseCode() +" - UnAuthorized request, check CLIENT_ID and CLIENT_SECRET in APIInfo.java");
+                DataException ex = new DataException("Error: "+ conn.getResponseCode() +" - UnAuthorized request, check CLIENT_ID and CLIENT_SECRET in contex.xml CONFIGURATION - "+ url);
                 ex.setErrorCode(conn.getResponseCode());
                 throw ex;
             case HttpURLConnection.HTTP_BAD_REQUEST:

@@ -23,8 +23,8 @@ public class PlayableSpec extends GameObject
     private PlayableClass pClass;
     private String name;
     private String role;
-    private String desc_male;
-    private String desc_female;
+    private String descMale;
+    private String descFemale;
     
     public PlayableSpec(int id)
     {
@@ -57,8 +57,8 @@ public class PlayableSpec extends GameObject
                 this.role = ((JSONObject) objInfo.get("role")).get("type").toString();
                 if(this.role.equals("DAMAGE")) this.role = "DPS";
                 if(this.role.equals("HEALER")) this.role = "HEALING";
-                this.desc_male = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
-                this.desc_female = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+                this.descMale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+                this.descFemale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
             } catch (ConfigurationException ex) {
                 Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
                 System.exit(-1);
@@ -71,8 +71,8 @@ public class PlayableSpec extends GameObject
             this.slug = objInfo.get("slug").toString();
             this.pClass = new PlayableClass((Integer) objInfo.get("class"));
             this.role = objInfo.get("role").toString();
-            this.desc_male = objInfo.get("desc_male").toString();
-            this.desc_female = objInfo.get("desc_female").toString();
+            this.descMale = objInfo.get("desc_male").toString();
+            this.descFemale = objInfo.get("desc_female").toString();
         }
         this.isData = true;
     }
@@ -81,7 +81,7 @@ public class PlayableSpec extends GameObject
     public boolean saveInDB() 
     {
         /* {"id", "slug", "name", "role"}; */
-        switch (saveInDBObj(new String[] {this.id +"", this.slug, this.pClass.getId() +"", this.name, this.role, this.desc_male, this.desc_female}))
+        switch (saveInDBObj(new String[] {this.id +"", this.slug, this.pClass.getId() +"", this.name, this.role, this.descMale, this.descFemale}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;
@@ -103,9 +103,9 @@ public class PlayableSpec extends GameObject
         switch(gender)
         {
             case 1: //famele
-                return this.desc_female;
+                return this.descFemale;
             default: //0 - male
-                return this.desc_male;
+                return this.descMale;
         }
     }
 }

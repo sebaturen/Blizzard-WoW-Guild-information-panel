@@ -58,6 +58,11 @@
                                     desc = "Guild Achievement";
                                     iaDetail = inf.getGuildAchievement().getTitle();
                                     break;
+                                case "itemCraft":
+                                    img = inf.getItem().getIconRenderURL();
+                                    desc = "Item Craft";
+                                    iaDetail = inf.getItem().getName();
+                                    break;
                             }//end swithc%> 
                             <div class="new divder row">
                                 <div class="col-2"><img src="<%= img %>"/></div>

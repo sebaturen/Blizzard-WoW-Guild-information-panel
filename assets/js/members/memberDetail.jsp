@@ -1,5 +1,5 @@
 <%@include file="../../../includes/globalObject.jsp" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Character" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItems" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterStats" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterSpec" %>
@@ -9,7 +9,7 @@
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 <%if(guildMember) {
     int memberID = Integer.parseInt(request.getParameter("id"));
-    Member member = members.getMember(memberID); %>
+    Character member = members.getMember(memberID); %>
 var member_<%= memberID %> = {
     'm_info': {
         'name': '<%= member.getName() %>', 

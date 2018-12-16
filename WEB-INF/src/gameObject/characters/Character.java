@@ -23,7 +23,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
-public class Member extends GameObject
+public class Character extends GameObject
 {
     //Members - id - name DB
     public static final String GMEMBER_ID_NAME_TABLE_NAME = "gMembers_id_name";
@@ -38,6 +38,13 @@ public class Member extends GameObject
                                                                     "race", "gender", "level", "achievementPoints",
                                                                     "thumbnail", "calcClass", "faction", "totalHonorableKills",
                                                                     "guild_name", "lastModified"};
+    //Constant
+    private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
+    private static final String COMBIEN_TABLE_KEY = "c.internal_id";
+    private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
+                                                            "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
+                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
+                                                            "gm.user_id", "gm.rank"};
     //Attribute
     private int internalID;
     private String name;
@@ -62,22 +69,15 @@ public class Member extends GameObject
     private CharacterStats stats;
     private boolean isMain = false;
     
-    //Constant
-    private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
-    private static final String COMBIEN_TABLE_KEY = "c.internal_id";
-    private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class", 
-                                                            "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass", 
-                                                            "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
-                                                            "gm.user_id", "gm.rank"};
     //Constructor load from DB if have a ID
-    public Member(int internalID)
+    public Character(int internalID)
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         //Load Character from DB
         loadFromDB(internalID, "gm.internal_id = c.internal_id", true);
     }
     
-    public Member(String name, String realm)
+    public Character(String name, String realm)
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] {"gm.member_name", "gm.realm"}, new String[] {name, realm}, "gm.internal_id = c.internal_id", true);
@@ -96,7 +96,7 @@ public class Member extends GameObject
     }
 
     //Load to JSON
-    public Member(JSONObject playerInfo)
+    public Character(JSONObject playerInfo)
     {
         super(CHARACTER_INFO_TABLE_NAME, CHARACTER_INFO_TABLE_KEY, CHARACTER_INFO_TABLE_STRUCTURE);
         saveInternalInfoObject(playerInfo);
@@ -221,7 +221,7 @@ public class Member extends GameObject
             {
                 Logs.saveLogln("Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
                 Logs.saveLogln("\tTry get spec again from update...");
-                loadSpecFromUpdate();
+                loadSpecFromBlizz();
             }
         } catch (SQLException | DataException ex) {
             Logs.saveLogln("Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
@@ -233,7 +233,7 @@ public class Member extends GameObject
         try
         {
             Update up = new Update();
-            Member tempMember = up.getMemberFromBlizz(this.name, this.realm);
+            Character tempMember = up.getMemberFromBlizz(this.name, this.realm);
             this.stats = tempMember.getStats();
             //Save new info in DB
             saveInDB();
@@ -249,13 +249,12 @@ public class Member extends GameObject
         }
     }
     
-    
-    private void loadSpecFromUpdate()
+    private void loadSpecFromBlizz()
     {
         try
         {
             Update up = new Update();
-            Member tempMember = up.getMemberFromBlizz(this.name, this.realm);
+            Character tempMember = up.getMemberFromBlizz(this.name, this.realm);
             this.specs = tempMember.getSpecs();
             //Save new info in DB
             saveInDB();
@@ -431,7 +430,7 @@ public class Member extends GameObject
         }				
     }
     
-    public void cloneMember(Member mb)
+    public void cloneMember(Character mb)
     {
         if(mb != null && mb.isData())
         {          
@@ -517,7 +516,7 @@ public class Member extends GameObject
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
         Logs.saveLogln("Not active spec detected "+ this.name +" try load again from blizz...");
-        loadSpecFromUpdate();
+        loadSpecFromBlizz();
         for(CharacterSpec sp: this.specs) 
             if(sp.isEnable())
                 return sp;
@@ -592,8 +591,8 @@ public class Member extends GameObject
         if(o == this) return true;
         if(o == null || (this.getClass() != o.getClass())) return false;
 
-        int oId = ((Member) o).getId();
-        long oLastModified = ((Member) o).getLastModified();
+        int oId = ((Character) o).getId();
+        long oLastModified = ((Character) o).getLastModified();
         return (  
                 oId == this.internalID
                 &&

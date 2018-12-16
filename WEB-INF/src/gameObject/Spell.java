@@ -41,18 +41,18 @@ public class Spell extends GameObject
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
+    protected void saveInternalInfoObject(JSONObject objInfo)
     {
-        if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB		
-            this.id = ((Long) exInfo.get("id")).intValue();
+        if(objInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB		
+            this.id = ((Long) objInfo.get("id")).intValue();
         else
-            this.id = (Integer) exInfo.get("id");
-        this.name = exInfo.get("name").toString();
-        this.icon = exInfo.get("icon").toString();
-        this.description = exInfo.get("description").toString();
-        this.castTime = exInfo.get("castTime").toString();
-        if(exInfo.containsKey("cooldown") && exInfo.get("cooldown") != null) this.cooldown = exInfo.get("cooldown").toString();
-        if(exInfo.containsKey("range") && exInfo.get("range") != null) this.range = exInfo.get("range").toString();
+            this.id = (Integer) objInfo.get("id");
+        this.name = objInfo.get("name").toString();
+        this.icon = objInfo.get("icon").toString();
+        this.description = objInfo.get("description").toString();
+        this.castTime = objInfo.get("castTime").toString();
+        if(objInfo.containsKey("cooldown") && objInfo.get("cooldown") != null) this.cooldown = objInfo.get("cooldown").toString();
+        if(objInfo.containsKey("range") && objInfo.get("range") != null) this.range = objInfo.get("range").toString();
         this.isData = true;		
     }    
     

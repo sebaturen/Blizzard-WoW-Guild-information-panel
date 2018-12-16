@@ -49,5 +49,4 @@ public class Stat extends GameObject
     public String getEnUs() { return this.enUs; }
     public int getAmount() { return this.amount; }
     
-    
 }

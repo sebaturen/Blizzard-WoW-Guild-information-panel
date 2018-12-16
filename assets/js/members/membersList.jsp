@@ -1,5 +1,5 @@
 <%@include file="../../../includes/globalObject.jsp" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.Member" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.Character" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
@@ -20,7 +20,7 @@ List<String> txtClass = new ArrayList<>();
 List<String> races  = new ArrayList<>();
 if(members.getMembersList() != null)
 {
-    for(Member member : members.getMembersList())
+    for(Character member : members.getMembersList())
     {
         String className = member.getMemberClass().getSlug();
         String specName = member.getActiveSpec().getSpec().getSlug();

@@ -21,6 +21,9 @@ public class CharacterSpec extends GameObject
                                                             "tier_0", "tier_1", "tier_2",
                                                             "tier_3", "tier_4", "tier_5",
                                                             "tier_6"};    
+    //Constant
+    public static final int MAX_SPELL_TALENTS = 7; //Actualy u can get max 7 differents talents
+    
     //Atribute
     private int id;
     private int memberId;
@@ -28,8 +31,6 @@ public class CharacterSpec extends GameObject
     private boolean enable;
     private Spell[] spells;
  
-    //Constant
-    public static final int MAX_SPELL_TALENTS = 7; //Actualy u can get max 6 differents talents
 
     public CharacterSpec(int specId)
     {        
@@ -37,14 +38,14 @@ public class CharacterSpec extends GameObject
         loadFromDB(specId);
     }
     
-    public CharacterSpec(Member member, JSONObject specInfo, JSONArray talentsInfo)
+    public CharacterSpec(Character member, JSONObject specInfo, JSONArray talentsInfo)
     {
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = member.getId();
         saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
-    private void saveInfoFromBlizz(Member member, JSONObject specInfo, JSONArray talentsInfo)
+    private void saveInfoFromBlizz(Character member, JSONObject specInfo, JSONArray talentsInfo)
     {
         this.spells = new Spell[MAX_SPELL_TALENTS];
         this.spec = new PlayableSpec(specInfo.get("name").toString(), specInfo.get("role").toString(), member.getMemberClass().getId());

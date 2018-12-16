@@ -10,7 +10,6 @@
         <%@include file="includes/header.jsp" %>
         <link type="text/css" rel="stylesheet" href="assets/css/aution_house.css">
         <script src="assets/js/auctionHouse/autionHouse.js"></script>
-        <script src="assets/js/Chart.bundle.min.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
