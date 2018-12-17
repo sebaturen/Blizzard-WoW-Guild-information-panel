@@ -22,7 +22,7 @@
         <javac 
             destdir="WEBContent/WEB-INF/classes" 
             debug="true" 
-            srcdir="src">
+            srcdir="WEBContent/WEB-INF/src">
             <classpath refid="compile.classpath"/>
         </javac>
     </target>
@@ -31,7 +31,7 @@
         <war destfile="dist/BlizzardPanel.war" webxml="WEBContent/WEB-INF/web.xml">
             <fileset dir="WEBContent"/>
                 <lib dir="WEBContent/WEB-INF/lib"/>
-            <classes dir="build/classes"/>
+            <classes dir="WEBContent/WEB-INF/classes"/>
         </war>
     </target>
 
