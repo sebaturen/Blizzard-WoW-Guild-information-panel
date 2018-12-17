@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;
@@ -35,7 +35,7 @@ public class GuildRanks
                 ranks[i] = new Rank((Integer) ((JSONObject) rankDB.get(i)).get(Rank.GUILD_RANK_TABLE_KEY));
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load ranks "+ ex);
+            Logs.errorLog(GuildRanks.class, "Fail to load ranks "+ ex);
         }
         return ranks;
     }
@@ -55,7 +55,7 @@ public class GuildRanks
                 mb[i] = new Character((Integer) ((JSONObject)memberRank.get(i)).get(Character.GMEMBER_ID_NAME_TABLE_KEY));
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get Members by rank - "+ ex);
+            Logs.errorLog(GuildRanks.class, "Fail to get Members by rank - "+ ex);
         }
         return mb;
     }
@@ -76,7 +76,7 @@ public class GuildRanks
                 }
             }
         } catch (NumberFormatException e) {
-            Logs.saveLogln("Fail to save rank new info - "+ e);
+            Logs.errorLog(GuildRanks.class, "Fail to save rank new info - "+ e);
         }
     }
 }

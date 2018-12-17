@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.challenges;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;
@@ -66,7 +66,7 @@ public class Challenge extends GameObject
                 if(cgDb.isData()) chGroups.add(cgDb);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load Groups from challenge "+ this.mapId);
+            Logs.errorLog(Challenge.class, "Fail to load Groups from challenge "+ this.mapId);
         }
     }
     
@@ -178,7 +178,7 @@ public class Challenge extends GameObject
             if(gTime.before(cSilver)) return 2;
             if(gTime.before(cBronze)) return 1;
         } catch (ParseException ex) {
-            Logs.saveLogln("Fail to convert time group "+ ex);
+            Logs.errorLog(Challenge.class, "Fail to convert time group "+ ex);
         }
         return -1;
     }

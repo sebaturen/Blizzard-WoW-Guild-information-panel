@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.challenges;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
@@ -79,7 +79,7 @@ public class ChallengeGroup extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load members from challenge group id: "+ this.id);
+            Logs.errorLog(ChallengeGroup.class, "Fail to load members from challenge group id: "+ this.id);
         }
     }
 
@@ -99,7 +99,7 @@ public class ChallengeGroup extends GameObject
             try {
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
             } catch (ParseException ex) {
-                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                Logs.errorLog(ChallengeGroup.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         else
@@ -113,7 +113,7 @@ public class ChallengeGroup extends GameObject
             try { //2018-10-17 02:39:00
                 this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
             } catch (ParseException ex) {
-                Logs.saveLogln("(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                Logs.errorLog(ChallengeGroup.class, "(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         this.isData = true;
@@ -145,7 +145,7 @@ public class ChallengeGroup extends GameObject
                                     "internal_member_id=? AND group_id=?",
                                     new String[] { m.getId() +"", this.id +"" } );
                         } catch (SQLException ex) {
-                            Logs.saveLogln("Fail to get memberInGroupID "+ ex);
+                            Logs.errorLog(ChallengeGroup.class, "Fail to get memberInGroupID "+ ex);
                         }
                         //Insert or update... if need insert is because not is register :D
                         if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
@@ -156,7 +156,7 @@ public class ChallengeGroup extends GameObject
                                             new String[] { m.getId() +"", this.id +"", m.getActiveSpec().getId() +"" });
                         }
                     } catch (DataException|ClassNotFoundException|SQLException ex) {
-                        Logs.saveLogln("Fail to save members in groups: "+ ex);
+                        Logs.errorLog(ChallengeGroup.class, "Fail to save members in groups: "+ ex);
                     }
                 });
                 return true;

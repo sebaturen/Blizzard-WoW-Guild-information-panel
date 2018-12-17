@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
 import com.blizzardPanel.dbConnect.DBStructure;
@@ -115,7 +115,7 @@ public class Guild extends GameObject
                 this.achievements.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load guild Achievements "+ ex);
+            Logs.errorLog(Guild.class, "Fail to load guild Achievements "+ ex);
         }        
     }
     
@@ -134,7 +134,7 @@ public class Guild extends GameObject
                 this.news.add(gAh);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load guild news "+ ex);
+            Logs.errorLog(Guild.class, "Fail to load guild news "+ ex);
         }
         this.lastNewsUpdate = new Date(); 
     }

@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.poll;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
 import com.blizzardPanel.blizzardAPI.Update;
@@ -75,7 +75,7 @@ public class PollOptionResult extends GameObject
                             new String[] { this.id+""});
             return true;
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to delete options - "+ this.id +" - "+ this.owner.getBattleTag() +" - "+ ex);
+            Logs.errorLog(PollOptionResult.class, "Fail to delete options - "+ this.id +" - "+ this.owner.getBattleTag() +" - "+ ex);
         }
         return false;
     }

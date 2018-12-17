@@ -1,6 +1,6 @@
 <h1>Error!</h1>
-<p>Fail to get DB information</p>
-<h2>DB Error msg: </h2>
-<%= request.getParameter("db_error_msg") %>
-<h2>Information</h2>
-Please read the documentation, and follow the step to install this panel
+<p>Fail in DB or Configuration file, pls read README and see the BattlePanel LOGS</p>
+<p><a href="https://github.com/sebaturen/Blizzard-WoW-Guild-information-panel">Download last version in GitHub</a></p>
+<p>And pls reed the README (This version readme:)</p>
+<h2>README</h2>
+<%@include file="README.md" %>

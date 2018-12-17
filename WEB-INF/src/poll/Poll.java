@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.poll;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.User;
@@ -85,7 +85,7 @@ public class Poll extends GameObject
                 this.options.add(new PollOption((Integer) ((JSONObject)opDB.get(i)).get(PollOption.POLL_OPTION_TABLE_KEY) ));
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get options in poll - "+ this.id +" - "+ ex);
+            Logs.errorLog(Poll.class, "Fail to get options in poll - "+ this.id +" - "+ ex);
         }
     }
 
@@ -180,7 +180,7 @@ public class Poll extends GameObject
                     saveInDB();
                 }
             } catch (ParseException ex) {
-                Logs.saveLogln("Fail to convert end date in poll - "+ this.id +" - "+ ex);
+                Logs.errorLog(Poll.class, "Fail to convert end date in poll - "+ this.id +" - "+ ex);
                 this.isEnable = false;
                 saveInDB(); //save a new false
             }

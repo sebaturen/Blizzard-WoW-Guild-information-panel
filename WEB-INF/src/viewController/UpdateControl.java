@@ -5,13 +5,15 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.parser.ParseException;
 
 import javax.websocket.OnClose;
@@ -49,12 +51,12 @@ public class UpdateControl
             try {
                 session.getBasicRemote().sendText("Update is in progress.....");
             } catch (IOException ex) {
-                Logs.saveLogln("Fail to send update if is progress messaje "+ ex);
+                Logs.errorLog(UpdateControl.class, "Fail to send update if is progress messaje "+ ex);
             }
         }
         else if (runUpdate)
         {
-            Logs.publicLog(this);
+            Logs.setUpdateControl(this);
             generateUpdate();
         }
     }
@@ -84,15 +86,25 @@ public class UpdateControl
                     Update up = new Update();
                     up.updateDynamicAll();
                 } catch (IOException | ParseException | DataException ex) {
-                    Logs.saveLogln("fail update...");
+                    Logs.errorLog(UpdateControl.class, "fail update...");
                 }
                 setIsRuning(false);    
                 setRunUpdate(false);
-                Logs.publicLog(null);
+                Logs.setUpdateControl(null);
             }
         };
         upThread.start();
     }  
+    
+    
+    public void messageForAll(String msg) {
+        try {
+            onMessage(msg, null);
+        } catch (IOException ex) {
+            Logs.errorLog(UpdateControl.class, "Fail to send update msg");
+        }
+    }
+    
     
     private void setIsRuning(boolean f) { isRunnin = f; } 
     private void setRunUpdate(boolean f) { runUpdate = f; } 

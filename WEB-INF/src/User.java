@@ -5,11 +5,9 @@
  */
 package com.blizzardPanel;
 
-import com.blizzardPanel.exceptions.DataException;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.characters.Character;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -85,7 +83,7 @@ public class User
                 loadUser(userInfo);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load user from ID "+ id +" - "+ ex);
+            Logs.errorLog(User.class, "Fail to load user from ID "+ id +" - "+ ex);
         }        
     }
     
@@ -108,7 +106,7 @@ public class User
                 return true;
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to login "+ this.battleTag +" - "+ ex);
+            Logs.errorLog(User.class, "Fail to login "+ this.battleTag +" - "+ ex);
         }
         return false;
     }
@@ -134,7 +132,7 @@ public class User
                         new String[] {this.id +""}); 
                 vRet = true;
             } catch (DataException | ClassNotFoundException | SQLException ex) {
-                Logs.saveLogln("Fail to save access token to "+ this.battleTag +" - "+ ex);
+                Logs.errorLog(User.class, "Fail to save access token to "+ this.battleTag +" - "+ ex);
             }            
         }
         else
@@ -149,7 +147,7 @@ public class User
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
             } catch (DataException | ClassNotFoundException | SQLException ex) {
-                Logs.saveLogln("Fail to insert user "+ this.battleTag);
+                Logs.errorLog(User.class, "Fail to insert user "+ this.battleTag);
             }
         }
         //Try get a member rank...   
@@ -169,7 +167,7 @@ public class User
                     Update up = new Update();
                     up.setMemberCharacterInfo(accToken, uId);
                 } catch (IOException | ParseException | DataException ex) {
-                    Logs.saveLogln("Fail to seve characters info "+ uId +" - "+ ex);
+                    Logs.errorLog(User.class, "Fail to seve characters info "+ uId +" - "+ ex);
                 }
                 checkUser(true);
                 setIsCharsReady(true);
@@ -208,11 +206,7 @@ public class User
                 return blizzInfo.get("access_token").toString();
             }
         } catch (IOException|DataException ex) {
-            Logs.saveLogln("Fail to get user Access Token "+ ex);
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return null;
+            Logs.errorLog(User.class, "Fail to get user Access Token "+ ex);
         }
         return null;
     }
@@ -236,11 +230,7 @@ public class User
                 }
             }
         } catch (IOException|ParseException|DataException ex) {
-            Logs.saveLogln("Fail to get BattleTag "+ ex);
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return null;
+            Logs.errorLog(User.class, "Fail to get BattleTag "+ ex);
         }
         return null;
     }
@@ -272,7 +262,7 @@ public class User
                 }
             }
         } catch (SQLException|DataException ex) {
-            Logs.saveLogln("Error get a character user info "+ this.id +" - "+ ex);
+            Logs.errorLog(User.class, "Error get a character user info "+ this.id +" - "+ ex);
         }
     }
     
@@ -312,7 +302,7 @@ public class User
                     stateChange = true;
                     this.mainCharacter = m;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLogln("Fail to save main character from user - "+ ex);
+                    Logs.errorLog(User.class, "Fail to save main character from user - "+ ex);
                 }
             }
             else

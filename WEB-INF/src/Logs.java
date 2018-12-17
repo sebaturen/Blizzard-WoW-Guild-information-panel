@@ -1,82 +1,42 @@
 /**
  * File : Logs.java
  * Desc : Control a logs file in proyect.
+ *          Use "log4j2.xml configuration file!"
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 package com.blizzardPanel;
 
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.viewController.UpdateControl;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.nio.file.Files;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.UserPrincipal;
-import java.nio.file.attribute.UserPrincipalLookupService;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class Logs 
+import org.apache.logging.log4j.LogManager;
+
+public class Logs
 {
-    
-    public static final String LOG_FILE_EXTENCION = "Update.log";
     private static UpdateControl upControl = null;
-    
-    public static void saveLogln(String s) { saveLog(s, true); }
-    public static void saveLog(String s) { saveLog(s, false); }
-    private static void saveLog(String s, boolean nline)
+       
+    public static void errorLog(Class c, String ms)
     {
-        try
-        {
-            String wS = s;
-            System.out.print(wS);            
-            if(nline)
-            {
-                wS += "\n";
-                System.out.println("");
-            }
-            if(upControl != null) upControl.onMessage(wS, null);            
-            //Save in file
-            try (BufferedWriter out = new BufferedWriter(getFile())) {
-                out.write(wS);
-            }
-        } catch (IOException ex) {
-            System.out.println("Fail to save log! "+ ex);
-        } catch (ConfigurationException ex) {
-            System.out.println("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-        }
+        if(upControl != null)
+            upControl.messageForAll("[Error] ["+ c.getName() +"]: " + ms);
+        LogManager.getLogger(c.getName()).error(ms);
     }
     
-    private static FileWriter getFile() throws IOException, ConfigurationException
+    public static void fatalLog(Class c, String ms)
     {
-        FileWriter logFile = new FileWriter(getFileLogPath(), true);
-        //Set file owner!
-        Path path = Paths.get(getFileLogPath());
-        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-        UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(GeneralConfig.getStringConfig("LOGS_FILE_USER_OWNER"));
-        Files.setOwner(path, userPrincipal);
-
-        return logFile;        
+        if(upControl != null)
+            upControl.messageForAll("[FATAL] ["+ c.getName() +"]: " + ms);
+        LogManager.getLogger(c.getName()).fatal(ms);
     }
     
-    private static String getFileLogPath() throws ConfigurationException
+    public static void infoLog(Class c, String ms)
     {
-        String logFilePrefix = GeneralConfig.getStringConfig("LOGS_FILE_PATH") + GeneralConfig.getStringConfig("GUILD_NAME");
-        return logFilePrefix +"."+ getCurrentTimeStamp() +"."+ LOG_FILE_EXTENCION;
+        if(upControl != null)
+            upControl.messageForAll("[Info] ["+ c.getName() +"]: " + ms);
+        LogManager.getLogger(c.getName()).info(ms);
     }
     
-    public static void publicLog(UpdateControl up) { upControl = up; }
+    public static void setUpdateControl(UpdateControl up) { upControl = up; }
     
-    /**
-     * Get a current time string yyyy-MM-dd
-     * @return 
-     */
-    public static String getCurrentTimeStamp() 
-    {
-        return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-    }
+    
+    
 }

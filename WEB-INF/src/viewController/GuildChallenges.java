@@ -6,7 +6,7 @@
 package com.blizzardPanel.viewController;
 
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 
@@ -48,7 +48,7 @@ public class GuildChallenges
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to load members lists - Members View Controller");
+            Logs.errorLog(GuildProgress.class, "Fail to load members lists - Members View Controller");
         }
     }
 	

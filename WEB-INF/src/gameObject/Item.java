@@ -5,12 +5,11 @@
  */
 package com.blizzardPanel.gameObject;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,7 +41,7 @@ public class Item extends GameObject
                 Update up = new Update();
                 cloneItem(up.getItemFromBlizz(id));
             } catch (IOException | ParseException | DataException ex) {
-                Logs.saveLogln("Fail to get item info from blizzard. - "+ ex);
+                Logs.errorLog(Item.class, "Fail to get item info from blizzard. - "+ ex);
             }
         }
     }
@@ -70,10 +69,7 @@ public class Item extends GameObject
                         Update up = new Update();
                         this.itemSpell = up.getSpellInformationBlizz(spellId);
                     } catch (IOException | ParseException | DataException ex) {
-                        Logs.saveLogln("Fail to get blizzard spell information "+ spellId +" - (spell in item) - "+ ex);
-                    } catch (ConfigurationException ex) {
-                        Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                        System.exit(-1);
+                        Logs.errorLog(Item.class, "Fail to get blizzard spell information "+ spellId +" - (spell in item) - "+ ex);
                     }
                 }
             }
@@ -145,7 +141,7 @@ public class Item extends GameObject
             if(!this.isInternalData)
             {
                 saveInDB();
-                Logs.saveLogln("New Item in DB "+ this.id +" - "+ this.name);
+                Logs.infoLog(Item.class, "New Item in DB "+ this.id +" - "+ this.name);
             }
         }
     }
@@ -163,13 +159,7 @@ public class Item extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        try {
-            return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return null;
-        }
+        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
     }
     
 }

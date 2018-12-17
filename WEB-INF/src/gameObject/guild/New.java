@@ -9,7 +9,6 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;
@@ -46,21 +45,16 @@ public class New extends GameObject
     {
         super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         
-        try {
-            Character loadMember = new Character(member_name, GeneralConfig.getStringConfig("GUILD_REALM"));    
-            try { //2018-10-17 02:39:00
-                timestamp = Update.parseUnixTime(timestamp);
-                timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
-            } catch (ParseException ex) {
-                Logs.saveLogln("Fail to convert date from guild news! "+ this.id +" - "+ ex);
-            }
-            //Load only if member have a info
-            if(loadMember.isInternalData())
-                loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId()+"" });
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
+        Character loadMember = new Character(member_name, GeneralConfig.getStringConfig("GUILD_REALM"));    
+        try { //2018-10-17 02:39:00
+            timestamp = Update.parseUnixTime(timestamp);
+            timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
+        } catch (ParseException ex) {
+            Logs.errorLog(New.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
+        //Load only if member have a info
+        if(loadMember.isInternalData())
+            loadFromDBUniqued(new String[] {"type", "timestamp", "member_id"}, new String[] { type, timestamp, loadMember.getId()+"" });
         
     }
     
@@ -82,17 +76,12 @@ public class New extends GameObject
         else
         {//Load from blizz
             dateStamp = Update.parseUnixTime(objInfo.get("timestamp").toString());  
-            try {
-                this.member = new Character(objInfo.get("character").toString(), GeneralConfig.getStringConfig("GUILD_REALM"));
-            } catch (ConfigurationException ex) {
-                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                System.exit(-1);
-            }
+            this.member = new Character(objInfo.get("character").toString(), GeneralConfig.getStringConfig("GUILD_REALM"));
         }
         try { //2018-10-17 02:39:00
             this.timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStamp);
         } catch (ParseException ex) {
-            Logs.saveLogln("Fail to convert date from guild news! "+ this.id +" - "+ ex);
+            Logs.errorLog(New.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
         this.type = objInfo.get("type").toString();
         this.context = objInfo.get("context").toString();

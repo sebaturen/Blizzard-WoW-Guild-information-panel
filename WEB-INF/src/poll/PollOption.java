@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.poll;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
@@ -68,7 +68,7 @@ public class PollOption extends GameObject implements Comparable<PollOption>
                 results.add(new PollOptionResult((Integer) ((JSONObject)rDB.get(i)).get(PollOptionResult.POLL_OPTION_RESULTS_TABLE_KEY) ));
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get options result in poll - "+ this.id +" - "+ ex);
+            Logs.errorLog(PollOption.class, "Fail to get options result in poll - "+ this.id +" - "+ ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class PollOption extends GameObject implements Comparable<PollOption>
                     new String[] { this.id+"" });
             return true;
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to delete option in poll> "+ this.pollId +" opt> "+ this.id +" - "+ ex);
+            Logs.errorLog(PollOption.class, "Fail to delete option in poll> "+ this.pollId +" opt> "+ this.id +" - "+ ex);
         }
         return false;
     }

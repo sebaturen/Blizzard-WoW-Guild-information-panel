@@ -60,7 +60,7 @@ public class RaidDificultBoss extends GameObject
             try { //2018-10-17 02:39:00
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                Logs.saveLogln("(DB) Fail to convert date from challenge group! "+ this.id);
+                Logs.errorLog(RaidDificultBoss.class, "(DB) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
@@ -68,13 +68,13 @@ public class RaidDificultBoss extends GameObject
             this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
             if(!this.boss.isData())
             {
-                Logs.saveLogln("FAIL (EXIT) TO GET BOSS INFO!! "+ getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
+                Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
                 System.exit(-1);
             }
             try {
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
             } catch (ParseException ex) {
-                Logs.saveLogln("(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                Logs.errorLog(RaidDificultBoss.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
             
             //Save Item Level AVG            

@@ -44,7 +44,7 @@ public class GuildAchievement extends GameObject
         try { //2018-10-17 02:39:00
             this.timeCompleted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("time_completed").toString());
         } catch (ParseException ex) {
-            Logs.saveLogln("(DB) Fail to convert date from challenge group! "+ this.achivementId +" - "+ ex);
+            Logs.errorLog(GuildAchievement.class, "(DB) Fail to convert date from challenge group! "+ this.achivementId +" - "+ ex);
         }
         this.isData = true;
     }

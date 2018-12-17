@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.raids;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
@@ -89,7 +89,7 @@ public class RaidDificult extends GameObject
                 this.bosses.add(rdBoss);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
+            Logs.errorLog(RaidDificult.class, "Fail to get bosses in dificult raid "+ this.id +" - "+ ex);
         }
     }
 

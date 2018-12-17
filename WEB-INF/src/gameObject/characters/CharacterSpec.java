@@ -51,10 +51,10 @@ public class CharacterSpec extends GameObject
         this.spec = new PlayableSpec(specInfo.get("name").toString(), specInfo.get("role").toString(), member.getMemberClass().getId());
         if(this.spec.getName() == null)
         {
-            Logs.saveLogln("Fail to get Spec Member> "+ this.memberId);
-            Logs.saveLogln("\tSpec Name: "+ specInfo.get("name").toString());
-            Logs.saveLogln("\tSpec Role: "+ specInfo.get("role").toString());
-            Logs.saveLogln("\tClass ID: "+ member.getMemberClass().getId());
+            Logs.errorLog(CharacterSpec.class, "Fail to get Spec Member> "+ this.memberId);
+            Logs.errorLog(CharacterSpec.class, "\tSpec Name: "+ specInfo.get("name").toString());
+            Logs.errorLog(CharacterSpec.class, "\tSpec Role: "+ specInfo.get("role").toString());
+            Logs.errorLog(CharacterSpec.class, "\tClass ID: "+ member.getMemberClass().getId());
             System.exit(-1);
         }
         for(int i = 0; i < talentsInfo.size(); i++)

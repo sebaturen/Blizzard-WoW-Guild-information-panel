@@ -15,7 +15,7 @@
     <!-- ******************************************************************* -->
     <!-- ***************** Enviroment variables **************************** -->
     <!-- ******************************************************************* -->
-    <!--  Server information -->
+    <!--  Guild information -->
     <Environment name="GUILD_NAME"      value="" override="false" type="java.lang.String" />
     <Environment name="GUILD_REALM"     value="" override="false" type="java.lang.String" />
     <Environment name="SERVER_LOCATION" value="" override="false" type="java.lang.String" />
@@ -26,15 +26,11 @@
     <Environment name="LENGUAJE_API_LOCALE" value="" override="false" type="java.lang.String" />
     
     <!--  Web main URL -->
-    <Environment name="MAIN_URL"        value="http://artofwar.cl/" override="false" type="java.lang.String" />
+    <Environment name="MAIN_URL"        value="" override="false" type="java.lang.String" />
     <Environment name="BLIZZAR_LINK"    value="blizzLink.jsp" override="false" type="java.lang.String" />
     <!-- If in page you want all visitor can see all members information, or only guild members -->
     <Environment name="REQUERID_LOGIN_TO_INFO" value="true" override="false" type="java.lang.Boolean" />
-    
-    <!-- Logs info -->
-    <Environment name="LOGS_FILE_PATH"          value="/opt/tomcat/logs/" override="false" type="java.lang.String" />
-    <Environment name="LOGS_FILE_USER_OWNER"    value="tomcat" override="false" type="java.lang.String" />
-    
+        
     <!-- SET AN API ACCESS INFORMATION -->
     <Environment name="CLIENT_ID"       value="" override="false" type="java.lang.String" />
     <Environment name="CLIENT_SECRET"   value="" override="false" type="java.lang.String" />

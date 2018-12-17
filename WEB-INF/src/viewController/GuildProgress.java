@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
@@ -39,7 +39,7 @@ public class GuildProgress
                 this.raids[i] = r;
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Error get a guilds raids "+ ex);
+            Logs.errorLog(GuildProgress.class, "Error get a guilds raids "+ ex);
         }
     }
     

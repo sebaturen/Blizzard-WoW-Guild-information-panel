@@ -5,7 +5,8 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -20,6 +21,7 @@ import org.json.simple.JSONObject;
 public class GameInfo 
 {
     private final DBConnect dbConnect = new DBConnect();
+    private static boolean configState = false;
     private String lastDynamicUpdate;
     private Date lastDynamicUpdateUpdate;
     private int[] outWowToken;
@@ -46,7 +48,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get a last dynamic update");
+            Logs.errorLog(GameInfo.class, "Fail to get a last dynamic update");
         }
         this.lastDynamicUpdateUpdate = new Date();
     }
@@ -85,7 +87,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get a last dynamic update");
+            Logs.errorLog(GameInfo.class, "Fail to get a last dynamic update");
         }
         return out;
     }
@@ -107,7 +109,7 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get a wow Token price");
+            Logs.errorLog(GameInfo.class, "Fail to get a wow Token price");
         }
         lastWowTokenUpdate = new Date();
     }
@@ -132,5 +134,36 @@ public class GameInfo
         return this.outWowToken;
     }
     
-    public boolean getDBStatus() { return dbConnect.connectionVerification(); }
+    public boolean getSistemStatus() 
+    {
+        //Valid all config have a value
+        if(!configState)
+        {
+            //Guild information
+            GeneralConfig.getStringConfig("GUILD_NAME");
+            GeneralConfig.getStringConfig("GUILD_REALM");
+            GeneralConfig.getStringConfig("SERVER_LOCATION");
+            //Locales:
+            GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE");
+            //Web main URL
+            GeneralConfig.getStringConfig("BLIZZAR_LINK");
+            GeneralConfig.getStringConfig("BLIZZAR_LINK");
+            boolean v = GeneralConfig.getBooleanConfig("REQUERID_LOGIN_TO_INFO"); //bolean!
+            System.out.println("V: "+ v);
+            //Blizzard API
+            GeneralConfig.getStringConfig("CLIENT_ID");
+            GeneralConfig.getStringConfig("CLIENT_SECRET");
+            //Update Interval //int value
+            int i = GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE");
+            int j = GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE");
+            int k = GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE");
+            int l = GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE");
+            if(i == 0 || j == 0 || k == 0 || l == 0)
+            {
+                return false;                
+            }   
+            configState = true;         
+        }
+        return dbConnect.connectionVerification(); 
+    }
 }

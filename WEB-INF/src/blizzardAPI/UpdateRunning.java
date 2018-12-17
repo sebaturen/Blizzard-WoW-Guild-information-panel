@@ -5,11 +5,10 @@
  */
 package com.blizzardPanel.blizzardAPI;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -59,7 +58,7 @@ public class UpdateRunning implements ServletContextListener
                         Thread.sleep(60000); //every minute
                     }
                 } catch (Exception ex) {
-                    Logs.saveLogln("FAIL IN UPDATE TIMELINE! "+ ex);
+                    Logs.errorLog(UpdateRunning.class, "FAIL IN UPDATE TIMELINE! "+ ex);
                 }
             }
         };
@@ -114,12 +113,8 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.saveLogln(ex.getMessage());
+            Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return false;
         }
     }
         
@@ -132,12 +127,8 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.saveLogln(ex.getMessage());
+            Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return false;
         }
     }
     
@@ -150,12 +141,8 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.saveLogln(ex.getMessage());
+            Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return false;
         }
     }   
     
@@ -168,12 +155,8 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.saveLogln(ex.getMessage());
+            Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return false;
         }
     }    
             
@@ -191,7 +174,7 @@ public class UpdateRunning implements ServletContextListener
             Date toDay = c.getTime();
             return lastUpdate.before(toDay);
         } catch (DataException ex) {
-            Logs.saveLogln(ex.getMessage());
+            Logs.errorLog(UpdateRunning.class, ex.getMessage());
             needUpdate = true;
         }
         return needUpdate;
@@ -212,14 +195,14 @@ public class UpdateRunning implements ServletContextListener
                 case Update.UPDATE_TYPE_DYNAMIC:
                     switch(upInternal)
                     {
-                        case "GuildProfile":        Logs.saveLogln("Guild Profile Update..."); blizzUp.getGuildProfile(); break;
-                        case "GuildMembers":        Logs.saveLogln("Guild Members Update...");  blizzUp.getGuildMembers(); break;
-                        case "CharacterInfo":       Logs.saveLogln("Character info Update...");  blizzUp.getCharacterInfo(); break;
-                        case "GuildChallenges":     Logs.saveLogln("Guild Challenges Update...");  blizzUp.getGuildChallenges(); break;
-                        case "GuildNews":           Logs.saveLogln("Guild News Update...");  blizzUp.getGuildNews(); break;
-                        case "WowToken":            Logs.saveLogln("Wow Token Update..."); blizzUp.getWowToken(); break;
-                        case "UsersCharacters":     Logs.saveLogln("User Characters Update...");  blizzUp.getUsersCharacters(); break;
-                        case "GuildProgression":    Logs.saveLogln("Guild Progression Update...");  blizzUp.getGuildProgression(); break;
+                        case "GuildProfile":        Logs.infoLog(UpdateRunning.class, "Guild Profile Update..."); blizzUp.getGuildProfile(); break;
+                        case "GuildMembers":        Logs.infoLog(UpdateRunning.class, "Guild Members Update...");  blizzUp.getGuildMembers(); break;
+                        case "CharacterInfo":       Logs.infoLog(UpdateRunning.class, "Character info Update...");  blizzUp.getCharacterInfo(); break;
+                        case "GuildChallenges":     Logs.infoLog(UpdateRunning.class, "Guild Challenges Update...");  blizzUp.getGuildChallenges(); break;
+                        case "GuildNews":           Logs.infoLog(UpdateRunning.class, "Guild News Update...");  blizzUp.getGuildNews(); break;
+                        case "WowToken":            Logs.infoLog(UpdateRunning.class, "Wow Token Update..."); blizzUp.getWowToken(); break;
+                        case "UsersCharacters":     Logs.infoLog(UpdateRunning.class, "User Characters Update...");  blizzUp.getUsersCharacters(); break;
+                        case "GuildProgression":    Logs.infoLog(UpdateRunning.class, "Guild Progression Update...");  blizzUp.getGuildProgression(); break;
                         default:                    
                             blizzUp.updateDynamicAll();                        
                     }
@@ -227,14 +210,14 @@ public class UpdateRunning implements ServletContextListener
                 case Update.UPDATE_TYPE_STATIC:
                     switch(upInternal)
                     {
-                        case "PlayableClass":               Logs.saveLogln("Playable Class Update...");  blizzUp.getPlayableClass(); break;
-                        case "PlayableSpec":                Logs.saveLogln("Playable Spec Update...");  blizzUp.getPlayableSpec(); break;
-                        case "PlayableRaces":               Logs.saveLogln("Playable Races Update...");  blizzUp.getPlayableRaces(); break;
-                        case "GuildAchievementsLists":      Logs.saveLogln("Guild Achievements Update...");  blizzUp.getGuildAchievementsLists(); break;
-                        case "CharacterAchievementsLists":  Logs.saveLogln("Character Achievements Update...");  blizzUp.getCharacterAchievementsLists(); break;
-                        case "BossInformation":             Logs.saveLogln("Bosses info Update...");  blizzUp.getBossInformation(); break;
-                        case "updateSpellInformation":      Logs.saveLogln("Spells info Update...");  blizzUp.updateSpellInformation(); break;
-                        case "updateItemInformation":       Logs.saveLogln("Items info Update...");  blizzUp.updateItemInformation(); break;
+                        case "PlayableClass":               Logs.infoLog(UpdateRunning.class, "Playable Class Update...");  blizzUp.getPlayableClass(); break;
+                        case "PlayableSpec":                Logs.infoLog(UpdateRunning.class, "Playable Spec Update...");  blizzUp.getPlayableSpec(); break;
+                        case "PlayableRaces":               Logs.infoLog(UpdateRunning.class, "Playable Races Update...");  blizzUp.getPlayableRaces(); break;
+                        case "GuildAchievementsLists":      Logs.infoLog(UpdateRunning.class, "Guild Achievements Update...");  blizzUp.getGuildAchievementsLists(); break;
+                        case "CharacterAchievementsLists":  Logs.infoLog(UpdateRunning.class, "Character Achievements Update...");  blizzUp.getCharacterAchievementsLists(); break;
+                        case "BossInformation":             Logs.infoLog(UpdateRunning.class, "Bosses info Update...");  blizzUp.getBossInformation(); break;
+                        case "updateSpellInformation":      Logs.infoLog(UpdateRunning.class, "Spells info Update...");  blizzUp.updateSpellInformation(); break;
+                        case "updateItemInformation":       Logs.infoLog(UpdateRunning.class, "Items info Update...");  blizzUp.updateItemInformation(); break;
                         default:                    
                             blizzUp.updateStaticAll();                      
                     }				
@@ -246,14 +229,11 @@ public class UpdateRunning implements ServletContextListener
                     blizzUp.moveHistoryAH();
                     break;                    
                 default:
-                    Logs.saveLogln("Not update parametter detected!");
+                    Logs.errorLog(UpdateRunning.class, "Not update parametter detected!");
                     break;
             }
         } catch (IOException|ParseException|DataException|SQLException | ClassNotFoundException ex) {
-            Logs.saveLogln("Fail to update information - "+ ex);
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
+            Logs.errorLog(UpdateRunning.class, "Fail to update information - "+ ex);
         }
     }
 }

@@ -7,7 +7,7 @@ package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 
 import org.json.simple.JSONObject;
@@ -70,7 +70,7 @@ public abstract class GameObject implements DBStructure
                             new String[] { getId()+"" });
                     return SAVE_MSG_UPDATE_OK;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLogln("Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
+                    Logs.errorLog(this.getClass(), "Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
                     return SAVE_MSG_UPDATE_ERROR;
                 }
             }
@@ -86,14 +86,14 @@ public abstract class GameObject implements DBStructure
                     this.isInternalData = true;
                     return SAVE_MSG_INSERT_OK;
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLogln("Fail to insert '"+ this.getClass() +"' - "+ ex);
+                    Logs.errorLog(this.getClass(), "Fail to insert - "+ ex);
                     return SAVE_MSG_INSERT_ERROR;
                 }
             }
         }
         else
         {
-            Logs.saveLogln("Fail to try save!, no data '"+ this.getClass() +"' - isData> "+ this.isData +" valueLeng> "+ values.length);
+            Logs.errorLog(this.getClass(), "Fail to try save!, no data - isData> "+ this.isData +" valueLeng> "+ values.length);
         }
         return SAVE_MSG_NO_DATA;
     }
@@ -131,7 +131,7 @@ public abstract class GameObject implements DBStructure
                 return false;                
             }
         } catch (DataException|SQLException e) {
-            Logs.saveLogln("Error in Load element: 'from Uniqued' ("+ this.getClass() +") "+ e);
+            Logs.errorLog(this.getClass(), "Error in Load element 'from Uniqued': "+ e);
         }
         return false;        
     }
@@ -165,7 +165,7 @@ public abstract class GameObject implements DBStructure
                 return false;
             }			
         } catch (DataException|SQLException e) {
-            Logs.saveLogln("Error in Load element 'from ID': ("+ this.getClass() +") "+ e);
+            Logs.errorLog(this.getClass(), "Error in Load element 'from ID': "+ e);
         }
         return false;
     }

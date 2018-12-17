@@ -7,10 +7,9 @@ package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.guild.Rank;
 import java.io.IOException;
@@ -87,10 +86,7 @@ public class Character extends GameObject
                 Update up = new Update();
                 cloneMember(up.getMemberFromBlizz(name, realm));
             } catch (IOException | ParseException | DataException ex) {
-                Logs.saveLogln("Fail to get member info from blizzard. - "+ ex);
-            } catch (ConfigurationException e) {
-                Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
-                System.exit(-1);
+                Logs.errorLog(Character.class, "Fail to get member info from blizzard. - "+ ex);
             }
         }
     }
@@ -116,30 +112,25 @@ public class Character extends GameObject
         int raceID;
         if(playerInfo.get("gender").getClass() == java.lang.Long.class)
         {   
-            try {
-                //if info come to blizzAPI
-                this.name = playerInfo.get("name").toString();
-                this.gender = ((Long) playerInfo.get("gender")).intValue();
-                this.level = ((Long) playerInfo.get("level")).intValue();
-                this.faction = ((Long) playerInfo.get("faction")).intValue();
-                this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
-                this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
-                //If have a guild...
-                this.guildName = "";
-                this.isGuildMember = false;
-                if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
-                if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.getStringConfig("GUILD_NAME"))) this.isGuildMember = true;
-                //Generate member id:            
-                generateMemberID();
-                //Spec
-                loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
-                loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
-                //Status
-                this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
-            } catch (ConfigurationException ex) {
-                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                System.exit(-1);
-            }
+            //if info come to blizzAPI
+            this.name = playerInfo.get("name").toString();
+            this.gender = ((Long) playerInfo.get("gender")).intValue();
+            this.level = ((Long) playerInfo.get("level")).intValue();
+            this.faction = ((Long) playerInfo.get("faction")).intValue();
+            this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
+            this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
+            //If have a guild...
+            this.guildName = "";
+            this.isGuildMember = false;
+            if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
+            if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.getStringConfig("GUILD_NAME"))) this.isGuildMember = true;
+            //Generate member id:            
+            generateMemberID();
+            //Spec
+            loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
+            loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
+            //Status
+            this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
         }
         else
         {//if come to DB
@@ -219,12 +210,12 @@ public class Character extends GameObject
             }
             else //No have a specs in DB!!!!
             {
-                Logs.saveLogln("Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
-                Logs.saveLogln("\tTry get spec again from update...");
+                Logs.errorLog(Character.class, "Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
+                Logs.errorLog(Character.class, "\tTry get spec again from update...");
                 loadSpecFromBlizz();
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
+            Logs.errorLog(Character.class, "Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
         }
     }
     
@@ -240,12 +231,7 @@ public class Character extends GameObject
         }
         catch (IOException|ParseException|DataException ex)
         {
-            Logs.saveLogln("Fail to get a spec info in member "+ this.name);
-        }
-        catch (ConfigurationException e)
-        {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
-            System.exit(-1);
+            Logs.errorLog(Character.class, "Fail to get a spec info in member "+ this.name);
         }
     }
     
@@ -261,12 +247,7 @@ public class Character extends GameObject
         }
         catch (IOException|ParseException|DataException ex)
         {
-            Logs.saveLogln("Fail to get a spec info in member "+ this.name);
-        }
-        catch (ConfigurationException e)
-        {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ e);
-            System.exit(-1);
+            Logs.errorLog(Character.class, "Fail to get a spec info in member "+ this.name);
         }
     }
     
@@ -283,7 +264,7 @@ public class Character extends GameObject
                 this.items.add(sp);
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'items' from DB Member "+ this.name +" e: "+ ex);
+            Logs.errorLog(Character.class, "Fail to get a 'items' from DB Member "+ this.name +" e: "+ ex);
         } 
     }
     
@@ -312,7 +293,7 @@ public class Character extends GameObject
                     this.internalID = Integer.parseInt(id);
                 }
             } catch (DataException | ClassNotFoundException | SQLException ex) {
-                Logs.saveLogln("Fail to generate a member ID "+ this.name +" - "+ ex);
+                Logs.errorLog(Character.class, "Fail to generate a member ID "+ this.name +" - "+ ex);
             }
         } 
     }
@@ -339,12 +320,7 @@ public class Character extends GameObject
         //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
         if(this.isData)
         {
-            try {
-                String guildName = GeneralConfig.getStringConfig("GUILD_NAME");
-            } catch (ConfigurationException ex) {
-                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                System.exit(-1);
-            }
+            String guildName = GeneralConfig.getStringConfig("GUILD_NAME");
             if (this.isGuildMember && !this.guildName.equals(guildName)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
             int vSave = saveInDBObj(val);
             if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
@@ -366,7 +342,7 @@ public class Character extends GameObject
                         }
                         spc.saveInDB();
                     } catch (DataException | SQLException ex) {
-                        Logs.saveLogln("Fail to get specs info in DB from member "+ this.name +" - "+ ex);
+                        Logs.errorLog(Character.class, "Fail to get specs info in DB from member "+ this.name +" - "+ ex);
                     }
                 });
                 //Save items...
@@ -379,7 +355,7 @@ public class Character extends GameObject
                                     "member_id=?",
                                     new String[] {this.internalID +""});                    
                 } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.saveLogln("Fail to update remove old items "+ this.internalID +" - "+ ex);
+                    Logs.errorLog(Character.class, "Fail to update remove old items "+ this.internalID +" - "+ ex);
                 }
                 //Update or insert a new items
                 this.items.forEach((itm) -> {
@@ -415,7 +391,7 @@ public class Character extends GameObject
     {
         try
         {//change player in character_info in_guild because is change
-            Logs.saveLogln("Character "+ this.name +" change guild");
+            Logs.infoLog(Character.class, "Character "+ this.name +" change guild");
             dbConnect.update(GMEMBER_ID_NAME_TABLE_NAME,
                             new String[] {"in_guild", "rank"},
                             new String[] {"0", "0"},
@@ -425,7 +401,7 @@ public class Character extends GameObject
         }
         catch (DataException|ClassNotFoundException|SQLException ex)
         {
-            Logs.saveLogln("Error when try remove a user not in guild: "+ ex);
+            Logs.errorLog(Character.class, "Error when try remove a user not in guild: "+ ex);
             return false;
         }				
     }
@@ -465,7 +441,7 @@ public class Character extends GameObject
             {
                 generateMemberID();
                 saveInDB();
-                Logs.saveLogln("New Member in DB "+ this.internalID +" - "+ this.name);                 
+                Logs.infoLog(Character.class, "New Member in DB "+ this.internalID +" - "+ this.name);                 
             }
         }
     }
@@ -486,13 +462,7 @@ public class Character extends GameObject
     public Rank getRank() { return this.gRank; }
     public String getThumbnailURL() 
     {
-        try {
-            return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
-        } catch (ConfigurationException ex) {
-            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-            System.exit(-1);
-            return null;
-        }
+        return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
     }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }
@@ -515,7 +485,7 @@ public class Character extends GameObject
                 return sp;
         //if is null!! we have a problem! the spec we need setters, mybe the data
         //no is real correct save, try again... only 1 time
-        Logs.saveLogln("Not active spec detected "+ this.name +" try load again from blizz...");
+        Logs.errorLog(Character.class, "Not active spec detected "+ this.name +" try load again from blizz...");
         loadSpecFromBlizz();
         for(CharacterSpec sp: this.specs) 
             if(sp.isEnable())

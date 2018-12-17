@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild.raids;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
@@ -85,7 +85,7 @@ public class Raid extends GameObject
                 }
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
+            Logs.errorLog(Raid.class, "Fail to get a 'raid dificult' from Raid "+ this.name +" e: "+ ex);
         } 
     }
     

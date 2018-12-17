@@ -6,8 +6,6 @@
 package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.Logs;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 
@@ -40,14 +38,9 @@ public class PlayableClass extends GameObject
     {		
         if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
         {
-            try {
-                this.id = ((Long) exInfo.get("id")).intValue();
-                this.slug = ((JSONObject) exInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
-                this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
-            } catch (ConfigurationException ex) {
-                Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                System.exit(-1);
-            }
+            this.id = ((Long) exInfo.get("id")).intValue();
+            this.slug = ((JSONObject) exInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
+            this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
         }
         else
         {

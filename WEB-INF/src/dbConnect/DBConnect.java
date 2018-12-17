@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.dbConnect;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 
 import java.sql.Connection;
@@ -168,7 +168,7 @@ public class DBConnect
             this.lastQuery = tempLastQuery + this.lastQuery; //save insert and select
             if(v.isEmpty()) 
             {
-                Logs.saveLogln("FAIL (EXIT) TO GET ID! '"+ this.getClass() +"' - "+ sql);
+                Logs.fatalLog(this.getClass(), "FAIL (EXIT) TO GET ID! - "+ sql);
                 System.exit(-1);
             }
             else

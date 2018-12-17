@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
 import com.blizzardPanel.blizzardAPI.Update;
@@ -48,7 +48,7 @@ public class PollController
                 }
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to load polls - "+ ex);
+            Logs.errorLog(PollController.class, "Fail to load polls - "+ ex);
         }
         if(status)
             this.activePolls = polls;

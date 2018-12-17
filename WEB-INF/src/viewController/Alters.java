@@ -6,7 +6,7 @@
 package com.blizzardPanel.viewController;
 
 import com.blizzardPanel.User;
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import java.sql.SQLException;
@@ -33,7 +33,7 @@ public class Alters
                 users[i] = new User( (Integer) ((JSONObject) alters.get(i)).get("id") );
             }
         } catch (SQLException | DataException ex) {
-            Logs.saveLogln("Fail to get users list - "+ ex);
+            Logs.errorLog(Alters.class, "Fail to get users list - "+ ex);
         }
     }
     

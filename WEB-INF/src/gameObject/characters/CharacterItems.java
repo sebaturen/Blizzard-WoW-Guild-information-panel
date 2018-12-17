@@ -5,11 +5,10 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
-import com.blizzardPanel.exceptions.ConfigurationException;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.Spell;
@@ -92,7 +91,7 @@ public class CharacterItems extends GameObject
                     this.azeritePower = (JSONArray) parser.parse(azerita);
                 }
             } catch (ParseException ex) {
-                Logs.saveLogln("Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
+                Logs.errorLog(CharacterItems.class, "Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
             }
         }
         else
@@ -174,10 +173,7 @@ public class CharacterItems extends GameObject
                             if (up == null) up = new Update();  
                             azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
                         } catch (DataException | IOException | ParseException ex) {
-                            Logs.saveLogln("Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
-                        } catch (ConfigurationException ex) {
-                            Logs.saveLogln("FAIL IN CONFIGURATION! "+ ex);
-                            System.exit(-1);
+                            Logs.errorLog(CharacterItems.class, "Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
                         }
                     }
                     azPower[j] = azPowerD;

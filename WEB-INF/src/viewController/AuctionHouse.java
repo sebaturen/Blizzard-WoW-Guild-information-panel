@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.exceptions.DataException;
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -37,7 +37,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get a last dynamic update");
+            Logs.errorLog(AuctionHouse.class, "Fail to get a last dynamic update");
         }
         return out;
     }
@@ -59,7 +59,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get a auction item id "+ itemId +" - "+ e);
+            Logs.errorLog(AuctionHouse.class, "Fail to get a auction item id "+ itemId +" - "+ e);
         }
         return auItem;
     }
@@ -82,7 +82,7 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            Logs.saveLogln("Fail to get items name like '"+ name +"' - "+ e);
+            Logs.errorLog(AuctionHouse.class, "Fail to get items name like '"+ name +"' - "+ e);
         }
         return items;
     }

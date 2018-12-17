@@ -28,8 +28,8 @@
     <!-- Define servlets that are included in the example application -->
 
     <servlet>
-      <servlet-name>ArtOfWar</servlet-name>
-      <servlet-class>com.artOfWar</servlet-class>
+        <servlet-name>ArtOfWar</servlet-name>
+        <servlet-class>com.blizzardPanel</servlet-class>
     </servlet>
 
     <listener>
@@ -41,11 +41,8 @@
         <url-pattern>/artOfWar</url-pattern>
     </servlet-mapping>
 	
-	<error-page>
-	 <error-code>404</error-code>
-	 <location>/404.jsp</location>
-	</error-page>
-
-
-
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
 </web-app>
