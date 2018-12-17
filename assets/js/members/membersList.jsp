@@ -34,7 +34,7 @@ if(members.getMembersList() != null)
             {
                 guildRank.add(member.getRank().getId());
                 %>guildRanks.push('<%= member.getRank().getTitle() %>');<%
-            }
+            }   
             if (!mClass.contains(className)) 
             {
                 mClass.add(className);
@@ -45,7 +45,7 @@ if(members.getMembersList() != null)
             if (!races.contains(member.getRace().getName()))
             {
                 races.add(member.getRace().getName());
-                %>races.push('<%= member.getRace().getName() %>');<%
+                %>races.push("<%= member.getRace().getName() %>");<%
             }
         } %>
         members.push({   
@@ -59,7 +59,7 @@ if(members.getMembersList() != null)
             'gRank_id': <%= member.getRank().getId() %>,
             'gRank_title': '<%= member.getRank().getTitle() %>',
             'iLevel': '<%= iLevel %>',
-            'race': '<%= race %>',
+            'race': "<%= race %>",
         });
     <%} //End foreach member%>
 <%} //End if members not null%>

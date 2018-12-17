@@ -16,9 +16,7 @@
         <javac includeantruntime="false" />
     </presetdef>
     
-    
-    <echo message="Using Java version ${ant.java.version}."/>
-
+    <echo message="Using Java version ${ant.java.version}. (BlizzardPanel need Java8 (1.8)+)"/>
 
     <target name="compile" depends="init" >
         <javac 
