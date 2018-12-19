@@ -309,5 +309,6 @@ CREATE TABLE `poll_option_result` (
     `owner_id`       INT NOT NULL,
     `date`           DATETIME NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY(owner_id) REFERENCES users(id)
+    FOREIGN KEY(owner_id) REFERENCES users(id),
+    FOREIGN KEY(poll_option_id) REFERENCES poll_options(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
