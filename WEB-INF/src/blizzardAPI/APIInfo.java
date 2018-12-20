@@ -5,12 +5,12 @@
  */
 package com.blizzardPanel.blizzardAPI;
 
-public interface APIInfo 
-{        
+public interface APIInfo
+{
     public static final int API_SECOND_LIMIT_ERROR = 429;
     //-------------------------
     //API Acces
-    //-------------------------        
+    //-------------------------
     //-----------------------------------------------------------API Information
     public static final String API_OAUTH_URL            = "https://%s.battle.net/oauth/%s";
     public static final String API_OAUTH_AUTHORIZE      = "authorize";
@@ -24,7 +24,7 @@ public interface APIInfo
     //------------------------------------------World of Warcraft Community APIs
     //Guild Profile API
     public static final String API_GUILD_PROFILE = "wow/guild/%s/%s";        //realm, guildName
-    //Character Profile API    
+    //Character Profile API
     public static final String API_CHARACTER_PROFILE = "wow/character/%s/%s";    //realm, characterName
     //Data Resources
     public static final String API_CHARACTER_RACES      = "wow/data/character/races";
@@ -38,7 +38,7 @@ public interface APIInfo
     public static final String API_ITEM = "wow/item/%s"; //{item id}
     //Auction API
     public static final String API_AUCTION = "wow/auction/data/%s"; //{realm}
-    
+
     //------------------------------------------World of Warcraft Game Data APIs
     //Playable Class API
     public static final String API_PLAYABLE_CLASS = "data/wow/playable-class/";
@@ -46,7 +46,9 @@ public interface APIInfo
     public static final String API_PLAYEBLE_SPECIALIZATION = "data/wow/playable-specialization/";
     //WoW Token API
     public static final String API_WOW_TOKEN = "data/wow/token/";
-    
+    //Realm API
+    public static final String API_REALM_INDEX = "data/wow/realm/index";
+
     //-----------------------------------------------------------Community OAuth
     //Profile API
     public static final String API_WOW_OAUTH_PROFILE = "wow/user/characters";

@@ -25,12 +25,13 @@ public class Guild extends GameObject
     //Guild DB
     public static final String GUILD_TABLE_NAME = "guild_info";
     public static final String GUILD_TABLE_KEY = "id";
-    public static final String[] GUILD_TABLE_STRUCTURE = {"id", "name", "realm","lastModified", "battlegroup", 
+    public static final String[] GUILD_TABLE_STRUCTURE = {"id", "name", "realm", "realm_slug", "lastModified", "battlegroup",
                                                         "level", "side", "achievementPoints"};
     //Attribute
     private int id;
     private String name;
     private String realm;
+    private String realmSlug;
     private String battleGroup;
     private long lastModified;
     private long achievementPoints;
@@ -39,7 +40,7 @@ public class Guild extends GameObject
     private List<GuildAchievement> achievements = new ArrayList<>();
     private Date lastNewsUpdate;
     private List<New> news = new ArrayList<>();
-	
+
     //Constructor
     public Guild()
     {
@@ -54,7 +55,7 @@ public class Guild extends GameObject
         super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
         saveInternalInfoObject(guildInfo);
     }
-	
+
     @Override
     protected void saveInternalInfoObject(JSONObject guildInfo)
     {
@@ -64,7 +65,7 @@ public class Guild extends GameObject
         this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
         this.realm = guildInfo.get("realm").toString();
         if(guildInfo.get("level").getClass() == java.lang.Long.class)
-        {//if info come to blizzAPI or DB
+        {//if info come to blizzAPI
             this.level = ((Long) guildInfo.get("level")).intValue();
             this.side =  ((Long) guildInfo.get("side")).intValue();
             loadAchievementsFromBlizz((JSONObject) guildInfo.get("achievements"));
@@ -72,12 +73,14 @@ public class Guild extends GameObject
         else
         {
             this.id = (Integer) guildInfo.get("id");
-            this.level = (Integer) guildInfo.get("level");	
+            this.level = (Integer) guildInfo.get("level");
             this.side =  (Integer) guildInfo.get("side");
-        }		
+            if(guildInfo.get("realmSlug") != null)
+                this.realmSlug = guildInfo.get("realmSlug").toString();
+        }
         this.isData = true;
     }
-    
+
     private void loadAchievementsFromBlizz(JSONObject respond)
     {
         JSONArray achivs = (JSONArray)respond.get("achievementsCompleted");
@@ -100,7 +103,7 @@ public class Guild extends GameObject
             this.achievements.add(gAHDB);
         }
     }
-    
+
     private void loadAchievementsFromDB()
     {
         try {
@@ -116,9 +119,9 @@ public class Guild extends GameObject
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(Guild.class, "Fail to load guild Achievements "+ ex);
-        }        
+        }
     }
-    
+
     private void loadNews(int cant)
     {
         this.news = new ArrayList<>();
@@ -136,18 +139,19 @@ public class Guild extends GameObject
         } catch (SQLException | DataException ex) {
             Logs.errorLog(Guild.class, "Fail to load guild news "+ ex);
         }
-        this.lastNewsUpdate = new Date(); 
+        this.lastNewsUpdate = new Date();
     }
-	
+
     @Override
     public boolean saveInDB()
     {
-        /* {"name", "realm","lastModified", "battlegroup", 
+        /* {"name", "realm","lastModified", "battlegroup",
          * "level", "side", "achievementPoints"};
          */
         setTableStructur(DBStructure.outKey(GUILD_TABLE_STRUCTURE));
         String[] values = { this.name,
                             this.realm,
+                            this.realmSlug,
                             this.lastModified +"",
                             this.battleGroup,
                             this.level +"",
@@ -162,25 +166,28 @@ public class Guild extends GameObject
                 });
                 return true;
         }
-        return false;		
+        return false;
     }
-	
+
     //GETTERS
     @Override
     public void setId(int id) { this.id = id; }
-    
+    public void setRealmSlug(String realmSlug) { this.realmSlug = realmSlug; }
+
     @Override
     public int getId() { return this.id; }
     public String getName() { return this.name; }
+    public String getRealm() { return this.realm; }
+    public String getRealmSlug() { return this.realmSlug; }
     public String getBattleGroup() { return this.battleGroup; }
     public long getLastModified() { return this.lastModified; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public List<GuildAchievement> getAchievements() { loadAchievementsFromDB(); return this.achievements; }
-    public List<New> getNews(int cant) 
+    public List<New> getNews(int cant)
     {
         if(this.news.isEmpty())
         {
-            loadNews(cant);        
+            loadNews(cant);
         }
         else
         {
@@ -191,27 +198,27 @@ public class Guild extends GameObject
             if(this.lastNewsUpdate.compareTo(tenMinuteAgo) < 0)
             {
                 loadNews(cant);
-            }            
+            }
         }
         return this.news;
     }
     public int getLevel() { return this.level; }
     public int getSide() { return this.side; }
-    
+
     //two guild equals method
     @Override
-    public boolean equals(Object o) 
+    public boolean equals(Object o)
     {
         if(o == this) return true;
         if(o == null || (this.getClass() != o.getClass())) return false;
 
         String oName = ((Guild) o).getName();
         long oLastModified = ((Guild) o).getLastModified();
-        return (  
-                oName.equals(this.name) 
+        return (
+                oName.equals(this.name)
                 &&
                 (Long.compare(oLastModified, this.lastModified) == 0)
                 );
     }
-	
+
 }

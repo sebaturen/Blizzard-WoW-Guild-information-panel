@@ -21,22 +21,23 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/broadcasting")
-public class UpdateControl 
+public class UpdateControl
 {
     private static boolean isRunnin = false;
     private static boolean runUpdate = false;
-    
+    private static String[] updArg;
+
     private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        synchronized (clients) 
+        synchronized (clients)
         {
             // Iterate over the connected sessions
-            // and broadcast the received message    
+            // and broadcast the received message
             for (Session client : clients) {
                 client.getBasicRemote().sendText(message);
-            }      
+            }
         }
     }
 
@@ -64,37 +65,38 @@ public class UpdateControl
         // Remove session from the connected sessions set
         clients.remove(session);
     }
-    
-    public void runUpdate()
-    {        
+
+    public void runUpdate(String[] args)
+    {
         if(!isRunnin)
         {
             runUpdate = true;
+            updArg = args;
         }
     }
-    
+
     private void generateUpdate()
-    {   
+    {
         Thread upThread = new Thread() {
             @Override
             public void run()
-            {        
+            {
                 setIsRuning(true);
                 try {
                     Update up = new Update();
-                    up.updateDynamicAll();
+                    up.setUpdate(updArg);
                 } catch (IOException | ParseException | DataException ex) {
                     Logs.errorLog(UpdateControl.class, "fail update...");
                 }
-                setIsRuning(false);    
+                setIsRuning(false);
                 setRunUpdate(false);
                 Logs.setUpdateControl(null);
             }
         };
         upThread.start();
-    }  
-    
-    
+    }
+
+
     public void messageForAll(String msg) {
         try {
             onMessage(msg, null);
@@ -102,8 +104,8 @@ public class UpdateControl
             Logs.errorLog(UpdateControl.class, "Fail to send update msg");
         }
     }
-    
-    
-    private void setIsRuning(boolean f) { isRunnin = f; } 
-    private void setRunUpdate(boolean f) { runUpdate = f; } 
+
+
+    private void setIsRuning(boolean f) { isRunnin = f; }
+    private void setRunUpdate(boolean f) { runUpdate = f; }
 }

@@ -18,7 +18,7 @@ import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class GameInfo 
+public class GameInfo
 {
     private final DBConnect dbConnect = new DBConnect();
     private static boolean configState = false;
@@ -26,17 +26,17 @@ public class GameInfo
     private Date lastDynamicUpdateUpdate;
     private int[] outWowToken;
     private Date lastWowTokenUpdate;
-    
+
     public GameInfo()
     {
         dbConnect.connectionVerification();
         getWowTokenValue();
     }
-    
+
     private void loadLastDynamicUpdate()
     {
         try
-        {		
+        {
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
@@ -55,7 +55,7 @@ public class GameInfo
 
     public String getLastDynamicUpdate()
     {
-        if(this.lastDynamicUpdate == null) 
+        if(this.lastDynamicUpdate == null)
             loadLastDynamicUpdate();
         else
         {
@@ -66,7 +66,7 @@ public class GameInfo
             if(this.lastDynamicUpdateUpdate.compareTo(tenMinuteAgo) < 0)
             {
                 loadLastDynamicUpdate( );
-            }            
+            }
         }
         return this.lastDynamicUpdate;
     }
@@ -75,7 +75,7 @@ public class GameInfo
     {
         String out = "";
         try
-        {		
+        {
             JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
@@ -91,7 +91,7 @@ public class GameInfo
         }
         return out;
     }
-    
+
     private void getWowTokenValue()
     {
         this.outWowToken = new int[3]; //[0-gold][1-silver][2-copper]
@@ -113,12 +113,12 @@ public class GameInfo
         }
         lastWowTokenUpdate = new Date();
     }
-    
-    public int[] getTokenWow() 
+
+    public int[] getTokenWow()
     {
         if(this.outWowToken == null)
         {
-            getWowTokenValue( );        
+            getWowTokenValue( );
         }
         else
         {
@@ -129,16 +129,17 @@ public class GameInfo
             if(this.lastWowTokenUpdate.compareTo(tenMinuteAgo) < 0)
             {
                 getWowTokenValue( );
-            }            
+            }
         }
         return this.outWowToken;
     }
-    
-    public boolean getSistemStatus() 
+
+    public boolean getSistemStatus()
     {
         //Valid all config have a value
         if(!configState)
         {
+            //If any config have an error, the GeneralConfig.java break the system (System.exit(-1));
             //Guild information
             GeneralConfig.getStringConfig("GUILD_NAME");
             GeneralConfig.getStringConfig("GUILD_REALM");
@@ -149,21 +150,11 @@ public class GameInfo
             GeneralConfig.getStringConfig("BLIZZAR_LINK");
             GeneralConfig.getStringConfig("BLIZZAR_LINK");
             boolean v = GeneralConfig.getBooleanConfig("REQUERID_LOGIN_TO_INFO"); //bolean!
-            System.out.println("V: "+ v);
             //Blizzard API
             GeneralConfig.getStringConfig("CLIENT_ID");
             GeneralConfig.getStringConfig("CLIENT_SECRET");
-            //Update Interval //int value
-            int i = GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE");
-            int j = GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE");
-            int k = GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE");
-            int l = GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE");
-            if(i == 0 || j == 0 || k == 0 || l == 0)
-            {
-                return false;                
-            }   
-            configState = true;         
+            configState = true;
         }
-        return dbConnect.connectionVerification(); 
+        return dbConnect.connectionVerification();
     }
 }

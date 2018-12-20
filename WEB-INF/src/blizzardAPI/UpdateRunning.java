@@ -21,16 +21,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-public class UpdateRunning implements ServletContextListener 
+public class UpdateRunning implements ServletContextListener
 {
     private Thread updateInterval = null;
-    private DBConnect dbConnect = null;
+    private Update update;
+    private DBConnect dbConnect;
     private ServletContext context;
     private int count = 0;
-    
+
     public UpdateRunning()
     {
         dbConnect = new DBConnect();
+        try
+        {
+            update = new Update();
+        } catch (IOException | ParseException | DataException ex) {
+            Logs.errorLog(UpdateRunning.class, "Fail to create Update object! "+ ex);
+            System.exit(-1);
+        }
     }
 
     @Override
@@ -41,20 +49,20 @@ public class UpdateRunning implements ServletContextListener
             //task
             public void run()
             {
-                try 
+                try
                 {
                     while(true)
                     {
                         if(needStatycUpdate())
-                            update(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                            update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
                         if(needDynamicUpdate())
-                            update(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
+                            update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
                         if(needGuildNewUpdate())
-                            update(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                            update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
                         if(needAHUpdate())
-                            update(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                            update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
                         if(needAHMove())
-                            update(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
+                            update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
                         Thread.sleep(60000); //every minute
                     }
                 } catch (Exception ex) {
@@ -73,17 +81,17 @@ public class UpdateRunning implements ServletContextListener
     {
         // context is destroyed interrupts the thread
         updateInterval.interrupt();
-    }    
-            
+    }
+
     /**
      * Get last update time from DB
      * @param val Typ update (constante in Update.java)
      * @return
-     * @throws DataException 
+     * @throws DataException
      */
     private Date getLastUpdate(int val) throws DataException
     {
-        try 
+        try
         {
             JSONArray dateUpdate = dbConnect.select(
                     Update.UPDATE_INTERVAL_TABLE_NAME,
@@ -97,19 +105,25 @@ public class UpdateRunning implements ServletContextListener
             }
             else
             {
-                throw new DataException("Last update not found! (Type: "+ val +")");                
+                throw new DataException("Last update not found! (Type: "+ val +")");
             }
         } catch (SQLException | DataException | java.text.ParseException ex) {
             throw new DataException("Fail to get last Update (Type: "+ val +") - "+ ex);
         }
     }
-    
+
     private boolean needDynamicUpdate()
-    {        
+    {
+        int timeDynamicUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE");
+        if(timeDynamicUpdate <= 0)
+        {
+            Logs.infoLog(UpdateRunning.class, "Dynamic Update time not found or have and error config, set default time (60)");
+            timeDynamicUpdate = 60;
+        }
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_DYNAMIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE"));
+            cal.add(Calendar.MINUTE, -timeDynamicUpdate);
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
@@ -117,13 +131,19 @@ public class UpdateRunning implements ServletContextListener
             return true;
         }
     }
-        
+
     private boolean needGuildNewUpdate()
-    {        
+    {
+        int timeGuildNewUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE");
+        if(timeGuildNewUpdate <= 0)
+        {
+            Logs.infoLog(UpdateRunning.class, "Guild New Update time not found or have and error config, set default time (10)");
+            timeGuildNewUpdate = 10;
+        }
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_GUILD_NEWS);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE"));
+            cal.add(Calendar.MINUTE, -timeGuildNewUpdate);
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
@@ -131,40 +151,52 @@ public class UpdateRunning implements ServletContextListener
             return true;
         }
     }
-    
+
     private boolean needStatycUpdate()
-    {        
+    {
+        int timeStatycUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE");
+        if(timeStatycUpdate <= 0)
+        {
+            Logs.infoLog(UpdateRunning.class, "Static Update time not found or have and error config, set default time (30)");
+            timeStatycUpdate = 30;
+        }
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_STATIC);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, - GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE"));
+            cal.add(Calendar.DAY_OF_MONTH, -timeStatycUpdate);
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
         }
-    }   
-    
+    }
+
     private boolean needAHUpdate()
-    {        
+    {
+        int timeAHUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE");
+        if(timeAHUpdate <= 0)
+        {
+            Logs.infoLog(UpdateRunning.class, "Auction House Update time not found or have and error config, set default time (10)");
+            timeAHUpdate = 10;
+        }
         try {
             Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_AUCTION_CHECK);
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MINUTE, - GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE"));
+            cal.add(Calendar.MINUTE, -timeAHUpdate);
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
             Logs.errorLog(UpdateRunning.class, ex.getMessage());
             return true;
         }
-    }    
-            
+    }
+
     private boolean needAHMove()
-    {        
+    {
         boolean needUpdate = false;
         try {
-            Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_CLEAR_AH_HISTORY); 
+            Date lastUpdate = getLastUpdate(Update.UPDATE_TYPE_CLEAR_AH_HISTORY);
             Calendar c = Calendar.getInstance();
             // set the calendar to start of today
             c.set(Calendar.HOUR_OF_DAY, 0);
@@ -178,62 +210,5 @@ public class UpdateRunning implements ServletContextListener
             needUpdate = true;
         }
         return needUpdate;
-    }
-    
-    private void update(String[] args)
-    {
-        try
-        {
-            Update blizzUp = new Update();
-            int upParam = -1;
-            String upInternal = "null";
-            if(args.length > 0) upParam = Integer.parseInt(args[0]);
-            if(args.length > 1) upInternal = args[1];
-            
-            switch(upParam)
-            {
-                case Update.UPDATE_TYPE_DYNAMIC:
-                    switch(upInternal)
-                    {
-                        case "GuildProfile":        Logs.infoLog(UpdateRunning.class, "Guild Profile Update..."); blizzUp.getGuildProfile(); break;
-                        case "GuildMembers":        Logs.infoLog(UpdateRunning.class, "Guild Members Update...");  blizzUp.getGuildMembers(); break;
-                        case "CharacterInfo":       Logs.infoLog(UpdateRunning.class, "Character info Update...");  blizzUp.getCharacterInfo(); break;
-                        case "GuildChallenges":     Logs.infoLog(UpdateRunning.class, "Guild Challenges Update...");  blizzUp.getGuildChallenges(); break;
-                        case "GuildNews":           Logs.infoLog(UpdateRunning.class, "Guild News Update...");  blizzUp.getGuildNews(); break;
-                        case "WowToken":            Logs.infoLog(UpdateRunning.class, "Wow Token Update..."); blizzUp.getWowToken(); break;
-                        case "UsersCharacters":     Logs.infoLog(UpdateRunning.class, "User Characters Update...");  blizzUp.getUsersCharacters(); break;
-                        case "GuildProgression":    Logs.infoLog(UpdateRunning.class, "Guild Progression Update...");  blizzUp.getGuildProgression(); break;
-                        default:                    
-                            blizzUp.updateDynamicAll();                        
-                    }
-                    break;
-                case Update.UPDATE_TYPE_STATIC:
-                    switch(upInternal)
-                    {
-                        case "PlayableClass":               Logs.infoLog(UpdateRunning.class, "Playable Class Update...");  blizzUp.getPlayableClass(); break;
-                        case "PlayableSpec":                Logs.infoLog(UpdateRunning.class, "Playable Spec Update...");  blizzUp.getPlayableSpec(); break;
-                        case "PlayableRaces":               Logs.infoLog(UpdateRunning.class, "Playable Races Update...");  blizzUp.getPlayableRaces(); break;
-                        case "GuildAchievementsLists":      Logs.infoLog(UpdateRunning.class, "Guild Achievements Update...");  blizzUp.getGuildAchievementsLists(); break;
-                        case "CharacterAchievementsLists":  Logs.infoLog(UpdateRunning.class, "Character Achievements Update...");  blizzUp.getCharacterAchievementsLists(); break;
-                        case "BossInformation":             Logs.infoLog(UpdateRunning.class, "Bosses info Update...");  blizzUp.getBossInformation(); break;
-                        case "updateSpellInformation":      Logs.infoLog(UpdateRunning.class, "Spells info Update...");  blizzUp.updateSpellInformation(); break;
-                        case "updateItemInformation":       Logs.infoLog(UpdateRunning.class, "Items info Update...");  blizzUp.updateItemInformation(); break;
-                        default:                    
-                            blizzUp.updateStaticAll();                      
-                    }				
-                    break;	
-                case Update.UPDATE_TYPE_AUCTION:
-                    blizzUp.updateAH();
-                    break;
-                case Update.UPDATE_TYPE_CLEAR_AH_HISTORY:
-                    blizzUp.moveHistoryAH();
-                    break;                    
-                default:
-                    Logs.errorLog(UpdateRunning.class, "Not update parametter detected!");
-                    break;
-            }
-        } catch (IOException|ParseException|DataException|SQLException | ClassNotFoundException ex) {
-            Logs.errorLog(UpdateRunning.class, "Fail to update information - "+ ex);
-        }
     }
 }

@@ -2,7 +2,7 @@
 <%@ page import ="java.net.URLEncoder" %>
 <%
 if(!guildMember)
-{  
+{
     response.sendRedirect("../../login.jsp?rdir="+URLEncoder.encode("userpanel/blizzard_update/update_panel.jsp", "UTF-8"));
 }
 else
@@ -12,7 +12,7 @@ else
         out.write("Only Guild Leader or Officers can access from this page.");
     }
     else
-    {  
+    {
 %>
 <%@ page import="java.io.*, java.net.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -25,7 +25,15 @@ else
     <body>
         <%@include file="../../includes/menu.jsp" %>
         <div class="container fill">
-            <button id="buttonForceUpdate" type="button" class="btn btn-outline-danger">Run!</button>           
+            <button id="buttonForceUpdate" type="button" class="btn btn-outline-danger">Update Dynamic</button>
+            <button id="buttonForceUpdateGuildProfile" type="button" class="btn btn-outline-danger">Guild Profile</button>
+            <button id="buttonForceUpdateGuildMembers" type="button" class="btn btn-outline-danger">GuildMembers</button>
+            <button id="buttonForceUpdateCharacterInfo" type="button" class="btn btn-outline-danger">Character Info</button>
+            <button id="buttonForceUpdateGuildChallenges" type="button" class="btn btn-outline-danger">Guild Challenges</button>
+            <button id="buttonForceUpdateGuildNews" type="button" class="btn btn-outline-danger">Guild News</button>
+            <button id="buttonForceUpdateWowToken" type="button" class="btn btn-outline-danger">Wow Token</button>
+            <button id="buttonForceUpdateUsersCharacters" type="button" class="btn btn-outline-danger">Users Characters</button>
+            <button id="buttonForceUpdateGuildProgression" type="button" class="btn btn-outline-danger">Guild Progression</button>
             <div class="returnCode">
                 <code id="updateCode" class=""></code>
             </div>
