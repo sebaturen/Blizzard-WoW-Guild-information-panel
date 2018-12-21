@@ -17,6 +17,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             <li class="nav-item <% out.write((currentPath.equals("members.jsp"))? "active":""); %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/members.jsp">Members List</a>
             </li>
+            <li class="nav-item <% out.write((currentPath.equals("mythic_plus.jsp"))? "active":""); %>">
+                <a class="nav-link" href="<%= request.getContextPath() %>/mythic_plus.jsp">Mythic Plus</a>
+            </li>
             <li class="nav-item <% out.write((currentPath.equals("guild_challenges.jsp"))? "active":""); %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/guild_challenges.jsp">Guild Challenges</a>
             </li>

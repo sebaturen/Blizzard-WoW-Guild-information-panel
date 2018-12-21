@@ -315,7 +315,8 @@ CREATE TABLE `poll_option_result` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `keystone_dungeon` (
-    `id`    INT NOT NULL,
+    `id`        INT NOT NULL,
+    `map_id`    INT NOT NULL,
     `name`  VARCHAR(50) NOT NULL,
     `slug`  VARCHAR(50) NOT NULL,
     `keystone_upgrades_1`   bigint(20) NOT NULL,

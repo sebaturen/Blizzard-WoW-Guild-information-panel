@@ -3,7 +3,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.guild.challenges.Challenge" %>
 <%@ page import ="com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup" %>
 <%@ page import ="java.text.SimpleDateFormat" %>
-<jsp:useBean id="challenges" class="com.blizzardPanel.viewController.GuildChallenges"/>
+<jsp:useBean id="challenges" class="com.blizzardPanel.viewController.GuildChallenges" scope="application"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>

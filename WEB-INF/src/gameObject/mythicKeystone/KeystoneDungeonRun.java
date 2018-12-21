@@ -15,7 +15,9 @@ import com.blizzardPanel.gameObject.Realm;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -83,7 +85,7 @@ public class KeystoneDungeonRun extends GameObject
         {
             this.id = (int) objInfo.get("id");
             this.keystoneLevel = (int) objInfo.get("keystone_level"); 
-            this.ksDun = new KeystoneDungeon((int) objInfo.get("keystone_dungeon_id"));
+            this.ksDun = new KeystoneDungeon((Integer) objInfo.get("keystone_dungeon_id"));
             this.isCompleteInTime = (Boolean) objInfo.get("is_complete_in_time");
             loadMembersFromDB();
         }
@@ -98,6 +100,7 @@ public class KeystoneDungeonRun extends GameObject
             JSONObject charInfo = (JSONObject) memI.get("character");
             String charName = charInfo.get("name").toString();
             Realm charRealm = new Realm( ((Long) ((JSONObject)charInfo.get("realm")).get("id") ).intValue());
+            System.out.println("Cargando "+ charName +" - "+ charRealm.getName());
             //New character
             CharacterMember newMember = new CharacterMember(charName, charRealm.getName());
             newMember.setItemLevel( ((Long) ((JSONObject)runMemsInfo.get(i)).get("equipped_item_level") ).intValue() );
@@ -138,10 +141,13 @@ public class KeystoneDungeonRun extends GameObject
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.members.forEach( (m) -> 
                 {
+                    System.out.println("M> "+ m.getName());
+                    System.out.println("Run ID> "+ this.id);
                     try 
                     {
                         JSONArray memInGroupId = null;
-                        try {
+                        try 
+                        {
                             //Verificate if this memers is previewsly register from this group
                             memInGroupId = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
                                     new String[] { "id" },
@@ -173,10 +179,35 @@ public class KeystoneDungeonRun extends GameObject
     @Override
     public int getId() { return this.id; }
     public long getComplatedTimeStamp() { return this.complatedTimeStamp; }
+    public String getCompleteDate() 
+    {        
+        Date time = new Date(this.complatedTimeStamp);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
+    }
     public long getDuration() { return this.duration; }
+    //Return [hour][minute][seccond]
+    public int[] getTimeDuration()
+    {
+        Date timeCero= new Date(0); 
+        Date time = new Date(this.duration); 
+        long diff = time.getTime() - timeCero.getTime();   
+        int[] times = new int[3];
+        times[0] = (int) (diff / (60 * 60 * 1000));
+        times[1] = (int) (diff / (60 * 1000) % 60); 
+        times[2] = (int) (diff / 1000 % 60);
+        return times;
+    }
+    public int getUpgradeKey()
+    {
+        if(this.ksDun.getKeystoneUpgrades3() > this.duration) return 3;
+        if(this.ksDun.getKeystoneUpgrades2() > this.duration) return 2;
+        if(this.ksDun.getKeystoneUpgrades1() > this.duration) return 1;
+        return -1;
+    }
     public int getKeystoneLevel() { return this.keystoneLevel; }
     public KeystoneDungeon getKeystoneDungeon() { return this.ksDun; }
     public List<CharacterMember> getMembers() { return this.members; }
+    public boolean isCompleteInTime() { return this.isCompleteInTime; }
 
     @Override
     public void setId(int id) { this.id = id; }

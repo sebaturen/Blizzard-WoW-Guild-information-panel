@@ -16,11 +16,12 @@ public class KeystoneDungeon extends GameObject
     //DBStructure
     public static final String KEYSTONE_DUNGEON_TABLE_NAME = "keystone_dungeon";
     public static final String KEYSTONE_DUNGEON_TABLE_KEY = "id";
-    public static final String[] KEYSTONE_DUNGEON_TABLE_STRUCTURE = {"id", "name", "slug", 
+    public static final String[] KEYSTONE_DUNGEON_TABLE_STRUCTURE = {"id", "map_id", "name", "slug", 
                         "keystone_upgrades_1", "keystone_upgrades_2", "keystone_upgrades_3"};
 
     //Atributes
     private int id;
+    private int mapId;
     private String name;
     private String slug;
     private long keystoneUpgrades1;
@@ -44,6 +45,7 @@ public class KeystoneDungeon extends GameObject
         if(objInfo.get("id").getClass() == java.lang.Long.class)
         {//info come from blizz
             this.id = ((Long) objInfo.get("id")).intValue();
+            this.mapId = ((Long) ((JSONObject) objInfo.get("map")).get("id")).intValue();
             this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
             this.slug = ((JSONObject) objInfo.get("zone")).get("slug").toString();
             JSONArray kestonUpgrade = (JSONArray) objInfo.get("keystone_upgrades");
@@ -54,6 +56,7 @@ public class KeystoneDungeon extends GameObject
         else
         {
             this.id = (Integer) objInfo.get("id");
+            this.mapId = (Integer) objInfo.get("map_id");
             this.name = objInfo.get("name").toString();
             this.slug = objInfo.get("slug").toString();
             this.keystoneUpgrades1 = (long) objInfo.get("keystone_upgrades_1");
@@ -70,7 +73,7 @@ public class KeystoneDungeon extends GameObject
         /* {"id", "name", "icon", "description",
          * "castTime", "cooldown", "range"};
          */
-        switch (saveInDBObj(new String[] {this.id +"", this.name, this.slug,
+        switch (saveInDBObj(new String[] {this.id +"", this.mapId+"", this.name, this.slug,
                                         this.keystoneUpgrades1+"", this.keystoneUpgrades2+"", this.keystoneUpgrades3+""}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
@@ -82,6 +85,7 @@ public class KeystoneDungeon extends GameObject
     //Getters and Setters
     @Override
     public int getId() { return this.id; }
+    public int getMapId() { return this.mapId; }
     public String getName() { return this.name; }
     public String getSlug() { return this.slug; }
     public long getKeystoneUpgrades1() { return this.keystoneUpgrades1; }

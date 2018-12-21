@@ -754,8 +754,9 @@ public class Update implements APIInfo
                         }
                     } catch(DataException ex) {
                         Logs.infoLog(Update.class, "Member "+ mbBlizz.getName() +" not have a keystone run "+ ex);
-                    }       
-                }         
+                    } 
+                          
+                }      
             }
 
             //Show update progress...

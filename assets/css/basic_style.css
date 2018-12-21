@@ -344,3 +344,21 @@ body > .container {
     margin-right: 0;
 }
 /*END-----------------POLL--------------*/
+
+/*----------MYTHIC PLUS-----------------*/
+.key_run_dun_img {
+    height: 140px;
+}
+.key_run_group {
+    padding-bottom: 15px;
+}
+.key_run_lvl {
+    background-image: url("./../img/icons/mythic_key_level.png");
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center center;
+    text-align: center;
+    padding-top: 29px;
+    font-size: 1.5em;
+}
