@@ -8,7 +8,7 @@ package com.blizzardPanel.viewController;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.gameObject.characters.Character;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Members
 {
     //Variable
     private final DBConnect dbConnect;
-    private Character[] membersList;
+    private CharacterMember[] membersList;
 
     public Members()
     {
@@ -40,11 +40,11 @@ public class Members
             Date oneMotheAgo = cal.getTime();
             
             //Prepare list members
-            List<Character> mList = new ArrayList<>();
+            List<CharacterMember> mList = new ArrayList<>();
             //Get members to DB		
             
             //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
-            JSONArray dbList = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Character.CHARACTER_INFO_TABLE_NAME +" c", 
+            JSONArray dbList = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c", 
                                                 new String[] {"gm.internal_id"},
                                                 "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ?"+
                                                 " ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
@@ -52,7 +52,7 @@ public class Members
             for(int i = 0; i < dbList.size(); i++)
             {
                 int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
-                Character member = new Character(idMember);
+                CharacterMember member = new CharacterMember(idMember);
                 //If data is successful load, save a member
                 if(member.isData())
                 {
@@ -61,7 +61,7 @@ public class Members
                 }
             }
             //Convert LIST to simple Member Array
-            if(mList.size() > 0) this.membersList = mList.toArray(new Character[mList.size()]);
+            if(mList.size() > 0) this.membersList = mList.toArray(new CharacterMember[mList.size()]);
         }
         catch (SQLException|DataException e)
         {
@@ -69,17 +69,17 @@ public class Members
         }
     }
     
-    public Character getMember(int id) 
+    public CharacterMember getMember(int id) 
     {
-        if(this.membersList == null) return new Character(id);
-        for(Character m : this.membersList)
+        if(this.membersList == null) return new CharacterMember(id);
+        for(CharacterMember m : this.membersList)
         {
             if(m.getId() == id) return m;
         }
-        return new Character(id);
+        return new CharacterMember(id);
     }
     
-    public Character[] getMembersList() 
+    public CharacterMember[] getMembersList() 
     { 
         if(this.membersList == null) 
             generateMembersList(); 

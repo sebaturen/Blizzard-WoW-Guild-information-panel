@@ -3,9 +3,10 @@
 <jsp:useBean id="upBlizz" class="com.blizzardPanel.viewController.UpdateControl" scope="request"/>
 <%
     String arg = request.getParameter("arg");
+    String type = request.getParameter("type");
     if(arg.equals("0"))
-        upBlizz.runUpdate(new String[] {"0"});
+        upBlizz.runUpdate(new String[] {type});
     else
-        upBlizz.runUpdate(new String[] {"0", arg});
+        upBlizz.runUpdate(new String[] {type, arg});
 
 } %>

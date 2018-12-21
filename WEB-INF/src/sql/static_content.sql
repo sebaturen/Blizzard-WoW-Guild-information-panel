@@ -131,3 +131,13 @@ CREATE TABLE `guild_rank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 INSERT INTO `guild_rank` VALUES (0, "Guild Master");
 INSERT INTO `guild_rank` VALUES (1, "Officer");
+
+CREATE TABLE `realms` (
+    `id`                INT NOT NULL,
+    `connected_realm`   INT NOT NULL,
+    `name`      VARCHAR(50) NOT NULL,
+    `slug`      VARCHAR(50) NOT NULL,
+    `locale`    VARCHAR(50) NOT NULL,
+    PRIMARY KEY(`id`),
+    UNIQUE(`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

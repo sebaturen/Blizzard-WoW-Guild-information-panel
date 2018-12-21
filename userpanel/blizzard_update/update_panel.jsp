@@ -34,6 +34,8 @@ else
             <button id="buttonForceUpdateWowToken" type="button" class="btn btn-outline-danger">Wow Token</button>
             <button id="buttonForceUpdateUsersCharacters" type="button" class="btn btn-outline-danger">Users Characters</button>
             <button id="buttonForceUpdateGuildProgression" type="button" class="btn btn-outline-danger">Guild Progression</button>
+            <br>
+            <button id="buttonForceUpdateStaticRealms" type="button" class="btn btn-outline-danger">Static - Realm Update</button>
             <div class="returnCode">
                 <code id="updateCode" class=""></code>
             </div>

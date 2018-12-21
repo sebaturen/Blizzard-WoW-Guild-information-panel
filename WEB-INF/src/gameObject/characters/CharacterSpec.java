@@ -38,14 +38,14 @@ public class CharacterSpec extends GameObject
         loadFromDB(specId);
     }
     
-    public CharacterSpec(Character member, JSONObject specInfo, JSONArray talentsInfo)
+    public CharacterSpec(CharacterMember member, JSONObject specInfo, JSONArray talentsInfo)
     {
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = member.getId();
         saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
-    private void saveInfoFromBlizz(Character member, JSONObject specInfo, JSONArray talentsInfo)
+    private void saveInfoFromBlizz(CharacterMember member, JSONObject specInfo, JSONArray talentsInfo)
     {
         this.spells = new Spell[MAX_SPELL_TALENTS];
         this.spec = new PlayableSpec(specInfo.get("name").toString(), specInfo.get("role").toString(), member.getMemberClass().getId());

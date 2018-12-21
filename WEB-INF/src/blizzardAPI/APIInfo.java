@@ -40,6 +40,8 @@ public interface APIInfo
     public static final String API_AUCTION = "wow/auction/data/%s"; //{realm}
 
     //------------------------------------------World of Warcraft Game Data APIs
+    //Connected Realm API
+    public static final String API_CONNECTED_REALM_INDEX = "data/wow/connected-realm/index";
     //Playable Class API
     public static final String API_PLAYABLE_CLASS = "data/wow/playable-class/";
     //Playable Races API
@@ -48,6 +50,10 @@ public interface APIInfo
     public static final String API_WOW_TOKEN = "data/wow/token/";
     //Realm API
     public static final String API_REALM_INDEX = "data/wow/realm/index";
+    
+    //---------------------------------------------World of Warcraft Prfile APIs
+    //WoW Mythic Keystone Character Profile API
+    public static final String API_CHARACTER_MYTHIC_KEYSTONE_PROFILE = "profile/wow/character/%s/%s/mythic-keystone-profile"; //{realmSlug} , {characterName}
 
     //-----------------------------------------------------------Community OAuth
     //Profile API

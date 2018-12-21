@@ -8,7 +8,7 @@ package com.blizzardPanel;
 import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.gameObject.characters.Character;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -37,8 +37,8 @@ public class User
     private int idMainChar = -1;
     private boolean isLogin = false;
     private boolean isCharsReady = false;
-    private List<Character> characters = new ArrayList<>();
-    private Character mainCharacter;
+    private List<CharacterMember> characters = new ArrayList<>();
+    private CharacterMember mainCharacter;
     
     private final DBConnect dbConnect = new DBConnect();
     
@@ -237,20 +237,20 @@ public class User
     
     private void loadMainCharFromDB()
     {
-        this.mainCharacter = new Character(this.idMainChar);
+        this.mainCharacter = new CharacterMember(this.idMainChar);
     }
     
     private void loadCharacters()
     {
         try {
-            JSONArray chars = dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Character.CHARACTER_INFO_TABLE_NAME +" c",
+            JSONArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
                     "gm.user_id=? AND gm.internal_id = c.internal_id ORDER BY c.level DESC",
                     new String[] { this.id +"" }, true);
             for(int i = 0; i < chars.size(); i++)
             {
                 int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");
-                Character mb = new Character(internalID);
+                CharacterMember mb = new CharacterMember(internalID);
                 if(mb.isData())
                 {
                     if(mb.getId() == this.idMainChar) 
@@ -271,9 +271,9 @@ public class User
     public String getLastAltersUpdate() { return this.lastAlterUpdate; }
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
-    public List<Character> getCharacters() { if(this.characters.isEmpty()) loadCharacters(); return this.characters; }
+    public List<CharacterMember> getCharacters() { if(this.characters.isEmpty()) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
-    public Character getMainCharacter() 
+    public CharacterMember getMainCharacter() 
     {
         if(this.mainCharacter == null && this.idMainChar > 0)
         {
@@ -288,7 +288,7 @@ public class User
         if(this.characters.isEmpty()) loadCharacters();
         boolean stateChange = false;
         //valid if this id is from this member and remove old main Character
-        for(Character m : this.characters) 
+        for(CharacterMember m : this.characters) 
         {
             if(m.getId() == id && m.isGuildMember())
             {

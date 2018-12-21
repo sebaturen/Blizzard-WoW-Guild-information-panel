@@ -1,5 +1,5 @@
 <%@include file="includes/globalObject.jsp" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.Character" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <%@ page import ="com.blizzardPanel.gameObject.guild.challenges.Challenge" %>
 <%@ page import ="com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup" %>
 <%@ page import ="java.text.SimpleDateFormat" %>
@@ -41,7 +41,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <% for(Character m : groupCh.getMembers())
+                            <% for(CharacterMember m : groupCh.getMembers())
                             {%>
                                 <tr>
                                     <% //Get img from speck

@@ -313,3 +313,37 @@ CREATE TABLE `poll_option_result` (
     FOREIGN KEY(owner_id) REFERENCES users(id),
     FOREIGN KEY(poll_option_id) REFERENCES poll_options(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `keystone_dungeon` (
+    `id`    INT NOT NULL,
+    `name`  VARCHAR(50) NOT NULL,
+    `slug`  VARCHAR(50) NOT NULL,
+    `keystone_upgrades_1`   bigint(20) NOT NULL,
+    `keystone_upgrades_2`   bigint(20) NOT NULL,
+    `keystone_upgrades_3`   bigint(20) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `keystone_dungeon_run` (
+    `id`                    int NOT NULL AUTO_INCREMENT,
+    `completed_timestamp`   BIGINT NOT NULL,
+    `duration`              BIGINT NOT NULL,
+    `keystone_level`        INT NOT NULL,
+    `keystone_dungeon_id`   int not null,
+    `is_complete_in_time`   TINYINT(1) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(`completed_timestamp`,`duration`, `keystone_level`, `keystone_dungeon_id`, `is_complete_in_time`),
+    FOREIGN KEY(keystone_dungeon_id) REFERENCES keystone_dungeon(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `keystone_dungeon_run_members` (
+    `id`                        int NOT NULL AUTO_INCREMENT,
+    `keystone_dungeon_run_id`   INT NOT NULL,
+    `character_internal_id`     INT NOT NULL,
+    `character_spec_id`         INT NOT NULL,
+    `character_item_level`      INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(keystone_dungeon_run_id) REFERENCES keystone_dungeon_run_members(id),
+    FOREIGN KEY(character_internal_id) REFERENCES character_info(internal_id),
+    FOREIGN KEY(character_spec_id) REFERENCES character_specs(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

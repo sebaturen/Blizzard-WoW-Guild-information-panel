@@ -9,7 +9,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
-import com.blizzardPanel.gameObject.characters.Character;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ public class ChallengeGroup extends GameObject
     private int timeSeconds;
     private int timeMilliseconds;
     private boolean isPositive;
-    private List<Character> members = new ArrayList<>();
+    private List<CharacterMember> members = new ArrayList<>();
         
     //Constructor
     public ChallengeGroup(int id)
@@ -71,7 +71,7 @@ public class ChallengeGroup extends GameObject
                                                 new String[] {this.id +""});
             for(int i = 0; i < dbMem.size(); i++)
             {
-                Character cMem = new Character( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
+                CharacterMember cMem = new CharacterMember( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
                 if(cMem.isData())
                 {
                     cMem.setActiveSpec( (Integer) ((JSONObject) dbMem.get(i)).get("character_spec_id") );
@@ -173,7 +173,7 @@ public class ChallengeGroup extends GameObject
     public void setTimeSeconds(int timeSeconds) { this.timeSeconds = timeSeconds; }
     public void setTimeMilliseconds(int timeMilliseconds) { this.timeMilliseconds = timeMilliseconds; }
     public void setPositive(boolean isPositive) { this.isPositive = isPositive; }
-    public void addMember(Character mb) { members.add(mb); }
+    public void addMember(CharacterMember mb) { members.add(mb); }
     @Override
     public int getId() { return this.id; }
     public Date getTimeDate() { return this.timeDate; }
@@ -182,7 +182,7 @@ public class ChallengeGroup extends GameObject
     public int getTimeSeconds() { return this.timeSeconds; }
     public int getTimeMilliseconds() { return this.timeMilliseconds; }
     public boolean isPositive() { return this.isPositive; }
-    public List<Character> getMembers() { return this.members; }
+    public List<CharacterMember> getMembers() { return this.members; }
 
     @Override
     public String toString()

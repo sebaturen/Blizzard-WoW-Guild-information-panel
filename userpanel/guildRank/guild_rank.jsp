@@ -15,7 +15,7 @@ else
     {
 %>
 <%@ page import ="com.blizzardPanel.gameObject.guild.Rank" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.Character" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <%@ page import = "java.util.Map" %>
 <jsp:useBean id="ranks" class="com.blizzardPanel.viewController.GuildRanks" scope="request"/>
 <%
@@ -49,7 +49,7 @@ else
                 <div class="form-group">
                     <label><%= r.getTitle() %> (<%= r.getId() %>)</label>
                     <input class="form-control" type="text" value="<%= r.getTitle() %>" name="title_<%= r.getId() %>" <%= (r.getId() == 0 || r.getId() == 1)? "disabled":"" %>/>
-                    <% for (Character m : ranks.getMemberByRank(r.getId())) {
+                    <% for (CharacterMember m : ranks.getMemberByRank(r.getId())) {
                         String className = m.getMemberClass().getSlug();
                     %>
                         <span class="character-<%= className %> mem-name"><%= m.getName() %></span>,

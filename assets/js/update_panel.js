@@ -1,15 +1,17 @@
 //Send a ajax request to server...
+var type = 0;
 var arg = 0;
 $(document).ready(function() {
     $("#buttonForceUpdate").click(function() { runAjaxUpdate(); });
-    $("#buttonForceUpdateGuildProfile").click(function() { arg = "GuildProfile"; runAjaxUpdate(); });
-    $("#buttonForceUpdateGuildMembers").click(function() { arg = "GuildMembers"; runAjaxUpdate(); });
-    $("#buttonForceUpdateCharacterInfo").click(function() { arg = "CharacterInfo"; runAjaxUpdate(); });
-    $("#buttonForceUpdateGuildChallenges").click(function() { arg = "GuildChallenges"; runAjaxUpdate(); });
-    $("#buttonForceUpdateGuildNews").click(function() { arg = "GuildNews"; runAjaxUpdate(); });
-    $("#buttonForceUpdateWowToken").click(function() { arg = "WowToken"; runAjaxUpdate(); });
-    $("#buttonForceUpdateUsersCharacters").click(function() { arg = "UsersCharacters"; runAjaxUpdate(); });
-    $("#buttonForceUpdateGuildProgression").click(function() { arg = "GuildProgression"; runAjaxUpdate(); });
+    $("#buttonForceUpdateGuildProfile").click(function()        { arg = "GuildProfile";             runAjaxUpdate(); });
+    $("#buttonForceUpdateGuildMembers").click(function()        { arg = "GuildMembers";             runAjaxUpdate(); });
+    $("#buttonForceUpdateCharacterInfo").click(function()       { arg = "CharacterInfo";            runAjaxUpdate(); });
+    $("#buttonForceUpdateGuildChallenges").click(function()     { arg = "GuildChallenges";          runAjaxUpdate(); });
+    $("#buttonForceUpdateGuildNews").click(function()           { arg = "GuildNews";                runAjaxUpdate(); });
+    $("#buttonForceUpdateWowToken").click(function()            { arg = "WowToken";                 runAjaxUpdate(); });
+    $("#buttonForceUpdateUsersCharacters").click(function()     { arg = "UsersCharacters";          runAjaxUpdate(); });
+    $("#buttonForceUpdateGuildProgression").click(function()    { arg = "GuildProgression";         runAjaxUpdate(); });
+    $("#buttonForceUpdateStaticRealms").click(function()        { type = 1; arg = "RealmIndex";     runAjaxUpdate(); });
 });
 
 function runAjaxUpdate()
@@ -24,9 +26,10 @@ function runAjaxUpdate()
     $("#buttonForceUpdateWowToken").attr("disabled", true);
     $("#buttonForceUpdateUsersCharacters").attr("disabled", true);
     $("#buttonForceUpdateGuildProgression").attr("disabled", true);
+    $("#buttonForceUpdateStaticRealms").attr("disabled", true);
     //run ajax
     $.ajax({
-        url: "run_update.jsp?arg="+ arg,
+        url: "run_update.jsp?type="+ type +"&arg="+ arg,
         success: function(){
             var webSocket = new WebSocket('ws://artofwar.cl:80/broadcasting');
 

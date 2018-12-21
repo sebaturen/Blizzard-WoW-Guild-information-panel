@@ -9,7 +9,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;
-import com.blizzardPanel.gameObject.characters.Character;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,19 +40,19 @@ public class GuildRanks
         return ranks;
     }
     
-    public Character[] getMemberByRank(int rankId)
+    public CharacterMember[] getMemberByRank(int rankId)
     {
-        Character[] mb = null;
+        CharacterMember[] mb = null;
         try
         {
-            JSONArray memberRank =  dbConnect.select(Character.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ Character.CHARACTER_INFO_TABLE_NAME +" c", 
+            JSONArray memberRank =  dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c", 
                                                 new String[] {"gm.internal_id"},
                                                 "in_guild=? AND gm.internal_id = c.internal_id AND rank=? ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
                                                 new String[] {"1", rankId+""}, true);	
-            mb = new Character[memberRank.size()];
+            mb = new CharacterMember[memberRank.size()];
             for(int i = 0; i < memberRank.size(); i++)
             {
-                mb[i] = new Character((Integer) ((JSONObject)memberRank.get(i)).get(Character.GMEMBER_ID_NAME_TABLE_KEY));
+                mb[i] = new CharacterMember((Integer) ((JSONObject)memberRank.get(i)).get(CharacterMember.GMEMBER_ID_NAME_TABLE_KEY));
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(GuildRanks.class, "Fail to get Members by rank - "+ ex);
