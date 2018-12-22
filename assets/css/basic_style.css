@@ -54,6 +54,29 @@ p {
 }
 /*END----FONTS--------------*/
 /*-------GENERAL------------*/
+.item-floting-desc {
+    padding: 10px;
+    padding-right: 20px;
+    z-index: 999;
+    display: none;
+    position: fixed;
+    overflow: hidden;
+    background-image: url('./../img/tooltip.png');
+}
+.tooltipDesc {
+    text-align: left !important;
+    text-shadow: none;
+}
+.tooltip-yellow {
+    color: #ffd100;
+}
+.azeritaPowerDesc, .itemSpellDetail {
+    max-width: 319px;
+    padding-left: 14px;
+}
+.azPower, .itemSpellDetail {
+    font-size: 0.8em;
+}
 .navbar {
     box-shadow: 0 3px 8px 4px rgba(0,0,0,.5);
 }
@@ -362,3 +385,14 @@ body > .container {
     padding-top: 29px;
     font-size: 1.5em;
 }
+.key_affixes {
+    text-align: center;
+}
+.key_affix_img {
+    width: 40px;
+    border: 1px solid #928c8c;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+/*END----------MYTHIC PLUS-----------------*/

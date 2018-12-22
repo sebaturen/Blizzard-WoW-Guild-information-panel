@@ -332,6 +332,7 @@ CREATE TABLE `keystone_dungeon_run` (
     `keystone_level`        INT NOT NULL,
     `keystone_dungeon_id`   int not null,
     `is_complete_in_time`   TINYINT(1) NOT NULL,
+    `key_affixes`           TEXT NOT NULL,
     PRIMARY KEY(id),
     UNIQUE(`completed_timestamp`,`duration`, `keystone_level`, `keystone_dungeon_id`, `is_complete_in_time`),
     FOREIGN KEY(keystone_dungeon_id) REFERENCES keystone_dungeon(id)
@@ -348,3 +349,11 @@ CREATE TABLE `keystone_dungeon_run_members` (
     FOREIGN KEY(character_internal_id) REFERENCES character_info(internal_id),
     FOREIGN KEY(character_spec_id) REFERENCES character_specs(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `keystone_affixes` (
+    `id`            INT NOT NULL,
+    `name`          VARCHAR(50) NOT NULL,
+    `description`   TEXT NOT NULL,
+    `icon`          TINYTEXT NOT NULL,
+    PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

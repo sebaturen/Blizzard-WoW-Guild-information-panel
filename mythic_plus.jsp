@@ -1,4 +1,5 @@
 <%@include file="includes/globalObject.jsp" %>
+<%@ page import ="com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneAffix" %>
 <%@ page import ="com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneDungeonRun" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <jsp:useBean id="mPlus" class="com.blizzardPanel.viewController.MythicPlusControl" scope="application"/>
@@ -28,6 +29,7 @@
         <title><%= guild_info.getName() %> - Mythic Plus</title>
         <%@include file="includes/header.jsp" %>
         <link type="text/css" rel="stylesheet" href="assets/css/index.css">
+        <script src="assets/js/mythic_plus.js"></script>
     </head>
     <body>
         <%@include file="includes/menu.jsp" %>
@@ -61,11 +63,24 @@
                             for(CharacterMember m : keyRun.getDPS())
                                 out.write(renderMember(m));
                         %>
+                            <tr>
+                                <td colspan="3" class='key_affixes'>
+                                <% for(KeystoneAffix kAfix : keyRun.getAffixes()) {%>
+                                    <img class="key_affix_img" src='<%= kAfix.getIcon() %>' data-name="<%= kAfix.getName() %>" data-desc="<%= kAfix.getDescription() %>">
+                                <% } //end foreach key affiexes %>
+                                </td>
+                            </tr>
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
             <%i++; } //end foreach key runs%>
             </div> <!-- close last 'i' div open -->
+            <div class="item-floting-desc tooltip-affix">
+                <div class="itemDesc tooltipDesc">
+                    <p id="afix_name"></p>
+                    <p id="afix_desc" class="tooltip-yellow itemSpellDetail"></p>
+                </div>
+            </div>
         </div>
         <%@include file="includes/footer.jsp" %>
     </body>

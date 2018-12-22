@@ -61,32 +61,9 @@
     float: left; 
     margin-right: 10px;
 }
-.item-floting-desc {
-    padding: 10px;
-    padding-right: 20px;
-    z-index: 999;
-    display: none;
-    position: fixed;
-    overflow: hidden;
-    background-image: url('./../img/tooltip.png');
-}
-.tooltipDesc {
-    text-align: left !important;
-    text-shadow: none;
-}
-.tooltip-yellow {
-    color: #ffd100;
-}
 .gemIcon, .azeritaSkillImg {
     height: 16px;
     width: 16px;
-}
-.azeritaPowerDesc, .itemSpellDetail {
-    max-width: 319px;
-    padding-left: 14px;
-}
-.azPower, .itemSpellDetail {
-    font-size: 0.8em;
 }
 .undefinedAzPower {
     color: #b7b4b4;

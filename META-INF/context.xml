@@ -40,5 +40,7 @@
     <Environment name="TIME_INTERVAL_STATIC_UPDATE"         value="30" override="false" type="java.lang.Integer" />
     <Environment name="TIME_INTERVAL_GUILD_NEW_UPDATE"      value="10" override="false" type="java.lang.Integer" />
     <Environment name="TIME_INTERVAL_AUCTION_HOUSE_UPDATE"  value="10" override="false" type="java.lang.Integer" />    
-    
+
+	<!-- Rewrite value -->
+	<Valve className="org.apache.catalina.valves.rewrite.RewriteValve" />
 </Context>

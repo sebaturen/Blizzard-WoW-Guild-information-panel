@@ -49,6 +49,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Update implements APIInfo
 {
@@ -291,6 +293,38 @@ public class Update implements APIInfo
                 realmBlizz.saveInDB();
             }
         }        
+    }
+    
+    //{name, description, icon}
+    public JSONObject loadKeyDetailFromBlizz(String url)
+    {
+        JSONObject keyDetail = null;
+        try {
+            keyDetail = curl(url,
+                    "GET",
+                    "Bearer "+ accesToken);
+            //Name
+            keyDetail.put("name", ((JSONObject) keyDetail.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString());
+            //Description
+            keyDetail.put("description", ((JSONObject) keyDetail.get("description")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString());
+            //Icon
+            JSONObject iconDetail = curl(((JSONObject) ((JSONObject) keyDetail.get("media")).get("key")).get("href").toString(),
+                                    "GET",
+                                    "Bearer "+ accesToken);
+            JSONArray keyAssets = (JSONArray) iconDetail.get("assets");
+            for(int i = 0; i < keyAssets.size(); i++)
+            {
+                JSONObject keyAssetDet = (JSONObject) keyAssets.get(i);
+                if(keyAssetDet.get("key").toString().equals("icon"))
+                {
+                    keyDetail.put("icon", keyAssetDet.get("value").toString());
+                    break;
+                }
+            }
+        } catch (IOException | ParseException | DataException ex) {
+            Logs.errorLog(Update.class, "Fail to get key Details - "+ ex);
+        }
+        return keyDetail;
     }
     
     public KeystoneDungeon getKeyStoneDungeonDetail(String curl)
@@ -717,7 +751,8 @@ public class Update implements APIInfo
                 {
                     mbBlizz.setId(mbDB.getId());
                     mbBlizz.setIsInternalData(mbDB.isInternalData());
-                    mbBlizz.saveInDB();
+                    mbBlizz.saveInDB();                    
+                          
                     //save characters best runs:
                     Realm mbRealm = new Realm(mbBlizz.getRealm());
                     String urlMyticKeyProfile = String.format(API_ROOT_URL, 
@@ -754,9 +789,8 @@ public class Update implements APIInfo
                         }
                     } catch(DataException ex) {
                         Logs.infoLog(Update.class, "Member "+ mbBlizz.getName() +" not have a keystone run "+ ex);
-                    } 
-                          
-                }      
+                    }
+                }
             }
 
             //Show update progress...

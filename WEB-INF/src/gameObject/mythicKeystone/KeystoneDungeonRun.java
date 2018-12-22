@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class KeystoneDungeonRun extends GameObject
@@ -28,7 +29,7 @@ public class KeystoneDungeonRun extends GameObject
     //DBStructure
     public static final String KEYSTONE_DUNGEON_RUN_TABLE_NAME = "keystone_dungeon_run";
     public static final String KEYSTONE_DUNGEON_RUN_TABLE_KEY = "id";
-    public static final String[] KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE = {"id", "completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"};
+    public static final String[] KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE = {"id", "completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time", "key_affixes"};
     //DBstructure Members
     public static final String KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME = "keystone_dungeon_run_members";
     public static final String KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_KEY = "id";
@@ -42,6 +43,7 @@ public class KeystoneDungeonRun extends GameObject
     private KeystoneDungeon ksDun;
     private boolean isCompleteInTime;
     private List<CharacterMember> members = new ArrayList<>();
+    private List<KeystoneAffix> keyAffixes = new ArrayList<>();
 
     public KeystoneDungeonRun(int id)
     {
@@ -80,6 +82,7 @@ public class KeystoneDungeonRun extends GameObject
             }
             this.isCompleteInTime = (Boolean) objInfo.get("is_completed_within_time");
             loadMembersFromBlizz((JSONArray) objInfo.get("members"));
+            loadKeystoneAffixesFromBlizz((JSONArray) objInfo.get("keystone_affixes"));
         }
         else
         {
@@ -88,8 +91,45 @@ public class KeystoneDungeonRun extends GameObject
             this.ksDun = new KeystoneDungeon((Integer) objInfo.get("keystone_dungeon_id"));
             this.isCompleteInTime = (Boolean) objInfo.get("is_complete_in_time");
             loadMembersFromDB();
+            loadKeystoneAffixesDB(objInfo.get("key_affixes").toString());
         }
         this.isData = true;
+    }
+    
+    private void loadKeystoneAffixesDB(String keyAffixString)
+    {
+        try 
+        {
+            JSONParser parser = new JSONParser();
+            JSONObject keyAffix;
+            if(keyAffixString.length() > 2)
+            {
+                keyAffix = (JSONObject) parser.parse(keyAffixString);
+                for(int i = 0; i < keyAffix.size(); i++)
+                {
+                    int affixId = ((Long) keyAffix.get(i+"")).intValue();
+                    KeystoneAffix kAf = new KeystoneAffix(affixId);
+                    this.keyAffixes.add(kAf);
+                }
+            }
+        } catch (ParseException ex) {
+            Logs.errorLog(KeystoneDungeonRun.class, "Fail to parse stats keystone afixes "+ this.id +" - "+ ex);
+        }
+    }
+    
+    private void loadKeystoneAffixesFromBlizz(JSONArray keyAffix)
+    {
+        for(int i = 0; i < keyAffix.size(); i++)
+        {
+            JSONObject kBlizzDetail = (JSONObject) keyAffix.get(i);
+            KeystoneAffix kAffix = new KeystoneAffix( ((Long) kBlizzDetail.get("id")).intValue() );
+            if(!kAffix.isInternalData())
+            {
+                kAffix = new KeystoneAffix(kBlizzDetail);
+                kAffix.saveInDB();
+            }
+            this.keyAffixes.add(kAffix);
+        }
     }
     
     private void loadMembersFromBlizz(JSONArray runMemsInfo)
@@ -100,7 +140,6 @@ public class KeystoneDungeonRun extends GameObject
             JSONObject charInfo = (JSONObject) memI.get("character");
             String charName = charInfo.get("name").toString();
             Realm charRealm = new Realm( ((Long) ((JSONObject)charInfo.get("realm")).get("id") ).intValue());
-            System.out.println("Cargando "+ charName +" - "+ charRealm.getName());
             //New character
             CharacterMember newMember = new CharacterMember(charName, charRealm.getName());
             newMember.setItemLevel( ((Long) ((JSONObject)runMemsInfo.get(i)).get("equipped_item_level") ).intValue() );
@@ -134,15 +173,20 @@ public class KeystoneDungeonRun extends GameObject
     @Override
     public boolean saveInDB()
     {
+        //Keystone affixes:
+        JSONObject keyAffix = new JSONObject();
+        for(int i = 0; i < this.keyAffixes.size(); i++)
+        {
+            keyAffix.put(i, this.keyAffixes.get(i).getId());
+        }
         //{"completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"} //
         setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
-        switch (saveInDBObj(new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", this.ksDun.getId() +"", (this.isCompleteInTime)? "0":"1"}))
+        switch (saveInDBObj(new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "0":"1", keyAffix.toString()}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.members.forEach( (m) -> 
                 {
-                    System.out.println("M> "+ m.getName());
-                    System.out.println("Run ID> "+ this.id);
                     try 
                     {
                         JSONArray memInGroupId = null;
@@ -179,6 +223,7 @@ public class KeystoneDungeonRun extends GameObject
     @Override
     public int getId() { return this.id; }
     public long getComplatedTimeStamp() { return this.complatedTimeStamp; }
+    public List<KeystoneAffix> getAffixes() { return this.keyAffixes; }
     public String getCompleteDate() 
     {        
         Date time = new Date(this.complatedTimeStamp);
