@@ -26,12 +26,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-8">
-                        <p class='small_title warcraft_font'>Social Media</p>
-                        <iframe src="https://discordapp.com/widget?id=200781976653791232&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
-                        <!-- Content... -->
-                    </div>
-                    <div class="col-md-4 guild_achievements">
+                    <div class="col-md-8 guild_achievements">
                         <p class='small_title warcraft_font'>News</p>
                         <%
                         List<New> news = guild_info.getNews(7);
@@ -65,7 +60,7 @@
                                     break;
                             }//end swithc%> 
                             <div class="new divder row">
-                                <div class="col-2"><img src="<%= img %>"/></div>
+                                <div class="col-2 icon_new"><img src="<%= img %>"/></div>
                                 <div class="newDetail col-10">
                                     <p class="character-<%= inf.getMember().getMemberClass().getSlug() %>">
                                         <%= inf.getMember().getName() %> 
@@ -76,6 +71,11 @@
                                 </div>
                             </div>
                       <%}//end for news%>
+                    </div>
+                    <div class="col-md-4">
+                        <p class='small_title warcraft_font'>Social Media</p>
+                        <iframe src="https://discordapp.com/widget?id=200781976653791232&theme=dark" width="100%" height="500" allowtransparency="true" frameborder="0"></iframe>
+                        <!-- Content... -->
                     </div>
                 </div>
             </div>

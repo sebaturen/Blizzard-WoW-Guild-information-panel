@@ -2,6 +2,26 @@
 <%@ page import ="com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneDungeonRun" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <jsp:useBean id="mPlus" class="com.blizzardPanel.viewController.MythicPlusControl" scope="application"/>
+<%!
+    public String renderMember(CharacterMember mem)
+    {
+        //General info
+        String className = mem.getMemberClass().getSlug();
+        String specName = mem.getActiveSpec().getSpec().getSlug();
+        String isMain = ((mem.isGuildMember())? "<i class='main_char artOfWar-icon'>&#xe801;</i>":"");
+
+        //Generate render
+        return 
+            "<tr>"+
+                "<td class='character-"+ className +"'>"+ isMain +" "+ mem.getName() +"</td>"+
+                "<td>"+
+                    "<img src='assets/img/icons/"+ mem.getActiveSpec().getSpec().getRole() +".png' style='width: 22px;'/>"+
+                    "<img src='assets/img/classes/specs/spec_"+ className +"_"+ specName +".png' style='width: 22px;'/>"+
+                "</td>"+
+                "<td>"+ String.format("%.0f", mem.getItemLevel()) +"</td>"+
+            "</tr>";
+    }
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
@@ -35,21 +55,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <% for(CharacterMember m : keyRun.getMembers())
-                        {%>
-                            <tr>
-                                <% //Get img from speck
-                                    String className = m.getMemberClass().getSlug();
-                                    String specName = m.getActiveSpec().getSpec().getSlug();
-                                %>
-                                <td class="character-<%= className %>"><%= m.getName() %></td>
-                                <td>
-                                    <img src="assets/img/icons/<%= m.getActiveSpec().getSpec().getRole() %>.png" style="width: 22px;"/>
-                                    <img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/>                                
-                                </td>
-                                <td><%= String.format("%.0f", m.getItemLevel()) %></td>
-                            </tr>
-                      <%}//end foreach member 'm'%>
+                        <%
+                            out.write(renderMember(keyRun.getTank()));
+                            out.write(renderMember(keyRun.getHealr()));
+                            for(CharacterMember m : keyRun.getDPS())
+                                out.write(renderMember(m));
+                        %>
                         </tbody>
                     </table>                    
                 </div>

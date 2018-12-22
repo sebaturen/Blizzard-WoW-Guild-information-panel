@@ -207,6 +207,30 @@ public class KeystoneDungeonRun extends GameObject
     public int getKeystoneLevel() { return this.keystoneLevel; }
     public KeystoneDungeon getKeystoneDungeon() { return this.ksDun; }
     public List<CharacterMember> getMembers() { return this.members; }
+    public CharacterMember getTank() 
+    {
+        for(CharacterMember cm : this.members)
+            if(cm.getActiveSpec().getSpec().getRole().equals("TANK"))
+                return cm;
+        return null;
+    }
+    public CharacterMember getHealr() 
+    {
+        for(CharacterMember cm : this.members)
+            if(cm.getActiveSpec().getSpec().getRole().equals("HEALING"))
+                return cm;
+        return null;
+    }
+    public List<CharacterMember> getDPS() 
+    {
+        List<CharacterMember> mDps = new ArrayList<>();
+        for(CharacterMember cm : this.members)
+            if(cm.getActiveSpec().getSpec().getRole().equals("DPS"))
+                mDps.add(cm);
+        return mDps;
+    }
+    
+    
     public boolean isCompleteInTime() { return this.isCompleteInTime; }
 
     @Override
