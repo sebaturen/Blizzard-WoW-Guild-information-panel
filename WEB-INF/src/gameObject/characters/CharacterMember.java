@@ -588,6 +588,14 @@ public class CharacterMember extends GameObject
     }
 
     @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + this.internalID;
+        hash = 71 * hash + (int) (this.lastModified ^ (this.lastModified >>> 32));
+        return hash;
+    }
+
+    @Override
     public String toString()
     {
         String out = "Member: "+ this.name +" ("+ this.internalID +" - "+ this.realm +")";

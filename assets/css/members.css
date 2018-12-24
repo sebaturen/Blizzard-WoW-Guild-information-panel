@@ -21,15 +21,15 @@
     max-height: 50px;
 }
 /*-------ITEMS ---------------*/
+.item_title {    
+    text-shadow: 0 0 15px, 0 0 30px rgba(255,255,255,.3);
+}
 .noLinkStyle a {
     text-decoration: none;
 }
 .itemDetail {
     min-width: 200px;
     margin-bottom: 5px;
-}
-.itemDesc {
-    text-shadow: 0 0 15px, 0 0 30px rgba(255,255,255,.3);
 }
 .itemIcon {
     width: 56px;

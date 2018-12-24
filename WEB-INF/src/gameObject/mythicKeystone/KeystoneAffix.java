@@ -72,6 +72,22 @@ public class KeystoneAffix extends GameObject
         }
         return false;    
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o == this) return true;
+        if(o == null || (this.getClass() != o.getClass())) return false;
+
+        return ((KeystoneAffix) o).getId() == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + this.id;
+        return hash;
+    }
 
     @Override
     public void setId(int id) { this.id = id; }

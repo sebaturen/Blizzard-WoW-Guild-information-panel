@@ -325,7 +325,7 @@ function renderItem(member)
     {
         if(val !== undefined && val !== null)
         {   
-            outEquip += '<div class="itemDetail '+ i +' row" data-item="'+ i +'">'+
+            outEquip += '<div class="item_title itemDetail '+ i +' row" data-item="'+ i +'">'+
                             '<div class="itemIcon left" style="background-image: url('+ val.img +');"></div>'+
                             '<div class="itemDesc ">'+ getItemDesc(val) +'</div>'+
                         '</div>'+ getTooltip(val, i);
