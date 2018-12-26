@@ -34,10 +34,10 @@
 .itemIcon {
     width: 56px;
     height: 56px;
-    border-radius: 10px 10px 10px 10px;
-    -moz-border-radius: 10px 10px 10px 10px;
-    -webkit-border-radius: 10px 10px 10px 10px;
-    border: 1px solid #000000;    
+    border: 1px solid #928c8c;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 .itemsLeft .itemDesc {
     padding-left: 10px;

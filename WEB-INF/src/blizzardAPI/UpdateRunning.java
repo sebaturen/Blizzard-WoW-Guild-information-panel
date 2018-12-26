@@ -6,6 +6,7 @@
 package com.blizzardPanel.blizzardAPI;
 
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.DiscordBot;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -27,6 +28,7 @@ public class UpdateRunning implements ServletContextListener
     private Update update;
     private DBConnect dbConnect;
     private ServletContext context;
+    private DiscordBot discordBot;
     private int count = 0;
 
     public UpdateRunning()
@@ -35,6 +37,7 @@ public class UpdateRunning implements ServletContextListener
         try
         {
             update = new Update();
+            discordBot = new DiscordBot().build();
         } catch (IOException | ParseException | DataException ex) {
             Logs.errorLog(UpdateRunning.class, "Fail to create Update object! "+ ex);
             System.exit(-1);

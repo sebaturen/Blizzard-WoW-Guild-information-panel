@@ -433,14 +433,14 @@ function renderSpec(member)
         {
             output += 
                 '<div class="spell_inf" data-tier="'+ i +'">'+
-                    '<img class="img_spell" src="assets/img/icons/inv_misc_questionmark.jpg"/>'+
+                    '<img class="key_affix_img img_spell" src="assets/img/icons/inv_misc_questionmark.jpg"/>'+
                 '</div>';
         }
         else
         {
             output += 
                 '<div class="spell_inf" data-tier="'+ i +'">'+
-                    '<img class="img_spell" src="'+ val.img +'"/>'+
+                    '<img class="key_affix_img img_spell" src="'+ val.img +'"/>'+
                     '<div  class="item-floting-desc tooltip-'+ i +'">'+
                         '<div class="itemDesc tooltipDesc">'+ 
                             '<p>'+ val.name +'</p>'+

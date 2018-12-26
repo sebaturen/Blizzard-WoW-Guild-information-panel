@@ -11,7 +11,8 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div id="afixLoad" class="loader"></div>
-            <div id="runList"></div>
+            <div id="bestRun" style="display: none;"></div>
+            <div id="runList" style="display: none;"></div>
             <div class="item-floting-desc tooltip-affix">
                 <div class="itemDesc tooltipDesc">
                     <p id="afix_name"></p>

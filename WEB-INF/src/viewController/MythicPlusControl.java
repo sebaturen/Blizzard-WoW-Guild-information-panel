@@ -18,51 +18,92 @@ import org.json.simple.JSONObject;
 
 public class MythicPlusControl 
 {    
+    //public static final String WEEK_CHANGE_FIRST_TIME;
+    
     //Variable
     private final DBConnect dbConnect;
-    private KeystoneDungeonRun[] keyRun;
-    private Date lastKeyRunUpdate;
+    private KeystoneDungeonRun[] keyBestRun;
+    private Date lastKeyBestRunUpdate;
+    private KeystoneDungeonRun[] keyThisWeek;
+    private Date lastKeyThisWeekUpdate;
 
     public MythicPlusControl()
     {
         dbConnect = new DBConnect();
     }
     
-    private void loadKeyRun()
+    private void loadBestRun()
     {
         try {
             JSONArray keyListInDb = dbConnect.select(
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
-                    "1=? order by `completed_timestamp` desc",
-                    new String[] {"1"});
-            this.keyRun = new KeystoneDungeonRun[keyListInDb.size()];
+                    "is_complete_in_time=? order by keystone_level DESC, completed_timestamp DESC limit 3",
+                    new String[] {"0"});
+            this.keyBestRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
-                this.keyRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+                this.keyBestRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(MythicPlusControl.class, "Fail to get last keystone - "+ ex);
         }
-        lastKeyRunUpdate = new Date();        
+        lastKeyBestRunUpdate = new Date();        
     }
     
-    public KeystoneDungeonRun[] getLastKeyRun() 
-    {         
-        if(this.keyRun == null)
-            loadKeyRun();
+    private void loadWeekRun()
+    {
+        try {
+            JSONArray keyListInDb = dbConnect.select(
+                    KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
+                    new String[] {"id"},
+                    "completed_timestamp > ? order by completed_timestamp DESC",
+                    new String[] {"1545754700000"});
+            this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
+            for(int i = 0; i < keyListInDb.size(); i++)
+            {
+                this.keyThisWeek[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.errorLog(MythicPlusControl.class, "Fail to get last keystone - "+ ex);
+        }
+        lastKeyThisWeekUpdate = new Date();   
+    }
+    
+    public KeystoneDungeonRun[] getWeekKeyRun()
+    {
+        if(this.keyThisWeek == null)
+            loadWeekRun();
         else
         {
             //Only reload if least 10 min ago
             Calendar cal = java.util.Calendar.getInstance();
             cal.add(java.util.Calendar.MINUTE, -10);
             Date tenMinuteAgo = cal.getTime();
-            if(this.lastKeyRunUpdate.compareTo(tenMinuteAgo) < 0)
+            if(this.lastKeyThisWeekUpdate.compareTo(tenMinuteAgo) < 0)
             {
-                loadKeyRun();
+                loadBestRun();
             }
         }
-        return this.keyRun;
+        return this.keyThisWeek;
+    }
+    
+    public KeystoneDungeonRun[] getLastBestKeyRun() 
+    {         
+        if(this.keyBestRun == null)
+            loadBestRun();
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastKeyBestRunUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                loadBestRun();
+            }
+        }
+        return this.keyBestRun;
     }
     
 }

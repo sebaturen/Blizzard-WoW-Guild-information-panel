@@ -24,13 +24,50 @@
             "'is_main': '"+ isMain +"'";
     }
 %>
+var keystone_best_run = [];
 var keystone_run = [];
 var keystone_affixes = [];
 
 <%  List<KeystoneAffix> kAfixIndex = new ArrayList<>();
     int i = 0;
-    for(KeystoneDungeonRun keyRun : mPlus.getLastKeyRun()) { int[] durTime = keyRun.getTimeDuration(); %>
+    for(KeystoneDungeonRun keyRun : mPlus.getWeekKeyRun()) { int[] durTime = keyRun.getTimeDuration(); %>
         keystone_run [<%= i++ %>] = {
+            'run_id': '<%= keyRun.getId() %>',
+            'key_lvl': '<%= keyRun.getKeystoneLevel() %>',
+            'complete_date': '<%= keyRun.getCompleteDate() %>',
+            'upgrade_key': '<%= keyRun.getUpgradeKey() %>',
+            'duration_h': '<%= durTime[0] %>',
+            'duration_m': '<%= durTime[1] %>',
+            'duration_s': '<%= durTime[2] %>',
+            'up_down': '<%= ((keyRun.isCompleteInTime())? "downgrade":"upgrade") %>',
+            'map_id': '<%= keyRun.getKeystoneDungeon().getMapId() %>',
+            'map_name': "<%= keyRun.getKeystoneDungeon().getName() %>",
+            'mem': {
+            <%
+                out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
+                out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
+                int j = 2;
+                for(CharacterMember m : keyRun.getDPS())
+                    out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");
+            %>
+            },
+            'affix': [
+            <% 
+                for(KeystoneAffix kAfix : keyRun.getAffixes())
+                {
+                    //if afix not is save
+                    if(!kAfixIndex.contains(kAfix))
+                        kAfixIndex.add(kAfix);
+                    out.write(kAfix.getId() +", ");
+                }                
+            %>
+            ]
+        };
+<%  } //foreach keyRun
+
+    i = 0;
+    for(KeystoneDungeonRun keyRun : mPlus.getLastBestKeyRun()) { int[] durTime = keyRun.getTimeDuration(); %>
+        keystone_best_run [<%= i++ %>] = {
             'run_id': '<%= keyRun.getId() %>',
             'key_lvl': '<%= keyRun.getKeystoneLevel() %>',
             'complete_date': '<%= keyRun.getCompleteDate() %>',

@@ -4,7 +4,9 @@ $(document).ready(function() {
     /*Load a keystone runs */
     $.getScript('assets/js/mythicPlus/mythic_plus_list.jsp', function() {
         console.log('Keys run list is load!');
-        renderRuns(keystone_run);
+        weekRun(keystone_run);
+        bestRun(keystone_best_run);
+        $("#afixLoad").hide();
     });
     
     /*Mose over and leave in affix detail*/
@@ -28,6 +30,20 @@ $(document).ready(function() {
      */
 });
 
+function weekRun(keyRuns)
+{    
+    $("#runList").html("<h1 class='key_divide_title'>Runs of the week</h1>");
+    $("#runList").append(renderRuns(keyRuns));
+    $("#runList").show();
+}
+
+function bestRun(keyRuns)
+{    
+    $("#bestRun").html("<h1 class='key_divide_title'>Best Runs</h1>");
+    $("#bestRun").append(renderRuns(keyRuns));
+    $("#bestRun").show();
+}
+
 function renderRuns(keyRuns)
 {
     var out = '';
@@ -43,7 +59,7 @@ function renderRuns(keyRuns)
                       "<div class='key_run_lvl'>"+ keyRun.key_lvl +"</div>"+
                       "<h2 class='dung-title'>"+ keyRun.map_name +"</h2>"+
                   "</div>"+            
-                  "<p class='group-time key-"+ keyRun.up_down +"'>["+ keyRun.duration_h +"h:"+ keyRun.duration_m +":"+ keyRun.duration_s +"s]"+ ((keyRun.upgrade_key > 0)? " (+"+ keyRun.upgrade_key +")":"") +"</p>"+
+                  "<p class='group-time key-"+ keyRun.up_down +"'>["+ keyRun.duration_h +"h:"+ keyRun.duration_m +"m:"+ keyRun.duration_s +"s]"+ ((keyRun.upgrade_key > 0)? " (+"+ keyRun.upgrade_key +")":"") +"</p>"+
                   "<p class='key-date'>"+ keyRun.complete_date +"</p>"+
                   "<table class='table table-dark character-tab'>"+
                       "<thead>"+
@@ -82,6 +98,5 @@ function renderRuns(keyRuns)
     });
     out += "</div>"; //<!-- close last 'i' div open -->
     
-    $("#afixLoad").hide();
-    $("#runList").html(out);
+    return out;
 }
