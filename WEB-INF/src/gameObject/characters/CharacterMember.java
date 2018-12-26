@@ -339,6 +339,8 @@ public class CharacterMember extends GameObject
                                                                 new String[] { spc.getMemberId() +"", spc.getSpec().getId() +""});
                         if(specMember.size()>0)
                         {
+                            int charSpecID = (int) ((JSONObject) specMember.get(0)).get(CharacterSpec.SPECS_TABLE_KEY);
+                            spc.setId(charSpecID);
                             spc.setIsInternalData(true);
                         }
                         spc.saveInDB();

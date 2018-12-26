@@ -182,7 +182,7 @@ public class KeystoneDungeonRun extends GameObject
         //{"completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"} //
         setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
         switch (saveInDBObj(new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "0":"1", keyAffix.toString()}))
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.members.forEach( (m) -> 

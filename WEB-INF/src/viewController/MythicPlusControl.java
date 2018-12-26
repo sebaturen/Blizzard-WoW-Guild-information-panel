@@ -39,7 +39,7 @@ public class MythicPlusControl
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "is_complete_in_time=? order by keystone_level DESC, completed_timestamp DESC limit 3",
-                    new String[] {"0"});
+                    new String[] {"1"});
             this.keyBestRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

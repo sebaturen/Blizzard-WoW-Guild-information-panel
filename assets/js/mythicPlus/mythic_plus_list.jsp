@@ -39,7 +39,7 @@ var keystone_affixes = [];
             'duration_h': '<%= durTime[0] %>',
             'duration_m': '<%= durTime[1] %>',
             'duration_s': '<%= durTime[2] %>',
-            'up_down': '<%= ((keyRun.isCompleteInTime())? "downgrade":"upgrade") %>',
+            'up_down': '<%= ((keyRun.isCompleteInTime())? "upgrade":"downgrade") %>',
             'map_id': '<%= keyRun.getKeystoneDungeon().getMapId() %>',
             'map_name': "<%= keyRun.getKeystoneDungeon().getName() %>",
             'mem': {
@@ -75,7 +75,7 @@ var keystone_affixes = [];
             'duration_h': '<%= durTime[0] %>',
             'duration_m': '<%= durTime[1] %>',
             'duration_s': '<%= durTime[2] %>',
-            'up_down': '<%= ((keyRun.isCompleteInTime())? "downgrade":"upgrade") %>',
+            'up_down': '<%= ((keyRun.isCompleteInTime())? "upgrade":"downgrade") %>',
             'map_id': '<%= keyRun.getKeystoneDungeon().getMapId() %>',
             'map_name': "<%= keyRun.getKeystoneDungeon().getName() %>",
             'mem': {
