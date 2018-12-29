@@ -10,7 +10,7 @@ $(document).ready(function() {
     });
     
     /*Mose over and leave in affix detail*/
-    $('#runList')
+    $('#runList, #bestRun')
     .on('mouseover', '.key_affix_img', function() {
         $("#afix_name").text($(this).data("name"));
         $("#afix_desc").text($(this).data("desc"));
