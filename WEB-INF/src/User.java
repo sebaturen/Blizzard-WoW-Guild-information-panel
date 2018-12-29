@@ -245,7 +245,7 @@ public class User
         try {
             JSONArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
-                    "gm.user_id=? AND gm.internal_id = c.internal_id ORDER BY c.level DESC",
+                    "gm.user_id=? AND gm.internal_id = c.internal_id ORDER BY c.level DESC, gm.member_name ASC",
                     new String[] { this.id +"" }, true);
             for(int i = 0; i < chars.size(); i++)
             {

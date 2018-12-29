@@ -77,12 +77,12 @@ public class MythicPlusControl
         else
         {
             //Only reload if least 10 min ago
-            Calendar cal = java.util.Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             cal.add(java.util.Calendar.MINUTE, -10);
             Date tenMinuteAgo = cal.getTime();
             if(this.lastKeyThisWeekUpdate.compareTo(tenMinuteAgo) < 0)
             {
-                loadBestRun();
+                loadWeekRun();
             }
         }
         return this.keyThisWeek;
@@ -95,7 +95,7 @@ public class MythicPlusControl
         else
         {
             //Only reload if least 10 min ago
-            Calendar cal = java.util.Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             cal.add(java.util.Calendar.MINUTE, -10);
             Date tenMinuteAgo = cal.getTime();
             if(this.lastKeyBestRunUpdate.compareTo(tenMinuteAgo) < 0)

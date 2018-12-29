@@ -68,6 +68,24 @@ public class FactionAssaultControl
         return timeRemaining;        
     }
     
+    public int[] getTimeRemainingCurrentAssault(Date assault)
+    {
+        //Current time in server
+        Date serverTime = getServerTime();
+        Calendar cTime = Calendar.getInstance();
+        cTime.setTime(assault);
+        cTime.add(Calendar.HOUR_OF_DAY, DURATION_HOUR);
+        //Calc diference
+        long diffTime = cTime.getTime().getTime() - serverTime.getTime();
+        
+        //Calcule remaining
+        int[] timeRemaining = new int[2];
+        timeRemaining[0] = (int) Math.abs((diffTime / (60 * 60 * 1000)));
+        timeRemaining[1] = (int) Math.abs((diffTime / (60 * 1000) % 60));
+        
+        return timeRemaining;
+    }
+    
     public Date getPrevieAssault()
     {
         try {

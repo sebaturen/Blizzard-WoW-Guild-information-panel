@@ -45,9 +45,15 @@ public class DiscordBot extends ListenerAdapter
         return this;
     }    
     
-    public void sendMessage(MessageChannel channel, String message) 
+    public void sendMessajeNotification(String message) 
     {
-        channel.sendMessage(message).queue();
+        if(this.chanelId > 0)
+        {
+            MessageChannel chanel = jda.getTextChannelById(this.chanelId);
+            chanel.sendMessage(message).queue();            
+        }
+        else
+            Logs.errorLog(DiscordBot.class, "Fail to send messaje, channel ID not found.");
     }
     
     @Override
@@ -120,55 +126,58 @@ public class DiscordBot extends ListenerAdapter
         }
 
 
-        //Now that you have a grasp on the things that you might see in an event, specifically MessageReceivedEvent,
-        // we will look at sending / responding to messages!
-        //This will be an extremely simplified example of command processing.
-        //Remember, in all of these .equals checks it is actually comparing
-        // message.getContentDisplay().equals, which is comparing a string to a string.
-        // If you did message.equals() it will fail because you would be comparing a Message to a String!
-        switch (msg) {
-            case "!ping":
-                //This will send a message, "pong!", by constructing a RestAction and "queueing" the action with the Requester.
-                // By calling queue(), we send the Request to the Requester which will send it to discord. Using queue() or any
-                // of its different forms will handle ratelimiting for you automatically!
-                
-                channel.sendMessage("pong!").queue();
-                break;
-            case "!nextAssault":
-                FactionAssaultControl fAssault = new FactionAssaultControl();
-                if(fAssault.isCurrent())
-                    channel.sendMessage
-                    (    "Assault is current!, GO KILL HORDS! "
-                        + "\nTime Remaining: ["+ fAssault.getTimeRemaining(fAssault.getPrevieAssault())[0] +"h:"
-                        + fAssault.getTimeRemaining(fAssault.getPrevieAssault())[1] +"m]"
-                    ).queue();
-                else
-                    channel.sendMessage
-                    (   "Next assault is in ["
-                        + fAssault.getTimeRemaining(fAssault.getNextAssault())[0] +"h:"
-                        + fAssault.getTimeRemaining(fAssault.getNextAssault())[1] +"m]"
-                        + " ("+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fAssault.getNextAssault()) +" Server Time)"
-                        //" (server time: "+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fAssault.getServerTime()) +") "
-                    ).queue();
-                break;
-            case "!roll":
-                //In this case, we have an example showing how to use the Success consumer for a RestAction. The Success consumer
-                // will provide you with the object that results after you execute your RestAction. As a note, not all RestActions
-                // have object returns and will instead have Void returns. You can still use the success consumer to determine when
-                // the action has been completed!
-                
-                Random rand = new Random();
-                int roll = rand.nextInt(6) + 1; //This results in 1 - 6 (instead of 0 - 5)
-                channel.sendMessage(author.getAsMention() +" Your roll: " + roll).queue(sentMessage ->  //This is called a lambda statement. If you don't know
-                {                                                               // what they are or how they work, try google!
-                    if (roll < 3)
-                    {
-                        channel.sendMessage("The roll for messageId: " + sentMessage.getId() + " wasn't very good... Must be bad luck!\n").queue();
-                    }
-                });
-                break;
-        }
+        //Valid if is command msg
+        if(msg.length() > 2 && msg.substring(0, 1).equals("!"))
+        {
+            msg = (msg.substring(1)).toLowerCase();
+            //Now that you have a grasp on the things that you might see in an event, specifically MessageReceivedEvent,
+            // we will look at sending / responding to messages!
+            //This will be an extremely simplified example of command processing.
+            //Remember, in all of these .equals checks it is actually comparing
+            // message.getContentDisplay().equals, which is comparing a string to a string.
+            // If you did message.equals() it will fail because you would be comparing a Message to a String!
+            switch (msg) {
+                case "ping":
+                    //This will send a message, "pong!", by constructing a RestAction and "queueing" the action with the Requester.
+                    // By calling queue(), we send the Request to the Requester which will send it to discord. Using queue() or any
+                    // of its different forms will handle ratelimiting for you automatically!
+
+                    channel.sendMessage("pong!").queue();
+                    break;
+                case "nextassault":
+                    FactionAssaultControl fAssault = new FactionAssaultControl();
+                    if(fAssault.isCurrent())
+                        channel.sendMessage
+                        (    "Assault is current!, GO KILL HORDS! "
+                            + "\nTime Remaining: ["+ fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault())[0] +"h:"
+                            + fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault())[1] +"m]"
+                        ).queue();
+                    else
+                        channel.sendMessage
+                        (   "Next assault is in ["
+                            + fAssault.getTimeRemaining(fAssault.getNextAssault())[0] +"h:"
+                            + fAssault.getTimeRemaining(fAssault.getNextAssault())[1] +"m]"
+                            + " ("+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fAssault.getNextAssault()) +" Server Time)"
+                            //" (server time: "+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fAssault.getServerTime()) +") "
+                        ).queue();
+                    break;
+                case "roll":
+                    //In this case, we have an example showing how to use the Success consumer for a RestAction. The Success consumer
+                    // will provide you with the object that results after you execute your RestAction. As a note, not all RestActions
+                    // have object returns and will instead have Void returns. You can still use the success consumer to determine when
+                    // the action has been completed!
+
+                    Random rand = new Random();
+                    int roll = rand.nextInt(6) + 1; //This results in 1 - 6 (instead of 0 - 5)
+                    channel.sendMessage(author.getAsMention() +" Your roll: " + roll).queue(sentMessage ->  //This is called a lambda statement. If you don't know
+                    {                                                               // what they are or how they work, try google!
+                        if (roll < 3)
+                        {
+                            channel.sendMessage("The roll for messageId: " + sentMessage.getId() + " wasn't very good... Must be bad luck!\n").queue();
+                        }
+                    });
+                    break;
+            }
+        }        
     }
-    
-    
 }

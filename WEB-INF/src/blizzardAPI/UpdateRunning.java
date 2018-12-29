@@ -10,6 +10,7 @@ import com.blizzardPanel.DiscordBot;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.FactionAssaultControl;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -56,6 +57,7 @@ public class UpdateRunning implements ServletContextListener
                 {
                     while(true)
                     {
+                        assaultNotification();
                         if(needStatycUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
                         if(needDynamicUpdate())
@@ -84,6 +86,31 @@ public class UpdateRunning implements ServletContextListener
     {
         // context is destroyed interrupts the thread
         updateInterval.interrupt();
+    }
+    
+    private void assaultNotification()
+    {
+        FactionAssaultControl fAssault = new FactionAssaultControl();
+        if(fAssault.isCurrent())
+        {
+            int[] timeRemain = fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault());
+            if(timeRemain[0] == 0)
+            {
+                discordBot.sendMessajeNotification(timeRemain[1] +"m remain for the assault to end");
+            }
+        }
+        else
+        {
+            int[] timeRemain = fAssault.getTimeRemaining(fAssault.getNextAssault());
+            if(timeRemain[0] == 1 && timeRemain[1] <= 1)
+            {
+                discordBot.sendMessajeNotification(timeRemain[0] +"h:"+ timeRemain[1] +"m to start the assault");
+            }
+            else if(timeRemain[0] == 0 && timeRemain[1] <= 30)
+            {
+                discordBot.sendMessajeNotification(timeRemain[1] +"m to start the assault");                
+            }
+        }
     }
 
     /**
