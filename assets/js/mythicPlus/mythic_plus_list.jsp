@@ -1,6 +1,6 @@
 <%@include file="../../../includes/globalObject.jsp" %>
-<%@ page import ="com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneAffix" %>
-<%@ page import ="com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneDungeonRun" %>
+<%@ page import ="com.blizzardPanel.gameObject.mythicKeystone.KeystoneAffix" %>
+<%@ page import ="com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
@@ -44,11 +44,14 @@ var keystone_affixes = [];
             'map_name': "<%= keyRun.getKeystoneDungeon().getName() %>",
             'mem': {
             <%
-                out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
-                out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
-                int j = 2;
-                for(CharacterMember m : keyRun.getDPS())
-                    out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");
+                if(keyRun.getMembers().size() > 0)
+                {
+                    out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
+                    out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
+                    int j = 2;
+                    for(CharacterMember m : keyRun.getDPS())
+                        out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");                    
+                }
             %>
             },
             'affix': [
@@ -79,12 +82,15 @@ var keystone_affixes = [];
             'map_id': '<%= keyRun.getKeystoneDungeon().getMapId() %>',
             'map_name': "<%= keyRun.getKeystoneDungeon().getName() %>",
             'mem': {
-            <%
-                out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
-                out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
-                int j = 2;
-                for(CharacterMember m : keyRun.getDPS())
-                    out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");
+            <%                
+                if(keyRun.getMembers().size() > 0)
+                {
+                    out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
+                    out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
+                    int j = 2;
+                    for(CharacterMember m : keyRun.getDPS())
+                        out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");
+                }
             %>
             },
             'affix': [

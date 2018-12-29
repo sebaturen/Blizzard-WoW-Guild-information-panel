@@ -26,8 +26,8 @@ import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
 import com.blizzardPanel.User;
-import com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneDungeon;
-import com.blizzardPanel.gameObject.KeystoneDungeon.KeystoneDungeonRun;
+import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeon;
+import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import com.blizzardPanel.gameObject.Realm;
 import com.blizzardPanel.gameObject.characters.PlayableSpec;
 
@@ -779,10 +779,13 @@ public class Update implements APIInfo
                                         ((Long) runDetail.get("keystone_level")).intValue(),
                                         ((Long) ((JSONObject) runDetail.get("dungeon")).get("id")).intValue(),
                                         (Boolean) runDetail.get("is_completed_within_time"));
-                                if(!keyRunDB.isInternalData())
+                                if(keyRunDB.isInternalData())
                                 {
-                                    keyRunBlizz.saveInDB();
+                                    keyRunBlizz.setId(keyRunDB.getId());
+                                    keyRunBlizz.setIsInternalData(true);
                                 }
+                                //If preview not have correct info, this fix it~
+                                keyRunBlizz.saveInDB();
                             }                        
                         }
                     } catch(DataException ex) {

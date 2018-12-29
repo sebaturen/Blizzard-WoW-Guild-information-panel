@@ -4,7 +4,7 @@
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 
-package com.blizzardPanel.gameObject.KeystoneDungeon;
+package com.blizzardPanel.gameObject.mythicKeystone;
 
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;

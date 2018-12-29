@@ -345,7 +345,7 @@ CREATE TABLE `keystone_dungeon_run_members` (
     `character_spec_id`         INT NOT NULL,
     `character_item_level`      INT NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY(keystone_dungeon_run_id) REFERENCES keystone_dungeon_run_members(id),
+    FOREIGN KEY(keystone_dungeon_run_id) REFERENCES keystone_dungeon_run(id),
     FOREIGN KEY(character_internal_id) REFERENCES character_info(internal_id),
     FOREIGN KEY(character_spec_id) REFERENCES character_specs(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

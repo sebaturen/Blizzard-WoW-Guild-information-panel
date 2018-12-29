@@ -4,7 +4,7 @@
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
 
-package com.blizzardPanel.gameObject.KeystoneDungeon;
+package com.blizzardPanel.gameObject.mythicKeystone;
 
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
@@ -57,7 +57,8 @@ public class KeystoneDungeonRun extends GameObject
         loadFromDBUniqued(
                 new String[] {"completed_timestamp", "duration", "keystone_level", 
                             "keystone_dungeon_id", "is_complete_in_time"}, 
-                new String[] {complateTimeStamp+"", duration+"", keyLevel+"", keyDunId+"", (isCompletInTime? "0":"1")});
+                new String[] {complateTimeStamp+"", duration+"", keyLevel+"", 
+                            keyDunId+"", (isCompletInTime? "1":"0")});
     }
 
     public KeystoneDungeonRun(JSONObject info)
@@ -179,10 +180,20 @@ public class KeystoneDungeonRun extends GameObject
         {
             keyAffix.put(i, this.keyAffixes.get(i).getId());
         }
-        //{"completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"} //
-        setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
-        switch (saveInDBObj(new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()}))
+        //{"id", "completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"} //
+        String[] saveData;
+        if(this.isInternalData)
+        {
+            saveData = new String[] {this.id+"", this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
+        }
+        else
+        {            
+            setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
+            saveData = new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
+        }
+        switch (saveInDBObj(saveData))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.members.forEach( (m) -> 
@@ -196,7 +207,8 @@ public class KeystoneDungeonRun extends GameObject
                             memInGroupId = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
                                     new String[] { "id" },
                                     "keystone_dungeon_run_id=? AND character_internal_id=?",
-                                    new String[] {  this.id +"", m.getId() +"" } );
+                                    new String[] { this.id +"", m.getId() +"" } );
+                            System.out.println("Mem id: "+ memInGroupId);
                         } catch (SQLException ex) {
                             Logs.errorLog(KeystoneDungeonRun.class, "Fail to get memberInGroupID "+ ex);
                         }
@@ -204,11 +216,11 @@ public class KeystoneDungeonRun extends GameObject
                         if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
                         {//insert
                             dbConnect.insert(
-                                            KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
-                                            KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_KEY,
-                                            DBStructure.outKey(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE),
-                                            // "keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"
-                                            new String[] { this.id+"", m.getId()+"",  m.getActiveSpec().getId()+"", m.getItemLevel()+"" });
+                                KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+                                KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_KEY,
+                                DBStructure.outKey(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE),
+                                //{"keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"};
+                                new String[] { this.id+"", m.getId()+"", m.getActiveSpec().getId()+"", m.getItemLevel()+"" });
                         }
                     } catch (DataException|ClassNotFoundException|SQLException ex) {
                         Logs.errorLog(KeystoneDungeonRun.class, "Fail to save members in groups: "+ ex);
