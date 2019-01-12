@@ -208,7 +208,6 @@ public class KeystoneDungeonRun extends GameObject
                                     new String[] { "id" },
                                     "keystone_dungeon_run_id=? AND character_internal_id=?",
                                     new String[] { this.id +"", m.getId() +"" } );
-                            System.out.println("Mem id: "+ memInGroupId);
                         } catch (SQLException ex) {
                             Logs.errorLog(KeystoneDungeonRun.class, "Fail to get memberInGroupID "+ ex);
                         }

@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 public class MythicPlusControl 
 {    
     //public static final String WEEK_CHANGE_FIRST_TIME;
+    public static final int RESET_DAY = Calendar.THURSDAY; //dey of week
     
     //Variable
     private final DBConnect dbConnect;
@@ -58,7 +59,7 @@ public class MythicPlusControl
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
-                    new String[] {"1545754700000"});
+                    new String[] {"1546982300000"});
             this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

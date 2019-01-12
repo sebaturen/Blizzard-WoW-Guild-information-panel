@@ -31,6 +31,7 @@ public class UpdateRunning implements ServletContextListener
     private ServletContext context;
     private DiscordBot discordBot;
     private int count = 0;
+    private boolean isAssaultNotification = false;
 
     public UpdateRunning()
     {
@@ -93,22 +94,32 @@ public class UpdateRunning implements ServletContextListener
         FactionAssaultControl fAssault = new FactionAssaultControl();
         if(fAssault.isCurrent())
         {
+            if(!this.isAssaultNotification)
+            {
+                discordBot.sendMessajeNotification("The assault has start");
+                this.isAssaultNotification = true;
+            }
             int[] timeRemain = fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault());
-            if(timeRemain[0] == 0)
+            if(timeRemain[0] == 0 && timeRemain[1] == 30)
             {
                 discordBot.sendMessajeNotification(timeRemain[1] +"m remain for the assault to end");
             }
         }
         else
         {
+            if(this.isAssaultNotification)
+            {
+                discordBot.sendMessajeNotification("The assault has finish");
+                this.isAssaultNotification = false;                
+            }
             int[] timeRemain = fAssault.getTimeRemaining(fAssault.getNextAssault());
-            if(timeRemain[0] == 1 && timeRemain[1] <= 1)
+            if(timeRemain[0] == 1 && timeRemain[1] == 0)
             {
                 discordBot.sendMessajeNotification(timeRemain[0] +"h:"+ timeRemain[1] +"m to start the assault");
             }
-            else if(timeRemain[0] == 0 && timeRemain[1] <= 30)
+            else if(timeRemain[0] == 0 && timeRemain[1] == 30)
             {
-                discordBot.sendMessajeNotification(timeRemain[1] +"m to start the assault");                
+                discordBot.sendMessajeNotification(timeRemain[1] +"m to start the assault");
             }
         }
     }
