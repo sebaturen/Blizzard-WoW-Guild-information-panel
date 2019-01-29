@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 
 public class RaidDificultBoss extends GameObject
@@ -81,32 +79,35 @@ public class RaidDificultBoss extends GameObject
                     if(!this.boss.isData())
                     {
                         Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ objInfo.get("slug").toString());
-                        System.exit(-1);
+                        //System.exit(-1);
                     }
                 } catch (IOException | org.json.simple.parser.ParseException | DataException ex) {
                     Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO UPDATE BOSS LIST!! "+ ex);
-                    System.exit(-1);
+                    //System.exit(-1);
                 }
             }
-            try {
-                this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
-            } catch (ParseException ex) {
-                Logs.errorLog(RaidDificultBoss.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
-            }
-            
-            //Save Item Level AVG            
-            if(objInfo.get("itemLevelAvg").getClass().equals(Long.class))
-                this.itemLevelAvg = (Long) objInfo.get("itemLevelAvg");
             else
-                this.itemLevelAvg = (Double) objInfo.get("itemLevelAvg");
-            
-            //Save artefact power (BFA)
-            if(objInfo.containsKey("artifactPowerAvg"))
-            {
-                if(objInfo.get("artifactPowerAvg").getClass().equals(Long.class))
-                    this.artifactPowerAvg = (Long) objInfo.get("artifactPowerAvg");
+            {                
+                try {
+                    this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
+                } catch (ParseException ex) {
+                    Logs.errorLog(RaidDificultBoss.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
+                }
+
+                //Save Item Level AVG            
+                if(objInfo.get("itemLevelAvg").getClass().equals(Long.class))
+                    this.itemLevelAvg = (Long) objInfo.get("itemLevelAvg");
                 else
-                    this.artifactPowerAvg = (Double) objInfo.get("artifactPowerAvg");                
+                    this.itemLevelAvg = (Double) objInfo.get("itemLevelAvg");
+
+                //Save artefact power (BFA)
+                if(objInfo.containsKey("artifactPowerAvg"))
+                {
+                    if(objInfo.get("artifactPowerAvg").getClass().equals(Long.class))
+                        this.artifactPowerAvg = (Long) objInfo.get("artifactPowerAvg");
+                    else
+                        this.artifactPowerAvg = (Double) objInfo.get("artifactPowerAvg");                
+                }
             }
         }     
         this.isData = true;
