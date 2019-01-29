@@ -1558,7 +1558,10 @@ public class Update implements APIInfo
             bossInfoCreate.put("description", bossInfo.get("description"));
             bossInfoCreate.put("name", bossInfo.get("name"));
             bossInfoCreate.put("slug", bossInfo.get("urlSlug"));
+            /*
             JSONArray npcList = (JSONArray) bossInfo.get("npcs");
+            Logs.infoLog(Update.class, "BOSS LIST - "+ bossInfo.get("urlSlug"));
+            Logs.infoLog(Update.class, "BOSS LIST - "+ bossInfo);
             for(int j = 0; j < npcList.size(); j++)
             {
                 JSONObject npcInfo = (JSONObject) npcList.get(j);
@@ -1568,7 +1571,7 @@ public class Update implements APIInfo
                     bossInfoCreate.put("slug", npcInfo.get("urlSlug"));
                     break;
                 }
-            }
+            }*/
             Boss b = new Boss(bossInfoCreate);
             if(inDB.isInternalData())
             {

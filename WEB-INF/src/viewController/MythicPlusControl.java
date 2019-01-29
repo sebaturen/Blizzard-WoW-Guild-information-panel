@@ -59,7 +59,7 @@ public class MythicPlusControl
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
-                    new String[] {"1546982300000"});
+                    new String[] {"1548132000000"});
             this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

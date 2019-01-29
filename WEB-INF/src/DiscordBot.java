@@ -109,13 +109,13 @@ public class DiscordBot extends ListenerAdapter
 
                 if(!guild.getName().equals(this.guildDiscordChanel))
                 {
-                    channel.sendMessage("The BOT only work in "+ this.guildDiscordChanel).queue();
+                    //channel.sendMessage("The BOT only work in "+ this.guildDiscordChanel).queue();
                 }
                 else
                 {
                     botRespond(msg, channel, author);
                 }
-                System.out.printf("(%s)[%s]<%s>: %s\n", guild.getName(), textChannel.getName(), name, msg);
+                //System.out.printf("(%s)[%s]<%s>: %s\n", guild.getName(), textChannel.getName(), name, msg);
             }
             else if (event.isFromType(ChannelType.PRIVATE)) //If this message was sent to a PrivateChannel
             {

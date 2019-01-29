@@ -5,13 +5,18 @@
  */
 package com.blizzardPanel.gameObject.guild.raids;
 
+import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.Boss;
 import com.blizzardPanel.gameObject.GameObject;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 
 public class RaidDificultBoss extends GameObject
@@ -68,8 +73,20 @@ public class RaidDificultBoss extends GameObject
             this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
             if(!this.boss.isData())
             {
-                Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
-                System.exit(-1);
+                Logs.infoLog(RaidDificultBoss.class, "Boss '"+ objInfo.get("slug").toString() +"' not have info in DB, update to blizzard");
+                try {
+                    //In internal DB not have boss, so we need load a new boss DB...
+                    new Update().getBossInformation();
+                    this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
+                    if(!this.boss.isData())
+                    {
+                        Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ objInfo.get("slug").toString());
+                        System.exit(-1);
+                    }
+                } catch (IOException | org.json.simple.parser.ParseException | DataException ex) {
+                    Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO UPDATE BOSS LIST!! "+ ex);
+                    System.exit(-1);
+                }
             }
             try {
                 this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
@@ -110,16 +127,12 @@ public class RaidDificultBoss extends GameObject
                 return "zekvoz";
             case "zul-reborn":
                 return "zul";
+            case "mythrax-the-unraveler":
+                return "mythrax";
             //******************Legion****************************************//
             //-----------Antorus, the Burning Throne
-            case "felhounds-of-sargeras":
-                return "fharg";
-            case "antoran-high-command":
-                return "admiral-svirax";
             case "eonar-the-life-binder":
-                return "essence-of-eonar";
-            case "the-coven-of-shivarra":
-                return "noura-mother-of-flames";
+                return "the-defense-of-eonar";
             //----------The Emerald Nightmare
             case "dragons-of-nightmare":
                 return "ysondre";
