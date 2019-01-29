@@ -267,7 +267,7 @@ public class Update implements APIInfo
                                 "Bearer "+ accesToken,
                                 new String[] {"region="+ GeneralConfig.getStringConfig("SERVER_LOCATION"), 
                                                 "locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE"),
-                                                "namespace=dynamic-us" });
+                                                "namespace=dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION")});
         JSONArray connRealm = (JSONArray) respond.get("connected_realms");
         for(int i = 0; i < connRealm.size(); i++)
         {
@@ -592,7 +592,7 @@ public class Update implements APIInfo
         JSONObject realmSlugBlizz = curl(realmSlugURL,
                                         "GET",
                                         "Bearer "+ accesToken,
-                                        new String[] {"region="+ region, "locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE"), "namespace=dynamic-us"});
+                                        new String[] {"region="+ region, "locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE"), "namespace=dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION")});
         JSONArray realmsList = (JSONArray) realmSlugBlizz.get("realms");
         for(int i = 0; i < realmsList.size(); i++)
         {
