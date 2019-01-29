@@ -1,8 +1,3 @@
----
-
-
----
-
 <h1 id="blizzard-wow-guild-information-panel">Blizzard WoW Guild Information Panel</h1>
 <p>This panel is create for center all information of the guild in only one page, guild members, guild challenges, and raid progression.<br>
 User system is include, for set polls or more information about the members. (member details as item level, equip, etc).</p>
@@ -56,6 +51,8 @@ CLIENT_SECRET</p>
 <code>TIME_INTERVAL_AUCTION_HOUSE_UPDATE</code> (10 min)<br>
 Requerid more 0*</p>
 </blockquote>
+<h2 id="compilation">Compilation</h2>
+<p>Before you use the panel, need compile all <code>WEB-INF/src</code> folder. The panel has added <code>WEB-INF/build.xml</code> so you can compile it using <code>Apache Ant</code>, just move to <code>WEB-INF</code> and use compile command <code>$ ant compile</code> </p>
 <h2 id="first-run">First run</h2>
 <p>In first run, the system get all first need information, this may take a time, see the log file to check the progress:<br>
 <code>${catalina.base}/logs/BlizzardPanel.log</code></p>
