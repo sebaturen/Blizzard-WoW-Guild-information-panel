@@ -122,6 +122,9 @@ public class RaidDificultBoss extends GameObject
         switch(slug)
         {
             //******************Battle For Azeroth****************************//
+            //-----------Battle of Dazar'alor
+            case "high-tinker-mekkatorque":
+                return "mekkatorque";
             //-----------Uldir    
             case "zekvoz-herald-of-nzoth":
                 return "zekvoz";
