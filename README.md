@@ -48,7 +48,7 @@ BLIZZAR_LINK<br>
 CLIENT_SECRET</p>
 </blockquote>
 <h3 id="other-options">Other options:</h3>
-<p>Interval update. (Automatically the panel update the game and guild information, you can change the time in <code>GeneralConfig.java</code>)</p>
+<p>Interval update. (Automatically the panel update the game and guild information, you can change the time:</p>
 <blockquote>
 <p><code>TIME_INTERVAL_DYNAMIC_UPDATE</code> (60 min)<br>
 <code>TIME_INTERVAL_STATIC_UPDATE</code> (30 days)<br>
