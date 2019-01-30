@@ -32,14 +32,14 @@ $(document).ready(function() {
 
 function weekRun(keyRuns)
 {    
-    $("#runList").html("<h1 class='key_divide_title'>Runs of the week</h1>");
+    $("#runList").html("<h1 class='key_title key_divide_title'>Runs of the week</h1>");
     $("#runList").append(renderRuns(keyRuns));
     $("#runList").show();
 }
 
 function bestRun(keyRuns)
 {    
-    $("#bestRun").html("<h1 class='key_divide_title'>Best Runs</h1>");
+    $("#bestRun").html("<h1 class='key_title'>Best Runs</h1><h3 class='key_title key_divide_title'>(Season 2)</h3>");
     $("#bestRun").append(renderRuns(keyRuns));
     $("#bestRun").show();
 }

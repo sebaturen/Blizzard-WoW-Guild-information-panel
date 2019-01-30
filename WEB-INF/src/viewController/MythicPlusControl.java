@@ -39,8 +39,8 @@ public class MythicPlusControl
             JSONArray keyListInDb = dbConnect.select(
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
-                    "is_complete_in_time=? order by keystone_level DESC, completed_timestamp DESC limit 3",
-                    new String[] {"1"});
+                    "is_complete_in_time=? AND completed_timestamp > ? order by keystone_level DESC, completed_timestamp DESC limit 3",
+                    new String[] {"1", "1548633770000"});
             this.keyBestRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
@@ -59,7 +59,7 @@ public class MythicPlusControl
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
-                    new String[] {"1548132000000"});
+                    new String[] {"1548784010000"});
             this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

@@ -405,9 +405,11 @@ body > .container {
     height: 100%;
     display: table-cell;
 }
-.key_divide_title {
-    padding-bottom: 39px;
+.key_title {
     text-align: center;
     font-family: "LifeCraft";
+}
+.key_divide_title {
+    padding-bottom: 39px;
 }
 /*END----------MYTHIC PLUS-----------------*/
