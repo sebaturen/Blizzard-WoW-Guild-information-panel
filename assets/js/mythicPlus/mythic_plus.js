@@ -39,7 +39,8 @@ function weekRun(keyRuns)
 
 function bestRun(keyRuns)
 {    
-    $("#bestRun").html("<h1 class='key_title'>Best Runs</h1><h3 class='key_title key_divide_title'>(Season 2)</h3>");
+    $("#bestRun").html("<h1 class='key_title'>Best Runs</h1>\n\
+                        <h3 class='key_title key_divide_title'>(Season 2)</h3>");
     $("#bestRun").append(renderRuns(keyRuns));
     $("#bestRun").show();
 }

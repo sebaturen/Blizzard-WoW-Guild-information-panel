@@ -5,6 +5,13 @@
 }
 .infoMember {
     min-height: 600px;
+    position: relative;
+}
+.last_update {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.44);
 }
 .Media-image {
     width: 48px;

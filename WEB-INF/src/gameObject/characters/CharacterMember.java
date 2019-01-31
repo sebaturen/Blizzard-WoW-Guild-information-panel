@@ -473,10 +473,8 @@ public class CharacterMember extends GameObject
     public long getLastModified() { return this.lastModified; }
     public int getUserID() { return this.userID; }
     public Date getLastModifiedDate() {
-        //All lastModified in blizzard API is added 3 cero more...
-        String val = this.lastModified+"";
-        val = val.substring(0, val.length()-3);
-        return new Date((Long.parseLong(val))*1000);
+        Date time = new Date(Long.parseLong(this.lastModified+""));
+        return time;
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
     public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty()) loadSpecFromDB(); return this.specs; }

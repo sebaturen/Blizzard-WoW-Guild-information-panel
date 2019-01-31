@@ -6,6 +6,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
 <%@ page import ="com.blizzardPanel.gameObject.Item" %>
 <%@ page import ="com.blizzardPanel.gameObject.Spell" %>
+<%@ page import ="java.text.SimpleDateFormat" %>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 <%if(guildMember) {
     int memberID = Integer.parseInt(request.getParameter("id"));
@@ -23,7 +24,8 @@ var member_<%= memberID %> = {
         'member_id': <%= member.getId() %>, 
         'gRank_id': <%= member.getRank().getId() %>,
         'gRank_title': '<%= member.getRank().getTitle() %>',
-        'race': '<%= member.getRace().getName() %>'
+        'race': '<%= member.getRace().getName() %>',
+        'last_modified': '<%= (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(member.getLastModifiedDate())) %>'
     },
     'stats': {
         <% CharacterStats mStat = member.getStats(); %>

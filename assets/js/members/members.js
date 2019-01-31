@@ -191,6 +191,7 @@ function showMemberDetail(tr, avImg, memeberId)
 function prepareRender(mInfo)
 {    
     $('.memContent').append('<div class="infoMember"></div>');
+    $('.infoMember').append('<div class="last_update">Last Update: '+ mInfo.m_info.last_modified +'</div>');
     //Equipo!!!
     $('.infoMember').append('<div class="itemsMember"></div>');
     $('.itemsMember').append(renderItem(mInfo));
