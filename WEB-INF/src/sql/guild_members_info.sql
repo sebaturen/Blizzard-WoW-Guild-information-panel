@@ -19,6 +19,7 @@ CREATE TABLE `gMembers_id_name` (
     `in_guild`      TINYINT(1) NOT NULL,
     `rank`          int,
     `user_id`       int,
+    `isDelete`      TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY(internal_id),
     UNIQUE (member_name, realm)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -50,6 +51,8 @@ CREATE TABLE `character_info` (
     `calcClass`         varchar(2) NOT NULL,
     `faction`           int NOT NULL,
     `totalHonorableKills`   bigint(20) NOT NULL,
+    `bestMythicPlusScore`   TEXT DEFAULT "{}",
+    `mythicPlusScores`      TEXT DEFAULT "{}",
     `guild_name`            varchar(50) NOT NULL,
     `lastModified`          bigint(20) NOT NULL,
     PRIMARY KEY(internal_id),
@@ -288,6 +291,7 @@ CREATE TABLE `polls` (
     `is_limit_date` TINYINT(1) NOT NULL,
     `end_date`	    DATETIME,
     `isEnable`      TINYINT(1) NOT NULL DEFAULT 1,
+    `isHide`        TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(min_rank) REFERENCES guild_rank(id)

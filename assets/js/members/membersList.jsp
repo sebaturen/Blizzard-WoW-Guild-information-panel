@@ -2,6 +2,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
+<%@ page import ="org.json.simple.JSONObject"%>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 var members = [];
 var guildRanks = [];
@@ -26,6 +27,9 @@ if(members.getMembersList() != null)
         String specName = member.getActiveSpec().getSpec().getSlug();
         String iLevel = "0";
         String race = "";
+        int mScore = 0;
+        int mBestScore = 0;
+        String mBestScoreSeason = "";
         if(guildMember)
         {
             iLevel = String.format("%.2f", member.getItemLevel());
@@ -47,6 +51,9 @@ if(members.getMembersList() != null)
                 races.add(member.getRace().getName());
                 %>races.push("<%= member.getRace().getName() %>");<%
             }
+            mScore = member.getMythicScoreAll();
+            mBestScore = member.getBestMythicScore();
+            mBestScoreSeason = member.getBestMythicScoreSeason();
         } %>
         members.push({   
             'name': '<%= member.getName() %>', 
@@ -60,6 +67,11 @@ if(members.getMembersList() != null)
             'gRank_title': '<%= member.getRank().getTitle() %>',
             'iLevel': '<%= iLevel %>',
             'race': "<%= race %>",
+            'mythicScore': '<%= mScore %>',
+            'bestMythicScore': {
+                'score': '<%= mBestScore %>',
+                'season': '<%= mBestScoreSeason %>'
+            }
         });
     <%} //End foreach member%>
 <%} //End if members not null%>

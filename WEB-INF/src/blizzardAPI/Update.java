@@ -256,7 +256,6 @@ public class Update implements APIInfo
     
     public void getRealmIndex() throws DataException, IOException, ParseException
     {
-        System.out.println("so....");
         if(accesToken == null) throw new DataException("Access Token Not Found");
         if(isAccesTokenExpired()) generateAccesToken();
         //Generate an API URL
@@ -733,8 +732,8 @@ public class Update implements APIInfo
         if(isAccesTokenExpired()) generateAccesToken();
         JSONArray members = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                             CharacterMember.GMEMBER_ID_NAME_TABLE_STRUCTURE,
-                                            "in_guild=?",
-                                            new String[] {"1"});
+                                            "in_guild=? AND isDelete=?",
+                                            new String[] {"1", "0"});
 
         int iProgres = 1;
         Logs.infoLog(Update.class, "0%");
@@ -746,12 +745,8 @@ public class Update implements APIInfo
             if(mbBlizz != null)
             {//DB member need update!
                 if (!((Long)mbBlizz.getLastModified()).equals(mbDB.getLastModified()))
-                {
-                    mbBlizz.setId(mbDB.getId());
-                    mbBlizz.setIsInternalData(mbDB.isInternalData());
-                    mbBlizz.saveInDB();                    
-                          
-                    //save characters best runs:
+                {         
+                    //save characters best keystone-runs:
                     Realm mbRealm = new Realm(mbBlizz.getRealm());
                     String urlMyticKeyProfile = String.format(API_ROOT_URL, 
                                                         GeneralConfig.getStringConfig("SERVER_LOCATION"),
@@ -791,9 +786,43 @@ public class Update implements APIInfo
                     } catch(DataException ex) {
                         Logs.infoLog(Update.class, "Member "+ mbBlizz.getName() +" not have a keystone run "+ ex);
                     }
+                    //Save Raider.IO Score
+                    try
+                    {
+                        //Raider.io URL
+                        String urlIOSocre = String.format
+                                        (RAIDER_IO_API_URL, 
+                                            "characters", 
+                                            GeneralConfig.getStringConfig("SERVER_LOCATION"), 
+                                            URLEncoder.encode(mbBlizz.getRealm(), "UTF-8").replace("+", "%20"),
+                                            URLEncoder.encode(mbBlizz.getName(), "UTF-8").replace("+", "%20"))
+                                        +"?season="+ RAIDER_IO_ACTUAL_SEASON;
+                        //Call Raider.io API
+                        JSONObject charDetail = curl(urlIOSocre, "GET");
+                        if(((JSONObject) charDetail.get("characterDetails")).get("bestMythicPlusScore") != null)
+                        {
+                            mbBlizz.setBestMythicPlusScore( (JSONObject) ((JSONObject) charDetail.get("characterDetails")).get("bestMythicPlusScore"));
+                        }
+                        if(((JSONObject) charDetail.get("characterDetails")).get("mythicPlusScores") != null)
+                        {
+                            JSONObject acScoreRaiderIO = (JSONObject) ((JSONObject) charDetail.get("characterDetails")).get("mythicPlusScores");
+                            JSONObject actualScore = new JSONObject();
+                            actualScore.put("all", ((JSONObject) acScoreRaiderIO.get("all")).get("score").toString()  );
+                            actualScore.put("dps", ((JSONObject) acScoreRaiderIO.get("dps")).get("score").toString());
+                            actualScore.put("healer", ((JSONObject) acScoreRaiderIO.get("healer")).get("score").toString());
+                            actualScore.put("tank", ((JSONObject) acScoreRaiderIO.get("tank")).get("score").toString());
+                            mbBlizz.setMythicPlusScorese(actualScore);
+                        }
+                    } catch(DataException ex) {
+                        Logs.infoLog(Update.class, "Member "+ mbBlizz.getName() +" not have a keystone score "+ ex);
+                    }
+                    
+                    mbBlizz.setId(mbDB.getId());
+                    mbBlizz.setIsInternalData(mbDB.isInternalData());
+                    mbBlizz.saveInDB(); 
+                    
                 }
             }
-
             //Show update progress...
             if ( (((iProgres*2)*10)*members.size())/100 < i )
             {
@@ -820,9 +849,19 @@ public class Update implements APIInfo
                                             new String[] {"fields=guild,talents,items,stats", "locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")});
             blizzPlayer = new CharacterMember(blizzPlayerInfo);
         }
-        catch (IOException|DataException|ParseException e) //Error in blizzard API, like player not found
+        catch (DataException ex) //Error in blizzard API, like player not found
         {
-            Logs.errorLog(Update.class, "BlizzAPI haven a error to '"+ name +"'\n\t"+ e);
+            Logs.errorLog(Update.class, "BlizzAPI haven a error to '"+ name +"'\n\t"+ ex);
+            if(ex.getErrorCode() == 404)
+            {
+                blizzPlayer = new CharacterMember(name, realm, false);
+                blizzPlayer.saveInDB();
+            }
+            return null;
+        }
+        catch (IOException|ParseException e) 
+        {
+            Logs.errorLog(Update.class, "Error to '"+ name +"'\n\t"+ e);
         }
         return blizzPlayer;
     }
@@ -1372,12 +1411,12 @@ public class Update implements APIInfo
             int uderID = (Integer) ((JSONObject) allUsers.get(i)).get("id");
             int actualUserRank = (Integer) ((JSONObject) allUsers.get(i)).get("guild_rank");
             int membersRank = -1;
-            //Select player have a better guild rank
+            //Select player have a guild rank
             //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
             JSONArray charRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                                 new String[] {"rank"},
-                                                "user_id=? AND rank is not null order by rank limit 1",
-                                                new String[] { uderID +"" });
+                                                "user_id=? AND in_guild=? AND rank is not null order by rank limit 1",
+                                                new String[] { uderID +"", "1" });
             if(charRank.size() > 0)
             {
                 membersRank = (Integer) ((JSONObject) charRank.get(0)).get("rank");
@@ -1503,6 +1542,7 @@ public class Update implements APIInfo
     {
         //Generate an API URL
         String urlString = String.format(RAIDER_IO_API_URL,
+                                    "guilds",
                                     GeneralConfig.getStringConfig("SERVER_LOCATION"),
                                     URLEncoder.encode(GeneralConfig.getStringConfig("GUILD_REALM"), "UTF-8").replace("+", "%20"),
                                     URLEncoder.encode(GeneralConfig.getStringConfig("GUILD_NAME"), "UTF-8").replace("+", "%20"));
@@ -1691,7 +1731,7 @@ public class Update implements APIInfo
                     json = (JSONObject) parser.parse(results.toString());
                     return json;
                 } catch(ParseException ex) {
-                    throw new DataException("Fail to parse result!, check the URL"+ urlString +" - "+ ex);
+                    throw new DataException("Fail to parse result!, check the URL "+ urlString +" - "+ ex);
                 }
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 DataException ex = new DataException("Error: "+ conn.getResponseCode() +" - UnAuthorized request, check CLIENT_ID and CLIENT_SECRET in contex.xml CONFIGURATION - "+ url);
@@ -1700,7 +1740,9 @@ public class Update implements APIInfo
             case HttpURLConnection.HTTP_BAD_REQUEST:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Bad Request request, check the API URL is correct in APIInfo.java");
             case HttpURLConnection.HTTP_NOT_FOUND:
-                throw new DataException("Error: "+ conn.getResponseCode() +" - Data not found, check the guild name, server location and realm in APIInfo.java");
+                DataException ex404 = new DataException("Error: "+ conn.getResponseCode() +" - Data not found, check the guild name, server location and realm in APIInfo.java");
+                ex404.setErrorCode(404);
+                throw ex404;
             case HttpURLConnection.HTTP_UNAVAILABLE:
                 throw new DataException("Error: "+ conn.getResponseCode() +" - Blizzard API Error... try again later");
             case API_SECOND_LIMIT_ERROR:

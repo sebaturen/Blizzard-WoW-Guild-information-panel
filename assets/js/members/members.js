@@ -143,6 +143,23 @@ $("#iLevelColum").click(function() {
     visualMember.sort();
     putMembers(visualMember);
 });
+//Sort by Raider.IO
+$("#ioScore").click(function() {
+    visualMember.sort(function(a, b) {
+        var aIlv = parseFloat(a.mythicScore);
+        var bIlv = parseFloat(b.mythicScore);
+        if (aIlv < bIlv) {
+            return 1;
+        }
+        if (aIlv > bIlv) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    visualMember.sort();
+    putMembers(visualMember);
+});
 //-----------PJ INFO--------------------------//
 var lastIdClick = -1;
 $('#charContent').on('click', 'tr.pjInfo', function() {
@@ -169,7 +186,7 @@ $('#charContent').on('click', 'tr.pjInfo', function() {
 function showMemberDetail(tr, avImg, memeberId)
 {
     $('.memDetail').remove(); //clear all other member info if is show~
-    $(tr).after("<tr class='memDetail'><td class='memContent' colspan='6'></td></tr>");
+    $(tr).after("<tr class='memDetail'><td class='memContent' colspan='7'></td></tr>");
     var fullSizeImg = (avImg).replace("-avatar.jpg", "-main.jpg");
     $('.memContent').css('background-image', 'url(' + fullSizeImg + ')');
     $('.memContent').append('<div id="memberDetailLoad" class="row justify-content-md-center"><div class="loader"></div></div>');
@@ -470,6 +487,7 @@ function putMembers(vMem)
         if(val.iLevel > 0) 
         {
             outForm += '<td scope="col">'+ val.iLevel +'</td>';
+            outForm += '<td scope="col">'+ val.mythicScore +'</td>';
         }
         outForm += '</tr>';
         $("#charContent").append(outForm);

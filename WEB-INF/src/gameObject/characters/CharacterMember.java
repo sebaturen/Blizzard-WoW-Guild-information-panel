@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class CharacterMember extends GameObject
@@ -28,7 +29,7 @@ public class CharacterMember extends GameObject
     public static final String GMEMBER_ID_NAME_TABLE_NAME = "gMembers_id_name";
     public static final String GMEMBER_ID_NAME_TABLE_KEY = "internal_id";
     public static final String[] GMEMBER_ID_NAME_TABLE_STRUCTURE = {"internal_id", "member_name", "realm",
-                                                                    "rank", "in_guild", "user_id"};
+                                                                    "rank", "in_guild", "user_id", "isDelete"};
 
     //Character information DB
     public static final String CHARACTER_INFO_TABLE_NAME = "character_info";
@@ -36,6 +37,7 @@ public class CharacterMember extends GameObject
     public static final String[] CHARACTER_INFO_TABLE_STRUCTURE = {"internal_id", "battlegroup", "class",
                                                                     "race", "gender", "level", "achievementPoints",
                                                                     "thumbnail", "calcClass", "faction", "totalHonorableKills",
+                                                                    "bestMythicPlusScore", "mythicPlusScores",
                                                                     "guild_name", "lastModified"};
     //Constant
     private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME +" c, "+ GMEMBER_ID_NAME_TABLE_NAME +" gm";
@@ -43,7 +45,7 @@ public class CharacterMember extends GameObject
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class",
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass",
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
-                                                            "gm.user_id", "gm.rank"};
+                                                            "gm.user_id", "gm.rank", "c.bestMythicPlusScore", "c.mythicPlusScores"};
     //Attribute
     private int internalID;
     private String name;
@@ -63,11 +65,15 @@ public class CharacterMember extends GameObject
     private boolean isGuildMember;
     private int userID;
     private Rank gRank;
+    //Mythic plus source
+    private JSONObject bestMythicPlusScore = new JSONObject();
+    private JSONObject mythicPlusScores = new JSONObject();
     private List<CharacterSpec> specs = new ArrayList<>();
     private List<CharacterItems> items = new ArrayList<>();
     private double itemLevel;
     private CharacterStats stats;
     private boolean isMain = false;
+    private boolean isDelete = false;
 
     //Constructor load from DB if have a ID
     public CharacterMember(int internalID)
@@ -90,6 +96,16 @@ public class CharacterMember extends GameObject
                 Logs.errorLog(CharacterMember.class, "Fail to get member info from blizzard. - "+ ex);
             }
         }
+    }
+    
+    //Disable character (CHARACTER NOT FOUND)
+    public CharacterMember(String name, String realm, boolean isEnable)
+    {
+        super(GMEMBER_ID_NAME_TABLE_NAME, GMEMBER_ID_NAME_TABLE_KEY, GMEMBER_ID_NAME_TABLE_STRUCTURE);
+        this.name = name;
+        this.realm = realm;
+        this.isDelete = true;
+        this.isData = true;
     }
 
     //Load to JSON
@@ -147,10 +163,30 @@ public class CharacterMember extends GameObject
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             this.stats = new CharacterStats(this.internalID);
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
+            loadMythicPlusScoreDB(playerInfo.get("bestMythicPlusScore").toString(), playerInfo.get("mythicPlusScores").toString());
         }
 
 
         this.isData = true;
+    }
+    
+    private void loadMythicPlusScoreDB(String bestMythicPlusScore, String mythicPlusScores)
+    {
+        //Best Score
+        try 
+        {
+            JSONParser parser = new JSONParser();
+            if(bestMythicPlusScore.length() > 2)
+            {
+                this.bestMythicPlusScore = (JSONObject) parser.parse(bestMythicPlusScore);
+            }
+            if(mythicPlusScores.length() > 2)
+            {
+                this.mythicPlusScores = (JSONObject) parser.parse(mythicPlusScores);
+            }
+        } catch (ParseException ex) {
+            Logs.errorLog(CharacterMember.class, "Fail to parse mytic score "+ this.internalID +" - "+ ex);
+        }
     }
 
     private void loadSpecFromBlizz(JSONArray allTalents)
@@ -306,83 +342,107 @@ public class CharacterMember extends GameObject
         {
             generateMemberID();
         }
-        /* {"internal_id", "battlegroup", "class",
-         * "race", "gender", "level", "achievementPoints",
-         * "thumbnail", "calcClass", "faction", "totalHonorableKills",
-         * "guild_name", "lastModified"};
-         */
-        setTableName(CHARACTER_INFO_TABLE_NAME);
-        setTableKey(CHARACTER_INFO_TABLE_KEY);
-        setTableStructur(CHARACTER_INFO_TABLE_STRUCTURE);
-        String[] val = new String[] {this.internalID +"", this.battleGroup, this.memberClass.getId() +"",
-                                    this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"",
-                                    this.thumbnail, this.calcClass +"", this.faction +"", this.totalHonorableKills +"",
-                                    this.guildName, this.lastModified +""};
-        //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
-        if(this.isData)
+        if(this.isDelete)
         {
-            String guildName = GeneralConfig.getStringConfig("GUILD_NAME");
-            if (this.isGuildMember && !this.guildName.equals(guildName)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
-            int vSave = saveInDBObj(val);
-            if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
+            /* {"internal_id", "member_name", "realm",
+             *  "rank", "in_guild", "user_id", "isDelete"};
+             */
+            this.isInternalData = true;
+            setTableName(GMEMBER_ID_NAME_TABLE_NAME);
+            setTableKey(GMEMBER_ID_NAME_TABLE_KEY);
+            setTableStructur(new String[] {"internal_id", "isDelete"});
+            String[] val = new String[] {this.internalID +"", this.isDelete? "1":"0"};
+            saveInDBObj(val);
+            return true;
+        }
+        else
+        {
+            /* {"internal_id", "battlegroup", "class",
+             * "race", "gender", "level", "achievementPoints",
+             * "thumbnail", "calcClass", "faction", "totalHonorableKills",
+             * "bestMythicPlusScore", "mythicPlusScores",
+             * "guild_name", "lastModified"};
+             */
+            setTableName(CHARACTER_INFO_TABLE_NAME);
+            setTableKey(CHARACTER_INFO_TABLE_KEY);
+            setTableStructur(CHARACTER_INFO_TABLE_STRUCTURE);
+            /* System.out.println("-----------SAVE '"+ this.name +"'-----------------");
+            System.out.println(this.internalID +" - "+ this.battleGroup +" - "+ this.memberClass.getId());
+            System.out.println(this.race.getId() +" - "+ this.gender +" - "+ this.level +" - "+ this.achievementPoints);
+            System.out.println(this.thumbnail +" - "+ this.calcClass +" - "+ this.faction +" - "+ this.totalHonorableKills);
+            System.out.printlm(this.bestMythicPlusScore.toString() +" - "+ this.mythicPlusScores.toString());
+            System.out.println(this.guildName +" - "+ this.lastModified); */
+            String[] val = new String[] {this.internalID +"", this.battleGroup, this.memberClass.getId() +"",
+                                        this.race.getId() +"", this.gender +"", this.level +"", this.achievementPoints +"",
+                                        this.thumbnail, this.calcClass +"", this.faction +"", this.totalHonorableKills +"",
+                                        this.bestMythicPlusScore.toString(), this.mythicPlusScores.toString(),
+                                        this.guildName, this.lastModified +""};
+            //Valid if have a data this object, and guild is null (if we try update, and put null in query, the DB not update this column, for this use this IF)
+            if(this.isData)
             {
-                //Save specs...
-                if(this.specs.isEmpty()) loadSpecFromDB();
-                this.specs.forEach((spc) -> {
-                    spc.setMemberId(this.internalID);
-                    //valide if this member have a this spec in DB (set Update or Insert)
-                    try
-                    {
-                        JSONArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
-                                                                new String[] { CharacterSpec.SPECS_TABLE_KEY},
-                                                                "member_id=? AND spec_id=?",
-                                                                new String[] { spc.getMemberId() +"", spc.getSpec().getId() +""});
-                        if(specMember.size()>0)
-                        {
-                            int charSpecID = (int) ((JSONObject) specMember.get(0)).get(CharacterSpec.SPECS_TABLE_KEY);
-                            spc.setId(charSpecID);
-                            spc.setIsInternalData(true);
-                        }
-                        spc.saveInDB();
-                    } catch (DataException | SQLException ex) {
-                        Logs.errorLog(CharacterMember.class, "Fail to get specs info in DB from member "+ this.name +" - "+ ex);
-                    }
-                });
-                //Save items...
-                //Clear all old items:
-                if(this.items.isEmpty()) loadItemsFromDB();
-                try {
-                    dbConnect.update(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
-                                    CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
-                                    CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
-                                    "member_id=?",
-                                    new String[] {this.internalID +""});
-                } catch (DataException | ClassNotFoundException | SQLException ex) {
-                    Logs.errorLog(CharacterMember.class, "Fail to update remove old items "+ this.internalID +" - "+ ex);
-                }
-                //Update or insert a new items
-                this.items.forEach((itm) -> {
-                    itm.setMemberId(this.internalID);
-                    CharacterItems iMemberDB = new CharacterItems(itm.getPosition(), this.internalID);
-                    if(iMemberDB.isInternalData())
-                    {
-                        itm.setId(iMemberDB.getId());
-                        itm.setIsInternalData(true);
-                    }
-                    itm.saveInDB();
-                });
-                //Save stats
-                this.stats.setId(this.internalID);
-                CharacterStats sDB = new CharacterStats(this.internalID);
-                if(sDB.isInternalData())
+                String guildName = GeneralConfig.getStringConfig("GUILD_NAME");
+                if (this.isGuildMember && !this.guildName.equals(guildName)) deleteFromDB(); //prevent save in guild/internalID members table if not is a guild member
+                int vSave = saveInDBObj(val);
+                if ((vSave == SAVE_MSG_INSERT_OK) || (vSave == SAVE_MSG_UPDATE_OK))
                 {
-                    this.stats.setIsInternalData(true);
+                    //Save specs...
+                    if(this.specs.isEmpty()) loadSpecFromDB();
+                    this.specs.forEach((spc) -> {
+                        spc.setMemberId(this.internalID);
+                        //valide if this member have a this spec in DB (set Update or Insert)
+                        try
+                        {
+                            JSONArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
+                                                                    new String[] { CharacterSpec.SPECS_TABLE_KEY},
+                                                                    "member_id=? AND spec_id=?",
+                                                                    new String[] { spc.getMemberId() +"", spc.getSpec().getId() +""});
+                            if(specMember.size()>0)
+                            {
+                                int charSpecID = (int) ((JSONObject) specMember.get(0)).get(CharacterSpec.SPECS_TABLE_KEY);
+                                spc.setId(charSpecID);
+                                spc.setIsInternalData(true);
+                            }
+                            spc.saveInDB();
+                        } catch (DataException | SQLException ex) {
+                            Logs.errorLog(CharacterMember.class, "Fail to get specs info in DB from member "+ this.name +" - "+ ex);
+                        }
+                    });
+                    //Save items...
+                    //Clear all old items:
+                    if(this.items.isEmpty()) loadItemsFromDB();
+                    try {
+                        dbConnect.update(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
+                                        CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
+                                        CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
+                                        "member_id=?",
+                                        new String[] {this.internalID +""});
+                    } catch (DataException | ClassNotFoundException | SQLException ex) {
+                        Logs.errorLog(CharacterMember.class, "Fail to update remove old items "+ this.internalID +" - "+ ex);
+                    }
+                    //Update or insert a new items
+                    this.items.forEach((itm) -> {
+                        itm.setMemberId(this.internalID);
+                        CharacterItems iMemberDB = new CharacterItems(itm.getPosition(), this.internalID);
+                        if(iMemberDB.isInternalData())
+                        {
+                            itm.setId(iMemberDB.getId());
+                            itm.setIsInternalData(true);
+                        }
+                        itm.saveInDB();
+                    });
+                    //Save stats
+                    this.stats.setId(this.internalID);
+                    CharacterStats sDB = new CharacterStats(this.internalID);
+                    if(sDB.isInternalData())
+                    {
+                        this.stats.setIsInternalData(true);
+                    }
+                    if(!this.stats.isData())
+                        loadStats();
+                    this.stats.saveInDB();
+                    return true;
                 }
-                if(!this.stats.isData())
-                    loadStats();
-                this.stats.saveInDB();
-                return true;
-            }
+            }            
         }
         return false;
     }
@@ -437,6 +497,8 @@ public class CharacterMember extends GameObject
             this.isMain = mb.isMain();
             this.isInternalData = mb.isInternalData();
             this.isData = mb.isData();
+            this.bestMythicPlusScore = mb.getBestMythicPlusScore();
+            this.mythicPlusScores = mb.getMythicPlusScores();
             //Try save if not exist in DB
             if(this.isInternalData)
                 this.internalID = mb.getId();
@@ -463,6 +525,27 @@ public class CharacterMember extends GameObject
     public CharacterStats getStats() { if(!this.stats.isData()) loadStats(); return this.stats; }
     public boolean isMain() { return this.isMain; }
     public Rank getRank() { return this.gRank; }
+    public int getMythicScoreAll()
+    {
+        if(this.mythicPlusScores.get("all") != null)
+            return (int) Double.parseDouble(this.mythicPlusScores.get("all").toString());
+        else
+            return 0;
+    }
+    public int getBestMythicScore()
+    {
+        if(this.bestMythicPlusScore.get("score") != null)
+            return (int) Double.parseDouble(this.bestMythicPlusScore.get("score").toString());
+        else
+            return 0;        
+    }
+    public String getBestMythicScoreSeason()
+    {
+        if(this.bestMythicPlusScore.get("season") != null)
+            return ((JSONObject) this.bestMythicPlusScore.get("season")).get("name").toString();
+        else
+            return "";        
+    }
     public String getThumbnailURL()
     {
         return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
@@ -472,6 +555,8 @@ public class CharacterMember extends GameObject
     public String getGuildName() { return this.guildName; }
     public long getLastModified() { return this.lastModified; }
     public int getUserID() { return this.userID; }
+    public JSONObject getBestMythicPlusScore() { return this.bestMythicPlusScore; }
+    public JSONObject getMythicPlusScores() { return this.mythicPlusScores; }
     public Date getLastModifiedDate() {
         Date time = new Date(Long.parseLong(this.lastModified+""));
         return time;
@@ -497,7 +582,6 @@ public class CharacterMember extends GameObject
     {
         return this.items;
     }
-
     public double getItemLevel()
     {
         //If this object have a item level loaded
@@ -518,7 +602,6 @@ public class CharacterMember extends GameObject
         this.itemLevel = (double)sumItemLevl/(double)count;
         return this.itemLevel;
     }
-
     public CharacterItems getItemByPost(String post)
     {
         if(this.items.isEmpty())
@@ -532,6 +615,8 @@ public class CharacterMember extends GameObject
     //Setters
     public void setIsMain(boolean v) { this.isMain = v; }
     public void setItemLevel(double ilvl) { this.itemLevel = ilvl; }
+    public void setBestMythicPlusScore(JSONObject bScore) { this.bestMythicPlusScore = bScore; }
+    public void setMythicPlusScorese(JSONObject mScore) { this.mythicPlusScores = mScore; }
     public void setActiveSpec(String sName, String sRole)
     {
         if(this.specs.isEmpty())

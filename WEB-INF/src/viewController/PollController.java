@@ -37,8 +37,8 @@ public class PollController
         try {
             JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
-                    "isEnable=? LIMIT 3",
-                    new String[] {status? "1":"0"});
+                    "isEnable=? AND isHide=? LIMIT 3",
+                    new String[] {status? "1":"0", "1"});
             for(int i = 0; i < pollsDB.size(); i++)
             {
                 Poll p = new Poll( (Integer) ((JSONObject)pollsDB.get(i)).get(Poll.POLLS_TABLE_KEY));
