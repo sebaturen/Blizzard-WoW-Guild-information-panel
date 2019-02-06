@@ -9,6 +9,8 @@ if (    request.getParameter("login_redirect") == null ||
 else //only show content if is redirect from login.jsp and the user is valid
 {%>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun" %>
+<%@ page import ="com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeon" %>
 <%@ page import ="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
@@ -39,12 +41,13 @@ else //only show content if is redirect from login.jsp and the user is valid
                                 <th scope="col">Name</th>
                                 <th scope="col">Spec</th>
                                 <th scope="col">Level</th>
+                                <th scope="col">BestRun</th>
                                 <th scope="col">Server</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                          <% for(CharacterMember m : memberChars) { %>
+                          <% for(CharacterMember m : memberChars) {%>
                             <tr>
                                 <% //Get img from speck
                                 String className = m.getMemberClass().getSlug();
@@ -55,6 +58,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                                 <td class="character-<%= className %>"><%= m.getName() %></td>
                                 <td><img src="assets/img/classes/specs/spec_<%= className %>_<%= specName %>.png" style="width: 22px;"/></td>
                                 <td><%= m.getLevel() %></td>
+                                <td data-dun_name="<%= (m.getBestRunWeek() != null)? m.getBestRunWeek().getKeystoneDungeon().getName():""%>"><%= (m.getBestRunWeek() != null)? "+"+ m.getBestRunWeek().getKeystoneLevel():""%></td>
                                 <td><%= m.getRealm() %></td>
                                 <td><img src="assets/img/icons/Logo-<%= (m.getFaction() == 0)? "alliance":"horde" %>.png" style="width: 22px;"/></td>
                             </tr>

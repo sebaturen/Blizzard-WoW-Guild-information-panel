@@ -12,6 +12,7 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.guild.Rank;
+import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import java.io.IOException;
 
 import org.json.simple.JSONObject;
@@ -610,6 +611,49 @@ public class CharacterMember extends GameObject
             if(im.getPosition().equals(post))
                 return im;
         return null;
+    }
+    
+    /*
+     * Get better mythic plus run in the week
+     */
+    public KeystoneDungeonRun getBestRunWeek()
+    {
+        KeystoneDungeonRun kBestRun = null;
+        try {
+            //select * from keystone_dungeon_run_members where character_internal_id = <this.internalId>;
+            JSONArray keyRunsMembersDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+                    new String[] {"keystone_dungeon_run_id"},
+                    "character_internal_id=?",
+                    new String[] {this.internalID+""});
+            
+            if(keyRunsMembersDB.size() > 0)
+            {               
+                //select * from keystone_dungeon_run where (id = <keys ID> OR ...) and completed_timestamp > <time...>;
+                String where = "(";
+                String[] whereValues = new String[keyRunsMembersDB.size()];
+                for(int i = 0; i < keyRunsMembersDB.size(); i++)
+                {
+                    if(i!=0 && i!=keyRunsMembersDB.size()) where += " OR ";
+                    where += "id=?";
+                    whereValues[i] = ((JSONObject) keyRunsMembersDB.get(i)).get("keystone_dungeon_run_id").toString();
+                }
+                where += ")";
+
+                JSONArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
+                        new String[] {"id"}, 
+                        where +" AND completed_timestamp > 1549392110000 ORDER BY keystone_level DESC LIMIT 1",
+                        whereValues);
+                
+                if(keyRunsDB.size() > 0)
+                {
+                    kBestRun = new KeystoneDungeonRun((int) ((JSONObject)keyRunsDB.get(0)).get("id"));
+                }
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.errorLog(CharacterMember.class, "Fail to get best members runs - "+ ex);
+        }
+        
+        return kBestRun;
     }
 
     //Setters
