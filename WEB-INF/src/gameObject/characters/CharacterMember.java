@@ -164,7 +164,10 @@ public class CharacterMember extends GameObject
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             this.stats = new CharacterStats(this.internalID);
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
-            loadMythicPlusScoreDB(playerInfo.get("bestMythicPlusScore").toString(), playerInfo.get("mythicPlusScores").toString());
+            String bMyhScore = "{}", mythScores = "{}";
+            if(playerInfo.get("bestMythicPlusScore") != null) bMyhScore = playerInfo.get("bestMythicPlusScore").toString();
+            if(playerInfo.get("mythicPlusScores") != null) mythScores = playerInfo.get("mythicPlusScores").toString();
+            loadMythicPlusScoreDB(bMyhScore, mythScores);
         }
 
 
