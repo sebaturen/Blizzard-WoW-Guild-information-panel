@@ -57,10 +57,10 @@ else
                     <label class="col-2" for="exampleSelect1">Minimu guild level</label>
                     <div class="col-10">
                         <select name="guild_level" class="form-control" id="exampleSelect1">                        
-                           <%  System.out.println("cargando ranks?"); if(ranks.getRanks() != null) {
+                           <% if(ranks.getRanks() != null) {
                                 for(Rank r : ranks.getRanks(false)){ %>
                                     <option value="<%= r.getId() %>"><%= r.getTitle() %></option>
-                          <%}/*end foreach ranks*/ } /*End if is getRanks null*/ System.out.println("ranks cargados?");%>
+                          <%}/*end foreach ranks*/ } /*End if is getRanks null*/ %>
                         </select>
                     </div>
                 </div>                    

@@ -487,7 +487,10 @@ function putMembers(vMem)
         if(val.iLevel > 0) 
         {
             outForm += '<td scope="col">'+ val.iLevel +'</td>';
-            outForm += '<td scope="col">'+ val.mythicScore +'</td>';
+            outForm += '<td scope="col">'+ val.mythicScore +'<br>';
+            if(val.bestMythicScore.score != val.mythicScore)
+                outForm += '<div class="bestScoreMythc">'+ val.bestMythicScore.score +' - '+ val.bestMythicScore.season +'</div>';
+            outForm += '</td>';
         }
         outForm += '</tr>';
         $("#charContent").append(outForm);

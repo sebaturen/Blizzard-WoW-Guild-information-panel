@@ -28,6 +28,10 @@
     min-height: 50px;
     max-height: 50px;
 }
+.bestScoreMythc {
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.5em;
+}
 /*-------ITEMS ---------------*/
 .item_title {    
     text-shadow: 0 0 15px, 0 0 30px rgba(255,255,255,.3);

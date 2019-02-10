@@ -140,7 +140,6 @@ public class KeystoneDungeonRun extends GameObject
             JSONObject memI = (JSONObject) runMemsInfo.get(i);
             JSONObject charInfo = (JSONObject) memI.get("character");
             String charName = charInfo.get("name").toString();
-            System.out.println("Load member> "+ charName);
             Realm charRealm = new Realm( ((Long) ((JSONObject)charInfo.get("realm")).get("id") ).intValue());
             //New character
             CharacterMember newMember = new CharacterMember(charName, charRealm.getName());

@@ -43,6 +43,16 @@
                                     desc = "Item Loot";
                                     iaDetail = inf.getItem().getName();
                                     break;
+                                case "itemCraft":
+                                    img = inf.getItem().getIconRenderURL();
+                                    desc = "Item Craft";
+                                    iaDetail = inf.getItem().getName();
+                                    break;
+                                case "itemPurchase":
+                                    img = inf.getItem().getIconRenderURL();
+                                    desc = "Item Purchase";
+                                    iaDetail = inf.getItem().getName();
+                                    break;
                                 case "playerAchievement":
                                     img = inf.getCharacterAchievement().getIconRenderURL();
                                     desc = "Character Achievement";
@@ -52,11 +62,6 @@
                                     img = inf.getGuildAchievement().getIconRenderURL();
                                     desc = "Guild Achievement";
                                     iaDetail = inf.getGuildAchievement().getTitle();
-                                    break;
-                                case "itemCraft":
-                                    img = inf.getItem().getIconRenderURL();
-                                    desc = "Item Craft";
-                                    iaDetail = inf.getItem().getName();
                                     break;
                             }//end swithc%> 
                             <div class="new divder row">
