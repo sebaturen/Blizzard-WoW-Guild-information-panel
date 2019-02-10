@@ -46,7 +46,7 @@ public class CharacterMember extends GameObject
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class",
                                                             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass",
                                                             "c.faction", "c.totalHonorableKills", "c.guild_name", "gm.member_name", "gm.in_guild",
-                                                            "gm.user_id", "gm.rank", "c.bestMythicPlusScore", "c.mythicPlusScores"};
+                                                            "gm.user_id", "gm.rank", "c.bestMythicPlusScore", "c.mythicPlusScores", "gm.isDelete"};
     //Attribute
     private int internalID;
     private String name;
@@ -88,11 +88,21 @@ public class CharacterMember extends GameObject
     {
         super(COMBIEN_TABLE_NAME, COMBIEN_TABLE_KEY, COMBIEN_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] {"gm.member_name", "gm.realm"}, new String[] {name, realm}, "gm.internal_id = c.internal_id", true);
-        if(!this.isInternalData)
+        if(!this.isInternalData && !this.isDelete)
         {
             try {
                 Update up = new Update();
-                cloneMember(up.getMemberFromBlizz(name, realm));
+                CharacterMember upCharacter = up.getMemberFromBlizz(name, realm);
+                if(!upCharacter.isDelete())
+                {
+                    cloneMember(upCharacter);                    
+                }
+                else
+                {
+                    this.name = upCharacter.getName();
+                    this.realm = upCharacter.getRealm();
+                    this.isDelete = true;
+                }
             } catch (IOException | ParseException | DataException ex) {
                 Logs.errorLog(CharacterMember.class, "Fail to get member info from blizzard. - "+ ex);
             }
@@ -127,7 +137,6 @@ public class CharacterMember extends GameObject
         this.lastModified = (long) playerInfo.get("lastModified");
         this.totalHonorableKills = (long) playerInfo.get("totalHonorableKills");
 
-        int raceID;
         if(playerInfo.get("gender").getClass() == java.lang.Long.class)
         {
             //if info come to blizzAPI
@@ -153,21 +162,25 @@ public class CharacterMember extends GameObject
         else
         {//if come to DB
             this.internalID = (Integer) playerInfo.get("internal_id");
-            this.userID = (Integer) playerInfo.get("user_id");
             this.name = playerInfo.get("member_name").toString();
-            this.gender = (Integer) playerInfo.get("gender");
-            this.level = (Integer) playerInfo.get("level");
-            this.faction = (Integer) playerInfo.get("faction");
-            this.guildName = playerInfo.get("guild_name").toString();
-            this.memberClass = new PlayableClass((Integer) playerInfo.get("class"));
-            this.race = new PlayableRace((Integer) playerInfo.get("race"));
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
-            this.stats = new CharacterStats(this.internalID);
+            this.isDelete = (boolean) playerInfo.get("isDelete");
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
-            String bMyhScore = "{}", mythScores = "{}";
-            if(playerInfo.get("bestMythicPlusScore") != null) bMyhScore = playerInfo.get("bestMythicPlusScore").toString();
-            if(playerInfo.get("mythicPlusScores") != null) mythScores = playerInfo.get("mythicPlusScores").toString();
-            loadMythicPlusScoreDB(bMyhScore, mythScores);
+            if(!this.isDelete)
+            {
+                this.userID = (Integer) playerInfo.get("user_id");
+                this.gender = (Integer) playerInfo.get("gender");
+                this.level = (Integer) playerInfo.get("level");
+                this.faction = (Integer) playerInfo.get("faction");
+                this.guildName = playerInfo.get("guild_name").toString();
+                this.memberClass = new PlayableClass((Integer) playerInfo.get("class"));
+                this.race = new PlayableRace((Integer) playerInfo.get("race"));
+                this.stats = new CharacterStats(this.internalID);
+                String bMyhScore = "{}", mythScores = "{}";
+                if(playerInfo.get("bestMythicPlusScore") != null) bMyhScore = playerInfo.get("bestMythicPlusScore").toString();
+                if(playerInfo.get("mythicPlusScores") != null) mythScores = playerInfo.get("mythicPlusScores").toString();
+                loadMythicPlusScoreDB(bMyhScore, mythScores);                
+            }
         }
 
 
@@ -528,6 +541,7 @@ public class CharacterMember extends GameObject
     public String getThumbnail() { return this.thumbnail; }
     public CharacterStats getStats() { if(!this.stats.isData()) loadStats(); return this.stats; }
     public boolean isMain() { return this.isMain; }
+    public boolean isDelete() { return this.isDelete; }
     public Rank getRank() { return this.gRank; }
     public int getMythicScoreAll()
     {

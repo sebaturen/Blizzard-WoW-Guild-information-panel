@@ -46,9 +46,11 @@ var keystone_affixes = [];
             <%
                 if(keyRun.getMembers().size() > 0)
                 {
-                    out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
-                    out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
-                    int j = 2;
+                    int j = 0;
+                    if(keyRun.getTank() != null)
+                        out.write( (j++) +": { "+ getMemberDetail(keyRun.getTank()) +" }, ");
+                    if(keyRun.getHealr() != null)
+                        out.write( (j++) +": { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
                     for(CharacterMember m : keyRun.getDPS())
                         out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");                    
                 }
@@ -85,11 +87,13 @@ var keystone_affixes = [];
             <%                
                 if(keyRun.getMembers().size() > 0)
                 {
-                    out.write("0: { "+ getMemberDetail(keyRun.getTank()) +" }, ");
-                    out.write("1: { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
-                    int j = 2;
+                    int j = 0;
+                    if(keyRun.getTank() != null)
+                        out.write( (j++) +": { "+ getMemberDetail(keyRun.getTank()) +" }, ");
+                    if(keyRun.getHealr() != null)
+                        out.write( (j++) +": { "+ getMemberDetail(keyRun.getHealr()) +" }, ");
                     for(CharacterMember m : keyRun.getDPS())
-                        out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");
+                        out.write( (j++) +": { "+ getMemberDetail(m) +" }, ");    
                 }
             %>
             },

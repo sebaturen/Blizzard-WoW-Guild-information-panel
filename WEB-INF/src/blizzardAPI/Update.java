@@ -632,8 +632,8 @@ public class Update implements APIInfo
         dbConnect.update(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                         new String[] {"in_guild"},
                         new String[] {"0"},
-                        "in_guild > ?",
-                        new String[] {"0"});
+                        "in_guild > ? AND isDelete = ?",
+                        new String[] {"0", "0"});
         for(int i = 0; i < members.size(); i++)
         {
             JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
@@ -857,7 +857,6 @@ public class Update implements APIInfo
                 blizzPlayer = new CharacterMember(name, realm, false);
                 blizzPlayer.saveInDB();
             }
-            return null;
         }
         catch (IOException|ParseException e) 
         {
@@ -1415,8 +1414,8 @@ public class Update implements APIInfo
             //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
             JSONArray charRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                                 new String[] {"rank"},
-                                                "user_id=? AND in_guild=? AND rank is not null order by rank limit 1",
-                                                new String[] { uderID +"", "1" });
+                                                "user_id=? AND in_guild=? AND isDelete=? AND rank is not null order by rank limit 1",
+                                                new String[] { uderID +"", "1", "0" });
             if(charRank.size() > 0)
             {
                 membersRank = (Integer) ((JSONObject) charRank.get(0)).get("rank");
@@ -1482,8 +1481,8 @@ public class Update implements APIInfo
                 {
                     JSONArray guildRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                                         new String[] {"rank"},
-                                                        "in_guild=? AND user_id=? ORDER BY rank ASC LIMIT 1",
-                                                        new String[] {"1", userID +""});
+                                                        "in_guild=? AND user_id=? AND isDelete=? ORDER BY rank ASC LIMIT 1",
+                                                        new String[] {"1", userID +"", "0"});
                     if(guildRank.size() > 0)
                     {//Save a rank from this player...
                         int rank = (Integer)((JSONObject) guildRank.get(0)).get("rank");
