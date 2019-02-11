@@ -30,7 +30,7 @@
                         <p class='small_title warcraft_font'>News</p>
                         <%
                         List<New> news = guild_info.getNews(7);
-                        for(int i = 0; i < news.size() && i <= 6; i++) 
+                        for(int i = 0; i < news.size() && i < 7; i++) 
                         {
                             New inf = news.get(i);
                             String img = "";

@@ -632,8 +632,8 @@ public class Update implements APIInfo
         dbConnect.update(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                         new String[] {"in_guild"},
                         new String[] {"0"},
-                        "in_guild > ? AND isDelete = ?",
-                        new String[] {"0", "0"});
+                        "in_guild > ?",
+                        new String[] {"0"});
         for(int i = 0; i < members.size(); i++)
         {
             JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
@@ -732,8 +732,8 @@ public class Update implements APIInfo
         if(isAccesTokenExpired()) generateAccesToken();
         JSONArray members = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                             CharacterMember.GMEMBER_ID_NAME_TABLE_STRUCTURE,
-                                            "in_guild=? AND isDelete=?",
-                                            new String[] {"1", "0"});
+                                            "in_guild=?",
+                                            new String[] {"1"});
 
         int iProgres = 1;
         Logs.infoLog(Update.class, "0%");
