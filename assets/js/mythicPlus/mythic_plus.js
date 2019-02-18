@@ -76,7 +76,10 @@ function renderRuns(keyRuns)
                 var isMain = ((mem.is_main == 'true')? "<i class='main_char artOfWar-icon'>&#xe801;</i>":"");
                 out +=
                             "<tr>"+
-                                "<td class='character-"+ mem.class_name +"'>"+ isMain +" "+ mem.name +"</td>"+
+                                "<td class='character-"+ mem.class_name +"'>"+
+                                    isMain +" "+ mem.name +
+                                    "<div class='char-realm'>"+ mem.realm +"</div>"+
+                                "</td>"+
                                 "<td>"+
                                     "<img src='assets/img/icons/"+ mem.rol +".png' style='width: 22px;'/>"+
                                     "<img src='assets/img/classes/specs/spec_"+ mem.class_name +"_"+ mem.spec_name +".png' style='width: 22px;'/>"+

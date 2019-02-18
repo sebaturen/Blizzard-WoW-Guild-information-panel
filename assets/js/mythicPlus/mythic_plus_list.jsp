@@ -21,7 +21,8 @@
             "'spec_name': \""+ specName +"\","+
             "'rol': '"+ specRol +"',"+
             "'i_level': '"+ String.format("%.0f", mem.getItemLevel()) +"',"+
-            "'is_main': '"+ isMain +"'";
+            "'is_main': '"+ isMain +"',"+
+            "'realm': \""+ mem.getRealm() +"\"";
     }
 %>
 var keystone_best_run = [];

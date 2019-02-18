@@ -29,7 +29,7 @@ public class Poll extends GameObject
     public static final String POLLS_TABLE_KEY = "id";
     public static final String[] POLLS_TABLE_STRUCTURE = {"id", "user_id", "poll_question", 
                                                         "min_rank", "multi_select", "can_add_more_option", 
-                                                        "start_date", "is_limit_date", "end_date", "isEnable"};
+                                                        "start_date", "is_limit_date", "end_date", "isEnable", "isHide"};
     
     //Atribute
     private int id = -1;
@@ -99,16 +99,16 @@ public class Poll extends GameObject
             strucInfo = DBStructure.outKey(POLLS_TABLE_STRUCTURE);
             info = new String[] {this.user.getId()+"", this.pollQuestion, 
                     this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", this.endDate, (this.isEnable)? "1":"0"};
+                    this.startDate, (this.isLimitDate)? "1":"0", this.endDate, (this.isEnable)? "1":"0", "0"};
         }
         else
         {
             strucInfo = new String[] {"user_id", "poll_question", 
                                     "min_rank", "multi_select", "can_add_more_option", 
-                                    "start_date", "is_limit_date", "isEnable"};
+                                    "start_date", "is_limit_date", "isEnable","isHide"};
             info = new String[] {this.user.getId()+"", this.pollQuestion, 
                     this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", (this.isEnable)? "1":"0"};
+                    this.startDate, (this.isLimitDate)? "1":"0", (this.isEnable)? "1":"0", "0"};
         }
         /* {"user_id", "poll_question", 
          * "min_rank", "multi_select", "can_add_more_option", 

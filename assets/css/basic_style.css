@@ -412,4 +412,9 @@ body > .container {
 .key_divide_title {
     padding-bottom: 39px;
 }
+.char-realm {
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.5em;
+    float: right;
+}
 /*END----------MYTHIC PLUS-----------------*/
