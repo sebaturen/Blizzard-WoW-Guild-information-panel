@@ -322,6 +322,14 @@ body > .container {
 .main_char:hover {
     color: #ffd100;
 }
+.discCode {
+    float: right;
+}
+.discCode > .returnCode {
+    float: right;
+    margin-top: 0;
+}
+
 /*END-----------------USER PANEL--------------*/
 
 /*-----------------CREATE POLL--------------*/

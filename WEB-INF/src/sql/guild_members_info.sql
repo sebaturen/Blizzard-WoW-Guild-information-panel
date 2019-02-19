@@ -28,6 +28,7 @@ CREATE TABLE `users` (
     `id`                INT NOT NULL AUTO_INCREMENT,
     `battle_tag`        varchar(50),
     `access_token`      varchar(50),
+    `discord_user_id`   varchar(50),
     `guild_rank`        TINYINT DEFAULT -1,
     `main_character`    INT,
     `wowinfo`           TINYINT(1) DEFAULT 0,

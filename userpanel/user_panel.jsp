@@ -69,6 +69,22 @@ else //only show content if is redirect from login.jsp and the user is valid
             <form method="post">
                 <input name="logOut" type="hidden" value="true"/>
                 <button type="submit" class="btn btn-primary">Log out</button>
+                <div class="discCode">                    
+                    <img src="../assets/img/icons/Discord-Logo-Color.svg" style="width: 35px">
+                    <div class="returnCode">
+                        <code id="discordCode" class="">
+                        <%  if(user.getDiscordUserId() == null)
+                            {
+                                out.write("!regist "+ user.getAccessToken());
+                            }
+                            else
+                            {
+                                out.write("Account ready!");
+                            }
+                        %>
+                        </code>
+                    </div>
+                </div>
             </form>                
         </div>
         <%@include file="../includes/footer.jsp" %>

@@ -25,7 +25,8 @@ public class User
     //User
     public static final String USER_TABLE_NAME = "users";
     public static final String USER_TABLE_KEY = "id";
-    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "guild_rank", "main_character", "wowinfo", "last_login", "last_alters_update"};
+    public static final String[] USER_TABLE_STRUCTURE = {"id", "battle_tag", "access_token", "discord_user_id", "guild_rank", 
+                                                        "main_character", "wowinfo", "last_login", "last_alters_update"};
     
     //Atribute
     private int id;
@@ -37,6 +38,7 @@ public class User
     private int idMainChar = -1;
     private boolean isLogin = false;
     private boolean isCharsReady = false;
+    private String discordUserId;
     private List<CharacterMember> characters = new ArrayList<>();
     private CharacterMember mainCharacter;
     
@@ -51,6 +53,11 @@ public class User
     public User(int id)
     {
         loadFromDB(id);
+    }
+    
+    public User(String accesToken) throws DataException
+    {
+        loadFromDBAccesToken(accesToken);
     }
     
     private void loadUser(JSONObject userInfo)
@@ -68,6 +75,8 @@ public class User
             this.lastLogin = userInfo.get("last_login").toString();
         if(userInfo.get("last_alters_update") != null)
             this.lastAlterUpdate = userInfo.get("last_alters_update").toString();
+        if(userInfo.get("discord_user_id") != null)
+            this.discordUserId = userInfo.get("discord_user_id").toString();
     }
     
     private void loadFromDB(int id)
@@ -82,9 +91,35 @@ public class User
                 JSONObject userInfo = (JSONObject) info.get(0);
                 loadUser(userInfo);
             }
+            else
+            {
+                Logs.errorLog(User.class, "Fail to load user from ID "+ id +" - Data not found");
+            }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(User.class, "Fail to load user from ID "+ id +" - "+ ex);
         }        
+    }
+    
+    private void loadFromDBAccesToken(String acToken) throws DataException
+    {
+        try {
+            JSONArray info = dbConnect.select(USER_TABLE_NAME,
+                    USER_TABLE_STRUCTURE,
+                    "access_token=?",
+                    new String [] {acToken});
+            if(info.size() > 0)
+            {
+                JSONObject userInfo = (JSONObject) info.get(0);
+                loadUser(userInfo);
+            }
+            else
+            {
+                throw new DataException("Fail to load user from token, data not found "+ acToken);
+            }
+        } catch (SQLException ex) {
+            Logs.errorLog(User.class, "Fail to load user from token '"+ acToken +"' - "+ ex);
+        }  
+        
     }
     
     public boolean checkUser() { return checkUser(false); }
@@ -108,6 +143,28 @@ public class User
         } catch (SQLException | DataException ex) {
             Logs.errorLog(User.class, "Fail to login "+ this.battleTag +" - "+ ex);
         }
+        return false;
+    }
+    
+    public boolean setDiscordUserId(String discUserId)
+    {
+        if(checkUser()) //Valid if account exit in DB
+        {//exist...   
+            try {
+                this.discordUserId = discUserId;
+                dbConnect.update(
+                        User.USER_TABLE_NAME,
+                        new String[] {"discord_user_id"},
+                        new String[] {this.discordUserId},
+                        "id=?",
+                        new String[] {this.id +""});
+                return true;
+            } catch (DataException | ClassNotFoundException | SQLException ex) {
+                Logs.errorLog(User.class, "Fail to save discord user id - "+ ex +" user id: "+ this.id);
+                return false;
+            }   
+        }
+        Logs.errorLog(User.class, "User not is instance");
         return false;
     }
     
@@ -272,6 +329,8 @@ public class User
     public String getLastAltersUpdate() { return this.lastAlterUpdate; }
     public int getGuildRank() { return this.guildRank; }
     public String getBattleTag() { return this.battleTag; }
+    public String getAccessToken() { return this.accessToken; }
+    public String getDiscordUserId() { return this.discordUserId; }
     public List<CharacterMember> getCharacters() { if(this.characters.isEmpty()) loadCharacters(); return this.characters; }
     public boolean isCharsReady() { return this.isCharsReady; }
     public CharacterMember getMainCharacter() 
