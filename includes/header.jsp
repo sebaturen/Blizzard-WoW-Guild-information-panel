@@ -9,3 +9,12 @@
 <!-- END Bootstrap-->
 <script src="<%= request.getContextPath() +"/" %>assets/js/artOfWar.js"></script>
 <link type="text/css" rel="stylesheet" href="<%= request.getContextPath() +"/" %>assets/css/basic_style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114404549-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114404549-2');
+</script>

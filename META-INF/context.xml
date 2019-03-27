@@ -38,7 +38,9 @@
     <!-- DISCORD API INFO -->
     <Environment name="DISCORD_BOT_TOKEN" value="" override="false" type="java.lang.String" />
     <Environment name="DISCORD_GUILD_NAME" value="" override="false" type="java.lang.String" />
+    <Environment name="DISCORD_GUILD_ID" value="" override="false" type="java.lang.String" />
     <Environment name="DISCORD_CHANEL_NAME" value="" override="false" type="java.lang.String" />
+    
         
     <!-- UPDATE INTERVAL -->
     <Environment name="TIME_INTERVAL_DYNAMIC_UPDATE"        value="60" override="false" type="java.lang.Integer" />

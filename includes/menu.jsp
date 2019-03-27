@@ -34,6 +34,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp">Polls</a>
                 </li>
             <% } %>
+            <li class="nav-item <% out.write((currentPath.equals("faqs.jsp"))? "active":""); %>">
+                <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp">Simeo</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link disabled" href="#">Last Update[<%= gameInfo.getLastDynamicUpdate() %>]</a>
             </li>

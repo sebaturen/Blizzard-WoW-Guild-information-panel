@@ -214,7 +214,7 @@ public class DiscordBot extends ListenerAdapter
                             }
                             else
                             {
-                                channel.sendMessage("Hey "+ author.getAsMention() +" your registry failed.. ask to admin").queue();
+                                channel.sendMessage("Hey "+ author.getAsMention() +" your registry failed... If your discord account change, ask to admin").queue();
                             }
                         } catch (DataException ex) {
                             channel.sendMessage("Hey "+ author.getAsMention() +"... your code is incorrect...").queue();
@@ -252,16 +252,37 @@ public class DiscordBot extends ListenerAdapter
                             channel.sendMessage("Em.. sir, use `!move '<from>' '<to>'` like: `!move 'General' 'Raid'`").queue();                            
                         }
                     }
-                    channel.sendMessage("you!? you do not have permits").queue();                            
+                    else
+                        channel.sendMessage("you!? you do not have permits").queue();                            
                     break;
-                case "play": case "queue": case "skip": case "lyrics": case "stop":
+                case "play": case "queue": case "skip": case "lyrics": case "stop": case "next": case "p":
                     if(!channel.getName().equals("musik"))
                     {
                         channel.purgeMessages(message);
                         channel.sendMessage("Hey "+ author.getAsMention() +"... use 'musik' channel to play music!").queue();
                     }
                     break;
+                case "opening":
+                    String searchInfo;
+                    try {
+                        searchInfo = (msg.substring(msg.indexOf(" "), msg.length())).trim();
+                    } catch (java.lang.StringIndexOutOfBoundsException e) {
+                        searchInfo = "anime name <temp>";
+                    }
+                    channel.sendMessage(author.getAsMention() +" FRIKII!!! - try `!play "+ searchInfo +" opening`").queue();                    
+                    break;
             }
         }  
+    }
+    
+    public boolean removeRank(String discId)
+    {
+        Guild guild = jda.getGuildById(GeneralConfig.getStringConfig("DISCORD_GUILD_ID"));
+        net.dv8tion.jda.core.entities.User discUser = jda.getUserById(discId);
+        //remove role
+        Role artMember = guild.getRolesByName(this.guildDiscordChanel +" Members", true).get(0);
+        guild.getController().removeSingleRoleFromMember(guild.getMember(discUser), artMember).queue();
+        sendMessajeNotification("Member "+ discUser.getAsMention() +" lave guild, role remove");
+        return true;
     }
 }

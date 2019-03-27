@@ -658,7 +658,7 @@ public class CharacterMember extends GameObject
 
                 JSONArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                         new String[] {"id"}, 
-                        where +" AND completed_timestamp > 1550586670000 ORDER BY keystone_level DESC LIMIT 1",
+                        where +" AND completed_timestamp > 1552973230000 ORDER BY keystone_level DESC LIMIT 1",
                         whereValues);
                 
                 if(keyRunsDB.size() > 0)

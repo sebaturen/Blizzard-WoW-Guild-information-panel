@@ -29,7 +29,7 @@ public class UpdateRunning implements ServletContextListener
     private Update update;
     private DBConnect dbConnect;
     private ServletContext context;
-    private DiscordBot discordBot;
+    public static DiscordBot discordBot;
     private int count = 0;
     private boolean isAssaultNotification = false;
 
@@ -59,16 +59,26 @@ public class UpdateRunning implements ServletContextListener
                     while(true)
                     {
                         assaultNotification();
-                        if(needStatycUpdate())
-                            update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                        try {
+                            if(needStatycUpdate())
+                                update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
+                        try {
                         if(needDynamicUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
+                        try {
                         if(needGuildNewUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
+                        try {
                         if(needAHUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
+                        try {
                         if(needAHMove())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR HACTION HOUSE"+ e); }
                         Thread.sleep(60000); //every minute
                     }
                 } catch (Exception ex) {

@@ -651,8 +651,8 @@ public class Update implements APIInfo
                 if(inDBgMembersID.size() > 0)
                 {//Update
                     dbConnect.update(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
-                                    new String[] {"rank", "in_guild"},
-                                    new String[] {rankMember, "1"},
+                                    new String[] {"rank", "in_guild", "isDelete"},
+                                    new String[] {rankMember, "1", "0"},
                                     "internal_id=?",
                                     new String[] { ((JSONObject)inDBgMembersID.get(0)).get("internal_id").toString() });
                 }
@@ -1404,11 +1404,14 @@ public class Update implements APIInfo
          *   WHERE rn = 1;
          */
         JSONArray allUsers = dbConnect.select(User.USER_TABLE_NAME,
-                                            new String[] { "id", "guild_rank" });
+                                            new String[] { "id", "guild_rank", "discord_user_id" });
         for(int i = 0; i < allUsers.size(); i++)
         {
             int uderID = (Integer) ((JSONObject) allUsers.get(i)).get("id");
             int actualUserRank = (Integer) ((JSONObject) allUsers.get(i)).get("guild_rank");
+            String discUserId = null;
+            if(((JSONObject) allUsers.get(i)).get("discord_user_id") != null)
+                discUserId = ((JSONObject) allUsers.get(i)).get("discord_user_id").toString();
             int membersRank = -1;
             //Select player have a guild rank
             //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
@@ -1428,6 +1431,11 @@ public class Update implements APIInfo
                             new String[] {membersRank +""},
                             "id=?",
                             new String[] {uderID +""});
+                //if new is -1, remove discord rank
+                if(discUserId != null && membersRank == -1)
+                {
+                    UpdateRunning.discordBot.removeRank(discUserId);
+                }
             }
         }
     }

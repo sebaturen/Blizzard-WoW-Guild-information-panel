@@ -12,6 +12,7 @@ $(document).ready(function() {
     $("#buttonForceUpdateUsersCharacters").click(function()     { arg = "UsersCharacters";          runAjaxUpdate(); });
     $("#buttonForceUpdateGuildProgression").click(function()    { arg = "GuildProgression";         runAjaxUpdate(); });
     $("#buttonForceUpdateStaticRealms").click(function()        { type = 1; arg = "RealmIndex";     runAjaxUpdate(); });
+    $("#buttonForceUpdateStatic").click(function()              { type = 1; arg = "all";            runAjaxUpdate(); });
 });
 
 function runAjaxUpdate()
@@ -27,6 +28,7 @@ function runAjaxUpdate()
     $("#buttonForceUpdateUsersCharacters").attr("disabled", true);
     $("#buttonForceUpdateGuildProgression").attr("disabled", true);
     $("#buttonForceUpdateStaticRealms").attr("disabled", true);
+    $("#buttonForceUpdateStatic").attr("disabled", true);
     //run ajax
     $.ajax({
         url: "run_update.jsp?type="+ type +"&arg="+ arg,

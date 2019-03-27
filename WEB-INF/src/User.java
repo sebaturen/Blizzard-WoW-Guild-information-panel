@@ -148,7 +148,7 @@ public class User
     
     public boolean setDiscordUserId(String discUserId)
     {
-        if(checkUser()) //Valid if account exit in DB
+        if(checkUser() && this.discordUserId == null) //Valid if account exit in DB
         {//exist...   
             try {
                 this.discordUserId = discUserId;
