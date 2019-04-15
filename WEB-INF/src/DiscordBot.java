@@ -6,6 +6,7 @@
 package com.blizzardPanel;
 
 import com.blizzardPanel.gameObject.FactionAssaultControl;
+import com.blizzardPanel.gameObject.ServerTime;
 import java.text.SimpleDateFormat;
 import net.dv8tion.jda.client.entities.Group;
 import net.dv8tion.jda.core.JDA;
@@ -162,16 +163,18 @@ public class DiscordBot extends ListenerAdapter
                     //This will send a message, "pong!", by constructing a RestAction and "queueing" the action with the Requester.
                     // By calling queue(), we send the Request to the Requester which will send it to discord. Using queue() or any
                     // of its different forms will handle ratelimiting for you automatically!
-
                     channel.sendMessage("pong!").queue();
+                    break;
+                case "servertime":
+                    channel.sendMessage("Server time: "+ ServerTime.getServerTime()).queue();
                     break;
                 case "nextassault":
                     FactionAssaultControl fAssault = new FactionAssaultControl();
                     if(fAssault.isCurrent())
                         channel.sendMessage
                         (    "Assault is current!, GO KILL HORDES! "
-                            + "\nTime Remaining: ["+ fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault())[0] +"h:"
-                            + fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault())[1] +"m]"
+                            + "\nTime Remaining: ["+ fAssault.getTimeRemainingCurrentAssault()[0] +"h:"
+                            + fAssault.getTimeRemainingCurrentAssault()[1] +"m]"
                         ).queue();
                     else
                         channel.sendMessage

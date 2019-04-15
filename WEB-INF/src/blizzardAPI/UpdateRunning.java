@@ -109,7 +109,7 @@ public class UpdateRunning implements ServletContextListener
                 discordBot.sendMessajeNotification("The assault has start");
                 this.isAssaultNotification = true;
             }
-            int[] timeRemain = fAssault.getTimeRemainingCurrentAssault(fAssault.getPrevieAssault());
+            int[] timeRemain = fAssault.getTimeRemainingCurrentAssault( );
             if(timeRemain[0] == 0 && timeRemain[1] == 30)
             {
                 discordBot.sendMessajeNotification(timeRemain[1] +"m remain for the assault to end");

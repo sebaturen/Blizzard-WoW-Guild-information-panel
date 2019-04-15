@@ -11,6 +11,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import java.io.IOException;
@@ -658,7 +659,7 @@ public class CharacterMember extends GameObject
 
                 JSONArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                         new String[] {"id"}, 
-                        where +" AND completed_timestamp > 1552973230000 ORDER BY keystone_level DESC LIMIT 1",
+                        where +" AND completed_timestamp > "+ ServerTime.getLastResetTime() +" ORDER BY keystone_level DESC LIMIT 1",
                         whereValues);
                 
                 if(keyRunsDB.size() > 0)

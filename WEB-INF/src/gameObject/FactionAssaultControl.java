@@ -10,31 +10,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class FactionAssaultControl
 {
-    //Constante
-    public static final String START_PST = "2018-12-12 3:00:00";
-    public static final String START_MST = "2018-12-12 4:00:00";
-    public static final String START_CST = "2018-12-12 5:00:00";
-    public static final String START_EST = "2018-12-12 6:00:00";
-    public static final String PST_TIME_ZONE = "America/Los_Angeles";
-    public static final String MST_TIME_ZONE = "";
-    public static final String CST_TIME_ZONE = "";
-    public static final String EST_TIME_ZONE = "";
     
+    public static final String START_PST = "2019-4-14 18:00:00";
+    public static final String START_MST = "";
+    public static final String START_CST = "";
+    public static final String START_EST = "";
     public static final int INTERVAL_HOUR = 19;
     public static final int DURATION_HOUR = 7;
     
     //Atribute
-    private String startTime;
-    private String timeZone;
-    
+    private final String startTime;
     public FactionAssaultControl()
-    {
-        this.startTime = START_PST;
-        this.timeZone = PST_TIME_ZONE;
+    {        
+        switch(ServerTime.TIME_ZONE)
+        {
+            case "MST": this.startTime = START_MST; break;
+            case "CST": this.startTime = START_CST; break;
+            case "EST": this.startTime = START_EST; break;
+            default: this.startTime = START_PST; break;                
+        }
     }
     
     public boolean isCurrent()
@@ -47,7 +44,7 @@ public class FactionAssaultControl
         finAssault.add(Calendar.HOUR, DURATION_HOUR);
         Date lastAssaultFinish = finAssault.getTime();
         //Current time in server
-        Date serverTime = getServerTime();
+        Date serverTime = ServerTime.getServerTime();
         //serverTime.compareTo(lastAssault)); //1
         //serverTime.compareTo(lastAssaultFinish)); //-1
         return (serverTime.compareTo(lastAssault) > 0 && serverTime.compareTo(lastAssaultFinish) < 0);
@@ -57,7 +54,7 @@ public class FactionAssaultControl
     public int[] getTimeRemaining(Date assault)
     {
         //Current time in server
-        Date serverTime = getServerTime();
+        Date serverTime = ServerTime.getServerTime();
         long diffTime = serverTime.getTime() - assault.getTime();
         
         //Calcule remaining
@@ -68,12 +65,12 @@ public class FactionAssaultControl
         return timeRemaining;        
     }
     
-    public int[] getTimeRemainingCurrentAssault(Date assault)
+    public int[] getTimeRemainingCurrentAssault( )
     {
         //Current time in server
-        Date serverTime = getServerTime();
+        Date serverTime = ServerTime.getServerTime();
         Calendar cTime = Calendar.getInstance();
-        cTime.setTime(assault);
+        cTime.setTime(getPrevieAssault());
         cTime.add(Calendar.HOUR_OF_DAY, DURATION_HOUR);
         //Calc diference
         long diffTime = cTime.getTime().getTime() - serverTime.getTime();
@@ -88,31 +85,20 @@ public class FactionAssaultControl
     
     public Date getPrevieAssault()
     {
-        try {
-            //Current time in server
-            Date serverTime = getServerTime();
-            //base start time
-            Date startTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.startTime);
-            Calendar startTimeC = Calendar.getInstance();
-            startTimeC.setTime(startTimeDate);
-            //valid if is old...
-            do {
-                //Add interval assoult
-                startTimeC.add(Calendar.HOUR, INTERVAL_HOUR);
-            } while(serverTime.compareTo(startTimeC.getTime()) > 0);
-            startTimeC.add(Calendar.HOUR, -INTERVAL_HOUR); //remove time
-            return startTimeC.getTime();
-        } catch (ParseException ex) {
-            Logs.errorLog(FactionAssaultControl.class, "Fail to convert start time assault");
-        }
-        return null;        
+        //Get NEXT assault
+        Date nextAssault = getNextAssault();
+        Calendar previewAssault = Calendar.getInstance();
+        previewAssault.setTime(nextAssault);
+        //-19h Interval
+        previewAssault.add(Calendar.HOUR, -INTERVAL_HOUR);
+        return previewAssault.getTime();     
     }
     
     public Date getNextAssault()
     {
         try {
             //Current time in server
-            Date serverTime = getServerTime();
+            Date serverTime = ServerTime.getServerTime();
             //base start time
             Date startTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.startTime);
             Calendar startTimeC = Calendar.getInstance();
@@ -128,23 +114,5 @@ public class FactionAssaultControl
         }
         return null;
     }
-    
-    public Date getServerTime()
-    {
-        Date currentTime = null;
-        try {
-            Calendar currentCalendar = Calendar.getInstance();
-            currentCalendar.setTimeZone(TimeZone.getTimeZone(this.timeZone));
-            currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(
-                    currentCalendar.get(Calendar.YEAR) +"-"+
-                    (currentCalendar.get(Calendar.MONTH)+1) +"-"+ //calendar object start month in 0
-                    currentCalendar.get(Calendar.DAY_OF_MONTH) +" "+
-                    currentCalendar.get(Calendar.HOUR_OF_DAY) +":"+
-                    currentCalendar.get(Calendar.MINUTE) +":"+
-                    currentCalendar.get(Calendar.SECOND));
-        } catch (ParseException ex) {
-            Logs.errorLog(FactionAssaultControl.class, "Fail to get current time");
-        }
-        return currentTime;
-    }
+
 }

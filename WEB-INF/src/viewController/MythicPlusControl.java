@@ -8,6 +8,7 @@ package com.blizzardPanel.viewController;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -59,7 +60,7 @@ public class MythicPlusControl
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
-                    new String[] {"1552973230000"});
+                    new String[] {ServerTime.getLastResetTime()+""});
             this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
