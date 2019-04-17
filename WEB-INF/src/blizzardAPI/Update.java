@@ -1065,14 +1065,17 @@ public class Update implements APIInfo
         {
             int id = (Integer) ((JSONObject) itemInDB.get(i)).get("id");
             Item itemBlizz = getItemFromBlizz(id);
-            itemBlizz.setIsInternalData(true);
-            itemBlizz.saveInDB();
-
-            //Show update progress...
-            if ( (((iProgres*2)*10)*itemInDB.size())/100 < i )
+            if(itemBlizz != null) //if blizz have a problem to get information
             {
-                Logs.infoLog(Update.class, "..."+ ((iProgres*2)*10) +"%");
-                iProgres++;
+                itemBlizz.setIsInternalData(true);
+                itemBlizz.saveInDB();
+
+                //Show update progress...
+                if ( (((iProgres*2)*10)*itemInDB.size())/100 < i )
+                {
+                    Logs.infoLog(Update.class, "..."+ ((iProgres*2)*10) +"%");
+                    iProgres++;
+                }                
             }
         }
         Logs.infoLog(Update.class, "...100%");
