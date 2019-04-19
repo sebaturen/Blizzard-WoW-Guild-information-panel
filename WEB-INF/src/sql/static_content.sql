@@ -124,6 +124,7 @@ INSERT INTO `raids` VALUES (4,'tomb-of-sargeras','Tomb of Sargeras',9);
 INSERT INTO `raids` VALUES (5,'antorus-the-burning-throne','Antorus, the Burning Throne',11);
 INSERT INTO `raids` VALUES (6,'uldir','Uldir',8);
 INSERT INTO `raids` VALUES (7,'battle-of-dazaralor',"Battle of Dazar'alor",8);
+INSERT INTO `raids` VALUES (8,'crucible-of-storms',"Crucible of Storms",2);
 
 CREATE TABLE `guild_rank` (
     `id`    INT NOT NULL,

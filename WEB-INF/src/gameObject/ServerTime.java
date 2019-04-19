@@ -68,7 +68,7 @@ public class ServerTime
      */
     public static long getLastResetTime()
     {
-        return 1554820134000L;
+        return 1555391250000L;
     }
     
     public String getTimeZone()
