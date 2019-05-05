@@ -71,6 +71,15 @@ public class ServerTime
         return 1555391250000L;
     }
     
+    /**
+     * Get last season start time in long
+     * @return 
+     */
+    public static long getSeasonTime()
+    {
+        return 1548633770000L;
+    }
+    
     public String getTimeZone()
     {
         return this.timeZone;

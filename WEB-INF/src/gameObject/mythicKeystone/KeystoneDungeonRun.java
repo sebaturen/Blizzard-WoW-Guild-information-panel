@@ -277,7 +277,10 @@ public class KeystoneDungeonRun extends GameObject
     {
         for(CharacterMember cm : this.members)
             if(cm.getActiveSpec().getSpec().getRole().equals("HEALING"))
-                return cm;
+            {
+                //System.out.println(cm);
+                return cm;                
+            }
         return null;
     }
     public List<CharacterMember> getDPS() 

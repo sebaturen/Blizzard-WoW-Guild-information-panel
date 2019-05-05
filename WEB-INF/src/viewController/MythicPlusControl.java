@@ -34,14 +34,36 @@ public class MythicPlusControl
         dbConnect = new DBConnect();
     }
     
+    //From specific periode
     private void loadBestRun()
     {
         try {
-            JSONArray keyListInDb = dbConnect.select(
-                    KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
-                    new String[] {"id"},
-                    "is_complete_in_time=? AND completed_timestamp > ? order by keystone_level DESC, completed_timestamp DESC limit 3",
-                    new String[] {"1", "1548633770000"});
+            JSONArray keyListInDb = dbConnect.selectQuery(
+                "SELECT DISTINCT extract.id " +
+                "FROM " +
+                "	( " +
+                "		SELECT " +
+                "			kd.id, " +
+                "                       kd.completed_timestamp, " +
+                "                       kd.keystone_level, " +
+                "			kdm.character_internal_id, " +
+                "			gmn.internal_id " +
+                "		FROM " +
+                "			keystone_dungeon_run kd, " +
+                "                       keystone_dungeon_run_members kdm, " +
+                "                       gMembers_id_name gmn " +
+                "		WHERE " +
+                "			kd.id = kdm.keystone_dungeon_run_id AND " +
+                "			gmn.internal_id = kdm.character_internal_id AND " +
+                "			kd.is_complete_in_time = 1 AND " +
+                "			gmn.in_guild = 1 AND " +
+                "			kd.completed_timestamp > "+ ServerTime.getSeasonTime() +" " +
+                "		ORDER BY kd.keystone_level DESC, kd.completed_timestamp DESC " +
+                "		LIMIT 50 " +
+                "	) extract " +
+                "ORDER BY extract.keystone_level DESC, extract.completed_timestamp DESC " +
+                "LIMIT 3;"
+            );
             this.keyBestRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

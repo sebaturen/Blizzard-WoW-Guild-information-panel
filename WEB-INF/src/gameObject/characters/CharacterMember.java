@@ -167,8 +167,9 @@ public class CharacterMember extends GameObject
             this.isGuildMember = (Boolean) playerInfo.get("in_guild");
             this.isDelete = (boolean) playerInfo.get("isDelete");
             this.gRank = new Rank((Integer) playerInfo.get("rank"));
-            if(!this.isDelete)
-            {
+            //if is delte, not all members have all information, so try load if have, and not break if not existe info.
+            try 
+            {                
                 this.userID = (Integer) playerInfo.get("user_id");
                 this.gender = (Integer) playerInfo.get("gender");
                 this.level = (Integer) playerInfo.get("level");
@@ -180,7 +181,11 @@ public class CharacterMember extends GameObject
                 String bMyhScore = "{}", mythScores = "{}";
                 if(playerInfo.get("bestMythicPlusScore") != null) bMyhScore = playerInfo.get("bestMythicPlusScore").toString();
                 if(playerInfo.get("mythicPlusScores") != null) mythScores = playerInfo.get("mythicPlusScores").toString();
-                loadMythicPlusScoreDB(bMyhScore, mythScores);                
+                loadMythicPlusScoreDB(bMyhScore, mythScores);      
+            }
+            catch (NullPointerException e)
+            {
+                Logs.errorLog(CharacterMember.class, "Fail in load member info - "+ this.internalID +" isDelete? "+ this.isDelete +" - "+ e);
             }
         }
 

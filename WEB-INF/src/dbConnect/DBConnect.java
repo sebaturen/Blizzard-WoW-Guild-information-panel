@@ -80,6 +80,28 @@ public class DBConnect
         
         return result;
     }
+    
+    /**
+     * Run query in DB!, becareful!
+     * @param query
+     * @return 
+     */
+    public JSONArray selectQuery(String query) throws SQLException, DataException
+    {
+        JSONArray result = null;
+        
+        //Prepare Connection and excetute
+        try(
+            Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+        ) {
+            this.lastQuery = pstmt.toString();
+            result = resultToJsonConvert(pstmt.executeQuery());
+        } catch (DataException e) {
+           throw e; //Can get a connection
+        }        
+        return result;
+    }
 
     /**
      * Delete data from DB Query
