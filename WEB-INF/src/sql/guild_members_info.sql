@@ -362,3 +362,33 @@ CREATE TABLE `keystone_affixes` (
     `icon`          TINYTEXT NOT NULL,
     PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `events` (
+    `id`            INT NOT NULL AUTO_INCREMENT,
+    `title`         VARCHAR(50) NOT NULL,
+    `desc`          TEXT NOT NULL,
+    `date`          DATETIME NOT NULL,
+    `owner_id`      INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(owner_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `events_asist` (
+    `id_asis`   INT NOT NULL AUTO_INCREMENT,
+    `id_event`  INT NOT NULL,
+    `user_id`   INT NOT NULL,
+    PRIMARY KEY(id_asis),
+    FOREIGN KEY(id_event) REFERENCES events(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `events_asist_char` (
+    `id_asis_char`  INT NOT NULL AUTO_INCREMENT,
+    `id_asis`       INT NOT NULL,
+    `char_id`       INT NOT NULL,
+    `spec_id`       INT NOT NULL
+    PRIMARY KEY(id_asis_char),
+    FOREIGN KEY(id_asis) REFERENCES events_asist(id_asis),
+    FOREIGN KEY(char_id) REFERENCES gMembers_id_name(internal_id),
+    FOREIGN KEY(spec_id) REFERENCES character_specs(id),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
