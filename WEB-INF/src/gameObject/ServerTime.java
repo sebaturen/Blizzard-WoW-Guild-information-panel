@@ -68,7 +68,7 @@ public class ServerTime
      */
     public static long getLastResetTime()
     {
-        return 1557237925000L;
+        return 1557818350000L;
     }
     
     /**

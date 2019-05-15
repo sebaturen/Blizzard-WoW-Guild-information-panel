@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
 
-public class Events extends GameObject
+public class Event extends GameObject
 {
     //DB Structure
     public static final String EVENTS_TABLE_NAME = "events";
@@ -25,14 +25,14 @@ public class Events extends GameObject
     private String desc;
     private User owner;
     private String date;
-    private List<EventsAsist> eventAsis = new ArrayList<>();
+    private List<EventAsist> eventAsis = new ArrayList<>();
     
-    public Events()
+    public Event()
     {
         super(EVENTS_TABLE_NAME, EVENTS_TABLE_KEY, EVENTS_TABLE_STRUCTURE);
     }
     
-    public Events(int id)
+    public Event(int id)
     {
         super(EVENTS_TABLE_NAME, EVENTS_TABLE_KEY, EVENTS_TABLE_STRUCTURE);
         loadFromDB(id);
@@ -71,7 +71,7 @@ public class Events extends GameObject
     public void setDesc(String desc) { this.desc = desc; }
     public void setOwner(User owner) { this.owner = owner; }
     public void setDate(String date) { this.date = date; }
-    public void addAsist(EventsAsist eAsis) { eventAsis.add(eAsis); }
+    public void addAsist(EventAsist eAsis) { eventAsis.add(eAsis); }
 
     @Override
     public int getId() { return this.id; }

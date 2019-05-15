@@ -386,9 +386,10 @@ CREATE TABLE `events_asist_char` (
     `id_asis_char`  INT NOT NULL AUTO_INCREMENT,
     `id_asis`       INT NOT NULL,
     `char_id`       INT NOT NULL,
-    `spec_id`       INT NOT NULL
+    `spec_id`       INT NOT NULL,
+    `is_main`       TINYINT(1) NOT NULL,
     PRIMARY KEY(id_asis_char),
     FOREIGN KEY(id_asis) REFERENCES events_asist(id_asis),
     FOREIGN KEY(char_id) REFERENCES gMembers_id_name(internal_id),
-    FOREIGN KEY(spec_id) REFERENCES character_specs(id),
+    FOREIGN KEY(spec_id) REFERENCES character_specs(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

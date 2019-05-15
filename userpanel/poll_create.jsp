@@ -2,7 +2,7 @@
 <%@ page import ="java.net.URLEncoder" %>
 <%
 if(!guildMember)
-{  
+{
     response.sendRedirect("../login.jsp?rdir="+URLEncoder.encode("userpanel/poll_create.jsp", "UTF-8"));
 }
 else
@@ -56,43 +56,43 @@ else
                 <div class="form-group row">
                     <label class="col-2" for="exampleSelect1">Minimu guild level</label>
                     <div class="col-10">
-                        <select name="guild_level" class="form-control" id="exampleSelect1">                        
+                        <select name="guild_level" class="form-control" id="exampleSelect1">
                            <% if(ranks.getRanks() != null) {
                                 for(Rank r : ranks.getRanks(false)){ %>
                                     <option value="<%= r.getId() %>"><%= r.getTitle() %></option>
                           <%}/*end foreach ranks*/ } /*End if is getRanks null*/ %>
                         </select>
                     </div>
-                </div>                    
-                <div class="form-check">                    
+                </div>
+                <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="more_options"> 
+                        <input type="checkbox" class="form-check-input" name="more_options">
                         Other member can add more options?
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="multi_options"> 
+                        <input type="checkbox" class="form-check-input" name="multi_options">
                         Members can select multiple options?
                     </label>
-                </div>  
+                </div>
                 <div class="form-group row">
                     <div class="form-check col-2">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="limit_date" id="limitDate"> 
+                            <input type="checkbox" class="form-check-input" name="limit_date" id="limitDate">
                             Limit Date?
-                        </label>  
-                    </div> 
-                    <div class="col-10" id="divDataPicker" style="display: none;">                        
+                        </label>
+                    </div>
+                    <div class="col-10" id="divDataPicker" style="display: none;">
                         <div class="input-group date" data-provide="datepicker">
                             <input id="dateLimitSelect" type="text" class="form-control" name="set_date_limit" disable>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                        </div>                      
+                        </div>
                     </div>
                 </div>
                 <input type="hidden" value="true" name="save_apply" />
                 <button type="submit" class="btn btn-primary">Save</button>
-            </form> 
+            </form>
         </div>
         <%@include file="../includes/footer.jsp" %>
     </body>

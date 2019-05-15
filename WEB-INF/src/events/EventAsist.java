@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
 
-public class EventsAsist extends GameObject
+public class EventAsist extends GameObject
 {
     //DB Structure
     public static final String EVENTS_ASIST_TABLE_NAME = "events_asist";
@@ -25,12 +25,12 @@ public class EventsAsist extends GameObject
     private User user;
     private List<EventAsistCharacter> eventCharacter = new ArrayList<>();
     
-    public EventsAsist()
+    public EventAsist()
     {
         super(EVENTS_ASIST_TABLE_NAME, EVENTS_ASIST_TABLE_KEY, EVENTS_ASIST_TABLE_STRUCTURE);
     }
     
-    public EventsAsist(int id)
+    public EventAsist(int id)
     {
         super(EVENTS_ASIST_TABLE_NAME, EVENTS_ASIST_TABLE_KEY, EVENTS_ASIST_TABLE_STRUCTURE);
         loadFromDB(id);
