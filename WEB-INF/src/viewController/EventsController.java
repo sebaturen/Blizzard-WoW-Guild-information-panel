@@ -9,6 +9,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.events.Event;
+import com.blizzardPanel.User;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,43 +53,24 @@ public class EventsController
             System.out.println("ev Size> "+ this.activeEvents.size());
         return this.activeEvents;
     }
-    
+
+    //(user, eventTitle, eventDesc, eventDate))
+    public boolean newEvent(User owner, String eventTitle, String eventDesc, String eventDate)
+    {
+        System.out.println("Try to generate event... ");
+        Event newEvent = new Event();
+        newEvent.setTitle(eventTitle);
+        newEvent.setDesc(eventDesc);
+        newEvent.setDate(eventDate);
+        newEvent.setOwner(owner);
+        newEvent.setIsData(true);
+        System.out.println("all fino put in is ok!");
+        return newEvent.saveInDB();
+    }
+
+
     public Event getEvent(int id)
     {
         return new Event(id);
     }
-    
-    /*public boolean newPoll(User owner, String pollQuest, int guildLevel, boolean moreOptions, 
-                            boolean multiOptions, boolean limiDate, 
-                            String limitDateSet, List<String> options)
-    {
-        Poll newPoll = new Poll();
-        newPoll.setUser(owner);
-        newPoll.setPollQuestion(pollQuest);
-        newPoll.setMinRank(new Rank(guildLevel));
-        newPoll.setCanAddMoreOptions(moreOptions);
-        newPoll.setMultiSelect(multiOptions);
-        newPoll.setIsLimitDate(limiDate);
-        if(limiDate)
-        {
-            if(limitDateSet != null && limitDateSet.length() > 0)
-                newPoll.setEndDate(limitDateSet);
-            else
-                return false;
-        }
-        newPoll.setIsEnable(true);
-        newPoll.setStartDate(Update.getCurrentTimeStamp());
-        //Add options
-        for(String op : options)
-        {
-            PollOption pollOp = new PollOption();
-            pollOp.setOptionText(op);
-            pollOp.setOwner(owner);
-            pollOp.setDate(Update.getCurrentTimeStamp());
-            pollOp.setIsData(true);
-            newPoll.addOption(pollOp);
-        }
-        newPoll.setIsData(true);
-        return newPoll.saveInDB();
-    }*/
 }

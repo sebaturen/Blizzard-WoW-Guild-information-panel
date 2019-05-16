@@ -172,7 +172,7 @@ public class DiscordBot extends ListenerAdapter
                     FactionAssaultControl fAssault = new FactionAssaultControl();
                     if(fAssault.isCurrent())
                         channel.sendMessage
-                        (    "Assault is current!, GO KILL HORDES! "
+                        (    "The assault is currently happening!, GO KILL HORDES! "
                             + "\nTime Remaining: ["+ fAssault.getTimeRemainingCurrentAssault()[0] +"h:"
                             + fAssault.getTimeRemainingCurrentAssault()[1] +"m]"
                         ).queue();

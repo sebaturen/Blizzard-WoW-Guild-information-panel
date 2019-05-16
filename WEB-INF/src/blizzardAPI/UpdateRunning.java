@@ -106,7 +106,7 @@ public class UpdateRunning implements ServletContextListener
         {
             if(!this.isAssaultNotification)
             {
-                discordBot.sendMessajeNotification("The assault has start");
+                discordBot.sendMessajeNotification("The assault has started");
                 this.isAssaultNotification = true;
             }
             int[] timeRemain = fAssault.getTimeRemainingCurrentAssault( );
@@ -119,7 +119,7 @@ public class UpdateRunning implements ServletContextListener
         {
             if(this.isAssaultNotification)
             {
-                discordBot.sendMessajeNotification("The assault has finish");
+                discordBot.sendMessajeNotification("The assault has finished");
                 this.isAssaultNotification = false;                
             }
             int[] timeRemain = fAssault.getTimeRemaining(fAssault.getNextAssault());

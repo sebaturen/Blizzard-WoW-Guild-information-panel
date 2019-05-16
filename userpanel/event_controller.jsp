@@ -5,36 +5,35 @@
     JSONObject json = new JSONObject();
     if(guildMember)
     {%>
-        <%@ page import = "com.blizzardPanel.poll.Poll" %>
+        <%@ page import = "com.blizzardPanel.events.Event" %>
         <%@ page import ="java.util.ArrayList" %>
         <%@ page import ="java.util.List" %>
         <%@ page import ="java.text.SimpleDateFormat" %>
-        <jsp:useBean id="pollControl" class="com.blizzardPanel.viewController.PollController" scope="session"/><%
+        <jsp:useBean id="eventsControl" class="com.blizzardPanel.viewController.EventsController" scope="session"/><%
 
+        //Load event edit
+        String eventAction = request.getParameter("event_action");
+        json.put("action", eventAction);
 
-        //Load poll edit
-        String pollAction = request.getParameter("poll_action");
-        json.put("action", pollAction);
-
-        //Controll poll:
-        int pollId = -1;
-        Poll editPoll = null;
+        //Controll event:
+        int eventId = -1;
+        Event editEvent = null;
         boolean canEdit = false;
-        int optId = -1;
 
-        if(pollAction.equals("removeOption") ||
-            pollAction.equals("addOption") ||
-            pollAction.equals("addResult") ||
-            pollAction.equals("removeResult"))
+        /*
+        if(eventAction.equals("removeOption") ||
+            eventAction.equals("addOption") ||
+            eventAction.equals("addResult") ||
+            eventAction.equals("removeResult"))
         {
             pollId = Integer.parseInt(request.getParameter("poll_id"));
             editPoll = pollControl.getPoll(pollId);
-        }
+        } */
 
         //Try action
-        switch(pollAction)
+        switch(eventAction)
         {
-            case "removeOption":
+            /*case "removeOption":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
                 if(editPoll.getOption(optId) != null)
@@ -71,53 +70,38 @@
             case "removeResult":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
                 json.put("status", editPoll.removeResult(optId, user));
-                break;
-            case "createPoll":
-                //Create poll values
-                String pollQuest = null;
-                String limitDateSet = null;
-                boolean moreOptions = false;
-                boolean multiOptions = false;
-                boolean limitDate = false;
-                int minGuildLevel = -1;
-                List<String> options = new ArrayList<>();
+                break;*/
+            case "createEvent":
+                //Create event values
+                String eventTitle = null;
+                String eventDesc = null;
+                String eventDate = null;
+
                 //search values
                 int i = 0;
                 while(request.getParameter("val["+i+"][name]") != null)
                 {
                     String valName = request.getParameter("val["+i+"][name]");
                     String valValue = request.getParameter("val["+i+"][value]");
+
                     //general settings
                     switch(valName)
                     {
-                        case "poll_quest": pollQuest = valValue; break;
-                        case "guild_level": minGuildLevel = Integer.parseInt(valValue); break;
-                        case "more_options": moreOptions = (valValue.equals("on")); break;
-                        case "multi_options": multiOptions = (valValue.equals("on")); break;
-                        case "limit_date": limitDate = (valValue.equals("on")); break;
-                        case "set_date_limit": limitDateSet = valValue; break;
-                    }
-                    //Save Options
-                    if(valName.toLowerCase().startsWith("option_"))
-                    {
-                        options.add(valValue);
+                        case "event_title": eventTitle = valValue; break;
+                        case "event_desc": eventDesc = valValue; break;
+                        case "event_date": eventDate = valValue; break;
                     }
                     i++;
                 }
-                if(pollQuest != null && pollQuest.length() > 0 && options.size() > 0)
+
+                if(eventTitle != null && eventDesc != null && eventDate != null)
                 {
                     //Try parse date time:
                     try
                     {
-                        if(limitDateSet.length() == 10)
-                            limitDateSet = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(limitDateSet +" 00:00:00"));
-                        else
-                            limitDateSet = null;
+                        eventDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(eventDate));
                         //Try save in DB
-                        if(pollControl.newPoll(
-                            user, pollQuest, minGuildLevel, moreOptions,
-                            multiOptions, limitDate,
-                            limitDateSet, options))
+                        if(eventsControl.newEvent(user, eventTitle, eventDesc, eventDate))
                         {
                             json.put("status", "ok");
                         }
@@ -128,7 +112,7 @@
                         }
                     } catch (java.text.ParseException ex) {
                         json.put("status", "fail");
-                        json.put("msg", "Error, limit date not correct");
+                        json.put("msg", "Error, `date` not correct");
                     }
                 }
                 else

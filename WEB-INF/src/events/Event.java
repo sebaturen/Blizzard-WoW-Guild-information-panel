@@ -60,6 +60,7 @@ public class Event extends GameObject
                 this.eventAsis.forEach((evAsis) -> {
                     evAsis.saveInDB();
                 });
+                System.out.println("Data is saved! ");
                 return true;
         }
         return false;
