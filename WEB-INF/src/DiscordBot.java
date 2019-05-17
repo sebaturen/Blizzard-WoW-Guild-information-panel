@@ -33,7 +33,7 @@ public class DiscordBot extends ListenerAdapter
     }
     
     public DiscordBot build()
-    {        
+    {
         try
         {
             jda = new JDABuilder(GeneralConfig.getStringConfig("DISCORD_BOT_TOKEN"))
@@ -65,7 +65,10 @@ public class DiscordBot extends ListenerAdapter
         for(TextChannel tx : jda.getTextChannels()) 
         {
             if(tx.getGuild().getName().equals(this.guildDiscordChanel) && tx.getName().equals(this.botChanel))
+            {
                 this.chanelId = tx.getIdLong();
+                break;
+            }
         }
     }
     

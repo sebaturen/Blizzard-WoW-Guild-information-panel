@@ -8,6 +8,7 @@
         <%@ page import = "com.blizzardPanel.events.Event" %>
         <%@ page import ="java.util.ArrayList" %>
         <%@ page import ="java.util.List" %>
+        <%@ page import ="java.util.Date" %>
         <%@ page import ="java.text.SimpleDateFormat" %>
         <jsp:useBean id="eventsControl" class="com.blizzardPanel.viewController.EventsController" scope="session"/><%
 
@@ -100,15 +101,25 @@
                     try
                     {
                         eventDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(eventDate));
-                        //Try save in DB
-                        if(eventsControl.newEvent(user, eventTitle, eventDesc, eventDate))
+                        Date nowDate = new Date();
+                        Date evDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(eventDate);
+                        if(nowDate.compareTo(evDate) < 0)
                         {
-                            json.put("status", "ok");
+                            //Try save in DB
+                            if(eventsControl.newEvent(user, eventTitle, eventDesc, eventDate))
+                            {
+                                json.put("status", "ok");
+                            }
+                            else
+                            {
+                                json.put("status", "fail");
+                                json.put("msg", "Failed to save in DB");
+                            }
                         }
                         else
                         {
                             json.put("status", "fail");
-                            json.put("msg", "Failed to save in DB");
+                            json.put("msg", "Error, the date must be later than the current one");
                         }
                     } catch (java.text.ParseException ex) {
                         json.put("status", "fail");

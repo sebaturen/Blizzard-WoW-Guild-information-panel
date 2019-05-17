@@ -11,7 +11,9 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.events.Event;
 import com.blizzardPanel.User;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -57,14 +59,12 @@ public class EventsController
     //(user, eventTitle, eventDesc, eventDate))
     public boolean newEvent(User owner, String eventTitle, String eventDesc, String eventDate)
     {
-        System.out.println("Try to generate event... ");
         Event newEvent = new Event();
         newEvent.setTitle(eventTitle);
         newEvent.setDesc(eventDesc);
         newEvent.setDate(eventDate);
         newEvent.setOwner(owner);
         newEvent.setIsData(true);
-        System.out.println("all fino put in is ok!");
         return newEvent.saveInDB();
     }
 

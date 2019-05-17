@@ -254,6 +254,7 @@ public class CharacterMember extends GameObject
     private void loadActiveSpecFromDB() {loadSpecFromDB("AND enable=1");}
     private void loadSpecFromDB(String extraWhere)
     {
+        this.specs = new ArrayList<>();
         try
         {
             JSONArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
@@ -586,7 +587,7 @@ public class CharacterMember extends GameObject
         return time;
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
-    public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty()) loadSpecFromDB(); return this.specs; }
+    public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty() || this.specs.size() == 1) loadSpecFromDB(); return this.specs; }
     public CharacterSpec getActiveSpec()
     {
         if(this.specs.isEmpty()) loadActiveSpecFromDB();
