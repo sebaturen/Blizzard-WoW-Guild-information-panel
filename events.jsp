@@ -33,7 +33,7 @@
                     <p><%= ev.getDesc() %></p>
                     <!-- OTHER PLAYERS... -->
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                        <input type="checkbox" class="custom-control-input" id="participate_switch">
                         <label class="custom-control-label" for="customSwitch1">participate</label>
                     </div>
                     <!-- Character select area: -->
@@ -48,7 +48,20 @@
                         </div>
                         <div class="col-md-8">
                             <h3>Alters select</h3>
-                            <div id="alters_zone" class="drop_zone"></div>
+                            <div id="alters_zone" class="drop_zone">
+                                <table class="table table-dark character-alter-tab">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th> <!-- NAME -->
+                                            <th scope="col"></th> <!-- LVL -->
+                                            <th scope="col"></th> <!-- SPECS -->
+                                            <th scope="col"></th> <!-- DELETE -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alter_table_zone">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <% //User character info~
