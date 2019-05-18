@@ -441,6 +441,12 @@ body > .container {
 }
 #main_zone {
     text-align: center;
+    position: relative;
+}
+#delete_main {
+    position: absolute;
+    top: 4px;
+    right: 4px;
 }
 .drop_zone {
     width: 100%;
@@ -453,7 +459,7 @@ body > .container {
 .user_char_disable {
     text-decoration-line: line-through;
 }
-.spec_select {
+.spec_select, .character-tab > tbody tr, .removeCharAlter, #delete_main {
     cursor: pointer;
 }
 .spec_select:hover {

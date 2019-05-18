@@ -21,19 +21,29 @@
         Event editEvent = null;
         boolean canEdit = false;
 
-        /*
-        if(eventAction.equals("removeOption") ||
-            eventAction.equals("addOption") ||
-            eventAction.equals("addResult") ||
-            eventAction.equals("removeResult"))
+
+        System.out.println("v > "+ request.getParameter("val[event_id]"));
+        System.out.println("v > "+ request.getParameter("val[main_id]"));
+        System.out.println("v > "+ request.getParameter("val[main_spec]"));
+
+        if(eventAction.equals("addMember") ||
+            eventAction.equals("event_add_result2") ||
+            eventAction.equals("event_add_result2") ||
+            eventAction.equals("event_add_result2"))
         {
-            pollId = Integer.parseInt(request.getParameter("poll_id"));
-            editPoll = pollControl.getPoll(pollId);
-        } */
+            eventId = Integer.parseInt(request.getParameter("val[event_id]"));
+            System.out.println("ev ID> "+ eventId);
+            editEvent = eventsControl.getEvent(eventId);
+        }
 
         //Try action
         switch(eventAction)
         {
+            case "addMember":
+                int mainCharID = Integer.parseInt(request.getParameter("val[main_id]"));
+                int mainSpecID = Integer.parseInt(request.getParameter("val[main_spec]"));
+                
+                break;
             /*case "removeOption":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
@@ -134,6 +144,7 @@
                 break;
             default:
                 json.put("status", "fail");
+                json.put("msg", "Acction not found");
                 break;
 
         }

@@ -16,6 +16,85 @@ $(document).ready(function() {
         $(".item-floting-desc").hide();
     });
 
+    //Delte main select
+    $("#delete_main").click(function() { clearMain(); });
+
+    //Switch participate
+    $("#participate_switch_container").click(function()
+    {
+        if($("#participate_switch").is(':checked'))
+        {
+            var confClear = confirm("You want remove all selected?");
+            if(confClear)
+            {
+                //Clear all selected
+                $("#alter_table_zone").html("");
+                clearMain();
+                //Enable all characters
+                jQuery.each( $(".character-tab > tbody tr"), function( i, val ) {
+                    $(this).attr("class", "user_char");
+                });
+                $("#participate_switch").prop('checked', false);
+                $("#btn_save_inf").attr("disabled", true);
+            }
+        }
+        else
+        {
+            alert("Drag your character to a section...");
+            /*$("#participate_switch").prop('checked', true);
+            $("#btn_save_inf").attr("disabled", false);*/
+        }
+    });
+
+    //Send save info
+    $("#btn_save_inf").click(function() {
+        if($("#main_zone").data("char-id") > 0 && $("#main_zone").data("spec-id") > 0)
+        {
+            //Get al alters select detail
+            var altersDetail = [];
+            jQuery.each( $("#alter_table_zone tr"), function( i, val ) {
+                altersDetail[i] = {id: $(this).data("char-id"), spec: $(this).data("spec-id")};
+            });
+            //Save memver info
+            $(".ajaxLoad").show();
+            $("#btn_save_inf").attr("disabled", true);
+            $.ajax({
+                method: "POST",
+                url: "userpanel/event_controller.jsp",
+                data: { event_action: "addMember",
+                        val: {
+                            event_id: $("#eventDetail").data("id"),
+                            main_id: $("#main_zone").data("char-id"),
+                            main_spec: $("#main_zone").data("spec-id"),
+                            alters: altersDetail
+                        } },
+                dataType: "json"
+            })
+            .done(function(mData) {
+                if(mData.status == "ok")
+                {
+                    console.log("ok recargar (?)");
+                }
+                else
+                {
+                    console.log(mData);
+                    $("#event_add_result").html("<div class='alert alert-danger' role='alert'>"+ mData.msg +"</div>");
+                }
+            })
+            .fail(function() {
+                $("#event_add_result").html("<div class='alert alert-danger' role='alert'>Failed to save a new member information</div>");
+            })
+            .always(function() {
+                $("#event_add_result").show();
+                $(".ajaxLoad").hide();
+            });
+        }
+        else
+        {
+            alert("Set Main character and spec first");
+        }
+    });
+
 });
 
 var dragStar = false;
@@ -84,6 +163,10 @@ function dropCharMain(charInfo)
 
         //------ Enable participate switch
         $("#participate_switch").prop('checked', true);
+        $("#btn_save_inf").attr("disabled", false);
+
+        //----- Enable delete main
+        $("#delete_main").show();
     }
 }
 
@@ -95,6 +178,17 @@ function specSelecMain(imgSpec)
         $(this).attr("class", "black_white spec_select");
     });
     $(imgSpec).attr("class", "spec_select");
+}
+
+function clearMain()
+{
+    $("#char_info_"+ $("#main_zone").data("char-id")).attr("class", "user_char");
+    $("#main_zone").attr("data-char-id", 0);
+    $("#main_zone").attr("data-spec-id", 0);
+    $("#main_name").html("");
+    $("#main_lvl").html("");
+    $("#main_specs").html("");
+    $("#delete_main").hide();
 }
 
 function dropCharAlter(charInfo)
@@ -120,7 +214,7 @@ function dropCharAlter(charInfo)
             i++;
         }
         charHtmlTable += specCharHtml +"</td>"+
-                        "<td data-char_id='"+ charSelectId +"' onclick='removeChar(this)'>X</td>"+
+                        "<td class='removeCharAlter' data-char_id='"+ charSelectId +"' onclick='removeChar(this)'><i class='fa fa-trash'></i></td>"+
                     "</tr>";
         $("#alter_table_zone").append(charHtmlTable);
 
@@ -129,6 +223,7 @@ function dropCharAlter(charInfo)
 
         //------ Enable participate switch
         $("#participate_switch").prop('checked', true);
+        $("#btn_save_inf").attr("disabled", false);
     }
 }
 

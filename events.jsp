@@ -27,12 +27,14 @@
         <div id="ev_container" class="container fill">
             <% if( request.getParameter("ev") != null && (Integer.parseInt(request.getParameter("ev"))) > 0) { /*event detal: */
                     Event ev = new Event(Integer.parseInt(request.getParameter("ev"))); %>
+                    <div class="loader ajaxLoad" style="display: none;"></div>
+                    <div id="event_add_result" style="display: none;"></div>
                     <span class="ev_owner character-<%= (user.getMainCharacter() != null)? user.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (user.getMainCharacter() != null)? user.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span>
-                    <div class="ev_title"><h1><%= ev.getTitle() %></h1></div>
+                    <div id="eventDetail" data-id="<%= ev.getId() %>" class="ev_title"><h1><%= ev.getTitle() %></h1></div>
                     <span class="right_small_date"><%= ev.getDate() %></span>
                     <p><%= ev.getDesc() %></p>
                     <!-- OTHER PLAYERS... -->
-                    <div class="custom-control custom-switch">
+                    <div id="participate_switch_container" class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" id="participate_switch">
                         <label class="custom-control-label" for="customSwitch1">participate</label>
                     </div>
@@ -41,6 +43,7 @@
                         <div class="col-md-4">
                             <h3>Main select</h3>
                             <div id="main_zone" class="drop_zone">
+                                <div id="delete_main" style="display: none;"><i class='fa fa-trash'></i></div>
                                 <div id="main_name"></div>
                                 <div id="main_lvl"></div>
                                 <div id="main_specs"></div>
@@ -105,7 +108,8 @@
                               <%} /* end foreach member m */ %>
                             </tbody>
                         </table>
-                  <% } /* close if members CharacterMember more 0 */%>
+                    <% } /* close if members CharacterMember more 0 */%>
+                    <button id="btn_save_inf" type="submit" class="btn btn-primary" disabled>Save</button>
             <% } else { /*if detail event... continue event list: */
                     List<Event> events = eventsControl.getEvents();
                     if(events.size() > 0) {
