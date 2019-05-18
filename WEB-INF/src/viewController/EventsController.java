@@ -53,7 +53,7 @@ public class EventsController
             System.out.println("ev Size> "+ this.activeEvents.size());
         return this.activeEvents;
     }
-
+    
     //(user, eventTitle, eventDesc, eventDate))
     public boolean newEvent(User owner, String eventTitle, String eventDesc, String eventDate)
     {

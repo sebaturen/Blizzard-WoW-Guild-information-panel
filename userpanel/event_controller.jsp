@@ -5,11 +5,12 @@
     JSONObject json = new JSONObject();
     if(guildMember)
     {%>
-        <%@ page import = "com.blizzardPanel.events.Event" %>
         <%@ page import ="java.util.ArrayList" %>
         <%@ page import ="java.util.List" %>
         <%@ page import ="java.util.Date" %>
         <%@ page import ="java.text.SimpleDateFormat" %>
+        <%@ page import = "com.blizzardPanel.events.Event" %>
+        <%@ page import = "com.blizzardPanel.gameObject.characters.CharacterMember" %>
         <jsp:useBean id="eventsControl" class="com.blizzardPanel.viewController.EventsController" scope="session"/><%
 
         //Load event edit
@@ -20,11 +21,6 @@
         int eventId = -1;
         Event editEvent = null;
         boolean canEdit = false;
-
-
-        System.out.println("v > "+ request.getParameter("val[event_id]"));
-        System.out.println("v > "+ request.getParameter("val[main_id]"));
-        System.out.println("v > "+ request.getParameter("val[main_spec]"));
 
         if(eventAction.equals("addMember") ||
             eventAction.equals("event_add_result2") ||
@@ -42,7 +38,65 @@
             case "addMember":
                 int mainCharID = Integer.parseInt(request.getParameter("val[main_id]"));
                 int mainSpecID = Integer.parseInt(request.getParameter("val[main_spec]"));
-                
+                if(mainCharID > 0 && mainSpecID > 0)
+                {
+                    //Main char detail
+                    CharacterMember mainChar = new CharacterMember(mainCharID);
+                    //set main spec
+                    mainChar.setActiveSpec(mainSpecID);
+                    if(mainChar.getUserID() == user.getId())
+                    {
+                        //while alters...
+                        List<CharacterMember> altersChar = new ArrayList<>();
+                        int j = 0;
+                        boolean failAlter = false;
+                        while(request.getParameter("val[alters]["+ j +"][id]") != null)
+                        {
+                            int altCharID = Integer.parseInt(request.getParameter("val[alters]["+ j +"][id]"));
+                            int altCharSpec = Integer.parseInt(request.getParameter("val[alters]["+ j +"][spec]"));
+                            CharacterMember altChar = new CharacterMember(altCharID);
+                            altChar.setActiveSpec(altCharSpec);
+                            if(altChar.getUserID() != user.getId())
+                            {
+                                failAlter = true;
+                                break;
+                            }
+                            else
+                            {
+                                altersChar.add(altChar);
+                            }
+                            j++;
+                        }
+                        if(!failAlter)
+                        {
+                            //Set in event...
+                            if(editEvent.addCharactersFormUser(user, mainChar, altersChar))
+                            {
+                                json.put("status", "ok");
+                            }
+                            else
+                            {
+                                json.put("status", "fail");
+                                json.put("msg", "Failed to save in DB");
+                            }
+                        }
+                        else
+                        {
+                            json.put("status", "fail");
+                            json.put("msg", "Error, alters character not is your character");
+                        }
+                    }
+                    else
+                    {
+                        json.put("status", "fail");
+                        json.put("msg", "Error, main character not is your character");
+                    }
+                }
+                else
+                {
+                    json.put("status", "fail");
+                    json.put("msg", "Error, main character or main spect character not is correct");
+                }
                 break;
             /*case "removeOption":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));

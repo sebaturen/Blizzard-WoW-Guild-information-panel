@@ -8,6 +8,7 @@ package com.blizzardPanel.events;
 import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
@@ -48,17 +49,31 @@ public class EventAsist extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        setTableStructur(DBStructure.outKey(EVENTS_ASIST_TABLE_STRUCTURE));
-        /* {"id_event", "user_id" }; */
-        switch (saveInDBObj(new String[] {this.idEvent+"", this.user.getId()+""}))
+        String[] valArray = new String[] {this.idAsis+"", this.idEvent+"", this.user.getId()+""};
+        if(this.idAsis != -1)
+        {           
+            /* {"id_event", "user_id" }; */
+            setTableStructur(DBStructure.outKey(EVENTS_ASIST_TABLE_STRUCTURE));
+        }
+        else
+        {
+            valArray = DBStructure.outKey(valArray);
+        }        
+        switch (saveInDBObj(valArray))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.eventCharacter.forEach((evChar) -> {
                     evChar.saveInDB();
                 });
                 return true;
-        }
+        } 
         return false;
+    }
+    
+    public boolean setCharacters(CharacterMember mainChar, List<CharacterMember> altersChar)
+    {
+        
+        
     }
 
     @Override

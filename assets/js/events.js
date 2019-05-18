@@ -48,46 +48,60 @@ $(document).ready(function() {
 
     //Send save info
     $("#btn_save_inf").click(function() {
+        //valid if main character is selected
         if($("#main_zone").data("char-id") > 0 && $("#main_zone").data("spec-id") > 0)
         {
+            //check if alters is selected and have specs selected
             //Get al alters select detail
             var altersDetail = [];
+            var failAlters = false;
             jQuery.each( $("#alter_table_zone tr"), function( i, val ) {
                 altersDetail[i] = {id: $(this).data("char-id"), spec: $(this).data("spec-id")};
+                console.log(altersDetail[i].id +" - "+ altersDetail[i].spec);
+                if(altersDetail[i].id == 0 || altersDetail[i].spec == 0)
+                    failAlters = true;
             });
-            //Save memver info
-            $(".ajaxLoad").show();
-            $("#btn_save_inf").attr("disabled", true);
-            $.ajax({
-                method: "POST",
-                url: "userpanel/event_controller.jsp",
-                data: { event_action: "addMember",
-                        val: {
-                            event_id: $("#eventDetail").data("id"),
-                            main_id: $("#main_zone").data("char-id"),
-                            main_spec: $("#main_zone").data("spec-id"),
-                            alters: altersDetail
-                        } },
-                dataType: "json"
-            })
-            .done(function(mData) {
-                if(mData.status == "ok")
-                {
-                    console.log("ok recargar (?)");
-                }
-                else
-                {
-                    console.log(mData);
-                    $("#event_add_result").html("<div class='alert alert-danger' role='alert'>"+ mData.msg +"</div>");
-                }
-            })
-            .fail(function() {
-                $("#event_add_result").html("<div class='alert alert-danger' role='alert'>Failed to save a new member information</div>");
-            })
-            .always(function() {
-                $("#event_add_result").show();
-                $(".ajaxLoad").hide();
-            });
+            if(!failAlters)
+            {
+                console.log(altersDetail);
+                //Save memver info
+                $(".ajaxLoad").show();
+                $("#btn_save_inf").attr("disabled", true);
+                $.ajax({
+                    method: "POST",
+                    url: "userpanel/event_controller.jsp",
+                    data: { event_action: "addMember",
+                            val: {
+                                event_id: $("#eventDetail").data("id"),
+                                main_id: $("#main_zone").data("char-id"),
+                                main_spec: $("#main_zone").data("spec-id"),
+                                alters: altersDetail
+                            } },
+                    dataType: "json"
+                })
+                .done(function(mData) {
+                    if(mData.status == "ok")
+                    {
+                        console.log("ok recargar (?)");
+                    }
+                    else
+                    {
+                        console.log(mData);
+                        $("#event_add_result").html("<div class='alert alert-danger' role='alert'>"+ mData.msg +"</div>");
+                    }
+                })
+                .fail(function() {
+                    $("#event_add_result").html("<div class='alert alert-danger' role='alert'>Failed to save a new member information</div>");
+                })
+                .always(function() {
+                    $("#event_add_result").show();
+                    $(".ajaxLoad").hide();
+                });
+            }
+            else
+            {
+                alert("Select alter specs");
+            }
         }
         else
         {
@@ -158,6 +172,7 @@ function dropCharMain(charInfo)
         $("#main_zone").attr("data-char-id", charSelectId);
         $("#main_zone").attr("data-spec-id", 0);
         $("#main_zone").data("char-id", charSelectId);
+        $("#main_zone").data("spec-id", 0);
         //------ Disable new Main char
         $("#char_info_"+ charSelectId).attr("class", "user_char_disable");
 
@@ -174,6 +189,7 @@ function specSelecMain(imgSpec)
 {
     var idSelectedSpec = $(imgSpec).data("spec_id");
     $("#main_zone").attr("data-spec-id", idSelectedSpec);
+    $("#main_zone").data("spec-id", idSelectedSpec);
     jQuery.each( $("#main_specs > .specs img"), function( i, val ) {
         $(this).attr("class", "black_white spec_select");
     });
@@ -184,7 +200,9 @@ function clearMain()
 {
     $("#char_info_"+ $("#main_zone").data("char-id")).attr("class", "user_char");
     $("#main_zone").attr("data-char-id", 0);
+    $("#main_zone").data("char-id", 0);
     $("#main_zone").attr("data-spec-id", 0);
+    $("#main_zone").data("spec-id", 0);
     $("#main_name").html("");
     $("#main_lvl").html("");
     $("#main_specs").html("");
@@ -232,6 +250,7 @@ function specSelecAlter(imgSpec)
     var idSeledChar = $(imgSpec).data("char_id");
     var idSelectedSpec = $(imgSpec).data("spec_id");
     $("#alter_selec_spec_"+ idSeledChar).attr("data-spec-id", idSelectedSpec);
+    $("#alter_selec_spec_"+ idSeledChar).data("spec-id", idSelectedSpec);
     jQuery.each( $("#alter_selec_spec_"+ idSeledChar +" > .specs > .specs img"), function( i, val ) {
         $(this).attr("class", "black_white spec_select");
     });

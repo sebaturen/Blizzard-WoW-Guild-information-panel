@@ -8,6 +8,7 @@ package com.blizzardPanel.events;
 import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
@@ -64,6 +65,23 @@ public class Event extends GameObject
                 return true;
         }
         return false;
+    }    
+    
+    public boolean addCharactersFormUser(User user, CharacterMember mainChar, List<CharacterMember> altersChar)
+    {
+        EventAsist eAsis = getAsistDetail(user);
+        if(eAsis == null) 
+        {
+            eAsis = new EventAsist();
+            eAsis.setEventId(this.id);
+            eAsis.setUser(user);
+            eAsis.setIsData(true);
+        }
+        if(eAsis.setCharacters(mainChar, altersChar))
+        {
+            return eAsis.saveInDB();
+        }
+        return false;
     }
 
     @Override
@@ -72,7 +90,6 @@ public class Event extends GameObject
     public void setDesc(String desc) { this.desc = desc; }
     public void setOwner(User owner) { this.owner = owner; }
     public void setDate(String date) { this.date = date; }
-    public void addAsist(EventAsist eAsis) { eventAsis.add(eAsis); }
 
     @Override
     public int getId() { return this.id; }
@@ -81,5 +98,14 @@ public class Event extends GameObject
     public User getOwner() { return this.owner; }
     public String getDate() { return this.date; }
     public List getEventAsist() { return this.eventAsis; }
+    public EventAsist getAsistDetail(User user)
+    {
+        for(EventAsist eAsis : this.eventAsis)
+        {
+            if(eAsis.getUser().getId() == user.getId())
+                return eAsis;
+        }
+        return null;
+    }
     
 }
