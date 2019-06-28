@@ -53,9 +53,9 @@ public class EventAsistCharacter extends GameObject
         switch (saveInDBObj(new String[] {this.idAsis+"", this.charM.getId()+"", this.charM.getActiveSpec()+""}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
+                //return true;
         }
-        return false;
+        //return false;
     }
 
     @Override
