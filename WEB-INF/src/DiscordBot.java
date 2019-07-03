@@ -288,7 +288,7 @@ public class DiscordBot extends ListenerAdapter
         //remove role
         Role artMember = guild.getRolesByName(this.guildDiscordChanel +" Members", true).get(0);
         guild.getController().removeSingleRoleFromMember(guild.getMember(discUser), artMember).queue();
-        sendMessajeNotification("Member "+ discUser.getAsMention() +" lave guild, role remove");
+        sendMessajeNotification("Member "+ discUser.getAsMention() +" leave guild, role remove");
         return true;
     }
 }

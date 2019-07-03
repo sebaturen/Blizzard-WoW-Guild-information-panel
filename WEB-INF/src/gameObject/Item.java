@@ -98,9 +98,12 @@ public class Item extends GameObject
         {//blizzard API info
             JSONObject vGam = (JSONObject) objInfo.get("gemInfo");
             JSONObject bonusInfo = (JSONObject) vGam.get("bonus");
-            JSONObject typeInfo = (JSONObject) vGam.get("type");
             this.gemInfoBonusName = bonusInfo.get("name").toString();
-            this.gemInfoType = typeInfo.get("type").toString();
+            if(vGam.containsKey("type"))
+            {
+                JSONObject typeInfo = (JSONObject) vGam.get("type");
+                this.gemInfoType = typeInfo.get("type").toString();
+            }
         }
         else
         {//from DB      

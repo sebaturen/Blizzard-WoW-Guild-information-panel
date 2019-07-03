@@ -76,6 +76,8 @@ public class CharacterMember extends GameObject
     private CharacterStats stats;
     private boolean isMain = false;
     private boolean isDelete = false;
+    //specs fails
+    private boolean tryLoadFailSpecs = false;
 
     //Constructor load from DB if have a ID
     public CharacterMember(int internalID)
@@ -273,7 +275,17 @@ public class CharacterMember extends GameObject
             {
                 Logs.errorLog(CharacterMember.class, "Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
                 Logs.errorLog(CharacterMember.class, "\tTry get spec again from update...");
-                loadSpecFromBlizz();
+                if(!tryLoadFailSpecs)
+                {
+                    tryLoadFailSpecs = true;
+                    loadSpecFromBlizz();
+                }
+                else
+                {
+                    Logs.errorLog(CharacterMember.class, "Member `"+ this.name +"["+ this.internalID +"]` not have spec, change status to delete");
+                    isDelete = true;
+                    saveInDB();
+                }
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(CharacterMember.class, "Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
