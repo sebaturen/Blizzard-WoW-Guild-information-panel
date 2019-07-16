@@ -120,6 +120,7 @@ public class EventAsist extends GameObject
         {
             
         }
+        return false;
         
         
         //Verificar que existe main

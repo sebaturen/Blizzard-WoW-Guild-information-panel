@@ -55,7 +55,7 @@ public class EventAsistCharacter extends GameObject
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 //return true;
         }
-        //return false;
+        return false;
     }
 
     @Override
