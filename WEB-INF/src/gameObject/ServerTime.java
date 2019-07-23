@@ -6,6 +6,8 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.APIInfo;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -68,7 +70,7 @@ public class ServerTime
      */
     public static long getLastResetTime()
     {
-        return 1562612340000L;
+        return 1563251350000L;
     }
     
     /**
@@ -77,7 +79,7 @@ public class ServerTime
      */
     public static long getSeasonTime()
     {
-        return 1548633770000L;
+        return APIInfo.ACTUAL_SEASON_TIMESTAMP;
     }
     
     public String getTimeZone()

@@ -8,6 +8,7 @@ package com.blizzardPanel.blizzardAPI;
 public interface APIInfo
 {
     public static final int API_SECOND_LIMIT_ERROR = 429;
+    public static final long ACTUAL_SEASON_TIMESTAMP = 1562673600000L; //Update raider.io season too
     //-------------------------
     //API Acces
     //-------------------------
@@ -20,7 +21,7 @@ public interface APIInfo
     public static final String API_CHARACTER_RENDER_URL = "https://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
     public static final String API_ITEM_RENDER_URL      = "https://render-%s.worldofwarcraft.com/icons/%s/%s"; //{region}, {size 56}, {item icon}
     public static final String RAIDER_IO_API_URL        = "https://raider.io/api/%s/%s/%s/%s"; //[guilds/characters], {location}, {server}, {guild name}
-    public static final String RAIDER_IO_ACTUAL_SEASON  = "season-bfa-2";
+    public static final String RAIDER_IO_ACTUAL_SEASON  = "season-bfa-3";
 
     //------------------------------------------World of Warcraft Community APIs
     //Guild Profile API

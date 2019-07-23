@@ -581,7 +581,7 @@ public class CharacterMember extends GameObject
         if(this.bestMythicPlusScore.get("season") != null)
             return ((JSONObject) this.bestMythicPlusScore.get("season")).get("name").toString();
         else
-            return "";        
+            return "";
     }
     public String getThumbnailURL()
     {
