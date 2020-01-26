@@ -22,8 +22,6 @@ public class ServerTime
     public static final String EST_TIME_ZONE = "";
     public static final String TIME_ZONE = "PST";
     private static ServerTime svObject;
-    public static final int MAINTENANCE_DAY = Calendar.TUESDAY;
-    public static final int MAINTENANCE_HOUR = 7;
     
     //Atribute
     private final String timeZone;
@@ -70,37 +68,7 @@ public class ServerTime
      */
     public static long getLastResetTime()
     {
-        Date sTime = getServerTime();
-        Calendar sCalendar = Calendar.getInstance();
-        sCalendar.setTimeZone(TimeZone.getTimeZone(svObject.getTimeZone()));
-        sCalendar.setTime(sTime);
-
-        if (sCalendar.get(Calendar.DAY_OF_WEEK) > MAINTENANCE_DAY) {
-            return getCurrentMaintenance(sCalendar);
-        } else if (sCalendar.get(Calendar.DAY_OF_WEEK) == MAINTENANCE_DAY) {
-            if (sCalendar.get(Calendar.HOUR_OF_DAY) >= MAINTENANCE_HOUR) {
-                return getCurrentMaintenance(sCalendar);
-            } else {
-                return getPreviewMaintenance(sCalendar);
-            }
-        } else {
-            return getPreviewMaintenance(sCalendar);
-        }
-    }
-
-    public static long getPreviewMaintenance(Calendar serverCalendar) {
-        while (serverCalendar.get(Calendar.DAY_OF_WEEK) != MAINTENANCE_DAY) {
-            serverCalendar.add(Calendar.DAY_OF_MONTH, -1);
-        }
-        serverCalendar.set(Calendar.HOUR_OF_DAY, MAINTENANCE_HOUR);
-        return serverCalendar.getTimeInMillis();
-
-    }
-
-    public static long getCurrentMaintenance(Calendar serverCalendar) {
-        serverCalendar.set(Calendar.DAY_OF_WEEK, MAINTENANCE_DAY);
-        serverCalendar.set(Calendar.HOUR_OF_DAY, MAINTENANCE_HOUR);
-        return serverCalendar.getTimeInMillis();
+        return 1579586219000L;
     }
     
     /**
