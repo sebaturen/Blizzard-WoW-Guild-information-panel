@@ -120,7 +120,6 @@ public class RaidDificultBoss extends GameObject
      */
     private String getBlizzSlugFromRaiderIO(String slug)
     {
-        System.out.println("Boss name: slug "+ slug);
         switch(slug)
         {
             //******************Battle For Azeroth****************************//
