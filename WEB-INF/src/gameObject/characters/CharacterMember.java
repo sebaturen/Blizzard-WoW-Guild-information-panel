@@ -71,7 +71,7 @@ public class CharacterMember extends GameObject
     private JSONObject bestMythicPlusScore = new JSONObject();
     private JSONObject mythicPlusScores = new JSONObject();
     private List<CharacterSpec> specs = new ArrayList<>();
-    private List<CharacterItems> items = new ArrayList<>();
+    private List<CharacterItem> items = new ArrayList<>();
     private double itemLevel;
     private CharacterStats stats;
     private boolean isMain = false;
@@ -240,12 +240,12 @@ public class CharacterMember extends GameObject
         for(Object key : allItems.keySet())
         {
             String postItem = (String)key;
-            //all element exept average item level information
+            //all element except average item level information
             if(!postItem.equals("averageItemLevel") && !postItem.equals("averageItemLevelEquipped"))
             {
                 JSONObject item = (JSONObject) allItems.get(postItem);
                 item.put("post_item", postItem);
-                this.items.add(new CharacterItems(item));
+                this.items.add(new CharacterItem(item));
             }
         }
     }
@@ -314,13 +314,13 @@ public class CharacterMember extends GameObject
     private void loadItemsFromDB()
     {
         try {
-            JSONArray itemDB = dbConnect.select(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
+            JSONArray itemDB = dbConnect.select(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
                                                     new String[] { "id" },
                                                     "member_id=? AND item_id != 0",
                                                     new String[] { this.internalID +""});
             for(int i = 0; i < itemDB.size(); i++)
             {
-                CharacterItems sp = new CharacterItems( (Integer) ((JSONObject) itemDB.get(i)).get("id") );
+                CharacterItem sp = new CharacterItem( (Integer) ((JSONObject) itemDB.get(i)).get("id") );
                 this.items.add(sp);
             }
         } catch (SQLException | DataException ex) {
@@ -412,7 +412,7 @@ public class CharacterMember extends GameObject
                     if(this.specs.isEmpty()) loadSpecFromDB();
                     this.specs.forEach((spc) -> {
                         spc.setMemberId(this.internalID);
-                        //valide if this member have a this spec in DB (set Update or Insert)
+                        //valid if this member have a this spec in DB (set Update or Insert)
                         try
                         {
                             JSONArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
@@ -434,9 +434,9 @@ public class CharacterMember extends GameObject
                     //Clear all old items:
                     if(this.items.isEmpty()) loadItemsFromDB();
                     try {
-                        dbConnect.update(CharacterItems.ITEMS_MEMBER_TABLE_NAME,
-                                        CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
-                                        CharacterItems.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
+                        dbConnect.update(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
+                                        CharacterItem.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
+                                        CharacterItem.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
                                         "member_id=?",
                                         new String[] {this.internalID +""});
                     } catch (DataException | ClassNotFoundException | SQLException ex) {
@@ -445,7 +445,7 @@ public class CharacterMember extends GameObject
                     //Update or insert a new items
                     this.items.forEach((itm) -> {
                         itm.setMemberId(this.internalID);
-                        CharacterItems iMemberDB = new CharacterItems(itm.getPosition(), this.internalID);
+                        CharacterItem iMemberDB = new CharacterItem(itm.getPosition(), this.internalID);
                         if(iMemberDB.isInternalData())
                         {
                             itm.setId(iMemberDB.getId());
@@ -602,7 +602,7 @@ public class CharacterMember extends GameObject
                 return sp;
         return null;
     }
-    public List<CharacterItems> getItems()
+    public List<CharacterItem> getItems()
     {
         return this.items;
     }
@@ -614,7 +614,7 @@ public class CharacterMember extends GameObject
         int sumItemLevl = 0;
         int count = 0;
         if(this.items.isEmpty()) loadItemsFromDB();
-        for(CharacterItems item : this.items)
+        for(CharacterItem item : this.items)
         {
             if(!item.getPosition().equals("tabard") && !item.getPosition().equals("shirt"))
             {
@@ -626,11 +626,11 @@ public class CharacterMember extends GameObject
         this.itemLevel = (double)sumItemLevl/(double)count;
         return this.itemLevel;
     }
-    public CharacterItems getItemByPost(String post)
+    public CharacterItem getItemByPost(String post)
     {
         if(this.items.isEmpty())
             loadItemsFromDB();
-        for(CharacterItems im : this.items)
+        for(CharacterItem im : this.items)
             if(im.getPosition().equals(post))
                 return im;
         return null;

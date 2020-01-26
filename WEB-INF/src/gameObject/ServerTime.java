@@ -62,13 +62,13 @@ public class ServerTime
     }    
     
     /**
-     * Get last mantence time in long
+     * Get last maintenance time in long
      * 
      * @return 
      */
     public static long getLastResetTime()
     {
-        return 1555391250000L;
+        return 1579586219000L;
     }
     
     /**
@@ -77,7 +77,7 @@ public class ServerTime
      */
     public static long getSeasonTime()
     {
-        return 1548633770000L;
+        return 1579586219000L;
     }
     
     public String getTimeZone()

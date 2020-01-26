@@ -19,8 +19,8 @@ public interface APIInfo
     public static final String API_ROOT_URL             = "https://%s.api.blizzard.com/%s"; //location, api path
     public static final String API_CHARACTER_RENDER_URL = "https://render-%s.worldofwarcraft.com/character/%s"; //{region}, {character.thumbnail}
     public static final String API_ITEM_RENDER_URL      = "https://render-%s.worldofwarcraft.com/icons/%s/%s"; //{region}, {size 56}, {item icon}
-    public static final String RAIDER_IO_API_URL        = "https://raider.io/api/%s/%s/%s/%s"; //[guilds/characters], {location}, {server}, {guild name}
-    public static final String RAIDER_IO_ACTUAL_SEASON  = "season-bfa-2";
+    public static final String RAIDER_IO_API_URL        = "https://raider.io/api/%s/%s/%s/%s"; //[guilds/characters], {location}, {server}, {guild name/character name}
+    public static final String RAIDER_IO_ACTUAL_SEASON  = "season-bfa-4";
 
     //------------------------------------------World of Warcraft Community APIs
     //Guild Profile API

@@ -20,14 +20,6 @@ $(document).ready(function() {
         $(".tooltip-affix").hide();     
     });
     
-    /*
-     * keystone_run.forEach(function(run) {
-            if(run.upgrade_key == -1 && run.key_lvl < 10) {
-                    tempRun.push(run);
-            }
-            });
-            renderRuns(tempRun);
-     */
 });
 
 function weekRun(keyRuns)
@@ -40,7 +32,7 @@ function weekRun(keyRuns)
 function bestRun(keyRuns)
 {    
     $("#bestRun").html("<h1 class='key_title'>Best Runs</h1>\n\
-                        <h3 class='key_title key_divide_title'>(Season 2)</h3>");
+                        <h3 class='key_title key_divide_title'>(Season 4)</h3>");
     $("#bestRun").append(renderRuns(keyRuns));
     $("#bestRun").show();
 }

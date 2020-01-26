@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class CharacterItems extends GameObject
+public class CharacterItem extends GameObject
 {
     //Item Member DB
     public static final String ITEMS_MEMBER_TABLE_NAME  = "character_items";
@@ -45,19 +45,19 @@ public class CharacterItems extends GameObject
     private int tooltipGemId = -1;
     private int tooltipEnchantId = -1;
     
-    public CharacterItems(int id)
+    public CharacterItem(int id)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
-    public CharacterItems(String position, int memberId)
+    public CharacterItem(String position, int memberId)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] { "post_item", "member_id" }, new String[] { position, memberId+"" });
     }
     
-    public CharacterItems (JSONObject inf)
+    public CharacterItem(JSONObject inf)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
@@ -91,7 +91,7 @@ public class CharacterItems extends GameObject
                     this.azeritePower = (JSONArray) parser.parse(azerita);
                 }
             } catch (ParseException ex) {
-                Logs.errorLog(CharacterItems.class, "Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
+                Logs.errorLog(com.blizzardPanel.gameObject.characters.CharacterItem.class, "Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
             }
         }
         else
@@ -173,7 +173,7 @@ public class CharacterItems extends GameObject
                             if (up == null) up = new Update();  
                             azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
                         } catch (DataException | IOException | ParseException ex) {
-                            Logs.errorLog(CharacterItems.class, "Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
+                            Logs.errorLog(com.blizzardPanel.gameObject.characters.CharacterItem.class, "Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
                         }
                     }
                     azPower[j] = azPowerD;

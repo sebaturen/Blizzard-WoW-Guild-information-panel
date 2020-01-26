@@ -86,6 +86,7 @@
                             <th scope="col" id="specColum" class='pointer'>Current Spec</th>
                         <% if(guildMember) { %>
                             <th scope="col" id="iLevelColum" class='pointer'>iLevel</th>
+                            <th scope="col" id="hoalvl" class='pointer'>HoA Lvl</th>
                             <th scope="col" id="ioScore" class='pointer'>Raider.IO</th>
                         <% } %>
                         </tr>

@@ -114,15 +114,23 @@ public class RaidDificultBoss extends GameObject
     }
     
     /***
-     * In diferent case, the RaiderIO have an other slug, different to blizzardDB
+     * In different case, the RaiderIO have an other slug, different to blizzardDB
      * @param slug
      * @return 
      */
     private String getBlizzSlugFromRaiderIO(String slug)
     {
+        System.out.println("Boss name: slug "+ slug);
         switch(slug)
         {
             //******************Battle For Azeroth****************************//
+            //-----------Ny'alotha, the Waking City
+            case "wrathion-the-black-emperor":
+                return "wrathion";
+            case "the-prophet-skitra":
+                return "prophet-skitra";
+            case "ra-den-the-despoiled":
+                return "raden-the-despoiled";
             //-----------Battle of Dazar'alor
             case "high-tinker-mekkatorque":
                 return "mekkatorque";

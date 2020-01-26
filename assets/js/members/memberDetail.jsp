@@ -1,6 +1,6 @@
 <%@include file="../../../includes/globalObject.jsp" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
-<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItems" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItem" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterStats" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterSpec" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.Stat" %>
@@ -72,10 +72,10 @@ var member_<%= memberID %> = {
         <%  String[] equip = {
             "head", "neck", "shoulder", "back", "chest", "shirt", "tabard", "wrist",
             "hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2",
-            "mainHand", "offHand"}; 
+            "mainHand", "offHand" }; 
             for(String post : equip)
             {
-                CharacterItems im = member.getItemByPost(post);
+                CharacterItem im = member.getItemByPost(post);
                 if(im != null) {%>
                     '<%= post %>': {
                         'name': "<%= (im.getItem().getName()).replaceAll("\"", "'") %>",

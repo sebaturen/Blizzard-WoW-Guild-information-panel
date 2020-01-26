@@ -1,5 +1,6 @@
 <%@include file="../../../includes/globalObject.jsp" %>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
+<%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItem" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
 <%@ page import ="org.json.simple.JSONObject"%>
@@ -30,6 +31,12 @@ if(members.getMembersList() != null)
         int mScore = 0;
         int mBestScore = 0;
         String mBestScoreSeason = "";
+        int hoalvl = 0;
+        // get azerit neck lvl
+        CharacterItem neckItem = member.getItemByPost("neck");
+        if (neckItem != null) {
+            hoalvl = neckItem.getAzeriteLevel();
+        }
         if(guildMember)
         {
             iLevel = String.format("%.2f", member.getItemLevel());
@@ -67,6 +74,7 @@ if(members.getMembersList() != null)
             'gRank_title': '<%= member.getRank().getTitle() %>',
             'iLevel': '<%= iLevel %>',
             'race': "<%= race %>",
+            'hoalvl': "<%= hoalvl %>",
             'mythicScore': '<%= mScore %>',
             'bestMythicScore': {
                 'score': '<%= mBestScore %>',
