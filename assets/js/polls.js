@@ -16,14 +16,14 @@ $(document).ready(function() {
         clickOption(this);
     });
     $('.poll_opt_mask')
-    .mouseover(function() {
-        $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('<i class="artOfWar-icon">&#xe802;</i>');
-    })
-    .mouseleave(function() {
-        if($("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).hasClass("btn-outline-success"))
-        {
-            $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('');
-        }
+        .mouseover(function() {
+            $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('<i class="artOfWar-icon">&#xe802;</i>');
+        })
+        .mouseleave(function() {
+            if($("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).hasClass("btn-outline-success"))
+            {
+                $("#btn_poll_"+ $(this).data("poll_id") +"_opt_"+ $(this).data("poll_op_id")).html('');
+            }
     });
     //Add option button
     $('.addOption').click(function() {
@@ -57,7 +57,6 @@ $(document).ready(function() {
             clearSelected(userId, pollId, 0);
         }
     });
-    
 });
 
 function clickOption(elem)
@@ -323,5 +322,89 @@ function clearSelected(userId, pollId, idOmited)
                 $("#poll_"+ pollId +"_opt_"+ currentOpt +"_user_"+ userId).hide();
             }
         }
+    });
+}
+
+function removePoll(pollId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/poll_controller.jsp",
+        data: { poll_action: "removePoll", 
+                poll_id: pollId},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Fail to remove poll - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Fail to remove poll - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
+    });
+}
+
+function enablePoll(pollId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/poll_controller.jsp",
+        data: { poll_action: "enablePoll", 
+                poll_id: pollId},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Fail to enable poll - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Fail to enable poll - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
+    });
+}
+
+function disablePoll(pollId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/poll_controller.jsp",
+        data: { poll_action: "disablePoll", 
+                poll_id: pollId},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Fail to disable poll - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Fail to disable poll - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
     });
 }

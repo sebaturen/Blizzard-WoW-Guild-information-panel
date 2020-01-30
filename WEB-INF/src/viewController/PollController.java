@@ -38,7 +38,7 @@ public class PollController
             JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
                     "isEnable=? AND isHide=? ORDER BY id DESC",
-                    new String[] {status? "1":"0", "1"});
+                    new String[] {status? "1":"0", "0"});
             for(int i = 0; i < pollsDB.size(); i++)
             {
                 Poll p = new Poll( (Integer) ((JSONObject)pollsDB.get(i)).get(Poll.POLLS_TABLE_KEY));
@@ -73,6 +73,11 @@ public class PollController
     public Poll getPoll(int id)
     {
         for(Poll p : this.activePolls)
+        {
+            if(p.getId() == id)
+                return p;
+        }
+        for(Poll p : this.disablePolls)
         {
             if(p.getId() == id)
                 return p;

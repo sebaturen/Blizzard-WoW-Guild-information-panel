@@ -42,6 +42,7 @@ public class Poll extends GameObject
     private boolean isLimitDate;
     private String endDate;
     private boolean isEnable;
+    private boolean isHide;
     private List<PollOption> options = new ArrayList<>();
     
     public Poll()
@@ -69,6 +70,7 @@ public class Poll extends GameObject
         if(this.isLimitDate)
             this.endDate = objInfo.get("end_date").toString();
         this.isEnable = (Boolean) objInfo.get("isEnable");
+        this.isHide = (Boolean) objInfo.get("isHide");
         this.isData = true;
     }
     
@@ -99,7 +101,7 @@ public class Poll extends GameObject
             strucInfo = DBStructure.outKey(POLLS_TABLE_STRUCTURE);
             info = new String[] {this.user.getId()+"", this.pollQuestion, 
                     this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", this.endDate, (this.isEnable)? "1":"0", "0"};
+                    this.startDate, (this.isLimitDate)? "1":"0", this.endDate, (this.isEnable)? "1":"0", (this.isHide)? "1":"0"};
         }
         else
         {
@@ -108,7 +110,7 @@ public class Poll extends GameObject
                                     "start_date", "is_limit_date", "isEnable","isHide"};
             info = new String[] {this.user.getId()+"", this.pollQuestion, 
                     this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", (this.isEnable)? "1":"0", "0"};
+                    this.startDate, (this.isLimitDate)? "1":"0", (this.isEnable)? "1":"0", (this.isHide)? "1":"0"};
         }
         /* {"user_id", "poll_question", 
          * "min_rank", "multi_select", "can_add_more_option", 
@@ -198,7 +200,8 @@ public class Poll extends GameObject
     public void setStartDate(String startDate) { this.startDate = startDate; }
     public void setIsLimitDate(boolean isLimitDate) { this.isLimitDate = isLimitDate; }
     public void setEndDate(String endDate) { this.endDate = endDate; }
-    public void setIsEnable(boolean isEnable) { this.isEnable = isEnable; }
+    public void setIsEnable(boolean isEnable) { this.isEnable = isEnable; this.saveInDB(); }
+    public void setIsHide() { this.isHide = true; this.saveInDB(); }
     public void addOption(PollOption op) { this.options.add(op); }
     public int addOption(String s, User u) 
     {
@@ -265,5 +268,5 @@ public class Poll extends GameObject
         }
         return false;
     }
-    
+
 }

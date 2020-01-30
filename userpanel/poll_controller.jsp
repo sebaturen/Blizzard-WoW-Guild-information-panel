@@ -22,10 +22,13 @@
         boolean canEdit = false;
         int optId = -1;    
 
-        if(pollAction.equals("removeOption") ||
-            pollAction.equals("addOption") ||
-            pollAction.equals("addResult") ||
-            pollAction.equals("removeResult"))
+        if(pollAction.equals("removeOption")    ||
+            pollAction.equals("addOption")      ||
+            pollAction.equals("addResult")      ||
+            pollAction.equals("removeResult")   ||
+            pollAction.equals("removePoll")     ||
+            pollAction.equals("disablePoll")    ||
+            pollAction.equals("enablePoll"))
         {
             pollId = Integer.parseInt(request.getParameter("poll_id"));
             editPoll = pollControl.getPoll(pollId);    
@@ -34,6 +37,30 @@
         //Try action
         switch(pollAction)
         {
+            case "removePoll":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editPoll.setIsHide();
+                    json.put("status", "ok");
+                }
+                break;
+            case "disablePoll":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editPoll.setIsEnable(false);
+                    json.put("status", "ok");
+                }
+                break;
+            case "enablePoll":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editPoll.setIsEnable(true);
+                    json.put("status", "ok");
+                }
+                break;
             case "removeOption":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;

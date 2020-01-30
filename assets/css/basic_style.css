@@ -22,6 +22,9 @@ p {
 .bold {
     font-weight: bold;
 }
+.table-dark {
+    background-color: transparent;
+}
 /*-------FONTS--------------*/
 @font-face {
     font-family: "LifeCraft";
@@ -343,7 +346,14 @@ body > .container {
 /*END-----------------CREATE POLL--------------*/
 
 /*-----------------POLL--------------*/
-.btn_poll_option, btn_poll_option_delete {
+.poll_question {
+    padding: 1em;
+    padding-bottom: 1.7em;
+}
+.poll_controll {
+    float: right;
+}
+.btn_poll_option, .btn_poll_option_delete {
     border-radius: 50%;
     height: 24px;
     width: 24px;

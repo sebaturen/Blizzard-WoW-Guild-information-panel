@@ -26,8 +26,9 @@
             <div class="loader ajaxLoad" style="display: none;"></div><%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='userpanel/poll_create.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Create Poll</button></a><br><br>":"" %>
                 <div id="activePolls" class="divder">
             <%  List<Poll> polls = pollControl.getActivePolls();
-                if(polls.size() > 0) {
-                    for(Poll p : polls) {%>
+                if(polls.size() > 0) {%>
+                    <h1 class='key_title key_divide_title'>Polls</h1>
+                    <% for(Poll p : polls) {%>
                     <div id="poll_<%= p.getId() %>" class="divder">
                         <p>
                             <% if(p.getUser().getMainCharacter() != null) 
@@ -44,7 +45,14 @@
                                 <%= ((p.getEndDate() != null)? "<br>End: ("+ p.getEndDate()+")":"") %>
                             </span>
                         </p>
-                        <div class="returnCode"><%= p.getPollQuestion() %></div>
+                        <div class="poll_question returnCode">
+                            <%= p.getPollQuestion() %>
+                            <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
+                                <div class="poll_controll">
+                                    <button type="button" onclick='disablePoll(<%= p.getId() %>)' class="disable_poll btn btn-outline-primary" data-poll_id="<%= p.getId() %>">Disable</button>
+                                </div>  
+                            <%} %>
+                        </div>
                         <div id="poll_<%= p.getId() %>_options"
                              class="poll_options" 
                              data-is_multi="<%= p.isMultiSelect() %>" 
@@ -92,7 +100,7 @@
                 <div id="disablePols">
                     <%  List<Poll> disablePolls = pollControl.getDisablePolls();
                     if(disablePolls.size() > 0) {%>
-                        <h1>Disable polls</h1>
+                        <h1 class='key_title key_divide_title'>Disable polls</h1>
                       <%for(Poll p : disablePolls) {%>
                             <div id="poll_<%= p.getId() %>" class="divder"></div>
                             <p>
@@ -110,7 +118,15 @@
                                     <%= ((p.getEndDate() != null)? "<br>End: ("+ p.getEndDate()+")":"") %>
                                 </span>
                             </p>
-                            <div class="returnCode"><%= p.getPollQuestion() %></div>
+                            <div class="poll_question returnCode">
+                                <%= p.getPollQuestion() %>
+                                <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
+                                    <div class="poll_controll">
+                                        <button type="button" onclick='enablePoll(<%= p.getId() %>)' class="enable_poll btn btn-outline-warning">Enable</button>
+                                        <button type="button" onclick='removePoll(<%= p.getId() %>)' class="remove_poll btn btn-outline-danger" data-poll_id="<%= p.getId() %>">Remove</button>
+                                    </div>
+                                <% } %>
+                            </div>
                             <div id="poll_<%= p.getId() %>_options">
                                 <% for(PollOption pOpt : p.getOptions()) 
                                 {

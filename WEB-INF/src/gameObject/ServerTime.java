@@ -15,8 +15,8 @@ import java.util.TimeZone;
 
 public class ServerTime 
 {    
-    //Constante
-    public static final String PST_TIME_ZONE = "America/Chicago";
+    //Constant
+    public static final String PST_TIME_ZONE = "America/Los_Angeles";
     public static final String MST_TIME_ZONE = "";
     public static final String CST_TIME_ZONE = "";
     public static final String EST_TIME_ZONE = "";
@@ -25,7 +25,7 @@ public class ServerTime
     public static final int MAINTENANCE_DAY = Calendar.TUESDAY;
     public static final int MAINTENANCE_HOUR = 7;
 
-    //Atribute
+    //Attribute
     private final String timeZone;
 
     public ServerTime()
@@ -72,7 +72,6 @@ public class ServerTime
     {
         Date sTime = getServerTime();
         Calendar sCalendar = Calendar.getInstance();
-        sCalendar.setTimeZone(TimeZone.getTimeZone(svObject.getTimeZone()));
         sCalendar.setTime(sTime);
 
         if (sCalendar.get(Calendar.DAY_OF_WEEK) > MAINTENANCE_DAY) {
@@ -89,9 +88,9 @@ public class ServerTime
     }
 
     public static long getPreviewMaintenance(Calendar serverCalendar) {
-        while (serverCalendar.get(Calendar.DAY_OF_WEEK) != MAINTENANCE_DAY) {
+        do {
             serverCalendar.add(Calendar.DAY_OF_MONTH, -1);
-        }
+        } while (serverCalendar.get(Calendar.DAY_OF_WEEK) != MAINTENANCE_DAY);
         serverCalendar.set(Calendar.HOUR_OF_DAY, MAINTENANCE_HOUR);
         return serverCalendar.getTimeInMillis();
 

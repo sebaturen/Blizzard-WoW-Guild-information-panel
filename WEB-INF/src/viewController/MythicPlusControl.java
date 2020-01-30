@@ -34,7 +34,7 @@ public class MythicPlusControl
         dbConnect = new DBConnect();
     }
     
-    //From specific periode
+    //From specific period
     private void loadBestRun()
     {
         try {
