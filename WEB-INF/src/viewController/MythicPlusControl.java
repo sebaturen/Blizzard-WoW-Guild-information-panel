@@ -28,6 +28,10 @@ public class MythicPlusControl
     private Date lastKeyBestRunUpdate;
     private KeystoneDungeonRun[] keyThisWeek;
     private Date lastKeyThisWeekUpdate;
+    private KeystoneDungeonRun[] keyBestFailRun;
+    private Date lastKeyBestFailUpdate;
+    private KeystoneDungeonRun[] keyThisWeekFailRun;
+    private Date lastKeyThisWeekFailUpdate;
 
     public MythicPlusControl()
     {
@@ -93,6 +97,67 @@ public class MythicPlusControl
         }
         lastKeyThisWeekUpdate = new Date();   
     }
+
+    private void loadBestFailsRun()
+    {
+        try {
+            JSONArray keyListInDb = dbConnect.selectQuery(
+                    "SELECT "+
+                    "	k.id "+
+                    "FROM  "+
+                    "    keystone_dungeon_run k, "+
+                    "    keystone_dungeon_run_members km, "+
+                    "    gMembers_id_name gm "+
+                    "WHERE "+
+                    "	k.id = km.keystone_dungeon_run_id AND "+
+                    "   k.is_complete_in_time = false AND "+
+                    "	km.character_internal_id = gm.internal_id AND "+
+                    "	gm.in_guild = true "+
+                    "GROUP BY k.id "+
+                    "ORDER BY k.duration DESC "+
+                    "LIMIT 3;"
+            );
+            this.keyBestFailRun = new KeystoneDungeonRun[keyListInDb.size()];
+            for(int i = 0; i < keyListInDb.size(); i++)
+            {
+                this.keyBestFailRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.errorLog(MythicPlusControl.class, "Fail to get last best fail keystone - "+ ex);
+        }
+        lastKeyBestFailUpdate = new Date();
+    }
+
+    private void loadWeekFailsRun()
+    {
+        try {
+            JSONArray keyListInDb = dbConnect.selectQuery(
+                    "SELECT "+
+                    "	k.id "+
+                    "FROM  "+
+                    "    keystone_dungeon_run k, "+
+                    "    keystone_dungeon_run_members km, "+
+                    "    gMembers_id_name gm "+
+                    "WHERE "+
+                    "	k.id = km.keystone_dungeon_run_id AND "+
+                    "   k.completed_timestamp > "+ ServerTime.getSeasonTime() +" AND "+
+                    "   k.is_complete_in_time = false AND "+
+                    "	km.character_internal_id = gm.internal_id AND "+
+                    "	gm.in_guild = true "+
+                    "GROUP BY k.id "+
+                    "ORDER BY k.duration DESC "+
+                    "LIMIT 6;"
+            );
+            this.keyThisWeekFailRun = new KeystoneDungeonRun[keyListInDb.size()];
+            for(int i = 0; i < keyListInDb.size(); i++)
+            {
+                this.keyThisWeekFailRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+            }
+        } catch (SQLException | DataException ex) {
+            Logs.errorLog(MythicPlusControl.class, "Fail to get last week fail keystone - "+ ex);
+        }
+        lastKeyThisWeekFailUpdate = new Date();
+    }
     
     public KeystoneDungeonRun[] getWeekKeyRun()
     {
@@ -129,5 +194,42 @@ public class MythicPlusControl
         }
         return this.keyBestRun;
     }
+
+    public KeystoneDungeonRun[] getLastBestFailKeyRun()
+    {
+        if(this.keyBestFailRun == null)
+            loadBestFailsRun();
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastKeyBestFailUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                loadBestFailsRun();
+            }
+        }
+        return this.keyBestFailRun;
+    }
+
+    public KeystoneDungeonRun[] getWeekFailRun()
+    {
+        if(this.keyThisWeekFailRun == null)
+            loadWeekFailsRun();
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastKeyThisWeekFailUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                loadWeekFailsRun();
+            }
+        }
+        return this.keyThisWeekFailRun;
+    }
+
     
 }
