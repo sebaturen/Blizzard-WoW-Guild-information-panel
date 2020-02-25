@@ -360,6 +360,9 @@ body > .container {
     padding: 0;
     padding-top: 2px;
 }
+.btn_poll_option_delete > i {
+    margin-top: -0.3em;
+}
 .deleteOption {
     float: right;
 }

@@ -131,7 +131,7 @@ public class MythicPlusControl
     private void loadWeekFailsRun()
     {
         try {
-            JSONArray keyListInDb = dbConnect.selectQuery(
+            String query =
                     "SELECT "+
                     "	k.id "+
                     "FROM  "+
@@ -146,8 +146,8 @@ public class MythicPlusControl
                     "	gm.in_guild = true "+
                     "GROUP BY k.id "+
                     "ORDER BY k.duration DESC "+
-                    "LIMIT 6;"
-            );
+                    "LIMIT 6;";
+            JSONArray keyListInDb = dbConnect.selectQuery(query);
             this.keyThisWeekFailRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {

@@ -305,7 +305,7 @@ CREATE TABLE `poll_options` (
     `owner_id`   INT NOT NULL,
     `date`       DATETIME NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY(poll_id) REFERENCES polls(id),
+    FOREIGN KEY(poll_id) REFERENCES polls(id) ON DELETE CASCADE,
     FOREIGN KEY(owner_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -316,7 +316,7 @@ CREATE TABLE `poll_option_result` (
     `date`           DATETIME NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY(owner_id) REFERENCES users(id),
-    FOREIGN KEY(poll_option_id) REFERENCES poll_options(id)
+    FOREIGN KEY(poll_option_id) REFERENCES poll_options(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `keystone_dungeon` (

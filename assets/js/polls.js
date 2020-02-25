@@ -11,8 +11,7 @@ $(document).ready(function() {
     userNameShow = $("#currentUserInfo").data("user_show");
     userClass = $("#currentUserInfo").data("user_class");
     //Options selected
-    $('.poll_opt_mask').click(function() {
-        //console.log("clicked!"); 
+    $(document).on("click", ".poll_opt_mask", function(d) {
         clickOption(this);
     });
     $('.poll_opt_mask')
@@ -64,55 +63,67 @@ function clickOption(elem)
     //Option selected info
     var pollId = $(elem).data("poll_id");
     var idClicked = $(elem).data("poll_op_id");
-    //Save in window RAM if is click or no, edit the DOM not is change in data element information
-    if(optSelecStatus[pollId] == undefined)
-    {
-        optSelecStatus[pollId] = [];
-        optSelecStatus[pollId][idClicked] = $(elem).data("is_enable");
-    }
-    else if(optSelecStatus[pollId][idClicked] == undefined)
-    {
-        optSelecStatus[pollId][idClicked] = $(elem).data("is_enable");
-    }
+    var isClicked = ($(elem).attr("data-is_enable") == 'true');
     var isMultiSelect = ($("#poll_"+ pollId +"_options").data("is_multi"));
     var btnOption = $("#btn_poll_"+ pollId +"_opt_"+ idClicked);
-    //If is clicked or no
-    if(!optSelecStatus[pollId][idClicked])
-    {
-        if(!isMultiSelect && currentAdd[pollId] > 0)
-        {
-            alert("You can't select more options in this poll, remove add option if you want change selection");
+
+    console.log("isClicked ", isClicked);
+
+    /* Check and uncheck... */
+
+    //Change CSS from clicked element
+    if (!isClicked) {
+        console.log("Agregando tiket!");
+        // Remove all other preview selection if have not have a multiple selection
+        if (!isMultiSelect) {
+            $("div[id^='poll_"+ pollId +"_opt_']").each(function() {
+
+                var opt = $(this).data('opt_id');
+
+                if ($("#mask_poll_"+ pollId +"_opt_"+ opt).attr("data-is_enable") == 'true') {
+
+
+                    $("#btn_poll_"+ pollId +"_opt_"+ opt).removeClass("btn-success");
+                    $("#btn_poll_"+ pollId +"_opt_"+ opt).addClass("btn-outline-success");
+                    $("#btn_poll_"+ pollId +"_opt_"+ opt).html('');
+                    $("#mask_poll_"+ pollId +"_opt_"+ opt).attr("data-is_enable","false");
+                    removeResult(pollId, opt, "#poll_"+ pollId +"_opt_"+ opt +"_user_"+ userId);
+    
+                    // Remove user
+                    $("#poll_"+ pollId +"_opt_"+ opt +"_user_"+ userId).hide();
+                }
+            });
         }
-        else
-        {
-            //Change CSS from clicked element
-            $(btnOption).removeClass("btn-outline-success");
-            $(btnOption).addClass("btn-success");
-            $(btnOption).html('<i class="artOfWar-icon">&#xe802;</i>');
-            $(elem).attr("data-is_enable","true");
-            optSelecStatus[pollId][idClicked] = true;
-            //If multi selecction is disabled, clear old selections
-            if(!isMultiSelect) clearSelected(userId, pollId, idClicked);
-            //Add a current user clicked.
-            var userAdd = "<span id='poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId +"'"+
-                          "  class='mem-name character-"+ userClass +" char-name'>&nbsp;";
-            userAdd += (userClass == "BATTLE_TAG")? "<img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>":"";
-            userAdd += userNameShow +",";
-            userAdd += "</span>";
+        // Set select
+        $(btnOption).addClass("btn-success");
+        $(btnOption).removeClass("btn-outline-success");
+        $(btnOption).html('<i class="artOfWar-icon">&#xe802;</i>');
+        $(elem).attr("data-is_enable","true");
+        addResult(pollId, idClicked, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
+
+        //Add a current user clicked.
+        var userAdd = "<span id='poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId +"'"+
+                        "  class='mem-name character-"+ userClass +" char-name'>&nbsp;";
+        userAdd += (userClass == "BATTLE_TAG")? "<img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>":"";
+        userAdd += userNameShow +",";
+        userAdd += "</span>";
+
+        if ($("#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId).length) {
+            $("#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId).show();
+        } else {
             $("#users_poll_"+ pollId +"_opt_"+ idClicked).append(userAdd);
-            addResult(pollId, idClicked, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
         }
-    }
-    else
-    {
+    } else {
+        // Remove selection
+        console.log("Sacando tiket!");
         $(btnOption).removeClass("btn-success");
         $(btnOption).addClass("btn-outline-success");
         $(btnOption).html('');
         $(elem).attr("data-is_enable","false");
-        optSelecStatus[pollId][idClicked] = false;
-        //Remove current user selected
-        $("#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId).hide();
         removeResult(pollId, idClicked, "#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId);
+
+        // Remove user
+        $("#poll_"+ pollId +"_opt_"+ idClicked +"_user_"+ userId).hide();
     }
 }
 
@@ -147,7 +158,7 @@ function removeOption(elem)
             else
             {
                 console.log(mData);
-                alert("Fail to remove option - Error 102");
+                alert(mData.msg);
                 $(elem).attr("disabled", false);
             }
         })
@@ -164,6 +175,7 @@ function addOption(elem)
 {
     var inputOption = $("#"+ $(elem).data("opt_add_id")).children(".poll_option").children(".infoOpt").children(".infoOptText");
     var optionText = $(inputOption).val();
+    var addOptId = $(elem).data("opt_add_id");
     if(optionText.length >= 3)
     {
         var pollId = $(elem).data("poll_id");
@@ -179,7 +191,7 @@ function addOption(elem)
         .done(function(mData) {
             if(mData.status == "ok")
             {
-                $("#poll_"+ pollId +"_opt_add_"+ currentAdd[pollId]).remove();
+                $("#"+ addOptId).remove();
                 //Add a current user clicked.
                 var userAdd = "<span id='poll_"+ pollId +"_opt_"+ mData.option_id +"_user_"+ userId +"'"+
                               "  class='mem-name character-"+ userClass +" char-name'>";

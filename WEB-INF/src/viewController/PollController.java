@@ -106,15 +106,25 @@ public class PollController
         newPoll.setIsEnable(true);
         newPoll.setStartDate(Update.getCurrentTimeStamp());
         //Add options
+        if (options == null || options.size() == 0)
+            return false;
+        int i = 0;
         for(String op : options)
         {
-            PollOption pollOp = new PollOption();
-            pollOp.setOptionText(op);
-            pollOp.setOwner(owner);
-            pollOp.setDate(Update.getCurrentTimeStamp());
-            pollOp.setIsData(true);
-            newPoll.addOption(pollOp);
+            if (op.length() != 0)
+            {
+                System.out.println("OP! "+ op);
+                PollOption pollOp = new PollOption();
+                pollOp.setOptionText(op);
+                pollOp.setOwner(owner);
+                pollOp.setDate(Update.getCurrentTimeStamp());
+                pollOp.setIsData(true);
+                newPoll.addOption(pollOp);
+                i++;
+            }
         }
+        if (i == 0)
+            return false;
         newPoll.setIsData(true);
         return newPoll.saveInDB();
     }

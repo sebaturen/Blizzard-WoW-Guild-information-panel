@@ -63,7 +63,6 @@
                 break;
             case "removeOption":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
                 if(editPoll.getOption(optId) != null)
                 {
                     if(editPoll.getOption(optId).getOwner().equals(user) &&
@@ -72,6 +71,20 @@
                         canEdit = true;
                     }
                 }
+                System.out.println("chupalo Edit1 "+ canEdit);
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) 
+                {
+                    // Only can remove if have a more then 1 or can add more options 
+                    if (editPoll.isCanAddMoreOptions() || editPoll.getOptions().size() > 1)
+                        canEdit = true;
+                    else 
+                    {
+                        canEdit = false;
+                        json.put("status", "fail");
+                        json.put("msg", "You can remove all options in this poll");
+                    }
+                }
+                System.out.println("chupalo Edit2 "+ canEdit);
                 if(canEdit)
                 {
                     json.put("status", editPoll.removeOptionDB(optId));
@@ -125,7 +138,7 @@
                         case "set_date_limit": limitDateSet = valValue; break;
                     }
                     //Save Options
-                    if(valName.toLowerCase().startsWith("option_"))
+                    if(valName.toLowerCase().startsWith("option_") && valValue.length() > 0)
                     {
                         options.add(valValue);
                     }

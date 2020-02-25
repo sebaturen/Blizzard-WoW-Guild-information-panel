@@ -113,7 +113,7 @@ public class DBConnect
      */
     public void delete(String table, String where, String[] whereValues) throws SQLException, DataException
     {
-        if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDAROTY!");
+        if (where == null || where.length() < 3) throw new DataException("Where in DELETE is MANDATORY!");
         //Prepare QUERY
         String sql = "DELETE FROM "+ table +" WHERE "+ where;
         
@@ -297,6 +297,8 @@ public class DBConnect
                         obj.put(column_name, rs.getFloat(column_name));
                         break;
                     case java.sql.Types.INTEGER:
+                    case java.sql.Types.TINYINT:
+                    case java.sql.Types.SMALLINT:
                         obj.put(column_name, rs.getInt(column_name));
                         break;
                     case java.sql.Types.NVARCHAR:
@@ -304,12 +306,6 @@ public class DBConnect
                         break;
                     case java.sql.Types.VARCHAR:
                         obj.put(column_name, rs.getString(column_name));
-                        break;
-                    case java.sql.Types.TINYINT:
-                        obj.put(column_name, rs.getInt(column_name));
-                        break;
-                    case java.sql.Types.SMALLINT:
-                        obj.put(column_name, rs.getInt(column_name));
                         break;
                     case java.sql.Types.DATE:
                         obj.put(column_name, rs.getDate(column_name));
