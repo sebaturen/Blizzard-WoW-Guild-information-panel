@@ -8,6 +8,7 @@ package com.blizzardPanel.blizzardAPI;
 public interface APIInfo
 {
     public static final int API_SECOND_LIMIT_ERROR = 429;
+    public static final long ACTUAL_SEASON_TIMESTAMP = 1579586219000L; //Update raider.io season too
     //-------------------------
     //API Acces
     //-------------------------

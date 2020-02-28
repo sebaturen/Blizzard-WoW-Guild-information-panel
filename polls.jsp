@@ -31,14 +31,14 @@
                     <% for(Poll p : polls) {%>
                     <div id="poll_<%= p.getId() %>" class="divder">
                         <p>
-                            <% if(p.getUser().getMainCharacter() != null) 
+                            <% if(p.getUser().getMainCharacter() != null)
                             {
                                 String className = p.getUser().getMainCharacter().getMemberClass().getSlug();
                                 out.write("<span class='character-"+ className +" char-name'>"+ p.getUser().getMainCharacter().getName() +"</span>");
                             }
                             else
                             {
-                                out.write("<span><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 40px'>"+ p.getUser().getBattleTag().split("#")[0] +"</span>");   
+                                out.write("<span><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 40px'>"+ p.getUser().getBattleTag().split("#")[0] +"</span>");
                             }%>
                             <span class="right_small_date">
                                 (<%= p.getStartDate() %>)
@@ -54,16 +54,16 @@
                             <%} %>
                         </div>
                         <div id="poll_<%= p.getId() %>_options"
-                             class="poll_options" 
-                             data-is_multi="<%= p.isMultiSelect() %>" 
+                             class="poll_options"
+                             data-is_multi="<%= p.isMultiSelect() %>"
                              data-poll_id="<%= p.getId() %>">
-                            <% for(PollOption pOpt : p.getOptions()) 
+                            <% for(PollOption pOpt : p.getOptions())
                             {
                                 String userSelected = "";
                                 boolean currentUserSelected = false;
-                                for(PollOptionResult pOptResult : pOpt.getResult()) 
+                                for(PollOptionResult pOptResult : pOpt.getResult())
                                 {
-                                    if(pOptResult.getOwner().getMainCharacter() != null) 
+                                    if(pOptResult.getOwner().getMainCharacter() != null)
                                     {
                                         String className = pOptResult.getOwner().getMainCharacter().getMemberClass().getSlug();
                                         userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name character-"+ className +" char-name'>&nbsp;"+ pOptResult.getOwner().getMainCharacter().getName() +",</span>";
@@ -104,14 +104,14 @@
                       <%for(Poll p : disablePolls) {%>
                             <div id="poll_<%= p.getId() %>" class="divder"></div>
                             <p>
-                                <% if(p.getUser().getMainCharacter() != null) 
+                                <% if(p.getUser().getMainCharacter() != null)
                                 {
                                     String className = p.getUser().getMainCharacter().getMemberClass().getSlug();
                                     out.write("<span class='character-"+ className +" char-name'>"+ p.getUser().getMainCharacter().getName() +"</span>");
                                 }
                                 else
                                 {
-                                    out.write("<span><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 40px'>"+ p.getUser().getBattleTag().split("#")[0] +"</span>");   
+                                    out.write("<span><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 40px'>"+ p.getUser().getBattleTag().split("#")[0] +"</span>");
                                 }%>
                                 <span class="right_small_date">
                                     (<%= p.getStartDate() %>)
@@ -128,13 +128,13 @@
                                 <% } %>
                             </div>
                             <div id="poll_<%= p.getId() %>_options">
-                                <% for(PollOption pOpt : p.getOptions()) 
+                                <% for(PollOption pOpt : p.getOptions())
                                 {
                                     String userSelected = "";
                                     boolean currentUserSelected = false;
-                                    for(PollOptionResult pOptResult : pOpt.getResult()) 
+                                    for(PollOptionResult pOptResult : pOpt.getResult())
                                     {
-                                        if(pOptResult.getOwner().getMainCharacter() != null) 
+                                        if(pOptResult.getOwner().getMainCharacter() != null)
                                         {
                                             String className = pOptResult.getOwner().getMainCharacter().getMemberClass().getSlug();
                                             userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name character-"+ className +" char-name'>&nbsp;"+ pOptResult.getOwner().getMainCharacter().getName() +",</span>";
@@ -158,7 +158,7 @@
                               <%} //End foreach poll options%>
                             </div>
                       <%} //foreach disable polls%>
-                  <%} //if disable poll size > 0%>                    
+                  <%} //if disable poll size > 0%>
                 </div>
         </div>
         <%@include file="includes/footer.jsp" %>

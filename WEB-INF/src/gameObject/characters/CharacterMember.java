@@ -76,6 +76,8 @@ public class CharacterMember extends GameObject
     private CharacterStats stats;
     private boolean isMain = false;
     private boolean isDelete = false;
+    //specs fails
+    private boolean tryLoadFailSpecs = false;
 
     //Constructor load from DB if have a ID
     public CharacterMember(int internalID)
@@ -254,6 +256,7 @@ public class CharacterMember extends GameObject
     private void loadActiveSpecFromDB() {loadSpecFromDB("AND enable=1");}
     private void loadSpecFromDB(String extraWhere)
     {
+        this.specs = new ArrayList<>();
         try
         {
             JSONArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
@@ -272,7 +275,17 @@ public class CharacterMember extends GameObject
             {
                 Logs.errorLog(CharacterMember.class, "Fail to load spec! (size <= 0)? "+ this.name + " - "+ this.internalID);
                 Logs.errorLog(CharacterMember.class, "\tTry get spec again from update...");
-                loadSpecFromBlizz();
+                if(!tryLoadFailSpecs)
+                {
+                    tryLoadFailSpecs = true;
+                    loadSpecFromBlizz();
+                }
+                else
+                {
+                    Logs.errorLog(CharacterMember.class, "Member `"+ this.name +"["+ this.internalID +"]` not have spec, change status to delete");
+                    isDelete = true;
+                    saveInDB();
+                }
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(CharacterMember.class, "Fail to get a 'Specs' from DB Member "+ this.name +" e: "+ ex);
@@ -568,7 +581,7 @@ public class CharacterMember extends GameObject
         if(this.bestMythicPlusScore.get("season") != null)
             return ((JSONObject) this.bestMythicPlusScore.get("season")).get("name").toString();
         else
-            return "";        
+            return "";
     }
     public String getThumbnailURL()
     {
@@ -586,7 +599,7 @@ public class CharacterMember extends GameObject
         return time;
     }
     public long getTotalHonorableKills() { return this.totalHonorableKills; }
-    public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty()) loadSpecFromDB(); return this.specs; }
+    public List<CharacterSpec> getSpecs() { if(this.specs.isEmpty() || this.specs.size() == 1) loadSpecFromDB(); return this.specs; }
     public CharacterSpec getActiveSpec()
     {
         if(this.specs.isEmpty()) loadActiveSpecFromDB();

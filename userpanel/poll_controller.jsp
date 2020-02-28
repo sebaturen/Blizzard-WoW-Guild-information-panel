@@ -4,7 +4,7 @@
     request.setCharacterEncoding("UTF-8");
     JSONObject json = new JSONObject();
     if(guildMember)
-    {%> 
+    {%>
         <%@ page import = "com.blizzardPanel.poll.Poll" %>
         <%@ page import ="java.util.ArrayList" %>
         <%@ page import ="java.util.List" %>
@@ -20,7 +20,7 @@
         int pollId = -1;
         Poll editPoll = null;
         boolean canEdit = false;
-        int optId = -1;    
+        int optId = -1;
 
         if(pollAction.equals("removeOption")    ||
             pollAction.equals("addOption")      ||
@@ -31,7 +31,7 @@
             pollAction.equals("enablePoll"))
         {
             pollId = Integer.parseInt(request.getParameter("poll_id"));
-            editPoll = pollControl.getPoll(pollId);    
+            editPoll = pollControl.getPoll(pollId);
         }
 
         //Try action
@@ -98,7 +98,7 @@
                     canEdit = true;
                 }
                 if(canEdit)
-                {                
+                {
                     int newIdOption = editPoll.addOption(textOption, user);
                     json.put("status", "ok");
                     json.put("option_id", newIdOption);
@@ -147,7 +147,7 @@
                 if(pollQuest != null && pollQuest.length() > 0 && options.size() > 0)
                 {
                     //Try parse date time:
-                    try 
+                    try
                     {
                         if(limitDateSet.length() == 10)
                             limitDateSet = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(limitDateSet +" 00:00:00"));
@@ -156,36 +156,36 @@
                         //Try save in DB
                         if(pollControl.newPoll(
                             user, pollQuest, minGuildLevel, moreOptions,
-                            multiOptions, limitDate, 
+                            multiOptions, limitDate,
                             limitDateSet, options))
-                        {                    
+                        {
                             json.put("status", "ok");
                         }
                         else
-                        {                    
+                        {
                             json.put("status", "fail");
-                            json.put("msg", "Fail to save in DB");
+                            json.put("msg", "Failed to save in DB");
                         }
                     } catch (java.text.ParseException ex) {
                         json.put("status", "fail");
-                        json.put("msg", "Fail limit date not correct");                        
+                        json.put("msg", "Error, limit date not correct");
                     }
                 }
                 else
                 {
                     json.put("status", "fail");
-                    json.put("msg", "Fail, complete all information");
+                    json.put("msg", "Error, complete all information");
                 }
                 break;
             default:
-                json.put("status", "fail");        
+                json.put("status", "fail");
                 break;
 
         }
     }
     else
     {
-        json.put("status", "fail");   
+        json.put("status", "fail");
         json.put("msg", "Not user login detected");
     }
     out.print(json);

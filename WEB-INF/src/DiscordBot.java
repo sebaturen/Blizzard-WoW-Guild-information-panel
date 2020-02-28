@@ -33,7 +33,7 @@ public class DiscordBot extends ListenerAdapter
     }
     
     public DiscordBot build()
-    {        
+    {
         try
         {
             jda = new JDABuilder(GeneralConfig.getStringConfig("DISCORD_BOT_TOKEN"))
@@ -65,7 +65,10 @@ public class DiscordBot extends ListenerAdapter
         for(TextChannel tx : jda.getTextChannels()) 
         {
             if(tx.getGuild().getName().equals(this.guildDiscordChanel) && tx.getName().equals(this.botChanel))
+            {
                 this.chanelId = tx.getIdLong();
+                break;
+            }
         }
     }
     
@@ -172,7 +175,7 @@ public class DiscordBot extends ListenerAdapter
                     FactionAssaultControl fAssault = new FactionAssaultControl();
                     if(fAssault.isCurrent())
                         channel.sendMessage
-                        (    "Assault is current!, GO KILL HORDES! "
+                        (    "The assault is currently happening!, GO KILL HORDES! "
                             + "\nTime Remaining: ["+ fAssault.getTimeRemainingCurrentAssault()[0] +"h:"
                             + fAssault.getTimeRemainingCurrentAssault()[1] +"m]"
                         ).queue();
@@ -285,7 +288,7 @@ public class DiscordBot extends ListenerAdapter
         //remove role
         Role artMember = guild.getRolesByName(this.guildDiscordChanel +" Members", true).get(0);
         guild.getController().removeSingleRoleFromMember(guild.getMember(discUser), artMember).queue();
-        sendMessajeNotification("Member "+ discUser.getAsMention() +" lave guild, role remove");
+        sendMessajeNotification("Member "+ discUser.getAsMention() +" leave guild, role remove");
         return true;
     }
 }

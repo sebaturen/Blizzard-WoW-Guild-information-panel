@@ -1,3 +1,4 @@
+<%@ page import ="com.blizzardPanel.gameObject.WoWToken" %>
 <% String[] path = (request.getRequestURI()).split("/");
 String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];%>
 <div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
@@ -8,6 +9,14 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
+
+    <div class="item-floting-desc tooltip-wow_token">
+        <div class="itemDesc tooltipDesc">
+            <div id="graph">
+                <div id="tokenGraph" style="height: 370px; width: 500px;"></div>     
+            </div>
+        </div>
+    </div>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
@@ -42,12 +51,14 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             </li>
         </ul>            
         <div class="form-inline my-2 my-lg-0">
-            <p class="quality-wow-token">WoW Token</p>:&nbsp;
-            <% int[] tokenPrice = gameInfo.getTokenWow(); %>
-            <% if (tokenPrice[0] > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice[0]) %></span><% } %>
-            <% if (tokenPrice[1] > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice[1]) %></span><% } %>
-            <% if (tokenPrice[2] > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice[2]) %></span><% } %>
-            <%//Blizzard account vinculation                                    
+            <div id="token_price">
+                <p class="quality-wow-token">WoW Token</p>:&nbsp;
+                <% WoWToken tokenPrice = gameInfo.getWoWToken(); %>
+                <% if (tokenPrice.getGold() > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice.getGold()) %></span><% } %>
+                <% if (tokenPrice.getSilver() > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice.getSilver()) %></span><% } %>
+                <% if (tokenPrice.getCopper() > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice.getCopper()) %></span><% } %>
+            </div>
+            <% //Blizzard account vinculation                                    
                 String redirectUri = request.getContextPath() +"/login.jsp";
                 if(!user.checkUser())
                 {

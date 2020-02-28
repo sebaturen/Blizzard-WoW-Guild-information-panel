@@ -1,11 +1,11 @@
 <%@include file="../includes/globalObject.jsp" %>
-<% 
-if (    request.getParameter("login_redirect") == null || 
-        !request.getParameter("login_redirect").equals("true") || 
-        !user.checkUser()) 
+<%
+if (    request.getParameter("login_redirect") == null ||
+        !request.getParameter("login_redirect").equals("true") ||
+        !user.checkUser())
 {
     response.sendRedirect("../login.jsp");
-} 
+}
 else //only show content if is redirect from login.jsp and the user is valid
 {%>
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterMember" %>
@@ -24,7 +24,7 @@ else //only show content if is redirect from login.jsp and the user is valid
         <div class="container fill">
             <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattleTag() %>
             <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='userpanel/settings.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Settings</button></a>":"" %><br/>
-            <%  
+            <%
                 if(!user.isCharsReady())
                 {
                     out.write("Your characters are loading, come back in a moment (F5?)...");
@@ -33,7 +33,7 @@ else //only show content if is redirect from login.jsp and the user is valid
                 //User character info~
                 List<CharacterMember> memberChars = user.getCharacters();
                 if(memberChars.size() > 0)
-                {%>
+                { %>
                     <table class="table table-dark character-tab">
                         <thead>
                             <tr>
@@ -62,14 +62,14 @@ else //only show content if is redirect from login.jsp and the user is valid
                                 <td><%= m.getRealm() %></td>
                                 <td><img src="assets/img/icons/Logo-<%= (m.getFaction() == 0)? "alliance":"horde" %>.png" style="width: 22px;"/></td>
                             </tr>
-                          <%}//end foreach member m%>
+                          <%} /* end foreach member m */ %>
                         </tbody>
                     </table>
-              <%} //close if members CharacterMember more 0%>
+              <% } /*close if members CharacterMember more 0 */ %>
             <form method="post">
                 <input name="logOut" type="hidden" value="true"/>
                 <button type="submit" class="btn btn-primary">Log out</button>
-                <div class="discCode">                    
+                <div class="discCode">
                     <img src="../assets/img/icons/Discord-Logo-Color.svg" style="width: 35px">
                     <div class="returnCode">
                         <code id="discordCode" class="">
@@ -85,12 +85,9 @@ else //only show content if is redirect from login.jsp and the user is valid
                         </code>
                     </div>
                 </div>
-            </form>                
+            </form>
         </div>
         <%@include file="../includes/footer.jsp" %>
     </body>
 </html>
 <%}%>
-    
-    
-    

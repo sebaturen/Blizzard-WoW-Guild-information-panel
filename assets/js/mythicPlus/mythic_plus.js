@@ -1,6 +1,6 @@
 //Show key affixes detail
 $(document).ready(function() {
-    
+
     /*Load a keystone runs */
     $.getScript('assets/js/mythicPlus/mythic_plus_list.jsp', function() {
         console.log('Keys run list is load!');
@@ -8,18 +8,18 @@ $(document).ready(function() {
         bestRun(keystone_best_run);
         $("#afixLoad").hide();
     });
-    
+
     /*Mose over and leave in affix detail*/
     $('#runList, #bestRun')
     .on('mouseover', '.key_affix_img', function() {
         $("#afix_name").text($(this).data("name"));
         $("#afix_desc").text($(this).data("desc"));
-        $(".tooltip-affix").show();          
+        $(".tooltip-affix").show();
     })
     .on('mouseleave', '.key_affix_img', function() {
-        $(".tooltip-affix").hide();     
+        $(".tooltip-affix").hide();
     });
-    
+
 });
 
 function weekRun(keyRuns)
@@ -33,6 +33,7 @@ function bestRun(keyRuns)
 {    
     $("#bestRun").html("<div class='key_title'> <h1>Best Runs</h1>\n\
                         <h3 class='key_divide_title'>(Season 4)</h3></div>");
+
     $("#bestRun").append(renderRuns(keyRuns));
     $("#bestRun").show();
 }
@@ -40,8 +41,8 @@ function bestRun(keyRuns)
 function renderRuns(keyRuns)
 {
     var out = '';
-    jQuery.each( keyRuns, function(i, keyRun) 
-    {    
+    jQuery.each( keyRuns, function(i, keyRun)
+    {
         i = parseInt(i);
         if(keyRun !== undefined )
         {
@@ -51,7 +52,7 @@ function renderRuns(keyRuns)
                   "<div class='key_run_dun_img dungeon-challenge-img' style='background-image: url(\"assets/img/dungeon/"+ keyRun.map_id +".jpg\");'>"+
                       "<div class='key_run_lvl'>"+ keyRun.key_lvl +"</div>"+
                       "<h2 class='dung-title'>"+ keyRun.map_name +"</h2>"+
-                  "</div>"+            
+                  "</div>"+
                   "<p class='group-time key-"+ keyRun.up_down +"'>["+ keyRun.duration_h +"h:"+ keyRun.duration_m +"m:"+ keyRun.duration_s +"s]"+ ((keyRun.upgrade_key > 0)? " (+"+ keyRun.upgrade_key +")":"") +"</p>"+
                   "<p class='key-date'>"+ keyRun.complete_date +"</p>"+
                   "<table class='table table-dark character-tab'>"+
@@ -63,8 +64,8 @@ function renderRuns(keyRuns)
                           "</tr>"+
                       "</thead>"+
                       "<tbody>";
-            jQuery.each( keyRun.mem, function(j, mem) 
-            {            
+            jQuery.each( keyRun.mem, function(j, mem)
+            {
                 var isMain = ((mem.is_main == 'true')? "<i class='main_char artOfWar-icon'>&#xe801;</i>":"");
                 out +=
                             "<tr>"+
@@ -78,9 +79,9 @@ function renderRuns(keyRuns)
                                 "</td>"+
                                 "<td>"+ mem.i_level +"</td>"+
                             "</tr>";
-            });            
+            });
             out +=          "<tr>"+
-                                "<td colspan='3' class='key_affixes'>";                                
+                                "<td colspan='3' class='key_affixes'>";
             jQuery.each( keyRun.affix, function(k, affix)
             {
                 out +=              "<img class='key_affix_img' src='"+ keystone_affixes[affix].icon_url +"' data-name='"+ keystone_affixes[affix].name +"' data-desc=\""+ keystone_affixes[affix].desc +"\">";
@@ -89,10 +90,10 @@ function renderRuns(keyRuns)
                             "</tr>"+
                         "</tbody>"+
                     "</table>"+
-                "</div>";  
+                "</div>";
         }
     });
     out += "</div>"; //<!-- close last 'i' div open -->
-    
+
     return out;
 }

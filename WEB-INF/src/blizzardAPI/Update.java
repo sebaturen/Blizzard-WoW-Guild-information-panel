@@ -799,20 +799,32 @@ public class Update implements APIInfo
                                         +"?season="+ RAIDER_IO_ACTUAL_SEASON;
                         //Call Raider.io API
                         JSONObject charDetail = curl(urlIOSocre, "GET");
+
+                        //Best mythic plus score (all season!)
+                        JSONObject bestMythicPlusScore = new JSONObject();
+                        bestMythicPlusScore.put("score", 0);
                         if(((JSONObject) charDetail.get("characterDetails")).get("bestMythicPlusScore") != null)
                         {
-                            mbBlizz.setBestMythicPlusScore( (JSONObject) ((JSONObject) charDetail.get("characterDetails")).get("bestMythicPlusScore"));
+                            bestMythicPlusScore = (JSONObject) ((JSONObject) charDetail.get("characterDetails")).get("bestMythicPlusScore");
                         }
+                        mbBlizz.setBestMythicPlusScore(bestMythicPlusScore);
+
+                        //Mythic plus score current season!
+                        JSONObject actualScore = new JSONObject();
+                        actualScore.put("all", 0);
+                        actualScore.put("dps", 0);
+                        actualScore.put("healer", 0);
+                        actualScore.put("tank", 0);
                         if(((JSONObject) charDetail.get("characterDetails")).get("mythicPlusScores") != null)
                         {
                             JSONObject acScoreRaiderIO = (JSONObject) ((JSONObject) charDetail.get("characterDetails")).get("mythicPlusScores");
-                            JSONObject actualScore = new JSONObject();
+                            actualScore = new JSONObject();
                             actualScore.put("all", ((JSONObject) acScoreRaiderIO.get("all")).get("score").toString()  );
                             actualScore.put("dps", ((JSONObject) acScoreRaiderIO.get("dps")).get("score").toString());
                             actualScore.put("healer", ((JSONObject) acScoreRaiderIO.get("healer")).get("score").toString());
                             actualScore.put("tank", ((JSONObject) acScoreRaiderIO.get("tank")).get("score").toString());
-                            mbBlizz.setMythicPlusScorese(actualScore);
                         }
+                        mbBlizz.setMythicPlusScorese(actualScore);
                     } catch(DataException ex) {
                         Logs.infoLog(Update.class, "Member "+ mbBlizz.getName() +" not have a keystone score "+ ex);
                     }

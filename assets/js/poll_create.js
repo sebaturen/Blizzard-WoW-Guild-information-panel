@@ -16,7 +16,7 @@ $(document).ready(function() {
     $("#limitDate").change(function() {
         $("#divDataPicker").toggle();
     });
-    
+
     //Create poll form!
     $("#poll_create_form").submit(function(event) {
         event.preventDefault();
@@ -33,7 +33,7 @@ $(document).ready(function() {
         .done(function(mData) {
             if(mData.status == "ok")
             {
-               $("#create_poll_result").html("<div class='alert alert-primary' role='alert'><a href='../polls.jsp' class='alert-link'>New poll</a> is create!</div>");
+               $("#create_poll_result").html("<div class='alert alert-primary' role='alert'><a href='../polls.jsp' class='alert-link'>New poll</a> was created!</div>");
             }
             else
             {
@@ -42,7 +42,7 @@ $(document).ready(function() {
             }
         })
         .fail(function() {
-            $("#create_poll_result").html("<div class='alert alert-danger' role='alert'>Fail to save a new poll</div>");
+            $("#create_poll_result").html("<div class='alert alert-danger' role='alert'>Failed to save a new poll</div>");
         })
         .always(function() {
             $("#create_poll_result").show();

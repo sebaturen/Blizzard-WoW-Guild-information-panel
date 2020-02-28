@@ -58,6 +58,13 @@ p {
 }
 /*END----FONTS--------------*/
 /*-------GENERAL------------*/
+.black_white {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.table-dark {
+    background: transparent;
+}
 .item-floting-desc {
     padding: 10px;
     padding-right: 20px;
@@ -125,7 +132,7 @@ p {
 .pointer {
     cursor: pointer;
 }
-body > .container {    
+body > .container {
     background-color: #212529;
     margin-top: 21px;
     padding: 25px;
@@ -133,7 +140,7 @@ body > .container {
     box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
     margin-bottom: 21px;
 }
-.moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta, 
+.moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta,
 .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
     background: no-repeat right center;
     display: inline-block;
@@ -226,13 +233,16 @@ body > .container {
 #main-menu > nav > li {
     display: inline-block;
 }
+#token_price > p {
+    float: left;
+}
 /*END -------MENU------------*/
 
 /*-------GUILD CHALLENGE------------*/
 .dungeon-challenge-img {
     background-size: cover;
-    background-position: center center;   
-    margin: -25px -25px 0 -25px; 
+    background-position: center center;
+    margin: -25px -25px 0 -25px;
 }
 .dung-title {
     padding: 50px;
@@ -277,6 +287,7 @@ body > .container {
     border: solid 1px #000;
     margin-top: 1em;
     background-color: #0000003d;
+    min-height: 51px;
 }
 .returnCode > code {
     color: white;
@@ -388,6 +399,9 @@ body > .container {
     margin-left: 0;
     margin-right: 0;
 }
+.poll_controll {
+    float: right;
+}
 /*END-----------------POLL--------------*/
 
 /*----------MYTHIC PLUS-----------------*/
@@ -441,3 +455,45 @@ body > .container {
     float: right;
 }
 /*END----------MYTHIC PLUS-----------------*/
+
+/*-----------------EVENT--------------*/
+.ev_owner {
+    font-size: 0.7em;
+}
+#main_zone {
+    text-align: center;
+    position: relative;
+}
+#delete_main {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+.drop_zone {
+    width: 100%;
+    min-height: 7em;
+    background-color: #454d55;
+}
+.character-alter-tab > thead {
+    display: none;
+}
+.user_char_disable {
+    text-decoration-line: line-through;
+}
+.spec_select, .character-tab > tbody tr, .removeCharAlter, #delete_main {
+    cursor: pointer;
+}
+.spec_select:hover {
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+#ev_container {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+/*END-----------------EVENT--------------*/

@@ -105,7 +105,7 @@ public class CharacterSpec extends GameObject
                 spellID[j] = this.spells[j].getId() +"";
             }
         }
-        String isEnable = (this.enable)? "1":"0";  
+        String isEnable = (this.enable)? "1":"0";
         
         /* {"member_id", "name", "role", "enable",
          * "tier_0", "tier_1", "tier_2",

@@ -16,7 +16,7 @@
         guildMember = true;
     } 
     //Verify if DB is correct (like configuration is correct)
-    if(!gameInfo.getSistemStatus() || guild_info.getName() == null)
+    if(!gameInfo.getSystemStatus() || guild_info.getName() == null)
     {
         %><jsp:forward page="${contextPath}/internal_error.jsp" /><%
     }  
