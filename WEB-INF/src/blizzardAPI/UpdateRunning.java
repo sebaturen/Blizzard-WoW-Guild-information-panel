@@ -59,10 +59,10 @@ public class UpdateRunning implements ServletContextListener
                     while(true)
                     {
                         assaultNotification();
-                        try {
+                        /*try {
                             if(needStatycUpdate())
                                 update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }*/
                         try {
                         if(needDynamicUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
@@ -71,10 +71,10 @@ public class UpdateRunning implements ServletContextListener
                         if(needGuildNewUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
                         } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
-                        /*try {
+                        try {
                         if(needAHUpdate())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }*/
+                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
                         try {
                         if(needAHMove())
                             update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});

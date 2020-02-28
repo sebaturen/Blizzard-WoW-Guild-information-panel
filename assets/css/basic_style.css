@@ -230,6 +230,9 @@ body > .container {
 #main-menu > nav > li {
     display: inline-block;
 }
+#token_price > p {
+    float: left;
+}
 /*END -------MENU------------*/
 
 /*-------GUILD CHALLENGE------------*/
@@ -281,6 +284,7 @@ body > .container {
     border: solid 1px #000;
     margin-top: 1em;
     background-color: #0000003d;
+    min-height: 51px;
 }
 .returnCode > code {
     color: white;
@@ -381,6 +385,9 @@ body > .container {
     /* background-color: red; */
     margin-left: 0;
     margin-right: 0;
+}
+.poll_controll {
+    float: right;
 }
 /*END-----------------POLL--------------*/
 

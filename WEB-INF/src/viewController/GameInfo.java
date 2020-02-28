@@ -12,9 +12,13 @@ import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
+import com.blizzardPanel.gameObject.WoWToken;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -24,8 +28,10 @@ public class GameInfo
     private static boolean configState = false;
     private String lastDynamicUpdate;
     private Date lastDynamicUpdateUpdate;
-    private int[] outWowToken;
-    private Date lastWowTokenUpdate;
+    private WoWToken outWoWToken;
+    private Date lastWoWTokenUpdate;
+    private List<WoWToken> outWoWTokenHistory;
+    private Date lastWoWTokenHistoryUpdate;
 
     public GameInfo()
     {
@@ -94,7 +100,6 @@ public class GameInfo
 
     private void getWowTokenValue()
     {
-        this.outWowToken = new int[3]; //[0-gold][1-silver][2-copper]
         try
         {
             JSONArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
@@ -104,19 +109,20 @@ public class GameInfo
             if (dateUpdate.size() > 0)
             {
                 String actuapPrice = (((JSONObject)dateUpdate.get(0)).get("price")).toString();
-                this.outWowToken = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
+                int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
+                this.outWoWToken = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
             }
         }
         catch (SQLException|DataException e)
         {
             Logs.errorLog(GameInfo.class, "Fail to get a wow Token price");
         }
-        lastWowTokenUpdate = new Date();
+        lastWoWTokenUpdate = new Date();
     }
 
-    public int[] getTokenWow()
+    public WoWToken getWoWToken()
     {
-        if(this.outWowToken == null)
+        if(this.outWoWToken == null)
         {
             getWowTokenValue( );
         }
@@ -126,15 +132,64 @@ public class GameInfo
             Calendar cal = java.util.Calendar.getInstance();
             cal.add(java.util.Calendar.MINUTE, -10);
             Date tenMinuteAgo = cal.getTime();
-            if(this.lastWowTokenUpdate.compareTo(tenMinuteAgo) < 0)
+            if(this.lastWoWTokenUpdate.compareTo(tenMinuteAgo) < 0)
             {
                 getWowTokenValue( );
             }
         }
-        return this.outWowToken;
+        return this.outWoWToken;
     }
 
-    public boolean getSistemStatus()
+    public void getWoWTokenHistoryValue(int count)
+    {
+        this.outWoWTokenHistory = new ArrayList<>();
+        try
+        {
+            JSONArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
+                    new String[] {"last_updated_timestamp", "price"},
+                    "1=? order by "+ DBStructure.WOW_TOKEN_TABLE_KEY +" desc limit "+ count,
+                    new String[] {"1"});
+            if (dateUpdate.size() > 0)
+            {
+                for(Object wToken : dateUpdate) {
+                    String actuapPrice = (((JSONObject)wToken).get("price")).toString();
+                    int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
+                    WoWToken wT = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
+                    wT.setLastUpdate(Long.parseLong(((JSONObject)wToken).get("last_updated_timestamp").toString()));
+                    this.outWoWTokenHistory.add(wT);
+                }
+            }
+        }
+        catch (SQLException|DataException e)
+        {
+            Logs.errorLog(GameInfo.class, "Fail to get a wow Token price");
+        }
+        lastWoWTokenHistoryUpdate = new Date();
+    }
+
+    public List<WoWToken> getWoWTokenHistory() { return getWoWTokenHistory(5); }
+    public List<WoWToken> getWoWTokenHistory(int count)
+    {
+        if (count < 5) count = 5;
+        if(this.outWoWTokenHistory == null)
+        {
+            getWoWTokenHistoryValue(count);
+        }
+        else
+        {
+            //Only reload if least 10 min ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if(this.lastWoWTokenHistoryUpdate.compareTo(tenMinuteAgo) < 0)
+            {
+                getWoWTokenHistoryValue(count);
+            }
+        }
+        return this.outWoWTokenHistory;
+    }
+
+    public boolean getSystemStatus()
     {
         //Valid all config have a value
         if(!configState)
