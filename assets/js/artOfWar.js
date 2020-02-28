@@ -33,7 +33,7 @@ $(document).ready(function() {
                     text: "Change history"
                 },
                 axisX: {
-                    valueFormatString: "DD HH:mm",
+                    valueFormatString: "DD / HH:mm",
                 },
                 axisY: {
                     title: "GOLD",

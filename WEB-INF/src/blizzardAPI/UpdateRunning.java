@@ -76,7 +76,7 @@ public class UpdateRunning implements ServletContextListener
                         try {
                             if(needAHUpdate())
                             {
-                                update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                                //update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
                             }
                         } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
                         try {
