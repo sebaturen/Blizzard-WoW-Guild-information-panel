@@ -200,7 +200,7 @@ public class GameInfo
             GeneralConfig.getStringConfig("GUILD_REALM");
             GeneralConfig.getStringConfig("SERVER_LOCATION");
             //Locales:
-            GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE");
+            GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE");
             //Web main URL
             GeneralConfig.getStringConfig("BLIZZAR_LINK");
             GeneralConfig.getStringConfig("BLIZZAR_LINK");

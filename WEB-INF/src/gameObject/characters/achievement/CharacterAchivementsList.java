@@ -6,7 +6,6 @@
 package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.gameObject.GameObject;
 import org.json.simple.JSONObject;
 

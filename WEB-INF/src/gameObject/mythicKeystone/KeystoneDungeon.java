@@ -46,7 +46,7 @@ public class KeystoneDungeon extends GameObject
         {//info come from blizz
             this.id = ((Long) objInfo.get("id")).intValue();
             this.mapId = ((Long) ((JSONObject) objInfo.get("map")).get("id")).intValue();
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
             this.slug = ((JSONObject) objInfo.get("zone")).get("slug").toString();
             JSONArray kestonUpgrade = (JSONArray) objInfo.get("keystone_upgrades");
             this.keystoneUpgrades1 = (long) ( (JSONObject) kestonUpgrade.get(0) ).get("qualifying_duration");

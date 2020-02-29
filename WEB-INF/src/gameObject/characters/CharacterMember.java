@@ -5,11 +5,11 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.WoWAPIService;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.guild.Rank;
@@ -106,7 +106,7 @@ public class CharacterMember extends GameObject
                     this.realm = upCharacter.getRealm();
                     this.isDelete = true;
                 }
-            } catch (IOException | ParseException | DataException ex) {
+            } catch (IOException ex) {
                 Logs.errorLog(CharacterMember.class, "Fail to get member info from blizzard. - "+ ex);
             }
         }
@@ -302,7 +302,7 @@ public class CharacterMember extends GameObject
             //Save new info in DB
             saveInDB();
         }
-        catch (IOException|ParseException|DataException ex)
+        catch (IOException ex)
         {
             Logs.errorLog(CharacterMember.class, "Fail to get a spec info in member "+ this.name);
         }
@@ -318,7 +318,7 @@ public class CharacterMember extends GameObject
             //Save new info in DB
             saveInDB();
         }
-        catch (IOException|ParseException|DataException ex)
+        catch (IOException ex)
         {
             Logs.errorLog(CharacterMember.class, "Fail to get a spec info in member "+ this.name);
         }
@@ -585,7 +585,7 @@ public class CharacterMember extends GameObject
     }
     public String getThumbnailURL()
     {
-        return String.format(APIInfo.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
+        return String.format(WoWAPIService.API_CHARACTER_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), getThumbnail());
     }
     public char getCalcClass() { return this.calcClass; }
     public int getFaction() { return this.faction; }

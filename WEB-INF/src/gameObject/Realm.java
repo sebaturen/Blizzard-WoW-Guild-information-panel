@@ -50,7 +50,7 @@ public class Realm extends GameObject
         if(objInfo.get("id").getClass() == Long.class)
         {//Info come from blizzard
             this.id = ((Long) objInfo.get("id")).intValue();
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
         }
         else
         {//load from DB

@@ -48,14 +48,14 @@ public class PlayableSpec extends GameObject
         if(objInfo.get("id").getClass() == Long.class)
         {//Info come from blizz API        
             this.id = ((Long) objInfo.get("id")).intValue();    
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
             this.slug = ((JSONObject) objInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
             this.pClass = new PlayableClass(((Long) ((JSONObject) objInfo.get("playable_class")).get("id")).intValue());
             this.role = ((JSONObject) objInfo.get("role")).get("type").toString();
             if(this.role.equals("DAMAGE")) this.role = "DPS";
             if(this.role.equals("HEALER")) this.role = "HEALING";
-            this.descMale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
-            this.descFemale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            this.descMale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
+            this.descFemale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
         }
         else
         {//Info come from DB

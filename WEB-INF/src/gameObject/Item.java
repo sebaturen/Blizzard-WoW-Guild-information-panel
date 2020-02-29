@@ -8,9 +8,10 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import java.io.IOException;
+
+import com.blizzardPanel.blizzardAPI.WoWAPIService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -162,7 +163,7 @@ public class Item extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
+        return String.format(WoWAPIService.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
     }
     
 }

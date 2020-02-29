@@ -5,7 +5,6 @@
  */
 package com.blizzardPanel;
 
-import com.blizzardPanel.blizzardAPI.APIInfo;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
@@ -280,7 +279,7 @@ public class User
                 JSONObject respond = Update.curl(urlString, 
                                             "GET",
                                             "Bearer "+ accessToken,
-                                            new String[] {"locale="+ GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")});
+                                            new String[] {"locale="+ GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")});
                 if(respond.containsKey("battletag"))
                 {
                     return respond.get("battletag").toString();

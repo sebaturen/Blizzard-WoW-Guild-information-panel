@@ -8,6 +8,7 @@ public class AccessToken {
     // Atribute
     private String access_token;
     private String token_type;
+    private long expire_in;
     private Date expire;
 
     public AccessToken() {
@@ -47,5 +48,9 @@ public class AccessToken {
 
     public void setExpire_in(long expire_in) {
         this.expire_in = expire_in;
+    }
+
+    public String getAuthorization() {
+        return getToken_type() +" "+ getAccess_token();
     }
 }

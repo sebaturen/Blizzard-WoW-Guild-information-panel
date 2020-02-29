@@ -79,7 +79,7 @@ public class KeystoneDungeonRun extends GameObject
             {
                 String urlDunDetail = (((JSONObject) ((JSONObject)objInfo.get("dungeon")).get("key")).get("href")).toString();
                 try { this.ksDun = (new Update()).getKeyStoneDungeonDetail(urlDunDetail); } 
-                catch (IOException | ParseException | DataException ex) { Logs.errorLog(KeystoneDungeonRun.class, "Fail to get Dugneon details from update - "+ ex); }
+                catch (IOException ex) { Logs.errorLog(KeystoneDungeonRun.class, "Fail to get Dungeon details from update - "+ ex); }
             }
             this.isCompleteInTime = (Boolean) objInfo.get("is_completed_within_time");
             loadMembersFromBlizz((JSONArray) objInfo.get("members"));

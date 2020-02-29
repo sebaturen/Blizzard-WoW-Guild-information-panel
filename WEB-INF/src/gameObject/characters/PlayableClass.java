@@ -40,7 +40,7 @@ public class PlayableClass extends GameObject
         {
             this.id = ((Long) exInfo.get("id")).intValue();
             this.slug = ((JSONObject) exInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
-            this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.getStringConfig("LENGUAJE_API_LOCALE")).toString();
+            this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
         }
         else
         {

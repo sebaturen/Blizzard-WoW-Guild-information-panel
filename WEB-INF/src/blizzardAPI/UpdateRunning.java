@@ -40,7 +40,7 @@ public class UpdateRunning implements ServletContextListener
         {
             update = new Update();
             discordBot = new DiscordBot().build();
-        } catch (IOException | ParseException | DataException ex) {
+        } catch (IOException ex) {
             Logs.errorLog(UpdateRunning.class, "Fail to create Update object! "+ ex);
             System.exit(-1);
         }
@@ -49,49 +49,42 @@ public class UpdateRunning implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent contextEvent)
     {
-        updateInterval =  new Thread()
-        {
-            //task
-            public void run()
-            {
-                try
-                {
-                    while(true)
-                    {
-                        assaultNotification();
-                        try {
-                            if(needStatycUpdate())
-                            {
-                                //update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
-                            }
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
-                        try {
-                        if(needDynamicUpdate())
-                            update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
-                        try {
-                        if(needGuildNewUpdate())
-                            update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
-                        try {
-                            if(needAHUpdate())
-                            {
-                                //update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
-                            }
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
-                        try {
-                            if(needAHMove())
-                            {
-                                update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
-                            }
-                        } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR HACTION HOUSE"+ e); }
-                        Thread.sleep(60000); //every minute
-                    }
-                } catch (Exception ex) {
-                    Logs.errorLog(UpdateRunning.class, "FAIL IN UPDATE TIMELINE! "+ ex);
+        //task
+        updateInterval = new Thread(() -> {
+            try {
+                while(true) {
+                    assaultNotification();
+                    try {
+                        if(needStatycUpdate()) {
+                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                        }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
+                    try {
+                        if(needDynamicUpdate()) {
+                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
+                        }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
+                    try {
+                        if(needGuildNewUpdate()) {
+                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                        }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
+                    try {
+                        if(needAHUpdate()) {
+                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                        }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
+                    try {
+                        if(needAHMove()) {
+                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
+                        }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR HACTION HOUSE"+ e); }
+                    Thread.sleep(60000); //every minute
                 }
+            } catch (Exception ex) {
+                Logs.errorLog(UpdateRunning.class, "FAIL IN UPDATE TIMELINE! "+ ex);
             }
-        };
+        });
         updateInterval.start();
         context = contextEvent.getServletContext();
         // you can set a context variable just like this
