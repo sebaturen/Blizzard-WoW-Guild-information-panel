@@ -5,7 +5,6 @@
  */
 package com.blizzardPanel.gameObject.guild.raids;
 
-import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
@@ -15,7 +14,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonObject;
 
 public class RaidDificultBoss extends GameObject
 {
@@ -44,44 +44,44 @@ public class RaidDificultBoss extends GameObject
         loadFromDBUniqued(new String[] { "boss_id", "difi_id" }, new String[] { bossId +"", diffId +"" });        
     }
     
-    public RaidDificultBoss(JSONObject info)
+    public RaidDificultBoss(JsonObject info)
     {
         super(RAID_DIFICULT_BOSSES_TABLE_NAME, RAID_DIFICULT_BOSSES_TABLE_KEY, RAID_DIFICULT_BOSSES_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.containsKey(RAID_DIFICULT_BOSSES_TABLE_KEY))
+        if(objInfo.has(RAID_DIFICULT_BOSSES_TABLE_KEY))
         {//from DB
-            this.id = (Integer) objInfo.get(RAID_DIFICULT_BOSSES_TABLE_KEY);
-            this.boss = new Boss((Integer) objInfo.get("boss_id"));
-            this.difiId = (Integer) objInfo.get("difi_id");
-            this.itemLevelAvg = (Double) objInfo.get("itemLevelAvg");
-            this.artifactPowerAvg = (Double) objInfo.get("itemLevelAvg");
+            this.id = objInfo.get(RAID_DIFICULT_BOSSES_TABLE_KEY).getAsInt();
+            this.boss = new Boss(objInfo.get("boss_id").getAsInt());
+            this.difiId = objInfo.get("difi_id").getAsInt();
+            this.itemLevelAvg = objInfo.get("itemLevelAvg").getAsDouble();
+            this.artifactPowerAvg = objInfo.get("itemLevelAvg").getAsDouble();
             try { //2018-10-17 02:39:00
-                this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("firstDefeated").toString());
+                this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("firstDefeated").getAsString());
             } catch (ParseException ex) {
                 Logs.errorLog(RaidDificultBoss.class, "(DB) Fail to convert date from challenge group! "+ this.id);
             }
         }
         else
         {//load from RaiderIO      
-            this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
+            this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").getAsString()));
             if(!this.boss.isData())
             {
-                Logs.infoLog(RaidDificultBoss.class, "Boss '"+ objInfo.get("slug").toString() +"' not have info in DB, update to blizzard");
+                Logs.infoLog(RaidDificultBoss.class, "Boss '"+ objInfo.get("slug").getAsString() +"' not have info in DB, update to blizzard");
                 try {
                     //In internal DB not have boss, so we need load a new boss DB...
-                    new Update().getBossInformation();
-                    this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").toString()));
+                    Update.shared.getBossInformation();
+                    this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").getAsString()));
                     if(!this.boss.isData())
                     {
-                        Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ objInfo.get("slug").toString());
+                        Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ objInfo.get("slug").getAsString());
                         //System.exit(-1);
                     }
-                } catch (IOException | org.json.simple.parser.ParseException | DataException ex) {
+                } catch (IOException ex) {
                     Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO UPDATE BOSS LIST!! "+ ex);
                     //System.exit(-1);
                 }
@@ -89,24 +89,17 @@ public class RaidDificultBoss extends GameObject
             else
             {                
                 try {
-                    this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").toString());
+                    this.firstDefeated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(objInfo.get("firstDefeated").getAsString());
                 } catch (ParseException ex) {
                     Logs.errorLog(RaidDificultBoss.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
                 }
 
-                //Save Item Level AVG            
-                if(objInfo.get("itemLevelAvg").getClass().equals(Long.class))
-                    this.itemLevelAvg = (Long) objInfo.get("itemLevelAvg");
-                else
-                    this.itemLevelAvg = (Double) objInfo.get("itemLevelAvg");
-
-                //Save artefact power (BFA)
-                if(objInfo.containsKey("artifactPowerAvg"))
+                //Save Item Level AVG
+                this.itemLevelAvg = objInfo.get("itemLevelAvg").getAsDouble();
+                //Save artifact power (BFA)
+                if(objInfo.has("artifactPowerAvg"))
                 {
-                    if(objInfo.get("artifactPowerAvg").getClass().equals(Long.class))
-                        this.artifactPowerAvg = (Long) objInfo.get("artifactPowerAvg");
-                    else
-                        this.artifactPowerAvg = (Double) objInfo.get("artifactPowerAvg");                
+                    this.artifactPowerAvg = objInfo.get("artifactPowerAvg").getAsLong();
                 }
             }
         }     

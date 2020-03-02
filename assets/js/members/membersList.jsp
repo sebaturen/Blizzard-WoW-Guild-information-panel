@@ -3,7 +3,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.characters.CharacterItem" %>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
-<%@ page import ="org.json.simple.JSONObject"%>
+<%@ page import ="com.google.gson.JsonObject"%>
 <jsp:useBean id="members" class="com.blizzardPanel.viewController.Members" scope="session"/>
 var members = [];
 var guildRanks = [];
@@ -58,8 +58,8 @@ if(members.getMembersList() != null)
                 races.add(member.getRace().getName());
                 %>races.push("<%= member.getRace().getName() %>");<%
             }
-            mScore = member.getMythicScoreAll();
-            mBestScore = member.getBestMythicScore();
+            mScore = (int) member.getMythicScoreAll();
+            mBestScore = (int) member.getBestMythicScore();
             mBestScoreSeason = member.getBestMythicScoreSeason();
         } %>
         members.push({   

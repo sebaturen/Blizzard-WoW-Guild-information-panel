@@ -6,6 +6,7 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.blizzardAPI.WoWAPIService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -109,7 +110,7 @@ public class ServerTime
      */
     public static long getSeasonTime()
     {
-        return APIInfo.ACTUAL_SEASON_TIMESTAMP;
+        return WoWAPIService.ACTUAL_SEASON_TIMESTAMP;
     }
     
     public String getTimeZone()

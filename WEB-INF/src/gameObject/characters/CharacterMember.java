@@ -16,14 +16,15 @@ import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import java.io.IOException;
 
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class CharacterMember extends GameObject
 {
@@ -68,8 +69,8 @@ public class CharacterMember extends GameObject
     private int userID;
     private Rank gRank;
     //Mythic plus source
-    private JSONObject bestMythicPlusScore = new JSONObject();
-    private JSONObject mythicPlusScores = new JSONObject();
+    private JsonObject bestMythicPlusScore = new JsonObject();
+    private JsonObject mythicPlusScores = new JsonObject();
     private List<CharacterSpec> specs = new ArrayList<>();
     private List<CharacterItem> items = new ArrayList<>();
     private double itemLevel;
@@ -93,21 +94,16 @@ public class CharacterMember extends GameObject
         loadFromDBUniqued(new String[] {"gm.member_name", "gm.realm"}, new String[] {name, realm}, "gm.internal_id = c.internal_id", true);
         if(!this.isInternalData && !this.isDelete)
         {
-            try {
-                Update up = new Update();
-                CharacterMember upCharacter = up.getMemberFromBlizz(name, realm);
-                if(!upCharacter.isDelete())
-                {
-                    cloneMember(upCharacter);                    
-                }
-                else
-                {
-                    this.name = upCharacter.getName();
-                    this.realm = upCharacter.getRealm();
-                    this.isDelete = true;
-                }
-            } catch (IOException ex) {
-                Logs.errorLog(CharacterMember.class, "Fail to get member info from blizzard. - "+ ex);
+            CharacterMember upCharacter = Update.shared.getMemberFromBlizz(name, realm);
+            if(!upCharacter.isDelete())
+            {
+                cloneMember(upCharacter);
+            }
+            else
+            {
+                this.name = upCharacter.getName();
+                this.realm = upCharacter.getRealm();
+                this.isDelete = true;
             }
         }
     }
@@ -123,74 +119,70 @@ public class CharacterMember extends GameObject
     }
 
     //Load to JSON
-    public CharacterMember(JSONObject playerInfo)
+    public CharacterMember(JsonObject playerInfo)
     {
         super(CHARACTER_INFO_TABLE_NAME, CHARACTER_INFO_TABLE_KEY, CHARACTER_INFO_TABLE_STRUCTURE);
         saveInternalInfoObject(playerInfo);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject playerInfo)
+    protected void saveInternalInfoObject(JsonObject playerInfo)
     {
-        this.realm = playerInfo.get("realm").toString();
-        this.battleGroup = playerInfo.get("battlegroup").toString();
-        this.achievementPoints = (long) playerInfo.get("achievementPoints");
-        this.thumbnail = playerInfo.get("thumbnail").toString();
-        this.calcClass = (playerInfo.get("calcClass").toString()).charAt(0);
-        this.lastModified = (long) playerInfo.get("lastModified");
-        this.totalHonorableKills = (long) playerInfo.get("totalHonorableKills");
+        this.realm = playerInfo.get("realm").getAsString();
+        this.battleGroup = playerInfo.get("battlegroup").getAsString();
+        this.achievementPoints = playerInfo.get("achievementPoints").getAsLong();
+        this.thumbnail = playerInfo.get("thumbnail").getAsString();
+        this.calcClass = (playerInfo.get("calcClass").getAsString()).charAt(0);
+        this.lastModified = playerInfo.get("lastModified").getAsLong();
+        this.totalHonorableKills = playerInfo.get("totalHonorableKills").getAsLong();
 
-        if(playerInfo.get("gender").getClass() == java.lang.Long.class)
-        {
-            //if info come to blizzAPI
-            this.name = playerInfo.get("name").toString();
-            this.gender = ((Long) playerInfo.get("gender")).intValue();
-            this.level = ((Long) playerInfo.get("level")).intValue();
-            this.faction = ((Long) playerInfo.get("faction")).intValue();
-            this.memberClass = new PlayableClass(((Long) playerInfo.get("class")).intValue());
-            this.race = new PlayableRace(((Long) playerInfo.get("race")).intValue());
-            //If have a guild...
-            this.guildName = "";
-            this.isGuildMember = false;
-            if(playerInfo.containsKey("guild"))	this.guildName = ((JSONObject) playerInfo.get("guild")).get("name").toString();
-            if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.getStringConfig("GUILD_NAME"))) this.isGuildMember = true;
-            //Generate member id:
-            generateMemberID();
-            //Spec
-            loadSpecFromBlizz((JSONArray) playerInfo.get("talents"));
-            loadItemsFromBlizz((JSONObject) playerInfo.get("items"));
-            //Status
-            this.stats = new CharacterStats((JSONObject) playerInfo.get("stats"));
-        }
-        else
-        {//if come to DB
-            this.internalID = (Integer) playerInfo.get("internal_id");
-            this.name = playerInfo.get("member_name").toString();
-            this.isGuildMember = (Boolean) playerInfo.get("in_guild");
-            this.isDelete = (boolean) playerInfo.get("isDelete");
-            this.gRank = new Rank((Integer) playerInfo.get("rank"));
-            //if is delte, not all members have all information, so try load if have, and not break if not existe info.
-            try 
-            {                
-                this.userID = (Integer) playerInfo.get("user_id");
-                this.gender = (Integer) playerInfo.get("gender");
-                this.level = (Integer) playerInfo.get("level");
-                this.faction = (Integer) playerInfo.get("faction");
-                this.guildName = playerInfo.get("guild_name").toString();
-                this.memberClass = new PlayableClass((Integer) playerInfo.get("class"));
-                this.race = new PlayableRace((Integer) playerInfo.get("race"));
+        if (playerInfo.has("internal_id") ) { // load DB
+            this.internalID = playerInfo.get("internal_id").getAsInt();
+            this.name = playerInfo.get("member_name").getAsString();
+            this.isGuildMember = playerInfo.get("in_guild").getAsBoolean();
+            this.isDelete = playerInfo.get("isDelete").getAsBoolean();
+            this.gRank = new Rank(playerInfo.get("rank").getAsInt());
+            // if is delete, not all members have all information, so try load if have, and not break if not exist info.
+            try
+            {
+                this.userID = playerInfo.get("user_id").getAsInt();
+                this.gender = playerInfo.get("gender").getAsInt();
+                this.level = playerInfo.get("level").getAsInt();
+                this.faction = playerInfo.get("faction").getAsInt();
+                this.guildName = playerInfo.get("guild_name").getAsString();
+                this.memberClass = new PlayableClass(playerInfo.get("class").getAsInt());
+                this.race = new PlayableRace(playerInfo.get("race").getAsInt());
                 this.stats = new CharacterStats(this.internalID);
                 String bMyhScore = "{}", mythScores = "{}";
-                if(playerInfo.get("bestMythicPlusScore") != null) bMyhScore = playerInfo.get("bestMythicPlusScore").toString();
-                if(playerInfo.get("mythicPlusScores") != null) mythScores = playerInfo.get("mythicPlusScores").toString();
-                loadMythicPlusScoreDB(bMyhScore, mythScores);      
+                if(!playerInfo.get("bestMythicPlusScore").isJsonNull()) bMyhScore = playerInfo.get("bestMythicPlusScore").getAsString();
+                if(!playerInfo.get("mythicPlusScores").isJsonNull()) mythScores = playerInfo.get("mythicPlusScores").getAsString();
+                loadMythicPlusScoreDB(bMyhScore, mythScores);
             }
             catch (NullPointerException e)
             {
                 Logs.errorLog(CharacterMember.class, "Fail in load member info - "+ this.internalID +" isDelete? "+ this.isDelete +" - "+ e);
             }
-        }
 
+        } else { // load blizzard
+            this.name = playerInfo.get("name").getAsString();
+            this.gender = playerInfo.get("gender").getAsInt();
+            this.level = playerInfo.get("level").getAsInt();
+            this.faction = playerInfo.get("faction").getAsInt();
+            this.memberClass = new PlayableClass(playerInfo.get("class").getAsInt());
+            this.race = new PlayableRace(playerInfo.get("race").getAsInt());
+            //If have a guild...
+            this.guildName = "";
+            this.isGuildMember = false;
+            if(playerInfo.has("guild"))	this.guildName = playerInfo.get("guild").getAsJsonObject().get("name").getAsString();
+            if( this.guildName.length() > 0 && this.guildName.equals(GeneralConfig.getStringConfig("GUILD_NAME"))) this.isGuildMember = true;
+            //Generate member id:
+            generateMemberID();
+            //Spec
+            loadSpecFromBlizz(playerInfo.get("talents").getAsJsonArray());
+            loadItemsFromBlizz(playerInfo.get("items").getAsJsonObject());
+            //Status
+            this.stats = new CharacterStats(playerInfo.get("stats").getAsJsonObject());
+        }
 
         this.isData = true;
     }
@@ -198,29 +190,23 @@ public class CharacterMember extends GameObject
     private void loadMythicPlusScoreDB(String bestMythicPlusScore, String mythicPlusScores)
     {
         //Best Score
-        try 
+        if(bestMythicPlusScore.length() > 2)
         {
-            JSONParser parser = new JSONParser();
-            if(bestMythicPlusScore.length() > 2)
-            {
-                this.bestMythicPlusScore = (JSONObject) parser.parse(bestMythicPlusScore);
-            }
-            if(mythicPlusScores.length() > 2)
-            {
-                this.mythicPlusScores = (JSONObject) parser.parse(mythicPlusScores);
-            }
-        } catch (ParseException ex) {
-            Logs.errorLog(CharacterMember.class, "Fail to parse mytic score "+ this.internalID +" - "+ ex);
+            this.bestMythicPlusScore = JsonParser.parseString(bestMythicPlusScore).getAsJsonObject();
+        }
+        if(mythicPlusScores.length() > 2)
+        {
+            this.mythicPlusScores = JsonParser.parseString(mythicPlusScores).getAsJsonObject();
         }
     }
 
-    private void loadSpecFromBlizz(JSONArray allTalents)
+    private void loadSpecFromBlizz(JsonArray allTalents)
     {
         for(int i = 0; i < allTalents.size(); i++)
         {
-            JSONObject specsAvailable = (JSONObject) allTalents.get(i);
-            JSONObject specInfoBlizz = (JSONObject) specsAvailable.get("spec");
-            JSONArray spellTalents = (JSONArray) specsAvailable.get("talents");
+            JsonObject specsAvailable = (JsonObject) allTalents.get(i);
+            JsonObject specInfoBlizz = (JsonObject) specsAvailable.get("spec");
+            JsonArray spellTalents = (JsonArray) specsAvailable.get("talents");
             /**
              * Todos los miembros tienen talentos dependiendo de su especialidad
              * Blizzard nos ofrece los talentos por especialidad, por lo que debemos
@@ -231,13 +217,13 @@ public class CharacterMember extends GameObject
             {
                 //Aunque el usuario solo tenga a escojer 3, por lo que si tiene datos, trabajaremos
                 CharacterSpec spec = new CharacterSpec(this, specInfoBlizz, spellTalents);
-                if(specsAvailable.containsKey("selected")) spec.setEnable(true);
+                if(specsAvailable.has("selected")) spec.setEnable(true);
                 this.specs.add(spec);
             }
         }
     }
 
-    private void loadItemsFromBlizz(JSONObject allItems)
+    private void loadItemsFromBlizz(JsonObject allItems)
     {
         for(Object key : allItems.keySet())
         {
@@ -245,8 +231,8 @@ public class CharacterMember extends GameObject
             //all element except average item level information
             if(!postItem.equals("averageItemLevel") && !postItem.equals("averageItemLevelEquipped"))
             {
-                JSONObject item = (JSONObject) allItems.get(postItem);
-                item.put("post_item", postItem);
+                JsonObject item = allItems.get(postItem).getAsJsonObject();
+                item.addProperty("post_item", postItem);
                 this.items.add(new CharacterItem(item));
             }
         }
@@ -259,7 +245,7 @@ public class CharacterMember extends GameObject
         this.specs = new ArrayList<>();
         try
         {
-            JSONArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
+            JsonArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
                                                     new String[] { "id" },
                                                     "member_id=? "+ ((extraWhere != null)? extraWhere:""),
                                                     new String[] { this.internalID +""});
@@ -267,7 +253,7 @@ public class CharacterMember extends GameObject
             {
                 for(int i = 0; i < memberSpec.size(); i++)
                 {
-                    CharacterSpec sp = new CharacterSpec( (Integer) ((JSONObject) memberSpec.get(i)).get("id") );
+                    CharacterSpec sp = new CharacterSpec( memberSpec.get(i).getAsJsonObject().get("id").getAsInt() );
                     this.specs.add(i, sp);
                 }
             }
@@ -294,46 +280,30 @@ public class CharacterMember extends GameObject
 
     private void loadStats()
     {
-        try
-        {
-            Update up = new Update();
-            CharacterMember tempMember = up.getMemberFromBlizz(this.name, this.realm);
-            this.stats = tempMember.getStats();
-            //Save new info in DB
-            saveInDB();
-        }
-        catch (IOException ex)
-        {
-            Logs.errorLog(CharacterMember.class, "Fail to get a spec info in member "+ this.name);
-        }
+        CharacterMember tempMember = Update.shared.getMemberFromBlizz(this.name, this.realm);
+        this.stats = tempMember.getStats();
+        //Save new info in DB
+        saveInDB();
     }
 
     private void loadSpecFromBlizz()
     {
-        try
-        {
-            Update up = new Update();
-            CharacterMember tempMember = up.getMemberFromBlizz(this.name, this.realm);
-            this.specs = tempMember.getSpecs();
-            //Save new info in DB
-            saveInDB();
-        }
-        catch (IOException ex)
-        {
-            Logs.errorLog(CharacterMember.class, "Fail to get a spec info in member "+ this.name);
-        }
+        CharacterMember tempMember = Update.shared.getMemberFromBlizz(this.name, this.realm);
+        this.specs = tempMember.getSpecs();
+        //Save new info in DB
+        saveInDB();
     }
 
     private void loadItemsFromDB()
     {
         try {
-            JSONArray itemDB = dbConnect.select(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
+            JsonArray itemDB = dbConnect.select(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
                                                     new String[] { "id" },
                                                     "member_id=? AND item_id != 0",
                                                     new String[] { this.internalID +""});
             for(int i = 0; i < itemDB.size(); i++)
             {
-                CharacterItem sp = new CharacterItem( (Integer) ((JSONObject) itemDB.get(i)).get("id") );
+                CharacterItem sp = new CharacterItem( itemDB.get(i).getAsJsonObject().get("id").getAsInt() );
                 this.items.add(sp);
             }
         } catch (SQLException | DataException ex) {
@@ -348,13 +318,13 @@ public class CharacterMember extends GameObject
         {
             try
             {
-                JSONArray oldId = dbConnect.select(GMEMBER_ID_NAME_TABLE_NAME,
+                JsonArray oldId = dbConnect.select(GMEMBER_ID_NAME_TABLE_NAME,
                                                 new String[] { GMEMBER_ID_NAME_TABLE_KEY },
                                                 "member_name=? AND realm=?",
                                                 new String[] { this.name, this.realm });
                 if(oldId.size() > 0)
                 {
-                    this.internalID = Integer.parseInt( ((JSONObject)oldId.get(0)).get(GMEMBER_ID_NAME_TABLE_KEY).toString());
+                    this.internalID = Integer.parseInt( oldId.get(0).getAsJsonObject().get(GMEMBER_ID_NAME_TABLE_KEY).getAsString() );
                 }
                 else
                 {
@@ -428,13 +398,13 @@ public class CharacterMember extends GameObject
                         //valid if this member have a this spec in DB (set Update or Insert)
                         try
                         {
-                            JSONArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
+                            JsonArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
                                                                     new String[] { CharacterSpec.SPECS_TABLE_KEY},
                                                                     "member_id=? AND spec_id=?",
                                                                     new String[] { spc.getMemberId() +"", spc.getSpec().getId() +""});
                             if(specMember.size()>0)
                             {
-                                int charSpecID = (int) ((JSONObject) specMember.get(0)).get(CharacterSpec.SPECS_TABLE_KEY);
+                                int charSpecID = specMember.get(0).getAsJsonObject().get(CharacterSpec.SPECS_TABLE_KEY).getAsInt();
                                 spc.setId(charSpecID);
                                 spc.setIsInternalData(true);
                             }
@@ -452,7 +422,7 @@ public class CharacterMember extends GameObject
                                         CharacterItem.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
                                         "member_id=?",
                                         new String[] {this.internalID +""});
-                    } catch (DataException | ClassNotFoundException | SQLException ex) {
+                    } catch (DataException | SQLException ex) {
                         Logs.errorLog(CharacterMember.class, "Fail to update remove old items "+ this.internalID +" - "+ ex);
                     }
                     //Update or insert a new items
@@ -498,7 +468,7 @@ public class CharacterMember extends GameObject
                             new String[] { this.internalID +"" });
             return true;
         }
-        catch (DataException|ClassNotFoundException|SQLException ex)
+        catch (DataException | SQLException ex)
         {
             Logs.errorLog(CharacterMember.class, "Error when try remove a user not in guild: "+ ex);
             return false;
@@ -562,24 +532,24 @@ public class CharacterMember extends GameObject
     public boolean isMain() { return this.isMain; }
     public boolean isDelete() { return this.isDelete; }
     public Rank getRank() { return this.gRank; }
-    public int getMythicScoreAll()
+    public double getMythicScoreAll()
     {
-        if(this.mythicPlusScores.get("all") != null)
-            return (int) Double.parseDouble(this.mythicPlusScores.get("all").toString());
+        if(this.bestMythicPlusScore.has("season") && !this.mythicPlusScores.get("all").isJsonNull())
+            return this.mythicPlusScores.get("all").getAsDouble();
         else
             return 0;
     }
-    public int getBestMythicScore()
+    public double getBestMythicScore()
     {
-        if(this.bestMythicPlusScore.get("score") != null)
-            return (int) Double.parseDouble(this.bestMythicPlusScore.get("score").toString());
+        if(this.bestMythicPlusScore.has("season") && !this.bestMythicPlusScore.get("score").isJsonNull())
+            return this.bestMythicPlusScore.get("score").getAsDouble();
         else
             return 0;        
     }
     public String getBestMythicScoreSeason()
     {
-        if(this.bestMythicPlusScore.get("season") != null)
-            return ((JSONObject) this.bestMythicPlusScore.get("season")).get("name").toString();
+        if(this.bestMythicPlusScore.has("season") && !this.bestMythicPlusScore.get("season").isJsonNull())
+            return this.bestMythicPlusScore.get("season").getAsJsonObject().get("name").getAsString();
         else
             return "";
     }
@@ -592,8 +562,8 @@ public class CharacterMember extends GameObject
     public String getGuildName() { return this.guildName; }
     public long getLastModified() { return this.lastModified; }
     public int getUserID() { return this.userID; }
-    public JSONObject getBestMythicPlusScore() { return this.bestMythicPlusScore; }
-    public JSONObject getMythicPlusScores() { return this.mythicPlusScores; }
+    public JsonObject getBestMythicPlusScore() { return this.bestMythicPlusScore; }
+    public JsonObject getMythicPlusScores() { return this.mythicPlusScores; }
     public Date getLastModifiedDate() {
         Date time = new Date(Long.parseLong(this.lastModified+""));
         return time;
@@ -657,7 +627,7 @@ public class CharacterMember extends GameObject
         KeystoneDungeonRun kBestRun = null;
         try {
             //select * from keystone_dungeon_run_members where character_internal_id = <this.internalId>;
-            JSONArray keyRunsMembersDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+            JsonArray keyRunsMembersDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
                     new String[] {"keystone_dungeon_run_id"},
                     "character_internal_id=?",
                     new String[] {this.internalID+""});
@@ -671,18 +641,18 @@ public class CharacterMember extends GameObject
                 {
                     if(i!=0 && i!=keyRunsMembersDB.size()) where += " OR ";
                     where += "id=?";
-                    whereValues[i] = ((JSONObject) keyRunsMembersDB.get(i)).get("keystone_dungeon_run_id").toString();
+                    whereValues[i] = keyRunsMembersDB.get(i).getAsJsonObject().get("keystone_dungeon_run_id").getAsString();
                 }
                 where += ")";
 
-                JSONArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
+                JsonArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                         new String[] {"id"}, 
                         where +" AND completed_timestamp > "+ ServerTime.getLastResetTime() +" ORDER BY keystone_level DESC LIMIT 1",
                         whereValues);
                 
                 if(keyRunsDB.size() > 0)
                 {
-                    kBestRun = new KeystoneDungeonRun((int) ((JSONObject)keyRunsDB.get(0)).get("id"));
+                    kBestRun = new KeystoneDungeonRun( keyRunsDB.get(0).getAsJsonObject().get("id").getAsInt() );
                 }
             }
         } catch (SQLException | DataException ex) {
@@ -695,8 +665,8 @@ public class CharacterMember extends GameObject
     //Setters
     public void setIsMain(boolean v) { this.isMain = v; }
     public void setItemLevel(double ilvl) { this.itemLevel = ilvl; }
-    public void setBestMythicPlusScore(JSONObject bScore) { this.bestMythicPlusScore = bScore; }
-    public void setMythicPlusScorese(JSONObject mScore) { this.mythicPlusScores = mScore; }
+    public void setBestMythicPlusScore(JsonObject bScore) { this.bestMythicPlusScore = bScore; }
+    public void setMythicPlusScores(JsonObject mScore) { this.mythicPlusScores = mScore; }
     public void setActiveSpec(String sName, String sRole)
     {
         if(this.specs.isEmpty())

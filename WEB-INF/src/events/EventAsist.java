@@ -11,11 +11,12 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class EventAsist extends GameObject
 {
@@ -42,11 +43,11 @@ public class EventAsist extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.idAsis = (Integer) objInfo.get("id_asis");
-        this.idEvent = (Integer) objInfo.get("id_event");
-        this.user = new User((Integer) objInfo.get("user_id"));
+        this.idAsis = objInfo.get("id_asis").getAsInt();
+        this.idEvent = objInfo.get("id_event").getAsInt();
+        this.user = new User(objInfo.get("user_id").getAsInt());
         loadCharacters();
         this.isData = true;
     }
@@ -79,13 +80,13 @@ public class EventAsist extends GameObject
     {
         this.eventCharacter = new ArrayList<>();
         try {
-            JSONArray charListDB = dbConnect.select(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_NAME,
+            JsonArray charListDB = dbConnect.select(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_NAME,
                     new String[] { EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_KEY },
                     "id_asis=? AND user_id=?",
                     new String[] {this.idAsis+"", this.user.getId()+""});
             for(int i = 0; i < charListDB.size(); i++)
             {
-                EventAsistCharacter eChar = new EventAsistCharacter((Integer) ((JSONObject)charListDB.get(i)).get(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_KEY));
+                EventAsistCharacter eChar = new EventAsistCharacter( charListDB.get(i).getAsJsonObject().get(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_KEY).getAsInt() );
                 this.eventCharacter.add(eChar);
             }
         } catch (SQLException | DataException ex) {

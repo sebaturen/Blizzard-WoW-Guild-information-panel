@@ -12,8 +12,9 @@ import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class RaidDificult extends GameObject
 {
@@ -43,31 +44,31 @@ public class RaidDificult extends GameObject
         loadFromDBUniqued(new String[] {"name", "raid_id"}, new String[] { name, raiderId +"" });
     }
     
-    public RaidDificult(JSONArray info)
+    public RaidDificult(JsonArray info)
     {
         super(RAID_DIFICULTS_TABLE_NAME, RAID_DIFICULTS_TABLE_KEY, RAID_DIFICULTS_TABLE_STRUCTURE);
         loadBossFromRaiderIO(info); //Not have internal data only boss info~
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
         //from DB
-        this.id = (Integer) objInfo.get("difi_id");
-        this.raidId = (Integer) objInfo.get("raid_id");
-        this.name = objInfo.get("name").toString();
-        this.rankWorld = (Integer) objInfo.get("rank_world");
-        this.rankRegion = (Integer) objInfo.get("rank_region");
-        this.rankRealm = (Integer) objInfo.get("rank_realm");
+        this.id = objInfo.get("difi_id").getAsInt();
+        this.raidId = objInfo.get("raid_id").getAsInt();
+        this.name = objInfo.get("name").getAsString();
+        this.rankWorld = objInfo.get("rank_world").getAsInt();
+        this.rankRegion = objInfo.get("rank_region").getAsInt();
+        this.rankRealm = objInfo.get("rank_realm").getAsInt();
         loadBossFromDB();
         this.isData = true;
     }
     
-    private void loadBossFromRaiderIO(JSONArray info)
+    private void loadBossFromRaiderIO(JsonArray info)
     {
         for(int i = 0; i < info.size(); i++)
         {
-            JSONObject bossInfo = (JSONObject) info.get(i);
+            JsonObject bossInfo = info.get(i).getAsJsonObject();
             //Usar raid dificult boss...
             RaidDificultBoss rdBoss = new RaidDificultBoss(bossInfo);
             this.bosses.add(rdBoss);
@@ -78,14 +79,14 @@ public class RaidDificult extends GameObject
     private void loadBossFromDB()
     {
         try {
-            JSONArray dificultBosses = dbConnect.select(RaidDificultBoss.RAID_DIFICULT_BOSSES_TABLE_NAME,
+            JsonArray dificultBosses = dbConnect.select(RaidDificultBoss.RAID_DIFICULT_BOSSES_TABLE_NAME,
                                                     new String[] { RaidDificultBoss.RAID_DIFICULT_BOSSES_TABLE_KEY },
                                                     "difi_id=? ORDER BY firstDefeated DESC",
                                                     new String[] { this.id +""});
             for(int i = 0; i < dificultBosses.size(); i++)
             {
                 //Usar raider dificult boss...
-                RaidDificultBoss rdBoss = new RaidDificultBoss((Integer) ((JSONObject)dificultBosses.get(i)).get(RaidDificultBoss.RAID_DIFICULT_BOSSES_TABLE_KEY));
+                RaidDificultBoss rdBoss = new RaidDificultBoss(dificultBosses.get(i).getAsJsonObject().get(RaidDificultBoss.RAID_DIFICULT_BOSSES_TABLE_KEY).getAsInt());
                 this.bosses.add(rdBoss);
             }
         } catch (SQLException | DataException ex) {

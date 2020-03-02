@@ -6,13 +6,9 @@
 
 package com.blizzardPanel.gameObject.mythicKeystone;
 
-import com.blizzardPanel.DataException;
-import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.gameObject.GameObject;
-import java.io.IOException;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import com.google.gson.JsonObject;
 
 public class KeystoneAffix extends GameObject
 {
@@ -32,32 +28,22 @@ public class KeystoneAffix extends GameObject
         loadFromDB(id);
     }
     
-    public KeystoneAffix(JSONObject info)
+    public KeystoneAffix(JsonObject info)
     {
         super(KEYSTONE_AFFIXES_TABLE_NAME, KEYSTONE_AFFIXES_TABLE_KEY, KEYSTONE_AFFIXES_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == Long.class)
-        {//Info come from Blizzard   
-            this.id = ((Long) objInfo.get("id")).intValue();
-            try {
-                Update up = new Update();
-                objInfo = up.loadKeyDetailFromBlizz( ((JSONObject) objInfo.get("key")).get("href").toString() );
-            } catch (IOException | ParseException | DataException ex) {
-                Logs.errorLog(KeystoneAffix.class, "Fail in generate Update class "+ ex);
-            }            
+        if (objInfo.has("key")) {
+            objInfo = Update.shared.loadKeyDetailFromBlizz( objInfo.get("key").getAsJsonObject().get("href").getAsString() );
         }
-        else
-        {//Info come from DB
-            this.id = (Integer) objInfo.get("id");
-        }
-        this.name = objInfo.get("name").toString();
-        this.description = objInfo.get("description").toString();
-        this.icon = objInfo.get("icon").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.name = objInfo.get("name").getAsString();
+        this.description = objInfo.get("description").getAsString();
+        this.icon = objInfo.get("icon").getAsString();
         this.isData = true;
     }
 

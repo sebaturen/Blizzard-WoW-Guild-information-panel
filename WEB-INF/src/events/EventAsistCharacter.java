@@ -8,7 +8,7 @@ package com.blizzardPanel.events;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class EventAsistCharacter extends GameObject
 {
@@ -35,13 +35,13 @@ public class EventAsistCharacter extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.idAsisChar = (Integer) objInfo.get("id_asis_char");
-        this.idAsis = (Integer) objInfo.get("id_asis");
-        this.charM = new CharacterMember((Integer) objInfo.get("char_id"));
-        this.charM.setActiveSpec((Integer) objInfo.get("spec_id"));
-        this.isMain = (Boolean) objInfo.get("is_main");
+        this.idAsisChar = objInfo.get("id_asis_char").getAsInt();;
+        this.idAsis = objInfo.get("id_asis").getAsInt();;
+        this.charM = new CharacterMember(objInfo.get("char_id").getAsInt());
+        this.charM.setActiveSpec(objInfo.get("spec_id").getAsInt());
+        this.isMain = objInfo.get("is_main").getAsBoolean();
         this.isData = true;
     }
 

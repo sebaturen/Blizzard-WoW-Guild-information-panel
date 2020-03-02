@@ -13,11 +13,11 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.poll.Poll;
 import com.blizzardPanel.poll.PollOption;
+import com.google.gson.JsonArray;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class PollController 
 {    
@@ -35,13 +35,13 @@ public class PollController
     {
         List<Poll> polls = new ArrayList<>();
         try {
-            JSONArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
+            JsonArray pollsDB = dbConnect.select(Poll.POLLS_TABLE_NAME,
                     new String[] { Poll.POLLS_TABLE_KEY },
                     "isEnable=? AND isHide=? ORDER BY id DESC",
                     new String[] {status? "1":"0", "0"});
             for(int i = 0; i < pollsDB.size(); i++)
             {
-                Poll p = new Poll( (Integer) ((JSONObject)pollsDB.get(i)).get(Poll.POLLS_TABLE_KEY));
+                Poll p = new Poll( pollsDB.get(i).getAsJsonObject().get(Poll.POLLS_TABLE_KEY).getAsInt());
                 if(p.isEnable() == status)
                 {
                     polls.add(p);

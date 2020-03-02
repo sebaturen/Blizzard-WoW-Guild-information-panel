@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class CharacterStats extends GameObject
 {
@@ -81,100 +81,68 @@ public class CharacterStats extends GameObject
         loadFromDB(memberId);
     }
     
-    public CharacterStats(JSONObject info)
+    public CharacterStats(JsonObject info)
     {
         super(STATUS_MEMBER_TABLE_NAME, STATUS_MEMBER_TABLE_KEY, STATUS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo) 
     {
-        if(objInfo.containsKey("member_id"))
-        {//From DB
-            this.memberId = (Integer) objInfo.get("member_id");
-            this.health = (Integer) objInfo.get("health");
-            this.power = (Integer) objInfo.get("power");
-            this.str = (Integer) objInfo.get("str");
-            this.agi = (Integer) objInfo.get("agi");
-            this.intStat = (Integer) objInfo.get("int");
-            this.sta = (Integer) objInfo.get("sta");
-            this.speedRating = (Integer) objInfo.get("speedRating");
-            this.critRating = (Integer) objInfo.get("critRating");
-            this.hasteRating = (Integer) objInfo.get("hasteRating");
-            this.masteryRating = (Integer) objInfo.get("masteryRating");
-            this.leech = (Integer) objInfo.get("leech");
-            this.leechRating = (Integer) objInfo.get("leechRating");
-            this.leechRatingBonus = (Integer) objInfo.get("leechRatingBonus");
-            this.versatility = (Integer) objInfo.get("versatility");
-            this.avoidanceRating = (Integer) objInfo.get("avoidanceRating");
-            this.spellPen = (Integer) objInfo.get("spellPen");
-            this.spellCritRating = (Integer) objInfo.get("spellCritRating");
-            this.mana5 = (Integer) objInfo.get("mana5");
-            this.mana5Combat = (Integer) objInfo.get("mana5Combat");
-            this.armor = (Integer) objInfo.get("armor");
-            this.dodgeRating = (Integer) objInfo.get("dodgeRating");
-            this.parryRating = (Integer) objInfo.get("parryRating");
-            this.blockRating = (Integer) objInfo.get("blockRating");
-            this.mainHandDmgMin = (Integer) objInfo.get("mainHandDmgMin");
-            this.mainHandDmgMax = (Integer) objInfo.get("mainHandDmgMax");
-            this.offHandDmgMin = (Integer) objInfo.get("offHandDmgMin");
-            this.offHandDmgMax = (Integer) objInfo.get("offHandDmgMax");
-            this.rangedDmgMin = (Integer) objInfo.get("rangedDmgMin");
-            this.rangedDmgMax = (Integer) objInfo.get("rangedDmgMax");
+        if(objInfo.has("member_id")) {//From DB
+            this.memberId = objInfo.get("member_id").getAsInt();
         }
-        else
-        {//From blizz            
-            this.health = ((Long) objInfo.get("health")).intValue();
-            this.power = ((Long) objInfo.get("power")).intValue();
-            this.str = ((Long) objInfo.get("str")).intValue();
-            this.agi = ((Long) objInfo.get("agi")).intValue();
-            this.intStat = ((Long) objInfo.get("int")).intValue();
-            this.sta = ((Long) objInfo.get("sta")).intValue();
-            this.speedRating = ((Double) objInfo.get("speedRating")).intValue();
-            this.critRating = ((Long) objInfo.get("critRating")).intValue();
-            this.hasteRating = ((Long) objInfo.get("hasteRating")).intValue();
-            this.masteryRating = ((Long) objInfo.get("masteryRating")).intValue();
-            this.leech = ((Double) objInfo.get("leech")).intValue();
-            this.leechRating = ((Double) objInfo.get("leechRating")).intValue();
-            this.leechRatingBonus = ((Double) objInfo.get("leechRatingBonus")).intValue();
-            this.versatility = ((Long) objInfo.get("versatility")).intValue();
-            this.avoidanceRating = ((Double) objInfo.get("avoidanceRating")).intValue();
-            this.spellPen = ((Long) objInfo.get("spellPen")).intValue();
-            this.spellCritRating = ((Long) objInfo.get("spellCritRating")).intValue();
-            this.mana5 = ((Double) objInfo.get("mana5")).intValue();
-            this.mana5Combat = ((Double) objInfo.get("mana5Combat")).intValue();
-            this.armor = ((Long) objInfo.get("armor")).intValue();
-            this.dodgeRating = ((Long) objInfo.get("dodgeRating")).intValue();
-            this.parryRating = ((Long) objInfo.get("parryRating")).intValue();
-            this.blockRating = ((Long) objInfo.get("blockRating")).intValue();
-            this.mainHandDmgMin = ((Double) objInfo.get("mainHandDmgMin")).intValue();
-            this.mainHandDmgMax = ((Double) objInfo.get("mainHandDmgMax")).intValue();
-            this.offHandDmgMin = ((Double) objInfo.get("offHandDmgMin")).intValue();
-            this.offHandDmgMax = ((Double) objInfo.get("offHandDmgMax")).intValue();
-            this.rangedDmgMin = ((Double) objInfo.get("rangedDmgMin")).intValue();
-            this.rangedDmgMax = ((Double) objInfo.get("rangedDmgMax")).intValue();
-        }
-        this.powerType = objInfo.get("powerType").toString();        
-        this.rangedSpeed = (Double) objInfo.get("rangedSpeed");
-        this.rangedDps = (Double) objInfo.get("rangedDps");
-        this.offHandSpeed = (Double) objInfo.get("offHandSpeed");
-        this.offHandDps = (Double) objInfo.get("offHandDps");
-        this.mainHandSpeed = (Double) objInfo.get("mainHandSpeed");
-        this.mainHandDps = (Double) objInfo.get("mainHandDps");
-        this.block = (Double) objInfo.get("block");
-        this.parry = (Double) objInfo.get("parry");
-        this.dodge = (Double) objInfo.get("dodge");
-        this.spellCrit = (Double) objInfo.get("spellCrit");
-        this.avoidanceRatingBonus = (Double) objInfo.get("avoidanceRatingBonus");
-        this.versatilityDamageDoneBonus = (Double) objInfo.get("versatilityDamageDoneBonus");
-        this.versatilityHealingDoneBonus = (Double) objInfo.get("versatilityHealingDoneBonus");
-        this.versatilityDamageTakenBonus = (Double) objInfo.get("versatilityDamageTakenBonus");
-        this.hasteRatingPercent = (Double) objInfo.get("hasteRatingPercent");
-        this.mastery = (Double) objInfo.get("mastery");
-        this.haste = (Double) objInfo.get("haste");
-        this.speedRatingBonus = (Double) objInfo.get("speedRatingBonus");
-        this.crit = (Double) objInfo.get("crit");
+
+        this.health = objInfo.get("health").getAsInt();
+        this.power = objInfo.get("power").getAsInt();
+        this.str = objInfo.get("str").getAsInt();
+        this.agi = objInfo.get("agi").getAsInt();
+        this.intStat = objInfo.get("int").getAsInt();
+        this.sta = objInfo.get("sta").getAsInt();
+        this.speedRating = objInfo.get("speedRating").getAsInt();
+        this.critRating = objInfo.get("critRating").getAsInt();
+        this.hasteRating = objInfo.get("hasteRating").getAsInt();
+        this.masteryRating = objInfo.get("masteryRating").getAsInt();
+        this.leech = objInfo.get("leech").getAsInt();
+        this.leechRating = objInfo.get("leechRating").getAsInt();
+        this.leechRatingBonus = objInfo.get("leechRatingBonus").getAsInt();
+        this.versatility = objInfo.get("versatility").getAsInt();
+        this.avoidanceRating = objInfo.get("avoidanceRating").getAsInt();
+        this.spellPen = objInfo.get("spellPen").getAsInt();
+        this.spellCritRating = objInfo.get("spellCritRating").getAsInt();
+        this.mana5 = objInfo.get("mana5").getAsInt();
+        this.mana5Combat = objInfo.get("mana5Combat").getAsInt();
+        this.armor = objInfo.get("armor").getAsInt();
+        this.dodgeRating = objInfo.get("dodgeRating").getAsInt();
+        this.parryRating = objInfo.get("parryRating").getAsInt();
+        this.blockRating = objInfo.get("blockRating").getAsInt();
+        this.mainHandDmgMin = objInfo.get("mainHandDmgMin").getAsInt();
+        this.mainHandDmgMax = objInfo.get("mainHandDmgMax").getAsInt();
+        this.offHandDmgMin = objInfo.get("offHandDmgMin").getAsInt();
+        this.offHandDmgMax = objInfo.get("offHandDmgMax").getAsInt();
+        this.rangedDmgMin = objInfo.get("rangedDmgMin").getAsInt();
+        this.rangedDmgMax = objInfo.get("rangedDmgMax").getAsInt();
+        this.powerType = objInfo.get("powerType").getAsString();        
+        this.rangedSpeed = objInfo.get("rangedSpeed").getAsDouble();
+        this.rangedDps = objInfo.get("rangedDps").getAsDouble();
+        this.offHandSpeed = objInfo.get("offHandSpeed").getAsDouble();
+        this.offHandDps = objInfo.get("offHandDps").getAsDouble();
+        this.mainHandSpeed = objInfo.get("mainHandSpeed").getAsDouble();
+        this.mainHandDps = objInfo.get("mainHandDps").getAsDouble();
+        this.block = objInfo.get("block").getAsDouble();
+        this.parry = objInfo.get("parry").getAsDouble();
+        this.dodge = objInfo.get("dodge").getAsDouble();
+        this.spellCrit = objInfo.get("spellCrit").getAsDouble();
+        this.avoidanceRatingBonus = objInfo.get("avoidanceRatingBonus").getAsDouble();
+        this.versatilityDamageDoneBonus = objInfo.get("versatilityDamageDoneBonus").getAsDouble();
+        this.versatilityHealingDoneBonus = objInfo.get("versatilityHealingDoneBonus").getAsDouble();
+        this.versatilityDamageTakenBonus = objInfo.get("versatilityDamageTakenBonus").getAsDouble();
+        this.hasteRatingPercent = objInfo.get("hasteRatingPercent").getAsDouble();
+        this.mastery = objInfo.get("mastery").getAsDouble();
+        this.haste = objInfo.get("haste").getAsDouble();
+        this.speedRatingBonus = objInfo.get("speedRatingBonus").getAsDouble();
+        this.crit = objInfo.get("crit").getAsDouble();
         this.isData = true;
     }
 

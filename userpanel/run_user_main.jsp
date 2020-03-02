@@ -1,7 +1,7 @@
 <%@include file="../includes/globalObject.jsp" %>
-<%@page import="org.json.simple.JSONObject"%>
+<%@page import="com.google.gson.JsonObject"%>
 <% 
-    JSONObject json = new JSONObject();
+    JsonObject json = new JsonObject();
     if(guildMember) 
     {
         int memberID = Integer.parseInt(request.getParameter("id"));

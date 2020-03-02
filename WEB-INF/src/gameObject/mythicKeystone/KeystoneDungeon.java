@@ -8,8 +8,8 @@ package com.blizzardPanel.gameObject.mythicKeystone;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class KeystoneDungeon extends GameObject
 {
@@ -34,34 +34,31 @@ public class KeystoneDungeon extends GameObject
         loadFromDB(id);
     }
 
-    public KeystoneDungeon(JSONObject info)
+    public KeystoneDungeon(JsonObject info)
     {
         super(KEYSTONE_DUNGEON_TABLE_NAME, KEYSTONE_DUNGEON_TABLE_KEY, KEYSTONE_DUNGEON_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
-    protected void saveInternalInfoObject(JSONObject objInfo)
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == java.lang.Long.class)
-        {//info come from blizz
-            this.id = ((Long) objInfo.get("id")).intValue();
-            this.mapId = ((Long) ((JSONObject) objInfo.get("map")).get("id")).intValue();
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
-            this.slug = ((JSONObject) objInfo.get("zone")).get("slug").toString();
-            JSONArray kestonUpgrade = (JSONArray) objInfo.get("keystone_upgrades");
-            this.keystoneUpgrades1 = (long) ( (JSONObject) kestonUpgrade.get(0) ).get("qualifying_duration");
-            this.keystoneUpgrades2 = (long) ( (JSONObject) kestonUpgrade.get(1) ).get("qualifying_duration");
-            this.keystoneUpgrades3 = (long) ( (JSONObject) kestonUpgrade.get(2) ).get("qualifying_duration");
-        }
-        else
-        {
-            this.id = (Integer) objInfo.get("id");
-            this.mapId = (Integer) objInfo.get("map_id");
-            this.name = objInfo.get("name").toString();
-            this.slug = objInfo.get("slug").toString();
-            this.keystoneUpgrades1 = (long) objInfo.get("keystone_upgrades_1");
-            this.keystoneUpgrades2 = (long) objInfo.get("keystone_upgrades_2");
-            this.keystoneUpgrades3 = (long) objInfo.get("keystone_upgrades_3");
+        this.id = objInfo.get("id").getAsInt();
+
+        if (objInfo.has("map") && !objInfo.get("map").isJsonNull()) { //from blizzard
+            this.mapId = objInfo.get("map").getAsJsonObject().get("id").getAsInt();
+            this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
+            this.slug = objInfo.get("zone").getAsJsonObject().get("slug").getAsString();
+            JsonArray keystoneUpdate = objInfo.get("keystone_upgrades").getAsJsonArray();
+            this.keystoneUpgrades1 = keystoneUpdate.get(0).getAsJsonObject().get("qualifying_duration").getAsLong();
+            this.keystoneUpgrades2 = keystoneUpdate.get(1).getAsJsonObject().get("qualifying_duration").getAsLong();
+            this.keystoneUpgrades3 = keystoneUpdate.get(2).getAsJsonObject().get("qualifying_duration").getAsLong();
+        } else { //from DB
+            this.mapId = objInfo.get("map_id").getAsInt();
+            this.name = objInfo.get("name").getAsString();
+            this.slug = objInfo.get("slug").getAsString();
+            this.keystoneUpgrades1 = objInfo.get("keystone_upgrades_1").getAsLong();
+            this.keystoneUpgrades2 = objInfo.get("keystone_upgrades_2").getAsLong();
+            this.keystoneUpgrades3 = objInfo.get("keystone_upgrades_3").getAsLong();
         }
         this.isData = true;
     }

@@ -17,8 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class ChallengeGroup extends GameObject
 {
@@ -54,7 +55,7 @@ public class ChallengeGroup extends GameObject
     }
     
     //Load to JSON
-    public ChallengeGroup(int challengeId, JSONObject challengeGroup)
+    public ChallengeGroup(int challengeId, JsonObject challengeGroup)
     {
         super(CHALLENGE_GROUPS_TABLE_NAME, CHALLENGE_GROUPS_TABLE_KEY, CHALLENGE_GROUPS_TABLE_STRUCTURE);
         this.challengeId = challengeId;
@@ -65,16 +66,16 @@ public class ChallengeGroup extends GameObject
     {
         try {
             //dbConnect, select * from challenge_group_members where group_id = this.id;
-            JSONArray dbMem = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
+            JsonArray dbMem = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                                 DBStructure.outKey(CHALLENGE_GROUP_MEMBERS_TABLE_STRUCTURE),
                                                 "group_id=?",
                                                 new String[] {this.id +""});
             for(int i = 0; i < dbMem.size(); i++)
             {
-                CharacterMember cMem = new CharacterMember( (Integer) ((JSONObject) dbMem.get(i)).get("internal_member_id"));
+                CharacterMember cMem = new CharacterMember( dbMem.get(i).getAsJsonObject().get("internal_member_id").getAsInt() );
                 if(cMem.isData())
                 {
-                    cMem.setActiveSpec( (Integer) ((JSONObject) dbMem.get(i)).get("character_spec_id") );
+                    cMem.setActiveSpec( dbMem.get(i).getAsJsonObject().get("character_spec_id").getAsInt() );
                     members.add(cMem);                    
                 }
             }
@@ -84,34 +85,34 @@ public class ChallengeGroup extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
+    protected void saveInternalInfoObject(JsonObject exInfo)
     {
-        if(exInfo.containsKey("group_id")) this.id = ((Integer) exInfo.get("group_id"));
-        if(exInfo.containsKey("time"))
+        if(exInfo.has("group_id")) this.id = (exInfo.get("group_id").getAsInt());
+        if(exInfo.has("time"))
         {
             //info come to blizzard
-            JSONObject dataRun = (JSONObject) exInfo.get("time");
-            this.timeHours = ((Long) dataRun.get("hours")).intValue();
-            this.timeMinutes = ((Long) dataRun.get("minutes")).intValue();
-            this.timeSeconds = ((Long) dataRun.get("seconds")).intValue();
-            this.timeMilliseconds = ((Long) dataRun.get("milliseconds")).intValue();
-            this.isPositive = (Boolean) dataRun.get("isPositive");
+            JsonObject dataRun = exInfo.get("time").getAsJsonObject();
+            this.timeHours = dataRun.get("hours").getAsInt();
+            this.timeMinutes = dataRun.get("minutes").getAsInt();
+            this.timeSeconds = dataRun.get("seconds").getAsInt();
+            this.timeMilliseconds = dataRun.get("milliseconds").getAsInt();
+            this.isPositive = dataRun.get("isPositive").getAsBoolean();
             try {
-                this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").toString());
+                this.timeDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(exInfo.get("date").getAsString());
             } catch (ParseException ex) {
                 Logs.errorLog(ChallengeGroup.class, "(Blizz) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
         }
         else
         {
-            this.challengeId = (Integer) exInfo.get("challenge_id");
-            this.timeHours = (Integer) exInfo.get("time_hours");
-            this.timeMinutes = (Integer) exInfo.get("time_minutes");
-            this.timeSeconds = (Integer) exInfo.get("time_seconds");
-            this.timeMilliseconds = (Integer) exInfo.get("time_milliseconds");
-            this.isPositive = (Boolean) exInfo.get("is_positive");
+            this.challengeId = exInfo.get("challenge_id").getAsInt();
+            this.timeHours = exInfo.get("time_hours").getAsInt();
+            this.timeMinutes = exInfo.get("time_minutes").getAsInt();
+            this.timeSeconds = exInfo.get("time_seconds").getAsInt();
+            this.timeMilliseconds = exInfo.get("time_milliseconds").getAsInt();
+            this.isPositive = exInfo.get("is_positive").getAsBoolean();
             try { //2018-10-17 02:39:00
-                this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").toString());
+                this.timeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(exInfo.get("time_date").getAsString());
             } catch (ParseException ex) {
                 Logs.errorLog(ChallengeGroup.class, "(DB) Fail to convert date from challenge group! "+ this.id +" - "+ ex);
             }
@@ -137,7 +138,7 @@ public class ChallengeGroup extends GameObject
                 //Save members
                 this.members.forEach((m) -> {                    
                     try {
-                        JSONArray memInGroupId = null;
+                        JsonArray memInGroupId = null;
                         try {
                             //Verificate if this memers is previewsly register from this group
                             memInGroupId = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
@@ -148,7 +149,7 @@ public class ChallengeGroup extends GameObject
                             Logs.errorLog(ChallengeGroup.class, "Fail to get memberInGroupID "+ ex);
                         }
                         //Insert or update... if need insert is because not is register :D
-                        if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
+                        if ( (memInGroupId == null) || (memInGroupId.size() == 0) )
                         {//insert
                             dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
                                             CHALLENGE_GROUP_MEMBERS_TABLE_KEY,

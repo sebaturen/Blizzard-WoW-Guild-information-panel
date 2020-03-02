@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class CharacterAchivementsCategory extends GameObject
 {
@@ -27,20 +27,20 @@ public class CharacterAchivementsCategory extends GameObject
         loadFromDB(id);
     }
     
-    public CharacterAchivementsCategory(JSONObject info)
+    public CharacterAchivementsCategory(JsonObject info)
     {
         super(PLAYER_ACHIEVEMENT_CATEGORY_TABLE_NAME, PLAYER_ACHIEVEMENT_CATEGORY_TABLE_KEY, PLAYER_ACHIEVEMENT_CATEGORY_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }    
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.name = objInfo.get("name").toString();
-        if(objInfo.containsKey("father_id"))
+        this.id = objInfo.get("id").getAsInt();
+        this.name = objInfo.get("name").getAsString();
+        if(objInfo.has("father_id"))
         {
-            this.fatherCategory = new CharacterAchivementsCategory((Integer) objInfo.get("father_id"));
+            this.fatherCategory = new CharacterAchivementsCategory(objInfo.get("father_id").getAsInt());
         }
         this.isData = true;
     }

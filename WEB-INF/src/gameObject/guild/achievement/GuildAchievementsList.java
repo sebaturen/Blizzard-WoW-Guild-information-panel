@@ -6,8 +6,9 @@
 package com.blizzardPanel.gameObject.guild.achievement;
 
 import com.blizzardPanel.GeneralConfig;
+import com.blizzardPanel.blizzardAPI.WoWAPIService;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class GuildAchievementsList extends GameObject
 {
@@ -30,31 +31,21 @@ public class GuildAchievementsList extends GameObject
         loadFromDB(id);
     }
 
-    public GuildAchievementsList(JSONObject exInfo)
+    public GuildAchievementsList(JsonObject exInfo)
     {
         super(GUILD_ACHIEVEMENTS_LISTS_TABLE_NAME, GUILD_ACHIEVEMENTS_LISTS_TABLE_KEY, GUILD_ACHIEVEMENTS_LISTS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
-    {        
-        if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
-        {
-            this.id = ((Long) exInfo.get("id")).intValue();
-            this.points = ((Long) exInfo.get("points")).intValue();
-        }
-        else
-        {
-            this.id = ((Integer) exInfo.get("id"));
-            this.points = ((Integer) exInfo.get("points"));
-        }
-        
-        this.title = exInfo.get("title").toString();
-        this.description = exInfo.get("description").toString();
-        this.icon = exInfo.get("icon").toString();
-        
-        this.classification = exInfo.get("classification").toString();
+    protected void saveInternalInfoObject(JsonObject exInfo)
+    {
+        this.id = exInfo.get("id").getAsInt();
+        this.points = exInfo.get("points").getAsInt();
+        this.title = exInfo.get("title").getAsString();
+        this.description = exInfo.get("description").getAsString();
+        this.icon = exInfo.get("icon").getAsString();
+        this.classification = exInfo.get("classification").getAsString();
         this.isData = true;
     }
 	
@@ -84,6 +75,6 @@ public class GuildAchievementsList extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
+        return String.format(WoWAPIService.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
     }
 }

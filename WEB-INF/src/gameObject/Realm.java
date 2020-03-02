@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.GeneralConfig;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class Realm extends GameObject
 {
@@ -34,28 +34,24 @@ public class Realm extends GameObject
         loadFromDBUniqued("name", name);        
     }
     
-    public Realm(JSONObject info)
+    public Realm(JsonObject info)
     {
         super(REALM_TABLE_NAME, REALM_TABLE_KEY, REALM_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.slug = objInfo.get("slug").toString();
-        this.locale = objInfo.get("locale").toString();
-        this.connectedRealm = (Integer) objInfo.get("connected_realm");
-         
-        if(objInfo.get("id").getClass() == Long.class)
-        {//Info come from blizzard
-            this.id = ((Long) objInfo.get("id")).intValue();
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
-        }
-        else
-        {//load from DB
-            this.id = (Integer) objInfo.get("id");
-            this.name = objInfo.get("name").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.slug = objInfo.get("slug").getAsString();
+        this.locale = objInfo.get("locale").getAsString();
+        this.connectedRealm = objInfo.get("connected_realm").getAsInt();
+
+        if (objInfo.get("name").isJsonObject()) { // load from blizzard
+            this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
+        } else { // load from DB
+            this.name = objInfo.get("name").getAsString();
         }
         
         this.isData = true;

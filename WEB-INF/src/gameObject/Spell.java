@@ -7,7 +7,7 @@ package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.blizzardAPI.WoWAPIService;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class Spell extends GameObject
 {
@@ -31,26 +31,28 @@ public class Spell extends GameObject
         loadFromDB(id);   
     }
     
-    public Spell(JSONObject inf)
+    public Spell(JsonObject inf)
     {
         super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo)
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB		
-            this.id = ((Long) objInfo.get("id")).intValue();
-        else
-            this.id = (Integer) objInfo.get("id");
-        this.name = objInfo.get("name").toString();
-        this.icon = objInfo.get("icon").toString();
-        this.description = objInfo.get("description").toString();
-        this.castTime = objInfo.get("castTime").toString();
-        if(objInfo.containsKey("cooldown") && objInfo.get("cooldown") != null) this.cooldown = objInfo.get("cooldown").toString();
-        if(objInfo.containsKey("range") && objInfo.get("range") != null) this.range = objInfo.get("range").toString();
-        this.isData = true;		
+        if (objInfo.isJsonNull()) {
+            this.id = 0;
+            this.name = "NULL SPELL";
+        } else {
+            this.id = objInfo.get("id").getAsInt();
+            this.name = objInfo.get("name").getAsString();
+            this.icon = objInfo.get("icon").getAsString();
+            this.description = objInfo.get("description").getAsString();
+            this.castTime = objInfo.get("castTime").getAsString();
+            if(objInfo.has("cooldown") && !objInfo.get("cooldown").isJsonNull()) this.cooldown = objInfo.get("cooldown").getAsString();
+            if(objInfo.has("range") && !objInfo.get("range").isJsonNull()) this.range = objInfo.get("range").getAsString();
+        }
+        this.isData = true;
     }    
     
     @Override

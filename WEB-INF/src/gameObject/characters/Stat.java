@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class Stat extends GameObject
 {    
@@ -27,10 +27,10 @@ public class Stat extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.enUs = objInfo.get("en_US").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.enUs = objInfo.get("en_US").getAsString();
         this.isData = true;
     }
 

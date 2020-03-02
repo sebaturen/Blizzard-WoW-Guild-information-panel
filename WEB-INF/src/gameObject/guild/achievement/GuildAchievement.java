@@ -10,7 +10,8 @@ import com.blizzardPanel.gameObject.GameObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonObject;
 
 public class GuildAchievement extends GameObject
 {
@@ -30,19 +31,19 @@ public class GuildAchievement extends GameObject
         loadFromDB(ahId);
     }
     
-    public GuildAchievement(JSONObject info)
+    public GuildAchievement(JsonObject info)
     {
         super(GUILD_ACHIEVEMENTS_TABLE_NAME, GUILD_ACHIEVEMENTS_TABLE_KEY, GUILD_ACHIEVEMENTS_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.achivementId = (Integer) objInfo.get("achievement_id");
+        this.achivementId = objInfo.get("achievement_id").getAsInt();
         this.achievement = new GuildAchievementsList(this.achivementId);
         try { //2018-10-17 02:39:00
-            this.timeCompleted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("time_completed").toString());
+            this.timeCompleted = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(objInfo.get("time_completed").getAsString());
         } catch (ParseException ex) {
             Logs.errorLog(GuildAchievement.class, "(DB) Fail to convert date from challenge group! "+ this.achivementId +" - "+ ex);
         }

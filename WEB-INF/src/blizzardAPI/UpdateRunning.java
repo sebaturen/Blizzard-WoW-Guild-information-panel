@@ -11,7 +11,8 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.FactionAssaultControl;
-import java.io.IOException;
+import com.google.gson.JsonArray;
+
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,14 +20,10 @@ import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 public class UpdateRunning implements ServletContextListener
 {
     private Thread updateInterval = null;
-    private Update update;
     private DBConnect dbConnect;
     private ServletContext context;
     public static DiscordBot discordBot;
@@ -36,14 +33,7 @@ public class UpdateRunning implements ServletContextListener
     public UpdateRunning()
     {
         dbConnect = new DBConnect();
-        try
-        {
-            update = new Update();
-            discordBot = new DiscordBot().build();
-        } catch (IOException ex) {
-            Logs.errorLog(UpdateRunning.class, "Fail to create Update object! "+ ex);
-            System.exit(-1);
-        }
+        discordBot = new DiscordBot().build();
     }
 
     @Override
@@ -55,30 +45,30 @@ public class UpdateRunning implements ServletContextListener
                 while(true) {
                     assaultNotification();
                     try {
-                        if(needStatycUpdate()) {
-                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                        if(needStaticUpdate()) {
+                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
                         }
                     } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
                     try {
                         if(needDynamicUpdate()) {
-                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
+                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
                         }
                     } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
                     try {
                         if(needGuildNewUpdate()) {
-                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
                         }
                     } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
                     try {
                         if(needAHUpdate()) {
-                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - HACTION HOUSE "+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - ACTION HOUSE "+ e); }
                     try {
                         if(needAHMove()) {
-                            //update.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR HACTION HOUSE"+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR ACTION HOUSE"+ e); }
                     Thread.sleep(60000); //every minute
                 }
             } catch (Exception ex) {
@@ -143,14 +133,14 @@ public class UpdateRunning implements ServletContextListener
     {
         try
         {
-            JSONArray dateUpdate = dbConnect.select(
+            JsonArray dateUpdate = dbConnect.select(
                     Update.UPDATE_INTERVAL_TABLE_NAME,
                     new String[] {"update_time"},
                     "type=? order by id desc limit 1",
                     new String[] {val +""});
             if (dateUpdate.size() > 0)
             {
-                String dbDate = (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
+                String dbDate = ( dateUpdate.get(0).getAsJsonObject().get("update_time")).getAsString();
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dbDate);
             }
             else
@@ -202,7 +192,7 @@ public class UpdateRunning implements ServletContextListener
         }
     }
 
-    private boolean needStatycUpdate()
+    private boolean needStaticUpdate()
     {
         int timeStatycUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE");
         if(timeStatycUpdate <= 0)

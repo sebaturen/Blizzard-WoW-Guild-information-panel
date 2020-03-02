@@ -9,15 +9,13 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 
 public class Members
 {
@@ -44,14 +42,14 @@ public class Members
             //Get members to DB		
             
             //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
-            JSONArray dbList = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c", 
+            JsonArray dbList = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
                                                 new String[] {"gm.internal_id"},
                                                 "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ? AND gm.isDelete=?"+
                                                 " ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
                                                 new String[] {"1", oneMotheAgo.getTime() +"", "0"}, true);	
             for(int i = 0; i < dbList.size(); i++)
             {
-                int idMember = (int) ((JSONObject) dbList.get(i)).get("internal_id");
+                int idMember = dbList.get(i).getAsJsonObject().get("internal_id").getAsInt() ;
                 CharacterMember member = new CharacterMember(idMember);
                 //If data is successful load, save a member
                 if(member.isData())

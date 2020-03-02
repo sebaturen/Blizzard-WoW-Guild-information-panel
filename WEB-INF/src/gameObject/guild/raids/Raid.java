@@ -12,8 +12,9 @@ import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class Raid extends GameObject
 {
@@ -41,46 +42,46 @@ public class Raid extends GameObject
         loadFromDBUniqued("slug", slug);
     }
     
-    public Raid(JSONObject info)
+    public Raid(JsonObject info)
     {
         super(RAIDS_TABLE_NAME, RAIDS_TABLE_KEY, RAIDS_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.containsKey(RAIDS_TABLE_KEY))
+        if(objInfo.has(RAIDS_TABLE_KEY))
         {//info from DB
-            this.id = (Integer) objInfo.get("id");
-            this.name = objInfo.get("name").toString();
-            this.slug = objInfo.get("slug").toString();
-            this.totalBoss = (Integer) objInfo.get("total_boss");
-            loadRaidDificultFromDB();
+            this.id = objInfo.get("id").getAsInt();
+            this.name = objInfo.get("name").getAsString();
+            this.slug = objInfo.get("slug").getAsString();
+            this.totalBoss = objInfo.get("total_boss").getAsInt();
+            loadRaidDifficultFromDB();
         }
         else
         {//info from raiderIO
             this.name = "NOT DEFINED";
-            this.slug = objInfo.get("raid").toString();
-            JSONObject dificult = (JSONObject) objInfo.get("encountersDefeated");
-            JSONObject rank = (JSONObject) objInfo.get("rank");
-            loadRaidDificultFromRaiderIO(dificult, rank);            
+            this.slug = objInfo.get("raid").getAsString();
+            JsonObject difficult = objInfo.get("encountersDefeated").getAsJsonObject();
+            JsonObject rank = objInfo.get("rank").getAsJsonObject();
+            loadRaidDificultFromRaiderIO(difficult, rank);
         }
         this.isData = true;
     }
     
-    private void loadRaidDificultFromDB()
+    private void loadRaidDifficultFromDB()
     {
         try {
-            JSONArray raidDificult = dbConnect.select(RaidDificult.RAID_DIFICULTS_TABLE_NAME,
+            JsonArray raidDifficult = dbConnect.select(RaidDificult.RAID_DIFICULTS_TABLE_NAME,
                                                     new String[] { RaidDificult.RAID_DIFICULTS_TABLE_KEY },
                                                     "raid_id=? ORDER BY difi_id DESC",
                                                     new String[] { this.id +""});
-            if(raidDificult.size() > 0)
+            if(raidDifficult.size() > 0)
             {
-                for(int i = 0; i < raidDificult.size(); i++)
+                for(int i = 0; i < raidDifficult.size(); i++)
                 {                    
-                    RaidDificult r = new RaidDificult( (Integer) ((JSONObject) raidDificult.get(i)).get(RaidDificult.RAID_DIFICULTS_TABLE_KEY) ); 
+                    RaidDificult r = new RaidDificult( raidDifficult.get(i).getAsJsonObject().get(RaidDificult.RAID_DIFICULTS_TABLE_KEY).getAsInt() );
                     this.dificults.add(r);
                 }
             }
@@ -89,31 +90,31 @@ public class Raid extends GameObject
         } 
     }
     
-    private void loadRaidDificultFromRaiderIO(JSONObject dificult, JSONObject rank)
+    private void loadRaidDificultFromRaiderIO(JsonObject difficult, JsonObject rank)
     {
-        RaidDificult lfr = new RaidDificult((JSONArray) dificult.get("lfr"));
+        RaidDificult lfr = new RaidDificult(difficult.get("lfr").getAsJsonArray());
+        RaidDificult normal = new RaidDificult(difficult.get("normal").getAsJsonArray());
+        RaidDificult heroic = new RaidDificult(difficult.get("heroic").getAsJsonArray());
+        RaidDificult mythic = new RaidDificult(difficult.get("mythic").getAsJsonArray());
         lfr.setName("Looking for Raid");
         this.dificults.add(lfr);
-        //Normal dificult~
-        RaidDificult normal = new RaidDificult((JSONArray) dificult.get("normal"));
+        //Normal difficult~
         normal.setName("Normal");
-        normal.setRankWorld( ((Long) ((JSONObject)rank.get("normal")).get("world")).intValue() );
-        normal.setRankRegion( ((Long) ((JSONObject)rank.get("normal")).get("region")).intValue() );
-        normal.setRankRealm( ((Long) ((JSONObject)rank.get("normal")).get("realm")).intValue() );
+        normal.setRankWorld( rank.get("normal").getAsJsonObject().get("world").getAsInt());
+        normal.setRankRegion( rank.get("normal").getAsJsonObject().get("region").getAsInt());
+        normal.setRankRealm( rank.get("normal").getAsJsonObject().get("realm").getAsInt());
         this.dificults.add(normal);
-        //Heroic dificult~
-        RaidDificult heroic = new RaidDificult((JSONArray) dificult.get("heroic"));
+        //Heroic difficult~
         heroic.setName("Heroic");
-        heroic.setRankWorld( ((Long) ((JSONObject)rank.get("heroic")).get("world")).intValue() );
-        heroic.setRankRegion( ((Long) ((JSONObject)rank.get("heroic")).get("region")).intValue() );
-        heroic.setRankRealm( ((Long) ((JSONObject)rank.get("heroic")).get("realm")).intValue() );
+        heroic.setRankWorld( rank.get("heroic").getAsJsonObject().get("world").getAsInt());
+        heroic.setRankRegion( rank.get("heroic").getAsJsonObject().get("region").getAsInt());
+        heroic.setRankRealm( rank.get("heroic").getAsJsonObject().get("realm").getAsInt());
         this.dificults.add(heroic);
-        //Mythic dificult~
-        RaidDificult mythic = new RaidDificult((JSONArray) dificult.get("mythic"));
+        //Mythic difficult~
         mythic.setName("Mythic");
-        mythic.setRankWorld( ((Long) ((JSONObject)rank.get("mythic")).get("world")).intValue() );
-        mythic.setRankRegion( ((Long) ((JSONObject)rank.get("mythic")).get("region")).intValue() );
-        mythic.setRankRealm( ((Long) ((JSONObject)rank.get("mythic")).get("realm")).intValue() );   
+        mythic.setRankWorld( rank.get("mythic").getAsJsonObject().get("world").getAsInt());
+        mythic.setRankRegion( rank.get("mythic").getAsJsonObject().get("region").getAsInt());
+        mythic.setRankRealm( rank.get("mythic").getAsJsonObject().get("realm").getAsInt());
         this.dificults.add(mythic);  
     }
 

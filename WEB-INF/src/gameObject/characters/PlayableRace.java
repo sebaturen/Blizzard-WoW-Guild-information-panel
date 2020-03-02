@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class PlayableRace extends GameObject
 {	
@@ -27,27 +27,19 @@ public class PlayableRace extends GameObject
         loadFromDB(id);
     }
 
-    public PlayableRace(JSONObject exInfo)
+    public PlayableRace(JsonObject exInfo)
     {
         super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
+    protected void saveInternalInfoObject(JsonObject exInfo)
     {
-        if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
-        {			
-            this.id = ((Long) exInfo.get("id")).intValue();
-            this.mask = ((Long) exInfo.get("mask")).intValue();
-        }
-        else
-        {
-            this.id = (Integer) exInfo.get("id");
-            this.mask = (Integer) exInfo.get("mask");
-        }
-        this.side = exInfo.get("side").toString();
-        this.name = exInfo.get("name").toString();
+        this.id = exInfo.get("id").getAsInt();
+        this.mask = exInfo.get("mask").getAsInt();
+        this.side = exInfo.get("side").getAsString();
+        this.name = exInfo.get("name").getAsString();
         this.isData = true;		
     }
 

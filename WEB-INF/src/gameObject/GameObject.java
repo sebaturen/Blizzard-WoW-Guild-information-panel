@@ -10,8 +10,8 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,7 +42,7 @@ public abstract class GameObject implements DBStructure
     }
     
     //Abstract method
-    protected abstract void saveInternalInfoObject(JSONObject objInfo);
+    protected abstract void saveInternalInfoObject(JsonObject objInfo);
     public abstract boolean saveInDB();
     public abstract void setId(int id);
     public abstract int getId();
@@ -69,7 +69,7 @@ public abstract class GameObject implements DBStructure
                             this.tableKey +"=?",
                             new String[] { getId()+"" });
                     return SAVE_MSG_UPDATE_OK;
-                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                } catch (DataException | SQLException ex) {
                     Logs.errorLog(this.getClass(), "Fail to update "+ getId() +" in table "+ this.tableDB +" - "+ ex);
                     return SAVE_MSG_UPDATE_ERROR;
                 }
@@ -115,11 +115,11 @@ public abstract class GameObject implements DBStructure
             for(String wh : uniqued) whereInSQL += ((disableApostrophe)? "":"`")+ wh + ((disableApostrophe)? "":"`") +"=? AND ";
             if(addWhere != null) whereInSQL += ((disableApostrophe)? "":"`")+ addWhere + ((disableApostrophe)? "":"`") +" AND ";
             whereInSQL = whereInSQL.substring(0,whereInSQL.length()-5);
-            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, value, disableApostrophe);
-            
+            JsonArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, value, disableApostrophe);
+
             if(dbSelect.size() > 0)
             {
-                JSONObject infoDB = (JSONObject) dbSelect.get(0);
+                JsonObject infoDB = dbSelect.get(0).getAsJsonObject();
                 //Construct a character object
                 saveInternalInfoObject(infoDB);
                 this.isInternalData = true;
@@ -149,11 +149,11 @@ public abstract class GameObject implements DBStructure
             String whereInSQL = this.tableKey +"=?";
             String[] whereValues = {id+""};
             if(andWhere != null) whereInSQL += " AND "+ andWhere;
-            JSONArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues, disableApostrophe);
+            JsonArray dbSelect = dbConnect.select(this.tableDB, this.tableStruct, whereInSQL, whereValues, disableApostrophe);
 
             if(dbSelect.size() > 0)
             {
-                JSONObject infoDB = (JSONObject) dbSelect.get(0);
+                JsonObject infoDB = dbSelect.get(0).getAsJsonObject();
                 //Construct a character object
                 saveInternalInfoObject(infoDB);
                 this.isInternalData = true;

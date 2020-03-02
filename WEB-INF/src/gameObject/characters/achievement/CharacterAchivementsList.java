@@ -6,8 +6,9 @@
 package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.GeneralConfig;
+import com.blizzardPanel.blizzardAPI.WoWAPIService;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class CharacterAchivementsList extends GameObject
 {
@@ -31,29 +32,21 @@ public class CharacterAchivementsList extends GameObject
         loadFromDB(id);
     }
     
-    public CharacterAchivementsList(JSONObject info)
+    public CharacterAchivementsList(JsonObject info)
     {        
         super(PLAYER_ACHIEVEMENT_LIST_TABLE_NAME, PLAYER_ACHIEVEMENT_LIST_TABLE_KEY, PLAYER_ACHIEVEMENT_LIST_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == java.lang.Long.class)
-        {//Info come to blizz
-            this.id = ((Long) objInfo.get("id")).intValue();
-            this.points = ((Long) objInfo.get("points")).intValue();
-        }
-        else
-        {//Info come to DB
-            this.id = (Integer) objInfo.get("id");
-            this.points = (Integer) objInfo.get("points");
-        }
-        this.category = new CharacterAchivementsCategory((Integer) objInfo.get("category_id"));
-        this.title = objInfo.get("title").toString();
-        this.description = objInfo.get("description").toString();
-        this.icon = objInfo.get("icon").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.points = objInfo.get("points").getAsInt();
+        this.category = new CharacterAchivementsCategory(objInfo.get("category_id").getAsInt());
+        this.title = objInfo.get("title").getAsString();
+        this.description = objInfo.get("description").getAsString();
+        this.icon = objInfo.get("icon").getAsString();
         this.isData = true;
     }
 
@@ -81,7 +74,7 @@ public class CharacterAchivementsList extends GameObject
     public String getIconRenderURL() { return getIconRenderURL(56); }
     public String getIconRenderURL(int size) 
     {
-        return String.format(APIInfo.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
+        return String.format(WoWAPIService.API_ITEM_RENDER_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), size, this.icon) +".jpg";
     }
     public CharacterAchivementsCategory getCategory() { return this.category; }
     

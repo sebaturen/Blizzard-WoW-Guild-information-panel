@@ -10,13 +10,12 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
-import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;
-import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class PollOption extends GameObject implements Comparable<PollOption>
 {
@@ -45,13 +44,13 @@ public class PollOption extends GameObject implements Comparable<PollOption>
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.pollId = (Integer) objInfo.get("poll_id");
-        this.optionText = objInfo.get("option_txt").toString();
-        this.owner = new User((Integer) objInfo.get("owner_id"));
-        this.date = objInfo.get("date").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.pollId = objInfo.get("poll_id").getAsInt();
+        this.optionText = objInfo.get("option_txt").getAsString();
+        this.owner = new User(objInfo.get("owner_id").getAsInt());
+        this.date = objInfo.get("date").getAsString();
         loadSelected();
         this.isData = true;
     }
@@ -59,13 +58,13 @@ public class PollOption extends GameObject implements Comparable<PollOption>
     private void loadSelected()
     {
         try {
-            JSONArray rDB = dbConnect.select(PollOptionResult.POLL_OPTION_RESULTS_TABLE_NAME,
+            JsonArray rDB = dbConnect.select(PollOptionResult.POLL_OPTION_RESULTS_TABLE_NAME,
                                             new String[] { PollOptionResult.POLL_OPTION_RESULTS_TABLE_KEY },
                                             "poll_option_id=?",
                                             new String[] { this.id+""});
             for(int i = 0; i < rDB.size(); i++)
             {
-                results.add(new PollOptionResult((Integer) ((JSONObject)rDB.get(i)).get(PollOptionResult.POLL_OPTION_RESULTS_TABLE_KEY) ));
+                results.add(new PollOptionResult( rDB.get(i).getAsJsonObject().get(PollOptionResult.POLL_OPTION_RESULTS_TABLE_KEY).getAsInt() ));
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(PollOption.class, "Fail to get options result in poll - "+ this.id +" - "+ ex);

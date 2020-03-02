@@ -8,16 +8,13 @@ package com.blizzardPanel;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 public class User 
 {
@@ -59,35 +56,35 @@ public class User
         loadFromDBAccesToken(accesToken);
     }
     
-    private void loadUser(JSONObject userInfo)
+    private void loadUser(JsonObject userInfo)
     {
-        this.id = (Integer) userInfo.get("id");
-        this.battleTag = userInfo.get("battle_tag").toString();
+        this.id = userInfo.get("id").getAsInt();
+        this.battleTag = userInfo.get("battle_tag").getAsString();
         if(this.accessToken == null) //not load old AccToken if new exist
-            this.accessToken = userInfo.get("access_token").toString();
-        this.guildRank = (Integer) userInfo.get("guild_rank");
+            this.accessToken = userInfo.get("access_token").getAsString();
+        this.guildRank = userInfo.get("guild_rank").getAsInt();
         this.isLogin = true;
-        if(userInfo.get("main_character") != null)
-            this.idMainChar = (Integer) userInfo.get("main_character");
+        if(!userInfo.get("main_character").isJsonNull())
+            this.idMainChar = userInfo.get("main_character").getAsInt();
         this.isCharsReady = true;
-        if(userInfo.get("last_login") != null)
-            this.lastLogin = userInfo.get("last_login").toString();
-        if(userInfo.get("last_alters_update") != null)
-            this.lastAlterUpdate = userInfo.get("last_alters_update").toString();
-        if(userInfo.get("discord_user_id") != null)
-            this.discordUserId = userInfo.get("discord_user_id").toString();
+        if(userInfo.has("last_login") && !userInfo.get("last_login").isJsonNull())
+            this.lastLogin = userInfo.get("last_login").getAsString();
+        if(userInfo.has("last_login") && !userInfo.get("last_alters_update").isJsonNull())
+            this.lastAlterUpdate = userInfo.get("last_alters_update").getAsString();
+        if(userInfo.has("last_login") && !userInfo.get("discord_user_id").isJsonNull())
+            this.discordUserId = userInfo.get("discord_user_id").getAsString();
     }
     
     private void loadFromDB(int id)
     {
         try {
-            JSONArray info = dbConnect.select(USER_TABLE_NAME,
+            JsonArray info = dbConnect.select(USER_TABLE_NAME,
                     USER_TABLE_STRUCTURE,
                     "id=?",
                     new String [] {id+""});
             if(info.size() > 0)
             {
-                JSONObject userInfo = (JSONObject) info.get(0);
+                JsonObject userInfo = info.get(0).getAsJsonObject();
                 loadUser(userInfo);
             }
             else
@@ -102,13 +99,13 @@ public class User
     private void loadFromDBAccesToken(String acToken) throws DataException
     {
         try {
-            JSONArray info = dbConnect.select(USER_TABLE_NAME,
+            JsonArray info = dbConnect.select(USER_TABLE_NAME,
                     USER_TABLE_STRUCTURE,
                     "access_token=?",
                     new String [] {acToken});
             if(info.size() > 0)
             {
-                JSONObject userInfo = (JSONObject) info.get(0);
+                JsonObject userInfo = info.get(0).getAsJsonObject();
                 loadUser(userInfo);
             }
             else
@@ -128,14 +125,14 @@ public class User
         if(this.isLogin && !forceCheck) return this.isLogin;
         try 
         {
-            JSONArray validUser = dbConnect.select(
+            JsonArray validUser = dbConnect.select(
                     User.USER_TABLE_NAME,
                     USER_TABLE_STRUCTURE,
                     "battle_tag=?",
                     new String[] {this.battleTag});
             if(validUser.size() > 0)
             {
-                JSONObject infoUser = (JSONObject) validUser.get(0);
+                JsonObject infoUser = validUser.get(0).getAsJsonObject();
                 loadUser(infoUser);
                 return true;
             }
@@ -158,7 +155,7 @@ public class User
                         "id=?",
                         new String[] {this.id +""});
                 return true;
-            } catch (DataException | ClassNotFoundException | SQLException ex) {
+            } catch (DataException | SQLException ex) {
                 Logs.errorLog(User.class, "Fail to save discord user id - "+ ex +" user id: "+ this.id);
                 return false;
             }   
@@ -187,7 +184,7 @@ public class User
                         "id=?",
                         new String[] {this.id +""}); 
                 vRet = true;
-            } catch (DataException | ClassNotFoundException | SQLException ex) {
+            } catch (DataException | SQLException ex) {
                 Logs.errorLog(User.class, "Fail to save access token to "+ this.battleTag +" - "+ ex);
             }            
         }
@@ -217,12 +214,10 @@ public class User
         final int uId = this.id;
         Thread upChar = new Thread() {
             @Override
-            public void run()
-            {               
+            public void run() {
                 try {
-                    Update up = new Update();
-                    up.setMemberCharacterInfo(accToken, uId);
-                } catch (IOException | ParseException | DataException ex) {
+                    Update.shared.setMemberCharacterInfo(accToken, uId);
+                } catch (IOException ex) {
                     Logs.errorLog(User.class, "Fail to seve characters info "+ uId +" - "+ ex);
                 }
                 checkUser(true);
@@ -234,61 +229,12 @@ public class User
     
     private String getAccessToken(String code)
     {
-        try {
-            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), APIInfo.API_OAUTH_TOKEN);
-            String apiInfo = Base64.getEncoder().encodeToString((GeneralConfig.getStringConfig("CLIENT_ID")+":"+GeneralConfig.getStringConfig("CLIENT_SECRET")).getBytes(StandardCharsets.UTF_8));
-         
-            String redirectUrl = URLEncoder.encode(GeneralConfig.getStringConfig("MAIN_URL")+GeneralConfig.getStringConfig("BLIZZAR_LINK"), "UTF-8");
-            //prepare info
-            String bodyData = "redirect_uri="+redirectUrl+"&"
-                    + "scope=wow.profile&"
-                    + "grant_type=authorization_code&"
-                    + "code="+ code;
-            byte[] postDataBytes = bodyData.getBytes("UTF-8");
-            
-            JSONObject blizzInfo = Update.curl(urlString,
-                                                "POST",
-                                                "Basic "+ apiInfo,
-                                                null,
-                                                postDataBytes);
-            /* blizzInfo 
-             * {"access_token":"asdasd",
-             * "scope":"wow.profile",
-             * "token_type":"bearer",
-             * "expires_in":86399}
-             */
-            if(blizzInfo.size() > 0)
-            {
-                return blizzInfo.get("access_token").toString();
-            }
-        } catch (IOException|DataException ex) {
-            Logs.errorLog(User.class, "Fail to get user Access Token "+ ex);
-        }
-        return null;
+        return Update.shared.getUserAccessToken(code);
     }
     
     private String getBlizzBattleTag(String accessToken)
     {
-        try {
-            //Generate an API URL
-            String urlString = String.format(APIInfo.API_OAUTH_URL, GeneralConfig.getStringConfig("SERVER_LOCATION"), APIInfo.API_OAUTH_USERINFO);
-            
-            if(accessToken.length() > 0)
-            {
-                //Call Blizzard API
-                JSONObject respond = Update.curl(urlString, 
-                                            "GET",
-                                            "Bearer "+ accessToken,
-                                            new String[] {"locale="+ GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")});
-                if(respond.containsKey("battletag"))
-                {
-                    return respond.get("battletag").toString();
-                }
-            }
-        } catch (IOException|ParseException|DataException ex) {
-            Logs.errorLog(User.class, "Fail to get BattleTag "+ ex);
-        }
-        return null;
+        return Update.shared.getBattleTag(accessToken);
     }
     
     private void loadMainCharFromDB()
@@ -299,14 +245,14 @@ public class User
     private void loadCharacters()
     {
         try {
-            JSONArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
+            JsonArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
                     "gm.user_id=? AND gm.internal_id = c.internal_id AND c.lastModified != 0 AND"+
                     " gm.isDelete = 0 ORDER BY c.level DESC, gm.member_name ASC",
                     new String[] { this.id +""}, true);
             for(int i = 0; i < chars.size(); i++)
             {
-                int internalID = (Integer) ((JSONObject)chars.get(i)).get("internal_id");
+                int internalID = chars.get(i).getAsJsonObject().get("internal_id").getAsInt();
                 CharacterMember mb = new CharacterMember(internalID);
                 if(mb.isData())
                 {
@@ -360,7 +306,7 @@ public class User
                             new String[] {this.id+""});
                     stateChange = true;
                     this.mainCharacter = m;
-                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                } catch (DataException | SQLException ex) {
                     Logs.errorLog(User.class, "Fail to save main character from user - "+ ex);
                 }
             }

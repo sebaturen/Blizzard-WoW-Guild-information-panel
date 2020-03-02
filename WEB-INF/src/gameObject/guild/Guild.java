@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class Guild extends GameObject
 {
@@ -50,53 +50,51 @@ public class Guild extends GameObject
     }
 
     //Load to JSON
-    public Guild(JSONObject guildInfo)
+    public Guild(JsonObject guildInfo)
     {
         super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
         saveInternalInfoObject(guildInfo);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject guildInfo)
+    protected void saveInternalInfoObject(JsonObject guildInfo)
     {
-        this.name = guildInfo.get("name").toString();
-        this.lastModified = Long.parseLong(guildInfo.get("lastModified").toString());
-        this.battleGroup = guildInfo.get("battlegroup").toString();
-        this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").toString());
-        this.realm = guildInfo.get("realm").toString();
-        if(guildInfo.get("level").getClass() == java.lang.Long.class)
-        {//if info come to blizzAPI
-            this.level = ((Long) guildInfo.get("level")).intValue();
-            this.side =  ((Long) guildInfo.get("side")).intValue();
-            loadAchievementsFromBlizz((JSONObject) guildInfo.get("achievements"));
+        this.name = guildInfo.get("name").getAsString();
+        this.lastModified = Long.parseLong(guildInfo.get("lastModified").getAsString());
+        this.battleGroup = guildInfo.get("battlegroup").getAsString();
+        this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").getAsString());
+        this.realm = guildInfo.get("realm").getAsString();
+        this.level = guildInfo.get("level").getAsInt();
+        this.side = guildInfo.get("side").getAsInt();
+
+        if(guildInfo.has("id")) { // load from DB
+            this.id = guildInfo.get("id").getAsInt();
+            if (guildInfo.has("realmSlug") && !guildInfo.get("realmSlug").isJsonNull())
+                this.realmSlug = guildInfo.get("realmSlug").getAsString();
+        } else { // load from blizz
+            loadAchievementsFromBlizz(guildInfo.get("achievements").getAsJsonObject());
         }
-        else
-        {
-            this.id = (Integer) guildInfo.get("id");
-            this.level = (Integer) guildInfo.get("level");
-            this.side =  (Integer) guildInfo.get("side");
-            if(guildInfo.get("realmSlug") != null)
-                this.realmSlug = guildInfo.get("realmSlug").toString();
-        }
+
         this.isData = true;
+
     }
 
-    private void loadAchievementsFromBlizz(JSONObject respond)
+    private void loadAchievementsFromBlizz(JsonObject respond)
     {
-        JSONArray achivs = (JSONArray)respond.get("achievementsCompleted");
-        JSONArray achivTimes = (JSONArray)respond.get("achievementsCompletedTimestamp");
+        JsonArray achivs = respond.get("achievementsCompleted").getAsJsonArray();
+        JsonArray achivTimes = respond.get("achievementsCompletedTimestamp").getAsJsonArray();
         for(int i = 0; i < achivs.size(); i++)
         {
-            int idAchiv = ((Long) achivs.get(i)).intValue();
+            int idAchiv = achivs.get(i).getAsInt();
             //Save achivement
             GuildAchievement gAHDB = new GuildAchievement(idAchiv);
             if(!gAHDB.isInternalData())
             {
                 //Create achivement
-                String achivTime = parseUnixTime(((Long) achivTimes.get(i)).toString());
-                JSONObject infoAchiv = new JSONObject();
-                infoAchiv.put("achievement_id", idAchiv);
-                infoAchiv.put("time_completed", achivTime);
+                String achivTime = parseUnixTime( achivTimes.get(i).getAsString() );
+                JsonObject infoAchiv = new JsonObject();
+                infoAchiv.addProperty("achievement_id", idAchiv);
+                infoAchiv.addProperty("time_completed", achivTime);
 
                 gAHDB = new GuildAchievement(infoAchiv);
             }
@@ -107,13 +105,13 @@ public class Guild extends GameObject
     private void loadAchievementsFromDB()
     {
         try {
-            JSONArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
+            JsonArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
                                                 new String[] {GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY},
                                                 "1=? ORDER BY time_completed DESC",
                                                 new String[] {"1"});
             for(int i = 0; i < dbAchiv.size(); i++)
             {
-                int idAchiv = (Integer) ((JSONObject)dbAchiv.get(i)).get(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY);
+                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY).getAsInt();
                 GuildAchievement gAh = new GuildAchievement(idAchiv);
                 this.achievements.add(gAh);
             }
@@ -126,13 +124,13 @@ public class Guild extends GameObject
     {
         this.news = new ArrayList<>();
         try {
-            JSONArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
+            JsonArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
                                                 new String[] {New.GUILD_NEWS_TABLE_KEY},
                                                 "1=? ORDER BY timestamp DESC LIMIT "+ cant,
                                                 new String[] {"1"});
             for(int i = 0; i < dbAchiv.size(); i++)
             {
-                int idAchiv = (Integer) ((JSONObject)dbAchiv.get(i)).get(New.GUILD_NEWS_TABLE_KEY);
+                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(New.GUILD_NEWS_TABLE_KEY).getAsInt();
                 New gAh = new New(idAchiv);
                 this.news.add(gAh);
             }

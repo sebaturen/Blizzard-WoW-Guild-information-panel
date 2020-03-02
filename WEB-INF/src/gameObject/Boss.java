@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class Boss extends GameObject
 {
@@ -32,27 +32,20 @@ public class Boss extends GameObject
         loadFromDBUniqued("slug", slug);
     }
         
-    public Boss(JSONObject bossInfo)
+    public Boss(JsonObject bossInfo)
     {
         super(BOSS_LIST_TABLE_NAME, BOSS_LIST_TABLE_KEY, BOSS_LIST_TABLE_STRUCTURE);
         saveInternalInfoObject(bossInfo);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject bossInfo) 
-    {        
-        if(bossInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
-        {			
-            this.id = ((Long) bossInfo.get("id")).intValue();
-        }
-        else
-        {
-            this.id = (Integer) bossInfo.get("id");         
-        }
-        this.name = bossInfo.get("name").toString();
-        this.slug = bossInfo.get("slug").toString();   
-        if(bossInfo.containsKey("description") && bossInfo.get("description") != null) 
-            this.description = bossInfo.get("description").toString();
+    protected void saveInternalInfoObject(JsonObject bossInfo)
+    {
+        this.id = bossInfo.get("id").getAsInt();
+        this.name = bossInfo.get("name").getAsString();
+        this.slug = bossInfo.get("slug").getAsString();
+        if(bossInfo.has("description") && !bossInfo.get("description").isJsonNull())
+            this.description = bossInfo.get("description").getAsString();
         this.isData = true;	
     }
 

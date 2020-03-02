@@ -5,9 +5,8 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class PlayableClass extends GameObject
 {	
@@ -27,27 +26,22 @@ public class PlayableClass extends GameObject
         loadFromDB(id);
     }
 	
-    public PlayableClass(JSONObject exInfo)
+    public PlayableClass(JsonObject exInfo)
     {
         super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 	
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
-    {		
-        if(exInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
-        {
-            this.id = ((Long) exInfo.get("id")).intValue();
-            this.slug = ((JSONObject) exInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
-            this.name = ((JSONObject) exInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
+    protected void saveInternalInfoObject(JsonObject exInfo)
+    {
+        this.id = exInfo.get("id").getAsInt();
+        if (exInfo.has("slug")) { // from DB
+            this.slug = exInfo.get("slug").getAsString();
+        } else { // from blizzard
+            this.slug = exInfo.get("name").getAsString().replaceAll("\\s+","-").toLowerCase();
         }
-        else
-        {
-            this.id = (Integer) exInfo.get("id");
-            this.slug = exInfo.get("slug").toString();
-            this.name = exInfo.get("name").toString();
-        }
+        this.name = exInfo.get("name").getAsString();
         this.isData = true;
     }
 	

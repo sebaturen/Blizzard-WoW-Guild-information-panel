@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel.gameObject;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class AuctionItem extends GameObject
 {
@@ -33,37 +33,28 @@ public class AuctionItem extends GameObject
         loadFromDB(auc);
     }
     
-    public AuctionItem(JSONObject info)
+    public AuctionItem(JsonObject info)
     {
         super(AUCTION_ITEMS_TABLE_NAME, AUCTION_ITEMS_KEY, AUCTION_ITEMS_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("auc").getClass() == java.lang.Long.class)
-        {//Info come to blizzard
-            this.auc = ((Long) objInfo.get("auc")).intValue();
-            this.quantity = ((Long) objInfo.get("quantity")).intValue();
-            this.context = ((Long) objInfo.get("context")).intValue();
-            this.rand = ((Long) objInfo.get("rand")).intValue();
-            this.item = new Item(((Long) objInfo.get("item")).intValue());
+        if (objInfo.has("auc_date")) {
+            this.aucDate = objInfo.get("auc_date").getAsString();
         }
-        else
-        {//info come to DB
-            this.auc = (Integer) objInfo.get("auc");
-            this.quantity = (Integer) objInfo.get("quantity");
-            this.context = (Integer) objInfo.get("context");
-            this.rand = (Integer) objInfo.get("rand");
-            this.item = new Item((Integer) objInfo.get("item"));
-            this.aucDate = objInfo.get("auc_date").toString();
-        }
-        this.buyout = (long) objInfo.get("buyout");
-        this.bid = (long) objInfo.get("bid");
-        this.timeLeft = objInfo.get("timeLeft").toString();
-        this.owner = objInfo.get("owner").toString();
-        this.ownerRealm = objInfo.get("ownerRealm").toString();
+        this.quantity = objInfo.get("quantity").getAsInt();
+        this.context = objInfo.get("context").getAsInt();
+        this.rand = objInfo.get("rand").getAsInt();
+        this.item = new Item(objInfo.get("item").getAsInt());
+        this.auc = objInfo.get("auc").getAsInt();
+        this.buyout = objInfo.get("buyout").getAsLong();
+        this.bid = objInfo.get("bid").getAsLong();
+        this.timeLeft = objInfo.get("timeLeft").getAsString();
+        this.owner = objInfo.get("owner").getAsString();
+        this.ownerRealm = objInfo.get("ownerRealm").getAsString();
         this.isData = true;        
     }
 

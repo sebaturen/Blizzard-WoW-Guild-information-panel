@@ -1,5 +1,6 @@
 package com.blizzardPanel.blizzardAPI;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -8,11 +9,11 @@ public class AccessToken {
     // Atribute
     private String access_token;
     private String token_type;
-    private long expire_in;
+    private double expire_in;
     private Date expire;
 
     public AccessToken() {
-        this.expire = new Date();
+
     }
 
     public String getAccess_token() {
@@ -31,26 +32,34 @@ public class AccessToken {
         this.token_type = token_type;
     }
 
-    public long getExpire_in() {
+    public double getExpire_in() {
         return expire_in;
     }
 
     public boolean isExpired() {
-        Calendar c = Calendar.getInstance();
-        // set the calendar to start of today
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        Date toDay = c.getTime();
-        return !this.expire.before(toDay);
+        Date today = new Date();
+        return !expire.after(today);
     }
 
-    public void setExpire_in(long expire_in) {
+    public void setExpire_in(double expire_in) {
+        long currentTime = Instant.now().getEpochSecond();
         this.expire_in = expire_in;
+        long expireTime = currentTime + (long) this.expire_in;
+        this.expire = new Date(expireTime*1000);
+
     }
 
     public String getAuthorization() {
         return getToken_type() +" "+ getAccess_token();
+    }
+
+    @Override
+    public String toString() {
+        return "AccessToken{" +
+                "access_token='" + access_token + '\'' +
+                ", token_type='" + token_type + '\'' +
+                ", expire_in=" + expire_in +
+                ", expire=" + expire +
+                '}';
     }
 }

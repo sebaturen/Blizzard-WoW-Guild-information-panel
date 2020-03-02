@@ -11,6 +11,7 @@ $(document).ready(function() {
     $("#buttonForceUpdateWowToken").click(function()            { arg = "WowToken";                 runAjaxUpdate(); });
     $("#buttonForceUpdateUsersCharacters").click(function()     { arg = "UsersCharacters";          runAjaxUpdate(); });
     $("#buttonForceUpdateGuildProgression").click(function()    { arg = "GuildProgression";         runAjaxUpdate(); });
+    $("#buttonForceUpdateActionHouse").click(function()         { type = 2; arg = "ActionHouse";    runAjaxUpdate(); });
     $("#buttonForceUpdateStaticRealms").click(function()        { type = 1; arg = "RealmIndex";     runAjaxUpdate(); });
     $("#buttonForceUpdateStatic").click(function()              { type = 1; arg = "all";            runAjaxUpdate(); });
 });

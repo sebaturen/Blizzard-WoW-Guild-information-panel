@@ -13,14 +13,14 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.WoWToken;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class GameInfo
 {
@@ -43,13 +43,13 @@ public class GameInfo
     {
         try
         {
-            JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
+            JsonArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
                                                     new String[] {Update.UPDATE_TYPE_DYNAMIC +""});
             if (dateUpdate.size() > 0)
             {
-                this.lastDynamicUpdate = (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
+                this.lastDynamicUpdate = dateUpdate.get(0).getAsJsonObject().get("update_time").getAsString();
             }
         }
         catch (SQLException|DataException e)
@@ -82,13 +82,13 @@ public class GameInfo
         String out = "";
         try
         {
-            JSONArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
+            JsonArray dateUpdate = dbConnect.select(Update.UPDATE_INTERVAL_TABLE_NAME,
                                                     new String[] {"update_time"},
                                                     "type=? order by id desc limit 1",
                                                     new String[] {Update.UPDATE_TYPE_STATIC +""});
             if (dateUpdate.size() > 0)
             {
-                out += (((JSONObject)dateUpdate.get(0)).get("update_time")).toString();
+                out += dateUpdate.get(0).getAsJsonObject().get("update_time").getAsString();
             }
         }
         catch (SQLException|DataException e)
@@ -102,13 +102,13 @@ public class GameInfo
     {
         try
         {
-            JSONArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
+            JsonArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
                                                     new String[] {"price"},
                                                     "1=? order by "+ DBStructure.WOW_TOKEN_TABLE_KEY +" desc limit 1",
                                                     new String[] {"1"});
             if (dateUpdate.size() > 0)
             {
-                String actuapPrice = (((JSONObject)dateUpdate.get(0)).get("price")).toString();
+                String actuapPrice = dateUpdate.get(0).getAsJsonObject().get("price").getAsString();
                 int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
                 this.outWoWToken = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
             }
@@ -145,17 +145,17 @@ public class GameInfo
         this.outWoWTokenHistory = new ArrayList<>();
         try
         {
-            JSONArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
+            JsonArray dateUpdate = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
                     new String[] {"last_updated_timestamp", "price"},
                     "1=? order by "+ DBStructure.WOW_TOKEN_TABLE_KEY +" desc limit "+ count,
                     new String[] {"1"});
             if (dateUpdate.size() > 0)
             {
                 for(Object wToken : dateUpdate) {
-                    String actuapPrice = (((JSONObject)wToken).get("price")).toString();
-                    int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
+                    String actualPrice = (((JsonObject)wToken).get("price").getAsString());
+                    int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actualPrice));
                     WoWToken wT = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
-                    wT.setLastUpdate(Long.parseLong(((JSONObject)wToken).get("last_updated_timestamp").toString()));
+                    wT.setLastUpdate(Long.parseLong(((JsonObject)wToken).get("last_updated_timestamp").getAsString()));
                     this.outWoWTokenHistory.add(wT);
                 }
             }

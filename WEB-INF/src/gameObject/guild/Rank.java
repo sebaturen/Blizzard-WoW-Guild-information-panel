@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class Rank extends GameObject
 {
@@ -44,10 +44,10 @@ public class Rank extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.title = objInfo.get("title").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.title = objInfo.get("title").getAsString();
         this.isData = true;
     }
 

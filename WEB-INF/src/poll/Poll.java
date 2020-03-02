@@ -12,6 +12,9 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.guild.Rank;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Collections;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class Poll extends GameObject
 {
@@ -57,20 +58,20 @@ public class Poll extends GameObject
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.user = new User((Integer) objInfo.get("user_id"));
-        this.pollQuestion = objInfo.get("poll_question").toString();
-        this.minRank = new Rank((Integer) objInfo.get("min_rank"));
-        this.multiSelect = (Boolean) objInfo.get("multi_select");
-        this.canAddMoreOptions = (Boolean) objInfo.get("can_add_more_option");
-        this.startDate = objInfo.get("start_date").toString();
-        this.isLimitDate = (Boolean) objInfo.get("is_limit_date");
+        this.id = objInfo.get("id").getAsInt();
+        this.user = new User(objInfo.get("user_id").getAsInt());
+        this.pollQuestion = objInfo.get("poll_question").getAsString();
+        this.minRank = new Rank(objInfo.get("min_rank").getAsInt());
+        this.multiSelect = objInfo.get("multi_select").getAsBoolean();
+        this.canAddMoreOptions = objInfo.get("can_add_more_option").getAsBoolean();
+        this.startDate = objInfo.get("start_date").getAsString();
+        this.isLimitDate = objInfo.get("is_limit_date").getAsBoolean();
         if(this.isLimitDate)
-            this.endDate = objInfo.get("end_date").toString();
-        this.isEnable = (Boolean) objInfo.get("isEnable");
-        this.isHide = (Boolean) objInfo.get("isHide");
+            this.endDate = objInfo.get("end_date").getAsString();
+        this.isEnable = objInfo.get("isEnable").getAsBoolean();
+        this.isHide = objInfo.get("isHide").getAsBoolean();
         this.isData = true;
     }
     
@@ -78,13 +79,13 @@ public class Poll extends GameObject
     {
         this.options = new ArrayList<>();
         try {
-            JSONArray opDB = dbConnect.select(PollOption.POLL_OPTION_TABLE_NAME,
+            JsonArray opDB = dbConnect.select(PollOption.POLL_OPTION_TABLE_NAME,
                     new String[] { PollOption.POLL_OPTION_TABLE_KEY },
                     "poll_id=?",
                     new String[] {this.id+""});
             for(int i = 0; i < opDB.size(); i++)
             {
-                this.options.add(new PollOption((Integer) ((JSONObject)opDB.get(i)).get(PollOption.POLL_OPTION_TABLE_KEY) ));
+                this.options.add(new PollOption( opDB.get(i).getAsJsonObject().get(PollOption.POLL_OPTION_TABLE_KEY).getAsInt() ));
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(Poll.class, "Fail to get options in poll - "+ this.id +" - "+ ex);

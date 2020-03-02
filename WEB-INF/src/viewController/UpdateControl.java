@@ -5,14 +5,12 @@
  */
 package com.blizzardPanel.viewController;
 
-import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.json.simple.parser.ParseException;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -82,12 +80,7 @@ public class UpdateControl
             public void run()
             {
                 setIsRuning(true);
-                try {
-                    Update up = new Update();
-                    up.setUpdate(updArg);
-                } catch (IOException | ParseException | DataException ex) {
-                    Logs.errorLog(UpdateControl.class, "fail update...");
-                }
+                Update.shared.setUpdate(updArg);
                 setIsRuning(false);
                 setRunUpdate(false);
                 Logs.setUpdateControl(null);

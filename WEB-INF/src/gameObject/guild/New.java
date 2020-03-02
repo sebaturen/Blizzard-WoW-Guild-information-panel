@@ -16,7 +16,8 @@ import com.blizzardPanel.gameObject.characters.CharacterMember;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonObject;
 
 public class New extends GameObject
 {
@@ -58,62 +59,61 @@ public class New extends GameObject
         
     }
     
-    public New(JSONObject inf)
+    public New(JsonObject inf)
     {
         super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);        
     }
             
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        String dateStamp = objInfo.get("timestamp").toString();
-        if(objInfo.containsKey("id"))
+        String dateStamp = objInfo.get("timestamp").getAsString();
+        if(objInfo.has("id"))
         {//Load from dB
-            this.id = (Integer) objInfo.get("id");
-            this.member = new CharacterMember((Integer) objInfo.get("member_id"));
+            this.id = objInfo.get("id").getAsInt();
+            this.member = new CharacterMember(objInfo.get("member_id").getAsInt());
         }
         else
         {//Load from blizz
-            dateStamp = Update.parseUnixTime(objInfo.get("timestamp").toString());  
-            this.member = new CharacterMember(objInfo.get("character").toString(), GeneralConfig.getStringConfig("GUILD_REALM"));
+            dateStamp = Update.parseUnixTime(objInfo.get("timestamp").getAsString());
+            this.member = new CharacterMember(objInfo.get("character").getAsString(), GeneralConfig.getStringConfig("GUILD_REALM"));
         }
         try { //2018-10-17 02:39:00
             this.timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStamp);
         } catch (ParseException ex) {
             Logs.errorLog(New.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
-        this.type = objInfo.get("type").toString();
-        this.context = objInfo.get("context").toString();
-        
-        switch(this.type)
-        {
-            case "itemLoot": case "itemCraft": case "itemPurchase":
-                if(objInfo.containsKey("id")) //load from DB
-                    this.item = new Item((Integer) objInfo.get("item_id"));
-                else
-                    this.item = new Item(((Long) objInfo.get("itemId")).intValue());
-                break;
-            case "playerAchievement":
-                if(objInfo.containsKey("id")) //load from DB
-                    this.cAchievement = new CharacterAchivementsList((Integer) objInfo.get("player_achievement_id"));
-                else
-                {
-                    int cAchId = ((Long)((JSONObject) objInfo.get("achievement")).get("id")).intValue();
+        this.type = objInfo.get("type").getAsString();
+        this.context = objInfo.get("context").getAsString();
+
+        if (objInfo.has("id")) { // load from DB
+            switch (this.type) {
+                case "itemLoot": case "itemCraft": case "itemPurchase":
+                    this.item = new Item(objInfo.get("item_id").getAsInt());
+                    break;
+                case "playerAchievement":
+                    this.cAchievement = new CharacterAchivementsList(objInfo.get("player_achievement_id").getAsInt());
+                    break;
+                case "guildAchievement":
+                    this.gAchievement = new GuildAchievementsList(objInfo.get("guild_achievement_id").getAsInt());
+                    break;
+            }
+        } else { // load from blizz
+            switch (this.type) {
+                case "itemLoot": case "itemCraft": case "itemPurchase":
+                    this.item = new Item(objInfo.get("itemId").getAsInt());
+                    break;
+                case "playerAchievement":
+                    int cAchId = objInfo.get("achievement").getAsJsonObject().get("id").getAsInt();
                     this.cAchievement = new CharacterAchivementsList(cAchId);
-                }                    
-                break;
-            case "guildAchievement":
-                if(objInfo.containsKey("id")) //load from DB
-                    this.gAchievement = new GuildAchievementsList((Integer) objInfo.get("guild_achievement_id"));
-                else
-                {
-                    int cAchId = ((Long)((JSONObject) objInfo.get("achievement")).get("id")).intValue();
-                    this.gAchievement = new GuildAchievementsList(cAchId);
-                }
-                break;
+                    break;
+                case "guildAchievement":
+                    int gAchId = objInfo.get("achievement").getAsJsonObject().get("id").getAsInt();
+                    this.gAchievement = new GuildAchievementsList(gAchId);
+                    break;
+            }
         }
-        
         this.isData = true;
     }
 

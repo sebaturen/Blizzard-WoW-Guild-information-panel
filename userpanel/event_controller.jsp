@@ -1,8 +1,8 @@
 <%@include file="../includes/globalObject.jsp" %>
-<%@page import="org.json.simple.JSONObject"%>
+<%@page import="com.google.gson.JsonObject"%>
 <%
     request.setCharacterEncoding("UTF-8");
-    JSONObject json = new JSONObject();
+    JsonObject json = new JsonObject();
     if(guildMember)
     {%>
         <%@ page import ="java.util.ArrayList" %>

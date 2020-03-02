@@ -5,16 +5,13 @@
  */
 package com.blizzardPanel.gameObject;
 
-import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
-import java.io.IOException;
 
 import com.blizzardPanel.blizzardAPI.WoWAPIService;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class Item extends GameObject
 {
@@ -37,81 +34,67 @@ public class Item extends GameObject
         loadFromDB(id);
         if(!this.isInternalData)
         {
-            try 
-            {
-                Update up = new Update();
-                cloneItem(up.getItemFromBlizz(id));
-            } catch (IOException | ParseException | DataException ex) {
-                Logs.errorLog(Item.class, "Fail to get item info from blizzard. - "+ ex);
-            }
+            cloneItem(Update.shared.getItemFromBlizz(id));
         }
     }
     
-    public Item(JSONObject inf)
+    public Item(JsonObject inf)
     {
         super(ITEM_TABLE_NAME,ITEM_TABLE_KEY,ITEM_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo)
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == java.lang.Long.class) //if info come to blizzAPI or DB
-        {
-            this.id = ((Long) objInfo.get("id")).intValue();
-            JSONArray itemSpellBlizz = (JSONArray) objInfo.get("itemSpells");
+        if (objInfo.has("itemSpells")) { // load from blizzard
+            JsonArray itemSpellBlizz = objInfo.get("itemSpells").getAsJsonArray();
             if(itemSpellBlizz.size() > 0)
             {
-                int spellId = ((Long) ((JSONObject) itemSpellBlizz.get(0)).get("spellId")).intValue();
+                int spellId = itemSpellBlizz.get(0).getAsJsonObject().get("spellId").getAsInt();
                 this.itemSpell = new Spell(spellId);
                 if(!this.itemSpell.isInternalData())
                 {
-                    try {
-                        Update up = new Update();
-                        this.itemSpell = up.getSpellInformationBlizz(spellId);
-                    } catch (IOException | ParseException | DataException ex) {
-                        Logs.errorLog(Item.class, "Fail to get blizzard spell information "+ spellId +" - (spell in item) - "+ ex);
-                    }
+                    this.itemSpell = Update.shared.getSpellInformationBlizz(spellId);
                 }
             }
             else
             {
                 this.itemSpell = new Spell(0);
             }
-        }
-        else
-        {
-            this.id = (Integer) objInfo.get("id");
+        } else { // load from DB
+
             int spellId = 0;
-            if(objInfo.get("itemSpell") != null)
+            if(!objInfo.get("itemSpell").isJsonNull())
             {
-                spellId = (Integer) objInfo.get("itemSpell");
+                spellId = objInfo.get("itemSpell").getAsInt();
             }
-            //allweys is declarate becouse in save we need a spell ID, and spell id 0 is a null spell.
+            // alleys is decelerate because in save we need a spell ID, and spell id 0 is a null spell.
             this.itemSpell = new Spell(spellId);
         }
-        this.name = objInfo.get("name").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.name = objInfo.get("name").getAsString();
         String iconUrl = "";
         //Not all item have a icon U_U
-        if(objInfo.containsKey("icon")) iconUrl = objInfo.get("icon").toString();
+        if(objInfo.has("icon")) iconUrl = objInfo.get("icon").getAsString();
         this.icon = iconUrl;
-        if(objInfo.containsKey("gemInfo"))
+        if(objInfo.has("gemInfo"))
         {//blizzard API info
-            JSONObject vGam = (JSONObject) objInfo.get("gemInfo");
-            JSONObject bonusInfo = (JSONObject) vGam.get("bonus");
-            this.gemInfoBonusName = bonusInfo.get("name").toString();
-            if(vGam.containsKey("type"))
+            JsonObject vGam = objInfo.get("gemInfo").getAsJsonObject();
+            JsonObject bonusInfo = vGam.get("bonus").getAsJsonObject();
+            this.gemInfoBonusName = bonusInfo.get("name").getAsString();
+            if(vGam.has("type"))
             {
-                JSONObject typeInfo = (JSONObject) vGam.get("type");
-                this.gemInfoType = typeInfo.get("type").toString();
+                JsonObject typeInfo = vGam.get("type").getAsJsonObject();
+                this.gemInfoType = typeInfo.get("type").getAsString();
             }
         }
         else
-        {//from DB      
-            if(objInfo.get("gemInfo_bonus_name") != null)
-                this.gemInfoBonusName = objInfo.get("gemInfo_bonus_name").toString();
-            if(objInfo.get("gemInfo_type") != null)
-                this.gemInfoType = objInfo.get("gemInfo_type").toString();
+        {//from DB
+            if (objInfo.has("gemInfo_bonus_name") && !objInfo.get("gemInfo_bonus_name").isJsonNull())
+                this.gemInfoBonusName = objInfo.get("gemInfo_bonus_name").getAsString();
+            if (objInfo.has("gemInfo_type") && !objInfo.get("gemInfo_type").isJsonNull())
+                this.gemInfoType = objInfo.get("gemInfo_type").getAsString();
         }
         this.isData = true;
     }

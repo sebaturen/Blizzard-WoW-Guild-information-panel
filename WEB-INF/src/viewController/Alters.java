@@ -9,9 +9,9 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.google.gson.JsonArray;
+
 import java.sql.SQLException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class Alters 
 {    
@@ -22,7 +22,7 @@ public class Alters
     private void getAltersList()
     {
         try {
-            JSONArray alters = dbConnect.select(User.USER_TABLE_NAME,
+            JsonArray alters = dbConnect.select(User.USER_TABLE_NAME,
                     new String[] { "id" },
                     "guild_rank >= ? ORDER BY guild_rank ASC",
                     new String[] { "0" });
@@ -30,7 +30,7 @@ public class Alters
             users = new User[alters.size()];
             for(int i = 0; i < alters.size(); i++)
             {
-                users[i] = new User( (Integer) ((JSONObject) alters.get(i)).get("id") );
+                users[i] = new User( alters.get(i).getAsJsonObject().get("id").getAsInt() );
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(Alters.class, "Fail to get users list - "+ ex);

@@ -11,8 +11,9 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
+import com.google.gson.JsonObject;
+
 import java.sql.SQLException;
-import org.json.simple.JSONObject;
 
 public class PollOptionResult extends GameObject
 {
@@ -44,12 +45,12 @@ public class PollOptionResult extends GameObject
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.pollOptionId = (Integer) objInfo.get("poll_option_id");
-        this.owner = new User((Integer) objInfo.get("owner_id"));
-        this.date = objInfo.get("date").toString();
+        this.id = objInfo.get("id").getAsInt();
+        this.pollOptionId = objInfo.get("poll_option_id").getAsInt();
+        this.owner = new User(objInfo.get("owner_id").getAsInt());
+        this.date = objInfo.get("date").getAsString();
         this.isData = true;
     }
 

@@ -10,11 +10,11 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.events.Event;
 import com.blizzardPanel.User;
+import com.google.gson.JsonArray;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class EventsController 
 {    
@@ -31,13 +31,13 @@ public class EventsController
     {
         List<Event> events = new ArrayList<>();
         try {
-            JSONArray eventsDB = dbConnect.select(Event.EVENTS_TABLE_NAME,
+            JsonArray eventsDB = dbConnect.select(Event.EVENTS_TABLE_NAME,
                     new String[] { Event.EVENTS_TABLE_KEY },
                     "date >= ? ORDER BY date DESC",
                     new String[] { "now()" });
             for(int i = 0; i < eventsDB.size(); i++)
             {
-                Event e = new Event( (Integer) ((JSONObject)eventsDB.get(i)).get(Event.EVENTS_TABLE_KEY));
+                Event e = new Event( eventsDB.get(i).getAsJsonObject().get(Event.EVENTS_TABLE_KEY).getAsInt() );
                 events.add(e);
             }
         } catch (SQLException | DataException ex) {

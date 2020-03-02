@@ -10,11 +10,11 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
+import com.google.gson.JsonArray;
+
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 
 public class MythicPlusControl 
@@ -42,7 +42,7 @@ public class MythicPlusControl
     private void loadBestRun()
     {
         try {
-            JSONArray keyListInDb = dbConnect.selectQuery(
+            JsonArray keyListInDb = dbConnect.selectQuery(
                 "SELECT DISTINCT extract.id " +
                 "FROM " +
                 "	( " +
@@ -71,7 +71,7 @@ public class MythicPlusControl
             this.keyBestRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
-                this.keyBestRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+                this.keyBestRun[i] = new KeystoneDungeonRun(keyListInDb.get(i).getAsJsonObject().get("id").getAsInt());
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(MythicPlusControl.class, "Fail to get last keystone - "+ ex);
@@ -82,7 +82,7 @@ public class MythicPlusControl
     private void loadWeekRun()
     {
         try {
-            JSONArray keyListInDb = dbConnect.select(
+            JsonArray keyListInDb = dbConnect.select(
                     KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
@@ -90,7 +90,7 @@ public class MythicPlusControl
             this.keyThisWeek = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
-                this.keyThisWeek[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+                this.keyThisWeek[i] = new KeystoneDungeonRun(keyListInDb.get(i).getAsJsonObject().get("id").getAsInt());
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(MythicPlusControl.class, "Fail to get last keystone - "+ ex);
@@ -101,7 +101,7 @@ public class MythicPlusControl
     private void loadBestFailsRun()
     {
         try {
-            JSONArray keyListInDb = dbConnect.selectQuery(
+            JsonArray keyListInDb = dbConnect.selectQuery(
                     "SELECT "+
                     "	k.id "+
                     "FROM  "+
@@ -120,7 +120,7 @@ public class MythicPlusControl
             this.keyBestFailRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
-                this.keyBestFailRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+                this.keyBestFailRun[i] = new KeystoneDungeonRun(keyListInDb.get(i).getAsJsonObject().get("id").getAsInt());
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(MythicPlusControl.class, "Fail to get last best fail keystone - "+ ex);
@@ -147,11 +147,11 @@ public class MythicPlusControl
                     "GROUP BY k.id "+
                     "ORDER BY k.duration DESC "+
                     "LIMIT 6;";
-            JSONArray keyListInDb = dbConnect.selectQuery(query);
+            JsonArray keyListInDb = dbConnect.selectQuery(query);
             this.keyThisWeekFailRun = new KeystoneDungeonRun[keyListInDb.size()];
             for(int i = 0; i < keyListInDb.size(); i++)
             {
-                this.keyThisWeekFailRun[i] = new KeystoneDungeonRun((Integer) ((JSONObject) keyListInDb.get(i)).get("id"));
+                this.keyThisWeekFailRun[i] = new KeystoneDungeonRun(keyListInDb.get(i).getAsJsonObject().get("id").getAsInt());
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(MythicPlusControl.class, "Fail to get last week fail keystone - "+ ex);

@@ -5,18 +5,15 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.blizzardAPI.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.Spell;
-import java.io.IOException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class CharacterItem extends GameObject
 {
@@ -37,11 +34,11 @@ public class CharacterItem extends GameObject
     private int quality;
     private String position;
     private int ilevel;
-    private JSONArray stats = new JSONArray();
+    private JsonArray stats = new JsonArray();
     private int armor;
     private String context;
     private int azeriteLevel;
-    private JSONArray azeritePower = new JSONArray();
+    private JsonArray azeritePower = new JsonArray();
     private int tooltipGemId = -1;
     private int tooltipEnchantId = -1;
     
@@ -57,68 +54,62 @@ public class CharacterItem extends GameObject
         loadFromDBUniqued(new String[] { "post_item", "member_id" }, new String[] { position, memberId+"" });
     }
     
-    public CharacterItem(JSONObject inf)
+    public CharacterItem(JsonObject inf)
     {
         super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
        
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.containsKey("member_id"))
+        if(objInfo.has("member_id"))
         {   
             //load from DB
-            this.id = (Integer) objInfo.get("id");
-            this.memberId = (Integer) objInfo.get("member_id");
-            this.item = new Item((Integer) objInfo.get("item_id"));
-            this.quality = (Integer) objInfo.get("quality");            
-            this.ilevel = (Integer) objInfo.get("ilevel");
-            this.armor = (Integer) objInfo.get("armor");
-            this.azeriteLevel = (Integer) objInfo.get("azerite_level");
-            this.tooltipGemId = (Integer) objInfo.get("tooltipGem_id");
-            this.tooltipEnchantId = (Integer) objInfo.get("toolTipEnchant_id");
-            try {
-                JSONParser parser = new JSONParser();
-                String stat = objInfo.get("stats").toString();
-                String azerita = objInfo.get("azerite_power").toString();
-                if(stat.length() > 2) //+2 becouse JSONArray use minimus '[]'
-                {
-                    this.stats = (JSONArray) parser.parse(stat);
-                }
-                if(azerita.length() > 2) //+2 becouse JSONArray use minimus '[]'
-                {
-                    this.azeritePower = (JSONArray) parser.parse(azerita);
-                }
-            } catch (ParseException ex) {
-                Logs.errorLog(com.blizzardPanel.gameObject.characters.CharacterItem.class, "Fail to parse stats o azerita power from item "+ this.id +" - "+ ex);
+            this.id = objInfo.get("id").getAsInt();
+            this.memberId = objInfo.get("member_id").getAsInt();
+            this.item = new Item(objInfo.get("item_id").getAsInt());
+            this.quality = objInfo.get("quality").getAsInt();
+            this.ilevel = objInfo.get("ilevel").getAsInt();
+            this.armor = objInfo.get("armor").getAsInt();
+            this.azeriteLevel = objInfo.get("azerite_level").getAsInt();
+            this.tooltipGemId = objInfo.get("tooltipGem_id").getAsInt();
+            this.tooltipEnchantId = objInfo.get("toolTipEnchant_id").getAsInt();
+            String stat = objInfo.get("stats").getAsString();
+            String azerita = objInfo.get("azerite_power").getAsString();
+            if(stat.length() > 2) //+2 because JSONArray use `minimo 1` '[]'
+            {
+                this.stats = JsonParser.parseString(stat).getAsJsonArray();
+            }
+            if(azerita.length() > 2) //+2 because JSONArray use `minimo 1` '[]'
+            {
+                this.azeritePower = JsonParser.parseString(azerita).getAsJsonArray();
             }
         }
         else
         {//load from blizzard
-            this.item = new Item(((Long) objInfo.get("id")).intValue());
-            this.quality = ((Long) objInfo.get("quality")).intValue();
-            this.ilevel = ((Long) objInfo.get("itemLevel")).intValue();   
-            this.stats = (JSONArray) objInfo.get("stats");
-            this.armor = ((Long) objInfo.get("armor")).intValue();
-            JSONObject aLeve = (JSONObject) objInfo.get("azeriteItem");
-            if(aLeve != null && aLeve.containsKey("azeriteLevel"))
+            this.item = new Item(objInfo.get("id").getAsInt());
+            this.quality = objInfo.get("quality").getAsInt();
+            this.ilevel = objInfo.get("itemLevel").getAsInt();
+            this.stats = objInfo.get("stats").getAsJsonArray();
+            this.armor = objInfo.get("armor").getAsInt();
+            if(objInfo.has("azeriteItem") && objInfo.get("azeriteItem").getAsJsonObject().has("azeriteLevel"))
             {
-                this.azeriteLevel = ((Long) aLeve.get("azeriteLevel")).intValue();                
+                this.azeriteLevel = objInfo.get("azeriteItem").getAsJsonObject().get("azeriteLevel").getAsInt();
             }
-            if(objInfo.containsKey("azeriteEmpoweredItem"))
+            if(objInfo.has("azeriteEmpoweredItem"))
             {
-                this.azeritePower = (JSONArray) ((JSONObject) objInfo.get("azeriteEmpoweredItem")).get("azeritePowers");            
+                this.azeritePower = objInfo.get("azeriteEmpoweredItem").getAsJsonObject().get("azeritePowers").getAsJsonArray();
             }
-            JSONObject toolTipe = (JSONObject) objInfo.get("tooltipParams");
-            if(toolTipe.containsKey("gem0"))
-                this.tooltipGemId = ((Long) toolTipe.get("gem0")).intValue();
-            if(toolTipe.containsKey("enchant"))
-                this.tooltipEnchantId = ((Long) toolTipe.get("enchant")).intValue();
+            JsonObject toolTipe = objInfo.get("tooltipParams").getAsJsonObject();
+            if(toolTipe.has("gem0"))
+                this.tooltipGemId = toolTipe.get("gem0").getAsInt();
+            if(toolTipe.has("enchant"))
+                this.tooltipEnchantId = toolTipe.get("enchant").getAsInt();
              
         }
-        this.position = objInfo.get("post_item").toString();
-        this.context = objInfo.get("context").toString();
+        this.position = objInfo.get("post_item").getAsString();
+        this.context = objInfo.get("context").getAsString();
         this.isData = true;
     }
         
@@ -159,22 +150,16 @@ public class CharacterItem extends GameObject
         Spell[] azPower = new Spell[this.azeritePower.size()];
         if(this.azeritePower.size() > 0)
         {
-            Update up = null;     
             for(int i = this.azeritePower.size()-1, j = 0; i >= 0 ; i--,j++)
             {
-                JSONObject power = (JSONObject) this.azeritePower.get(i);
-                int spellID = ((Long) power.get("spellId")).intValue();
+                JsonObject power = this.azeritePower.get(i).getAsJsonObject();
+                int spellID = power.get("spellId").getAsInt();
                 if(spellID != 0)
                 {
                     Spell azPowerD = new Spell( spellID );
                     if(!azPowerD.isInternalData())
                     {
-                        try {
-                            if (up == null) up = new Update();  
-                            azPowerD = up.getSpellInformationBlizz(((Long) power.get("spellId")).intValue());
-                        } catch (DataException | IOException | ParseException ex) {
-                            Logs.errorLog(com.blizzardPanel.gameObject.characters.CharacterItem.class, "Fail to get azerita spell from blizz "+ spellID +" - "+ ex);
-                        }
+                        azPowerD = Update.shared.getSpellInformationBlizz(power.get("spellId").getAsInt());
                     }
                     azPower[j] = azPowerD;
                 }
@@ -188,9 +173,9 @@ public class CharacterItem extends GameObject
         Stat[] itemStats = new Stat[this.stats.size()];
         for(int i = 0; i < this.stats.size(); i++)
         {
-            JSONObject stat = (JSONObject) this.stats.get(i);
-            itemStats[i] = new Stat( ((Long)stat.get("stat")).intValue());
-            itemStats[i].setAmount(((Long) stat.get("amount")).intValue());
+            JsonObject stat = this.stats.get(i).getAsJsonObject();
+            itemStats[i] = new Stat( stat.get("stat").getAsInt() );
+            itemStats[i].setAmount( stat.get("amount").getAsInt() );
         }
         return itemStats;
     }

@@ -1,4 +1,5 @@
 <%@ page import ="com.blizzardPanel.gameObject.WoWToken" %>
+<%@ page import ="com.blizzardPanel.blizzardAPI.WoWOauthService" %>
 <% String[] path = (request.getRequestURI()).split("/");
 String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];%>
 <div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
@@ -62,9 +63,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 String redirectUri = request.getContextPath() +"/login.jsp";
                 if(!user.checkUser())
                 {
-                    redirectUri = String.format(com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_URL, 
-                                                general_config.getStringConfig("SERVER_LOCATION"),
-                                                com.blizzardPanel.blizzardAPI.APIInfo.API_OAUTH_AUTHORIZE);
+                    redirectUri = String.format(WoWOauthService.API_OAUTH_URL, 
+                                                general_config.getStringConfig("SERVER_LOCATION"));
+                    redirectUri += WoWOauthService.API_OAUTH_AUTHORIZE;
                     String urlRedirectGenerator = general_config.getStringConfig("MAIN_URL")+general_config.getStringConfig("BLIZZAR_LINK");
                     if (request.getParameter("rdir") != null) { session.setAttribute("internal_redirect", request.getParameter("rdir")); }
                     redirectUri += "?redirect_uri="+ java.net.URLEncoder.encode(urlRedirectGenerator, "UTF-8");

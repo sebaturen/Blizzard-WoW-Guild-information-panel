@@ -9,9 +9,10 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONObject;
 
 public class Event extends GameObject
 {
@@ -40,13 +41,13 @@ public class Event extends GameObject
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.id = (Integer) objInfo.get("id");
-        this.title = objInfo.get("title").toString();
-        this.desc = objInfo.get("desc").toString();
-        this.date = objInfo.get("date").toString();
-        this.owner = new User((Integer) objInfo.get("owner_id"));
+        this.id = objInfo.get("id").getAsInt();
+        this.title = objInfo.get("title").getAsString();
+        this.desc = objInfo.get("desc").getAsString();
+        this.date = objInfo.get("date").getAsString();
+        this.owner = new User(objInfo.get("owner_id").getAsInt());
         this.isData = true;
     }
 

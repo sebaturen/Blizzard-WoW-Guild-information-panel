@@ -8,8 +8,6 @@ package com.blizzardPanel.gameObject.guild.challenges;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
-import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_INSERT_OK;
-import static com.blizzardPanel.gameObject.GameObject.SAVE_MSG_UPDATE_OK;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,8 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class Challenge extends GameObject
 {
@@ -45,7 +44,7 @@ public class Challenge extends GameObject
     }
     
     //Load to JSON
-    public Challenge(JSONObject mapInfo)
+    public Challenge(JsonObject mapInfo)
     {
         super(CHALLENGES_TABLE_NAME, CHALLENGES_TABLE_KEY, CHALLENGES_TABLE_STRUCTURE);
         saveInternalInfoObject(mapInfo);
@@ -55,13 +54,13 @@ public class Challenge extends GameObject
     {
         try {
             //dbConnect, select * from challenge_groups where challenge_id = this.mapId;
-            JSONArray dbGroups = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
+            JsonArray dbGroups = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
                                                 new String[] {"group_id"},
                                                 "challenge_id=? order by time_date desc limit 3;", //Load last 3 groups
                                                 new String[] {this.mapId +""});
             for(int i = 0; i < dbGroups.size(); i++)
             {
-                int gID = (Integer)((JSONObject)dbGroups.get(i)).get("group_id");
+                int gID = dbGroups.get(i).getAsJsonObject().get("group_id").getAsInt();
                 ChallengeGroup cgDb = new ChallengeGroup( gID );
                 if(cgDb.isData()) chGroups.add(cgDb);
             }
@@ -71,57 +70,53 @@ public class Challenge extends GameObject
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject exInfo)
+    protected void saveInternalInfoObject(JsonObject exInfo)
     {
-        if(exInfo.get("id").getClass() == java.lang.Long.class)
-        {//if info come to blizzAPI
-            this.mapId = ((Long) exInfo.get("id")).intValue();
-            this.mapName = exInfo.get("name").toString();
+        this.mapId = exInfo.get("id").getAsInt();
+        if (exInfo.has("name")) { // from blizzard
+            this.mapName = exInfo.get("name").getAsString();
             //challenge time~
-            if(exInfo.containsKey("bronzeCriteria"))
+            if(exInfo.has("bronzeCriteria"))
             {
-                JSONObject bronzeCriterial = (JSONObject) exInfo.get("bronzeCriteria");
-                this.bronzeTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
-                this.bronzeTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
-                this.bronzeTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
-                this.bronzeTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+                JsonObject bronzeCriteria = exInfo.get("bronzeCriteria").getAsJsonObject();
+                this.bronzeTime[0] = bronzeCriteria.get("hours").getAsInt();
+                this.bronzeTime[1] = bronzeCriteria.get("minutes").getAsInt();
+                this.bronzeTime[2] = bronzeCriteria.get("seconds").getAsInt();
+                this.bronzeTime[3] = bronzeCriteria.get("milliseconds").getAsInt();
             }
-            if(exInfo.containsKey("silverCriteria"))
+            if(exInfo.has("silverCriteria"))
             {
-                JSONObject bronzeCriterial = (JSONObject) exInfo.get("silverCriteria");
-                this.silverTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
-                this.silverTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
-                this.silverTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
-                this.silverTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+                JsonObject bronzeCriteria = exInfo.get("silverCriteria").getAsJsonObject();
+                this.silverTime[0] = bronzeCriteria.get("hours").getAsInt();
+                this.silverTime[1] = bronzeCriteria.get("minutes").getAsInt();
+                this.silverTime[2] = bronzeCriteria.get("seconds").getAsInt();
+                this.silverTime[3] = bronzeCriteria.get("milliseconds").getAsInt();
             }
-            if(exInfo.containsKey("goldCriteria"))
+            if(exInfo.has("goldCriteria"))
             {
-                JSONObject bronzeCriterial = (JSONObject) exInfo.get("goldCriteria");
-                this.goldTime[0] = ((Long) bronzeCriterial.get("hours")).intValue();
-                this.goldTime[1] = ((Long) bronzeCriterial.get("minutes")).intValue();
-                this.goldTime[2] = ((Long) bronzeCriterial.get("seconds")).intValue();
-                this.goldTime[3] = ((Long) bronzeCriterial.get("milliseconds")).intValue();
+                JsonObject bronzeCriteria = exInfo.get("goldCriteria").getAsJsonObject();
+                this.goldTime[0] = bronzeCriteria.get("hours").getAsInt();
+                this.goldTime[1] = bronzeCriteria.get("minutes").getAsInt();
+                this.goldTime[2] = bronzeCriteria.get("seconds").getAsInt();
+                this.goldTime[3] = bronzeCriteria.get("milliseconds").getAsInt();
             }
-        }
-        else
-        {
-            this.mapId = (Integer) exInfo.get("id");
-            this.mapName = exInfo.get("map_name").toString();
+        } else { // from DB
+            this.mapName = exInfo.get("map_name").getAsString();
             //Bronze time
-            this.bronzeTime[0] = (Integer) exInfo.get("bronze_hours");
-            this.bronzeTime[1] = (Integer) exInfo.get("bronze_minutes");
-            this.bronzeTime[2] = (Integer) exInfo.get("bronze_seconds");
-            this.bronzeTime[3] = (Integer) exInfo.get("bronze_milliseconds");
+            this.bronzeTime[0] = exInfo.get("bronze_hours").getAsInt();
+            this.bronzeTime[1] = exInfo.get("bronze_minutes").getAsInt();
+            this.bronzeTime[2] = exInfo.get("bronze_seconds").getAsInt();
+            this.bronzeTime[3] = exInfo.get("bronze_milliseconds").getAsInt();
             //Silver time
-            this.silverTime[0] = (Integer) exInfo.get("silver_hours");
-            this.silverTime[1] = (Integer) exInfo.get("silver_minutes");
-            this.silverTime[2] = (Integer) exInfo.get("silver_seconds");
-            this.silverTime[3] = (Integer) exInfo.get("silver_milliseconds");
+            this.silverTime[0] = exInfo.get("silver_hours").getAsInt();
+            this.silverTime[1] = exInfo.get("silver_minutes").getAsInt();
+            this.silverTime[2] = exInfo.get("silver_seconds").getAsInt();
+            this.silverTime[3] = exInfo.get("silver_milliseconds").getAsInt();
             //Gold time
-            this.goldTime[0] = (Integer) exInfo.get("gold_hours");
-            this.goldTime[1] = (Integer) exInfo.get("gold_minutes");
-            this.goldTime[2] = (Integer) exInfo.get("gold_seconds");
-            this.goldTime[3] = (Integer) exInfo.get("gold_milliseconds");
+            this.goldTime[0] = exInfo.get("gold_hours").getAsInt();
+            this.goldTime[1] = exInfo.get("gold_minutes").getAsInt();
+            this.goldTime[2] = exInfo.get("gold_seconds").getAsInt();
+            this.goldTime[3] = exInfo.get("gold_milliseconds").getAsInt();
         }
         this.isData = true;		
     }

@@ -9,8 +9,8 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class CharacterSpec extends GameObject
 {
@@ -38,59 +38,59 @@ public class CharacterSpec extends GameObject
         loadFromDB(specId);
     }
     
-    public CharacterSpec(CharacterMember member, JSONObject specInfo, JSONArray talentsInfo)
+    public CharacterSpec(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
     {
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = member.getId();
         saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
-    private void saveInfoFromBlizz(CharacterMember member, JSONObject specInfo, JSONArray talentsInfo)
+    private void saveInfoFromBlizz(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
     {
         this.spells = new Spell[MAX_SPELL_TALENTS];
-        this.spec = new PlayableSpec(specInfo.get("name").toString(), specInfo.get("role").toString(), member.getMemberClass().getId());
+        this.spec = new PlayableSpec(specInfo.get("name").getAsString(), specInfo.get("role").getAsString(), member.getMemberClass().getId());
         if(this.spec.getName() == null)
         {
             Logs.errorLog(CharacterSpec.class, "Fail to get Spec Member> "+ this.memberId);
-            Logs.errorLog(CharacterSpec.class, "\tSpec Name: "+ specInfo.get("name").toString());
-            Logs.errorLog(CharacterSpec.class, "\tSpec Role: "+ specInfo.get("role").toString());
+            Logs.errorLog(CharacterSpec.class, "\tSpec Name: "+ specInfo.get("name").getAsString());
+            Logs.errorLog(CharacterSpec.class, "\tSpec Role: "+ specInfo.get("role").getAsString());
             Logs.errorLog(CharacterSpec.class, "\tClass ID: "+ member.getMemberClass().getId());
             System.exit(-1);
         }
         for(int i = 0; i < talentsInfo.size(); i++)
         {
-            JSONObject talentLevl = (JSONObject) talentsInfo.get(i); //get("tier") talent level 
+            JsonObject talentLevel = talentsInfo.get(i).getAsJsonObject(); //get("tier") talent level
             if(talentsInfo.get(i) != null)
             {
-                JSONObject skillBlizzDetail = (JSONObject) talentLevl.get("spell");
-                int spellID = ((Long) skillBlizzDetail.get("id")).intValue();
+                JsonObject skillBlizzDetail = talentLevel.get("spell").getAsJsonObject();
+                int spellID = skillBlizzDetail.get("id").getAsInt();
                 Spell sp = new Spell( spellID );
                 if(!sp.isInternalData())
                 {
                     sp = new Spell(skillBlizzDetail);
                     sp.saveInDB();
                 }
-                this.spells[ ((Long) talentLevl.get("tier")).intValue() ] = sp;
+                this.spells[ talentLevel.get("tier").getAsInt() ] = sp;
             }
         }
         this.isData = true;
     }
     
     @Override
-    protected void saveInternalInfoObject(JSONObject specInfo) 
+    protected void saveInternalInfoObject(JsonObject specInfo)
     {        
-        this.id = (Integer) specInfo.get("id");
-        this.memberId = (Integer) specInfo.get("member_id");
-        this.spec = new PlayableSpec((Integer) specInfo.get("spec_id"));
-        this.enable = (Boolean) specInfo.get("enable");
+        this.id = specInfo.get("id").getAsInt();
+        this.memberId = specInfo.get("member_id").getAsInt();
+        this.spec = new PlayableSpec(specInfo.get("spec_id").getAsInt());
+        this.enable = specInfo.get("enable").getAsBoolean();
         this.spells = new Spell[MAX_SPELL_TALENTS];
-        if((Integer) specInfo.get("tier_0") != 0) this.spells[0] = new Spell( (Integer) specInfo.get("tier_0") );
-        if((Integer) specInfo.get("tier_1") != 0) this.spells[1] = new Spell( (Integer) specInfo.get("tier_1") );
-        if((Integer) specInfo.get("tier_2") != 0) this.spells[2] = new Spell( (Integer) specInfo.get("tier_2") );
-        if((Integer) specInfo.get("tier_3") != 0) this.spells[3] = new Spell( (Integer) specInfo.get("tier_3") );
-        if((Integer) specInfo.get("tier_4") != 0) this.spells[4] = new Spell( (Integer) specInfo.get("tier_4") );
-        if((Integer) specInfo.get("tier_5") != 0) this.spells[5] = new Spell( (Integer) specInfo.get("tier_5") );
-        if((Integer) specInfo.get("tier_6") != 0) this.spells[6] = new Spell( (Integer) specInfo.get("tier_6") );
+        if(specInfo.get("tier_0").getAsInt() != 0) this.spells[0] = new Spell( specInfo.get("tier_0").getAsInt() );
+        if(specInfo.get("tier_1").getAsInt() != 0) this.spells[1] = new Spell( specInfo.get("tier_1").getAsInt() );
+        if(specInfo.get("tier_2").getAsInt() != 0) this.spells[2] = new Spell( specInfo.get("tier_2").getAsInt() );
+        if(specInfo.get("tier_3").getAsInt() != 0) this.spells[3] = new Spell( specInfo.get("tier_3").getAsInt() );
+        if(specInfo.get("tier_4").getAsInt() != 0) this.spells[4] = new Spell( specInfo.get("tier_4").getAsInt() );
+        if(specInfo.get("tier_5").getAsInt() != 0) this.spells[5] = new Spell( specInfo.get("tier_5").getAsInt() );
+        if(specInfo.get("tier_6").getAsInt() != 0) this.spells[6] = new Spell( specInfo.get("tier_6").getAsInt() );
         this.isData = true;
     }
 

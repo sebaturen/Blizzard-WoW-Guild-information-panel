@@ -13,16 +13,15 @@ import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Realm;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class KeystoneDungeonRun extends GameObject
 {
@@ -61,69 +60,59 @@ public class KeystoneDungeonRun extends GameObject
                             keyDunId+"", (isCompletInTime? "1":"0")});
     }
 
-    public KeystoneDungeonRun(JSONObject info)
+    public KeystoneDungeonRun(JsonObject info)
     {
         super(KEYSTONE_DUNGEON_RUN_TABLE_NAME, KEYSTONE_DUNGEON_RUN_TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
-    protected void saveInternalInfoObject(JSONObject objInfo)
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.complatedTimeStamp = (long) objInfo.get("completed_timestamp");
-        this.duration = (long) objInfo.get("duration");
-        if(objInfo.get("keystone_level").getClass() == Long.class)
-        {//info come from blizzard
-            this.keystoneLevel = ((Long) objInfo.get("keystone_level")).intValue();
-            this.ksDun = new KeystoneDungeon( ((Long)((JSONObject) objInfo.get("dungeon")).get("id")).intValue());
+        this.complatedTimeStamp = objInfo.get("completed_timestamp").getAsLong();
+        this.duration = objInfo.get("duration").getAsLong();
+        this.keystoneLevel = objInfo.get("keystone_level").getAsInt();
+        if (objInfo.has("id")) { // from DB
+            this.id = objInfo.get("id").getAsInt();
+            this.ksDun = new KeystoneDungeon(objInfo.get("keystone_dungeon_id").getAsInt());
+            this.isCompleteInTime = objInfo.get("is_complete_in_time").getAsBoolean();
+            loadMembersFromDB();
+            loadKeystoneAffixesDB(objInfo.get("key_affixes").getAsString());
+        } else { // from blizzard
+            this.ksDun = new KeystoneDungeon( objInfo.get("dungeon").getAsJsonObject().get("id").getAsInt() );
             if(!this.ksDun.isInternalData())
             {
-                String urlDunDetail = (((JSONObject) ((JSONObject)objInfo.get("dungeon")).get("key")).get("href")).toString();
-                try { this.ksDun = (new Update()).getKeyStoneDungeonDetail(urlDunDetail); } 
-                catch (IOException ex) { Logs.errorLog(KeystoneDungeonRun.class, "Fail to get Dungeon details from update - "+ ex); }
+                String urlDunDetail = objInfo.get("dungeon").getAsJsonObject().get("key").getAsJsonObject().get("href").getAsString();
+                this.ksDun = Update.shared.getKeyStoneDungeonDetail(urlDunDetail);
             }
-            this.isCompleteInTime = (Boolean) objInfo.get("is_completed_within_time");
-            loadMembersFromBlizz((JSONArray) objInfo.get("members"));
-            loadKeystoneAffixesFromBlizz((JSONArray) objInfo.get("keystone_affixes"));
-        }
-        else
-        {
-            this.id = (int) objInfo.get("id");
-            this.keystoneLevel = (int) objInfo.get("keystone_level"); 
-            this.ksDun = new KeystoneDungeon((Integer) objInfo.get("keystone_dungeon_id"));
-            this.isCompleteInTime = (Boolean) objInfo.get("is_complete_in_time");
-            loadMembersFromDB();
-            loadKeystoneAffixesDB(objInfo.get("key_affixes").toString());
+            this.isCompleteInTime = objInfo.get("is_completed_within_time").getAsBoolean();
+            loadMembersFromBlizz(objInfo.get("members").getAsJsonArray());
+            loadKeystoneAffixesFromBlizz(objInfo.get("keystone_affixes").getAsJsonArray());
+
         }
         this.isData = true;
     }
     
     private void loadKeystoneAffixesDB(String keyAffixString)
     {
-        try 
+        JsonObject keyAffix;
+        if(keyAffixString.length() > 2)
         {
-            JSONParser parser = new JSONParser();
-            JSONObject keyAffix;
-            if(keyAffixString.length() > 2)
+            keyAffix = JsonParser.parseString(keyAffixString).getAsJsonObject();
+            for(int i = 0; i < keyAffix.size(); i++)
             {
-                keyAffix = (JSONObject) parser.parse(keyAffixString);
-                for(int i = 0; i < keyAffix.size(); i++)
-                {
-                    int affixId = ((Long) keyAffix.get(i+"")).intValue();
-                    KeystoneAffix kAf = new KeystoneAffix(affixId);
-                    this.keyAffixes.add(kAf);
-                }
+                int affixId = keyAffix.get(i+"").getAsInt();
+                KeystoneAffix kAf = new KeystoneAffix(affixId);
+                this.keyAffixes.add(kAf);
             }
-        } catch (ParseException ex) {
-            Logs.errorLog(KeystoneDungeonRun.class, "Fail to parse stats keystone afixes "+ this.id +" - "+ ex);
         }
     }
     
-    private void loadKeystoneAffixesFromBlizz(JSONArray keyAffix)
+    private void loadKeystoneAffixesFromBlizz(JsonArray keyAffix)
     {
         for(int i = 0; i < keyAffix.size(); i++)
         {
-            JSONObject kBlizzDetail = (JSONObject) keyAffix.get(i);
-            KeystoneAffix kAffix = new KeystoneAffix( ((Long) kBlizzDetail.get("id")).intValue() );
+            JsonObject kBlizzDetail = keyAffix.get(i).getAsJsonObject();
+            KeystoneAffix kAffix = new KeystoneAffix( kBlizzDetail.get("id").getAsInt() );
             if(!kAffix.isInternalData())
             {
                 kAffix = new KeystoneAffix(kBlizzDetail);
@@ -133,21 +122,21 @@ public class KeystoneDungeonRun extends GameObject
         }
     }
     
-    private void loadMembersFromBlizz(JSONArray runMemsInfo)
+    private void loadMembersFromBlizz(JsonArray runMemsInfo)
     {
         for(int i = 0; i < runMemsInfo.size(); i++)
         {
-            JSONObject memI = (JSONObject) runMemsInfo.get(i);
-            JSONObject charInfo = (JSONObject) memI.get("character");
-            String charName = charInfo.get("name").toString();
-            Realm charRealm = new Realm( ((Long) ((JSONObject)charInfo.get("realm")).get("id") ).intValue());
+            JsonObject memI = runMemsInfo.get(i).getAsJsonObject();
+            JsonObject charInfo = memI.get("character").getAsJsonObject();
+            String charName = charInfo.get("name").getAsString();
+            Realm charRealm = new Realm( charInfo.get("realm").getAsJsonObject().get("id").getAsInt() );
             //New character
             CharacterMember newMember = new CharacterMember(charName, charRealm.getName());
             if(!newMember.isDelete())
             {
-                newMember.setItemLevel( ((Long) ((JSONObject)runMemsInfo.get(i)).get("equipped_item_level") ).intValue() );
-                JSONObject specDetail = (JSONObject) ((JSONObject) runMemsInfo.get(i)).get("specialization");
-                newMember.setActiveSpecPlayableSpec( ((Long) specDetail.get("id")).intValue() );
+                newMember.setItemLevel( runMemsInfo.get(i).getAsJsonObject().get("equipped_item_level").getAsInt() );
+                JsonObject specDetail = runMemsInfo.get(i).getAsJsonObject().get("specialization").getAsJsonObject();
+                newMember.setActiveSpecPlayableSpec( specDetail.get("id").getAsInt() );
                 this.members.add(newMember);                
             }
         }
@@ -157,16 +146,16 @@ public class KeystoneDungeonRun extends GameObject
     {
         try 
         {
-            JSONArray memsInfo = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+            JsonArray memsInfo = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
                                         KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE,
                                         "keystone_dungeon_run_id=?",
                                         new String[] {this.id+""});
             for(int i = 0; i < memsInfo.size(); i++)
             {
-                JSONObject memDetail = (JSONObject) memsInfo.get(i);
-                CharacterMember mem = new CharacterMember( (Integer) memDetail.get("character_internal_id") );
-                mem.setItemLevel( (Integer) memDetail.get("character_item_level"));
-                mem.setActiveSpec( (Integer) memDetail.get("character_spec_id"));
+                JsonObject memDetail = memsInfo.get(i).getAsJsonObject();
+                CharacterMember mem = new CharacterMember( memDetail.get("character_internal_id").getAsInt() );
+                mem.setItemLevel( memDetail.get("character_item_level").getAsInt() );
+                mem.setActiveSpec( memDetail.get("character_spec_id").getAsInt());
                 members.add(mem);
             }
         } catch (SQLException | DataException ex) {
@@ -178,23 +167,23 @@ public class KeystoneDungeonRun extends GameObject
     public boolean saveInDB()
     {
         //Keystone affixes:
-        JSONObject keyAffix = new JSONObject();
+        JsonObject keyAffix = new JsonObject();
         for(int i = 0; i < this.keyAffixes.size(); i++)
         {
-            keyAffix.put(i, this.keyAffixes.get(i).getId());
+            keyAffix.addProperty(""+ i, this.keyAffixes.get(i).getId());
         }
         //{"id", "completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time"} //
         String[] saveData;
         if(this.isInternalData)
         {
             saveData = new String[] {this.id+"", this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.getAsString()};
         }
         else
         {            
             setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
             saveData = new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.getAsString()};
         }
         switch (saveInDBObj(saveData))
         {
@@ -203,7 +192,7 @@ public class KeystoneDungeonRun extends GameObject
                 {
                     try 
                     {
-                        JSONArray memInGroupId = null;
+                        JsonArray memInGroupId = null;
                         try 
                         {
                             //Verificate if this memers is previewsly register from this group
@@ -215,7 +204,7 @@ public class KeystoneDungeonRun extends GameObject
                             Logs.errorLog(KeystoneDungeonRun.class, "Fail to get memberInGroupID "+ ex);
                         }
                         //Insert or update... if need insert is because not is register :D
-                        if ( (memInGroupId == null) || (memInGroupId.isEmpty()) )
+                        if ( (memInGroupId == null) || (memInGroupId.size() == 0) )
                         {//insert
                             dbConnect.insert(
                                 KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,

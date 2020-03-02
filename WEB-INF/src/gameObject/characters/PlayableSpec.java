@@ -7,7 +7,7 @@ package com.blizzardPanel.gameObject.characters;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
 public class PlayableSpec extends GameObject
 {    
@@ -36,37 +36,33 @@ public class PlayableSpec extends GameObject
         loadFromDBUniqued(new String[] {"name", "role", "class"}, new String[] { name, role, idClass+"" });        
     }
     
-    public PlayableSpec(JSONObject info)
+    public PlayableSpec(JsonObject info)
     {
         super(PLAYABLE_SPEC_TABLE_NAME, PLAYABLE_SPEC_TABLE_KEY, PLAYABLE_SPEC_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
     @Override
-    protected void saveInternalInfoObject(JSONObject objInfo) 
+    protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if(objInfo.get("id").getClass() == Long.class)
-        {//Info come from blizz API        
-            this.id = ((Long) objInfo.get("id")).intValue();    
-            this.name = ((JSONObject) objInfo.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
-            this.slug = ((JSONObject) objInfo.get("name")).get("en_US").toString().replaceAll("\\s+","-").toLowerCase();
-            this.pClass = new PlayableClass(((Long) ((JSONObject) objInfo.get("playable_class")).get("id")).intValue());
-            this.role = ((JSONObject) objInfo.get("role")).get("type").toString();
+        if (objInfo.has("slug")) { // from DB
+            this.name = objInfo.get("name").getAsString();
+            this.slug = objInfo.get("slug").getAsString();
+            this.pClass = new PlayableClass(objInfo.get("class").getAsInt());
+            this.role = objInfo.get("role").getAsString();
+            this.descMale = objInfo.get("desc_male").getAsString();
+            this.descFemale = objInfo.get("desc_female").getAsString();
+        } else { // from blizzard
+            this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
+            this.slug =  objInfo.get("name").getAsJsonObject().get("en_US").getAsString().replaceAll("\\s+","-").toLowerCase();
+            this.pClass = new PlayableClass( objInfo.get("playable_class").getAsJsonObject().get("id").getAsInt() );
+            this.role = objInfo.get("role").getAsJsonObject().get("type").getAsString();
             if(this.role.equals("DAMAGE")) this.role = "DPS";
             if(this.role.equals("HEALER")) this.role = "HEALING";
-            this.descMale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("male")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
-            this.descFemale = ((JSONObject) ((JSONObject) objInfo.get("gender_description")).get("female")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString();
+            this.descMale = objInfo.get("gender_description").getAsJsonObject().get("male").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
+            this.descFemale = objInfo.get("gender_description").getAsJsonObject().get("female").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
         }
-        else
-        {//Info come from DB
-            this.id = (Integer) objInfo.get("id");
-            this.name = objInfo.get("name").toString();
-            this.slug = objInfo.get("slug").toString();
-            this.pClass = new PlayableClass((Integer) objInfo.get("class"));
-            this.role = objInfo.get("role").toString();
-            this.descMale = objInfo.get("desc_male").toString();
-            this.descFemale = objInfo.get("desc_female").toString();
-        }
+        this.id = objInfo.get("id").getAsInt();
         this.isData = true;
     }
 
@@ -91,14 +87,27 @@ public class PlayableSpec extends GameObject
     public String getSlug() { return this.slug; }
     public String getName() { return this.name; }
     public String getRole() { return this.role; }
-    public String getDescript(int gender)
+    public String getDecrypt(int gender)
     {
         switch(gender)
         {
-            case 1: //famele
+            case 1: // female
                 return this.descFemale;
             default: //0 - male
                 return this.descMale;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PlayableSpec{" +
+                "id=" + id +
+                ", slug='" + slug + '\'' +
+                ", pClass=" + pClass +
+                ", name='" + name + '\'' +
+                ", role='" + role + '\'' +
+                ", descMale='" + descMale + '\'' +
+                ", descFemale='" + descFemale + '\'' +
+                '}';
     }
 }

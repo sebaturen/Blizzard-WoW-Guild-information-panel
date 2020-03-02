@@ -34,11 +34,11 @@ import com.blizzardPanel.gameObject.characters.PlayableSpec;
 
 import java.io.*;
 
-import okhttp3.Credentials;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import okhttp3.*;
+import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,17 +70,23 @@ public class Update {
 
     // API call lib
     private WoWAPIService apiCalls;
+    private WoWOauthService apiOauthCalls;
     private RaiderIOService apiRaiderIOService;
     private AccessToken accessToken;
 
     private static final DBConnect dbConnect = new DBConnect();
 
     /**
-     * Constructor. Run a generateAccesToken to generate this token
+     * Constructor. Run a generateAccessToken to generate this token
      */
     public Update() {
 
         // Load Retrofit API calls platform
+        Retrofit apiOauthCallsRetrofit = new Retrofit.Builder()
+                .baseUrl(String.format(WoWOauthService.API_OAUTH_URL, GeneralConfig.getStringConfig("SERVER_LOCATION")))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiOauthCalls = apiOauthCallsRetrofit.create(WoWOauthService.class);
         Retrofit apiCallsRetrofit = new Retrofit.Builder()
                 .baseUrl(String.format(WoWAPIService.API_ROOT_URL, GeneralConfig.getStringConfig("SERVER_LOCATION")))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -366,42 +372,43 @@ public class Update {
     public void getRealmIndex() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.connectedRealmIndex(
+        Call<JsonObject> call = apiCalls.connectedRealmIndex(
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 "dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray connRealm = (JSONArray) response.body().get("connected_realms");
+                    JsonArray connRealm = response.body().getAsJsonArray("connected_realms");
                     for (int i = 0; i < connRealm.size(); i++) {
 
-                        String urlRealmConnect = ((JSONObject) connRealm.get(i)).get("href").toString();
+
+                        String urlRealmConnect = ((JsonObject) connRealm.get(i)).get("href").getAsString();
                         int startId = urlRealmConnect.indexOf("connected-realm/") + "connected-realm/".length();
                         int endId = urlRealmConnect.indexOf("?namespace=");
 
                         int realmId = Integer.parseInt(urlRealmConnect.substring(startId, endId));
-                        Call<JSONObject> callRealmInfo = apiCalls.connectedRealm(
+                        Call<JsonObject> callRealmInfo = apiCalls.connectedRealm(
                                 realmId,
                                 "dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                                 accessToken.getAuthorization()
                         );
 
-                        callRealmInfo.enqueue(new Callback<JSONObject>() {
+                        callRealmInfo.enqueue(new Callback<JsonObject>() {
                             @Override
-                            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                                 if (response.isSuccessful()) {
-                                    JSONObject realmsConn = response.body();
-                                    int realmConnectID = ((Long) realmsConn.get("id")).intValue();
-                                    JSONArray realms = (JSONArray) realmsConn.get("realms");
+                                    JsonObject realmsConn = response.body();
+                                    JsonElement realmConnectID = realmsConn.get("id");
+                                    JsonArray realms = realmsConn.get("realms").getAsJsonArray();
                                     for (int j = 0; j < realms.size(); j++) {
-                                        JSONObject realmInfo = (JSONObject) realms.get(j);
-                                        realmInfo.put("connected_realm", realmConnectID);
-                                        int inId = ((Long) realmInfo.get("id")).intValue();
+                                        JsonObject realmInfo = realms.get(j).getAsJsonObject();
+                                        realmInfo.add("connected_realm", realmConnectID);
+                                        int inId = realmInfo.get("id").getAsInt();
                                         Realm realm = new Realm(inId);
                                         Realm realmBlizz = new Realm(realmInfo);
                                         if (realm.isInternalData()) {
@@ -415,7 +422,7 @@ public class Update {
                             }
 
                             @Override
-                            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+                            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                                 Logs.infoLog(Update.class, "FAIL - RealmDetail " + throwable);
                             }
                         });
@@ -426,7 +433,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - RealmIndex " + throwable);
 
             }
@@ -439,34 +446,43 @@ public class Update {
      * @return {name, description, icon}
      * @throws IOException
      */
-    public JSONObject loadKeyDetailFromBlizz(String url) throws IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    public JsonObject loadKeyDetailFromBlizz(String url) {
 
-        JSONObject keyDetail = null;
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.freeUrl(
-                url,
-                accessToken.getAccess_token()
-        );
+            JsonObject keyDetail = null;
 
-        JSONObject inf = call.execute().body();
-        keyDetail.put("name", ((JSONObject) inf.get("name")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString());
-        keyDetail.put("description", ((JSONObject) inf.get("description")).get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).toString());
+            Call<JsonObject> call = apiCalls.freeUrl(
+                    url,
+                    accessToken.getAccess_token()
+            );
 
-        Call<JSONObject> iconCall = apiCalls.freeUrl(
-                ((JSONObject) ((JSONObject) keyDetail.get("media")).get("key")).get("href").toString(),
-                accessToken.getAccess_token()
-        );
-        JSONArray iconAsset = (JSONArray) iconCall.execute().body().get("assets");
-        for (int i = 0; i < iconAsset.size(); i++) {
-            JSONObject keyAssetDet = (JSONObject) iconAsset.get(i);
-            if (keyAssetDet.get("key").toString().equals("icon")) {
-                keyDetail.put("icon", keyAssetDet.get("value").toString());
-                break;
+            JsonObject inf = call.execute().body();
+            keyDetail.add("name", inf.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")));
+            keyDetail.add("description", inf.get("description").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")));
+
+            Call<JsonObject> iconCall = apiCalls.freeUrl(
+                    keyDetail.get("media").getAsJsonObject().get("key").getAsJsonObject().get("href").getAsString(),
+                    accessToken.getAccess_token()
+            );
+
+            JsonArray iconAsset = iconCall.execute().body().get("assets").getAsJsonArray();
+            for (int i = 0; i < iconAsset.size(); i++) {
+                JsonObject keyAssetDet = iconAsset.get(i).getAsJsonObject();
+                if (keyAssetDet.get("key").getAsString().equals("icon")) {
+                    keyDetail.add("icon", keyAssetDet.get("value"));
+                    break;
+                }
             }
+
+            return keyDetail;
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - loadKeyDetailFromBlizz " + e);
         }
 
-        return keyDetail;
+        return null;
     }
 
     /**
@@ -475,20 +491,27 @@ public class Update {
      * @return
      * @throws IOException
      */
-    public KeystoneDungeon getKeyStoneDungeonDetail(String url) throws IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    public KeystoneDungeon getKeyStoneDungeonDetail(String url) {
 
-        KeystoneDungeon kDun = null;
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.freeUrl(
-                url,
-                accessToken.getAccess_token()
-        );
+            KeystoneDungeon kDun = null;
 
-        kDun = new KeystoneDungeon(call.execute().body());
-        kDun.saveInDB();
+            Call<JsonObject> call = apiCalls.freeUrl(
+                    url,
+                    accessToken.getAccess_token()
+            );
 
-        return kDun;
+            kDun = new KeystoneDungeon(call.execute().body());
+            kDun.saveInDB();
+
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getKeyStoneDungeonDetail " + e);
+        }
+
+        return null;
     }
 
     /**
@@ -497,13 +520,13 @@ public class Update {
     public void updateAH() {
         Logs.infoLog(Update.class, "-------Update process is START! (Auction House)------");
         try {
-            JSONObject genInfo = getURLAH();
-            String lastUpdate = parseUnixTime(genInfo.get("lastModified").toString());
-            JSONArray getLastUpdateInDB = dbConnect.select(UPDATE_INTERVAL_TABLE_NAME,
+            JsonObject genInfo = getURLAH();
+            String lastUpdate = parseUnixTime(genInfo.get("lastModified").getAsString());
+            JsonArray getLastUpdateInDB = dbConnect.select(UPDATE_INTERVAL_TABLE_NAME,
                     UPDATE_INTERVAL_TABLE_STRUCTURE,
                     "type=? AND update_time=?",
                     new String[]{UPDATE_TYPE_AUCTION + "", lastUpdate});
-            if (getLastUpdateInDB.isEmpty()) {
+            if (getLastUpdateInDB.size() == 0) {
                 //Clear last auItems
                 dbConnect.update(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                         new String[]{"status"},
@@ -513,21 +536,21 @@ public class Update {
                 Logs.infoLog(Update.class, "AH last update: " + lastUpdate);
                 Logs.infoLog(Update.class, "Get a AH update...");
 
-                Call<JSONObject> call = apiCalls.freeUrl(
-                        genInfo.get("url").toString(),
+                Call<JsonObject> call = apiCalls.freeUrl(
+                        genInfo.get("url").getAsString(),
                         accessToken.getAccess_token()
                 );
 
 
-                JSONObject allAH = call.execute().body();
-                JSONArray itemsAH = (JSONArray) allAH.get("auctions");
+                JsonObject allAH = call.execute().body();
+                JsonArray itemsAH = allAH.get("auctions").getAsJsonArray();
 
                 int iProgres = 1;
                 Logs.infoLog(Update.class, "0%");
                 for (int i = 0; i < itemsAH.size(); i++) {
-                    JSONObject item = (JSONObject) itemsAH.get(i);
+                    JsonObject item = itemsAH.get(i).getAsJsonObject();
                     AuctionItem acObItem = new AuctionItem(item);
-                    AuctionItem acObItemDB = new AuctionItem(((Long) item.get("auc")).intValue());
+                    AuctionItem acObItemDB = new AuctionItem(item.get("auc").getAsInt());
                     if (acObItemDB.isInternalData()) {
                         acObItem.setIsInternalData(true);
                         acObItem.setAucDate(acObItemDB.getAucDate());
@@ -557,7 +580,7 @@ public class Update {
         } catch (DataException | IOException | ClassNotFoundException | SQLException ex) {
             Logs.errorLog(Update.class, "Fail to get AH " + ex);
         }
-        Logs.infoLog(Update.class, "-------Update process is COMPLATE! (Auction House)------");
+        Logs.infoLog(Update.class, "-------Update process is COMPLETE! (Auction House)------");
     }
 
     /**
@@ -566,15 +589,15 @@ public class Update {
     public void moveHistoryAH() {
         Logs.infoLog(Update.class, "-------Update process is Start! (Auction House move to History DB)------");
         try {
-            JSONArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
+            JsonArray aucItem = dbConnect.select(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                     new String[]{AuctionItem.AUCTION_ITEMS_KEY},
                     "status = ?",
                     new String[]{"0"});
             //Get and delete all auc need save in history DB
-            int iProgres = 1;
+            int iProgress = 1;
             Logs.infoLog(Update.class, "0%");
             for (int i = 0; i < aucItem.size(); i++) {
-                int aucId = (Integer) ((JSONObject) aucItem.get(i)).get(AuctionItem.AUCTION_ITEMS_KEY);
+                int aucId = aucItem.get(i).getAsJsonObject().get(AuctionItem.AUCTION_ITEMS_KEY).getAsInt();
                 AuctionItem aucItemOLD = new AuctionItem(aucId);
                 try {
                     //Insert in History if have a price
@@ -594,9 +617,9 @@ public class Update {
                     Logs.errorLog(Update.class, "Fail to save auc history to " + aucItemOLD.getId() + " - " + ex);
                 }
                 //Show update progress...
-                if ((((iProgres * 2) * 10) * aucItem.size()) / 100 < i) {
-                    Logs.infoLog(Update.class, "..." + ((iProgres * 2) * 10) + "%");
-                    iProgres++;
+                if ((((iProgress * 2) * 10) * aucItem.size()) / 100 < i) {
+                    Logs.infoLog(Update.class, "..." + ((iProgress * 2) * 10) + "%");
+                    iProgress++;
                 }
             }
             Logs.infoLog(Update.class, "...100%");
@@ -621,17 +644,19 @@ public class Update {
      */
     private void generateAccessToken() throws IOException {
 
-        Call<JSONObject> call = apiCalls.accessToken(
-                RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), "grant_type=client_credentials"),
+        Call<JsonObject> call = apiOauthCalls.accessToken(
+                "client_credentials",
                 Credentials.basic(GeneralConfig.getStringConfig("CLIENT_ID"), GeneralConfig.getStringConfig("CLIENT_SECRET"))
         );
 
-        JSONObject aToken = call.execute().body();
+        JsonObject aToken = call.execute().body();
 
         accessToken = new AccessToken();
-        accessToken.setAccess_token((String) aToken.get("access_token"));
-        accessToken.setToken_type((String) aToken.get("token_type"));
-        accessToken.setExpire_in((int) aToken.get("expires_in"));
+        accessToken.setAccess_token(aToken.get("access_token").getAsString());
+        accessToken.setToken_type(aToken.get("token_type").getAsString());
+        accessToken.setExpire_in(Double.parseDouble(aToken.get("expires_in").getAsString()));
+
+        System.out.println(accessToken);
     }
 
     /**
@@ -641,15 +666,28 @@ public class Update {
      * @throws DataException
      * @throws IOException
      */
-    private JSONObject getURLAH() throws IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    private JsonObject getURLAH() {
 
-        Call<JSONObject> call = apiCalls.auction(
-                GeneralConfig.getStringConfig("SERVER_LOCATION"),
-                accessToken.getAuthorization()
-        );
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        return ((JSONObject) ((JSONArray) call.execute().body().get("files")).get(0));
+            Call<JsonObject> call = apiCalls.auction(
+                    GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    accessToken.getAuthorization()
+            );
+
+            Response<JsonObject> resp = call.execute();
+            JsonObject r = resp.body();
+            System.out.println("=== Debug Update.java");
+            System.out.println(resp.code());
+            System.out.println(r);
+            return call.execute().body().get("files").getAsJsonArray().get(0).getAsJsonObject();
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getURLAH " + e);
+        }
+
+        return null;
     }
 
     /**
@@ -663,52 +701,49 @@ public class Update {
     public void getGuildProfile() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.guildProfile(
+        Call<JsonObject> call = apiCalls.guildProfile(
                 GeneralConfig.getStringConfig("GUILD_REALM"),
                 GeneralConfig.getStringConfig("GUILD_NAME"),
+                "achievements",
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Guild aGuild = new Guild(response.body());
 
                     // Check if is in db
                     try {
-                        JSONArray lastModified = dbConnect.select(Guild.GUILD_TABLE_NAME,
+                        JsonArray lastModified = dbConnect.select(Guild.GUILD_TABLE_NAME,
                                 new String[]{"id", "lastModified", "realm_slug"},
                                 "name=? AND realm=?",
                                 new String[]{ aGuild.getName(), aGuild.getRealm()});
 
                         if (lastModified.size() > 0) {
-                            Long blizzUpdateTime = Long.parseLong(((JSONObject) lastModified.get(0)).get("lastModified").toString());
+                            Long blizzUpdateTime = Long.parseLong( lastModified.get(0).getAsJsonObject().get("lastModified").getAsString() );
                             if (!blizzUpdateTime.equals(aGuild.getLastModified())) {
-                                aGuild.setId((Integer) ((JSONObject) lastModified.get(0)).get("id"));
+                                aGuild.setId( lastModified.get(0).getAsJsonObject().get("id").getAsInt() );
                                 aGuild.setIsInternalData(true);
-                                String slugRealm = ((JSONObject) lastModified.get(0)).get("realm_slug").toString();
+                                String slugRealm = lastModified.get(0).getAsJsonObject().get("realm_slug").getAsString();
                                 if (slugRealm.length() == 0) {
                                     slugRealm = getRealmSlug(GeneralConfig.getStringConfig("SERVER_LOCATION"), aGuild.getRealm());
                                 }
                                 aGuild.setRealmSlug(slugRealm);
+                                aGuild.saveInDB();
                             }
                         }
-                    } catch (IOException | DataException | SQLException e) {
-                        try {
-                            aGuild.setRealmSlug(getRealmSlug(GeneralConfig.getStringConfig("SERVER_LOCATION"), aGuild.getRealm()));
-                        } catch (DataException | IOException ex) {
-                            Logs.infoLog(Update.class, "ERROR - getGuildProfile " + ex);
-                        }
+                    } catch (DataException | SQLException e) {
+                        Logs.infoLog(Update.class, "FAIL - getGuildProfile DB " + response.code() + " - "+ e);
                     }
-                    aGuild.saveInDB();
                 } else {
                     Logs.infoLog(Update.class, "ERROR - getGuildProfile " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getGuildProfile " + throwable);
             }
         });
@@ -722,30 +757,33 @@ public class Update {
      * @throws DataException
      * @throws IOException
      */
-    private String getRealmSlug(String region, String realm) throws DataException, IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    private String getRealmSlug(String region, String realm) {
 
-        Call<JSONObject> call = apiCalls.realmIndex(
-                region,
-                GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
-                "dynamic-" + GeneralConfig.getStringConfig("SERVER_LOCATION"),
-                accessToken.getAuthorization()
-        );
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        Response<JSONObject> resp = call.execute();
-        if (resp.isSuccessful()) {
-            JSONArray realmsList = (JSONArray) resp.body().get("realms");
+            Call<JsonObject> call = apiCalls.realmIndex(
+                    region,
+                    GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
+                    "dynamic-" + GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    accessToken.getAuthorization()
+            );
+
+            JsonArray realmsList = (JsonArray) call.execute().body().get("realms");
 
             for (int i = 0; i < realmsList.size(); i++) {
-                JSONObject acRealm = (JSONObject) realmsList.get(i);
-                if (realm.equals(acRealm.get("name").toString())) {
-                    return acRealm.get("slug").toString();
+                JsonObject acRealm = realmsList.get(i).getAsJsonObject();
+                if (realm.equals(acRealm.get("name").getAsString())) {
+                    return acRealm.get("slug").getAsString();
                 }
             }
 
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getRealmSlug " + e);
         }
 
-        throw new DataException("Fail to get Server SLUG! - null");
+        return null;
     }
 
     /**
@@ -757,7 +795,7 @@ public class Update {
     public void getGuildMembers() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.guild(
+        Call<JsonObject> call = apiCalls.guild(
                 GeneralConfig.getStringConfig("GUILD_REALM"),
                 GeneralConfig.getStringConfig("GUILD_NAME"),
                 GeneralConfig.getStringConfig("SERVER_LOCATION"),
@@ -765,11 +803,11 @@ public class Update {
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray members = (JSONArray) response.body().get("members");
+                    JsonArray members = response.body().get("members").getAsJsonArray();
                     try {
                         dbConnect.update(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                 new String[]{"in_guild"},
@@ -779,24 +817,24 @@ public class Update {
 
                         // Foreach all members
                         for (int i = 0; i < members.size(); i++) {
-                            JSONObject info = (JSONObject) ((JSONObject) members.get(i)).get("character");
+                            JsonObject info = members.get(i).getAsJsonObject().get("character").getAsJsonObject();
 
                             //Check if have a guild and if set guild, (Blizzard not update a guilds members list)
-                            if (info.containsKey("guild") && (info.get("guild").toString()).equals(GeneralConfig.getStringConfig("GUILD_NAME"))) {
-                                String rankMember = ((JSONObject) members.get(i)).get("rank").toString();
-                                String name = info.get("name").toString();
+                            if (info.has("guild") && (info.get("guild").getAsString()).equals(GeneralConfig.getStringConfig("GUILD_NAME"))) {
+                                String rankMember = members.get(i).getAsJsonObject().get("rank").getAsString();
+                                String name = info.get("name").getAsString();
                                 //See if need update or insert
-                                JSONArray inDBgMembersID = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
+                                JsonArray inDBgMembersID = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                         new String[]{"internal_id"},
                                         "member_name=? AND realm=?",
                                         new String[]{name, GeneralConfig.getStringConfig("GUILD_REALM")});
-                                if (inDBgMembersID.size() > 0) {//Update
+                                if (inDBgMembersID.size() > 0) { // Update
                                     dbConnect.update(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                             new String[]{"rank", "in_guild", "isDelete"},
                                             new String[]{rankMember, "1", "0"},
                                             "internal_id=?",
-                                            new String[]{((JSONObject) inDBgMembersID.get(0)).get("internal_id").toString()});
-                                } else {//Insert
+                                            new String[]{ inDBgMembersID.get(0).getAsJsonObject().get("internal_id").getAsString() });
+                                } else { // Insert
                                     dbConnect.insert(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                             CharacterMember.GMEMBER_ID_NAME_TABLE_KEY,
                                             new String[]{"member_name", "realm", "rank", "in_guild"},
@@ -814,7 +852,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getGuildMembers " + throwable);
             }
         });
@@ -830,7 +868,7 @@ public class Update {
     public void getGuildNews() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.guild(
+        Call<JsonObject> call = apiCalls.guild(
                 GeneralConfig.getStringConfig("GUILD_REALM"),
                 GeneralConfig.getStringConfig("GUILD_NAME"),
                 GeneralConfig.getStringConfig("SERVER_LOCATION"),
@@ -838,14 +876,14 @@ public class Update {
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray news = (JSONArray) response.body().get("news");
+                    JsonArray news = response.body().get("news").getAsJsonArray();
                     for (int i = 0; i < news.size(); i++) {
-                        JSONObject infoNew = (JSONObject) news.get(i);
-                        New guildNew = new New(infoNew.get("type").toString(), infoNew.get("timestamp").toString(), infoNew.get("character").toString());
+                        JsonObject infoNew = news.get(i).getAsJsonObject();
+                        New guildNew = new New(infoNew.get("type").getAsString(), infoNew.get("timestamp").getAsString(), infoNew.get("character").getAsString());
                         if (!guildNew.isInternalData()) {
                             guildNew = new New(infoNew);
                             guildNew.saveInDB();
@@ -871,7 +909,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - Guilds NEW Fails " + throwable);
             }
         });
@@ -887,7 +925,7 @@ public class Update {
     public void getCharacterInfo() throws SQLException, DataException, IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        JSONArray members = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
+        JsonArray members = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                 CharacterMember.GMEMBER_ID_NAME_TABLE_STRUCTURE,
                 "in_guild=?",
                 new String[]{"1"});
@@ -895,9 +933,9 @@ public class Update {
         int iProgress = 1;
         Logs.infoLog(Update.class, "0%");
         for (int i = 0; i < members.size(); i++) {
-            JSONObject member = (JSONObject) members.get(i); //internal DB Members [internal_id, name, rank]
-            CharacterMember mbDB = new CharacterMember((Integer) member.get(CharacterMember.GMEMBER_ID_NAME_TABLE_KEY));
-            CharacterMember mbBlizz = getMemberFromBlizz(member.get("member_name").toString(), member.get("realm").toString());
+            JsonObject member = members.get(i).getAsJsonObject(); //internal DB Members [internal_id, name, rank]
+            CharacterMember mbDB = new CharacterMember( member.get(CharacterMember.GMEMBER_ID_NAME_TABLE_KEY).getAsInt());
+            CharacterMember mbBlizz = getMemberFromBlizz(member.get("member_name").getAsString(), member.get("realm").getAsString());
             if (mbBlizz != null) {//DB member need update!
                 if (!((Long) mbBlizz.getLastModified()).equals(mbDB.getLastModified())) {
 
@@ -910,7 +948,7 @@ public class Update {
                     Realm mbRealm = new Realm(mbBlizz.getRealm());
 
                     // Keystone-runs:
-                    Call<JSONObject> callMythicProfile = apiCalls.characterMythicPlusProfile(
+                    Call<JsonObject> callMythicProfile = apiCalls.characterMythicPlusProfile(
                             mbRealm.getSlug(),
                             mbBlizz.getName().toLowerCase(),
                             "profile-us",
@@ -919,7 +957,7 @@ public class Update {
                     );
 
                     // Raider IO MyhicPlusScore
-                    Call<JSONObject> callRaiderIO = apiRaiderIOService.character(
+                    Call<JsonObject> callRaiderIO = apiRaiderIOService.character(
                             GeneralConfig.getStringConfig("SERVER_LOCATION"),
                             mbRealm.getName(),
                             mbBlizz.getName(),
@@ -927,22 +965,22 @@ public class Update {
                     );
 
                     // Calls to save info:
-                    callMythicProfile.enqueue(new Callback<JSONObject>() {
+                    callMythicProfile.enqueue(new Callback<JsonObject>() {
                         @Override
-                        public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                             if (response.isSuccessful()) {
-                                JSONObject currentPeriod = (JSONObject) response.body();
-                                if (currentPeriod.get("best_runs") != null) {
-                                    JSONArray bestRun = (JSONArray) currentPeriod.get("best_runs");
+                                JsonObject currentPeriod = response.body();
+                                if (currentPeriod.has("best_runs") && !currentPeriod.get("best_runs").isJsonNull()) {
+                                    JsonArray bestRun = currentPeriod.get("best_runs").getAsJsonArray();
                                     for (int j = 0; j < bestRun.size(); j++) {
-                                        JSONObject runDetail = (JSONObject) bestRun.get(j);
+                                        JsonObject runDetail = bestRun.get(j).getAsJsonObject();
                                         KeystoneDungeonRun keyRunBlizz = new KeystoneDungeonRun(runDetail);
                                         KeystoneDungeonRun keyRunDB = new KeystoneDungeonRun(
-                                                (Long) runDetail.get("completed_timestamp"),
-                                                (Long) runDetail.get("duration"),
-                                                ((Long) runDetail.get("keystone_level")).intValue(),
-                                                ((Long) ((JSONObject) runDetail.get("dungeon")).get("id")).intValue(),
-                                                (Boolean) runDetail.get("is_completed_within_time"));
+                                                runDetail.get("completed_timestamp").getAsInt(),
+                                                runDetail.get("duration").getAsLong(),
+                                                runDetail.get("keystone_level").getAsInt(),
+                                                runDetail.get("dungeon").getAsJsonObject().get("id").getAsInt(),
+                                                runDetail.get("is_completed_within_time").getAsBoolean());
                                         if (keyRunDB.isInternalData()) {
                                             keyRunBlizz.setId(keyRunDB.getId());
                                             keyRunBlizz.setIsInternalData(true);
@@ -957,44 +995,45 @@ public class Update {
                         }
 
                         @Override
-                        public void onFailure(Call<JSONObject> call, Throwable throwable) {
+                        public void onFailure(Call<JsonObject> call, Throwable throwable) {
                             Logs.infoLog(Update.class, "Member " + mbBlizz.getName() + " MyThicPlus BEST Failerus " + throwable);
                         }
                     });
 
-                    callRaiderIO.enqueue(new Callback<JSONObject>() {
+                    callRaiderIO.enqueue(new Callback<JsonObject>() {
                         @Override
-                        public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                             if (response.isSuccessful()) {
                                 // Character detail
-                                JSONObject charDet = response.body();
+                                JsonObject charDet = response.body();
 
                                 //Best mythic plus score (all season!)
-                                JSONObject bestMythicPlusScore = new JSONObject();
-                                bestMythicPlusScore.put("score", 0);
+                                JsonObject bestMythicPlusScore = new JsonObject();
+                                bestMythicPlusScore.addProperty("score", 0);
 
-                                if (((JSONObject) charDet.get("characterDetails")).get("bestMythicPlusScore") != null) {
-                                    bestMythicPlusScore = (JSONObject) ((JSONObject) charDet.get("characterDetails")).get("bestMythicPlusScore");
+                                if (charDet.get("characterDetails").getAsJsonObject().has("bestMythicPlusScore") &&
+                                !charDet.get("characterDetails").getAsJsonObject().get("bestMythicPlusScore").isJsonNull()) {
+                                    bestMythicPlusScore = charDet.get("characterDetails").getAsJsonObject().get("bestMythicPlusScore").getAsJsonObject();
                                 }
 
                                 mbBlizz.setBestMythicPlusScore(bestMythicPlusScore);
 
                                 //Mythic plus score current season!
-                                JSONObject actualScore = new JSONObject();
-                                actualScore.put("all", 0);
-                                actualScore.put("dps", 0);
-                                actualScore.put("healer", 0);
-                                actualScore.put("tank", 0);
-                                if (((JSONObject) charDet.get("characterDetails")).get("mythicPlusScores") != null) {
-                                    JSONObject acScoreRaiderIO = (JSONObject) ((JSONObject) charDet.get("characterDetails")).get("mythicPlusScores");
-                                    actualScore = new JSONObject();
-                                    actualScore.put("all", ((JSONObject) acScoreRaiderIO.get("all")).get("score").toString());
-                                    actualScore.put("dps", ((JSONObject) acScoreRaiderIO.get("dps")).get("score").toString());
-                                    actualScore.put("healer", ((JSONObject) acScoreRaiderIO.get("healer")).get("score").toString());
-                                    actualScore.put("tank", ((JSONObject) acScoreRaiderIO.get("tank")).get("score").toString());
+                                JsonObject actualScore = new JsonObject();
+                                actualScore.addProperty("all", 0);
+                                actualScore.addProperty("dps", 0);
+                                actualScore.addProperty("healer", 0);
+                                actualScore.addProperty("tank", 0);
+                                if (charDet.get("characterDetails").getAsJsonObject().has("mythicPlusScores")) {
+                                    JsonObject acScoreRaiderIO = charDet.get("characterDetails").getAsJsonObject().get("mythicPlusScores").getAsJsonObject();
+                                    actualScore = new JsonObject();
+                                    actualScore.add("all", acScoreRaiderIO.get("all").getAsJsonObject().get("score"));
+                                    actualScore.add("dps", acScoreRaiderIO.get("dps").getAsJsonObject().get("score"));
+                                    actualScore.add("healer", acScoreRaiderIO.get("healer").getAsJsonObject().get("score"));
+                                    actualScore.add("tank", acScoreRaiderIO.get("tank").getAsJsonObject().get("score"));
                                 }
 
-                                mbBlizz.setMythicPlusScorese(actualScore);
+                                mbBlizz.setMythicPlusScores(actualScore);
                                 mbBlizz.saveInDB();
                             } else {
                                 Logs.infoLog(Update.class, "Member " + mbBlizz.getName() + " not have a RaiderIO " + response.code());
@@ -1002,7 +1041,7 @@ public class Update {
                         }
 
                         @Override
-                        public void onFailure(Call<JSONObject> call, Throwable throwable) {
+                        public void onFailure(Call<JsonObject> call, Throwable throwable) {
                             Logs.infoLog(Update.class, "Member " + mbBlizz.getName() + " RaiderIO Score " + throwable);
                         }
                     });
@@ -1024,29 +1063,38 @@ public class Update {
      * @return
      * @throws IOException
      */
-    public CharacterMember getMemberFromBlizz(String name, String realm) throws IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    public CharacterMember getMemberFromBlizz(String name, String realm) {
 
-        CharacterMember bPlayer = null;
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.character(
-                realm,
-                name,
-                accessToken.getAuthorization()
-        );
+            CharacterMember bPlayer = null;
 
-        Response<JSONObject> response = call.execute();
-        if (response.isSuccessful()) {
-            bPlayer = new CharacterMember(response.body());
-        } else {
-            Logs.errorLog(Update.class, "BlizzAPI haven a error to '" + name + "'\n\t" + response.code());
-            if(response.code() == 404) {
-                bPlayer = new CharacterMember(name, realm, false);
-                bPlayer.saveInDB();
+            Call<JsonObject> call = apiCalls.character(
+                    realm,
+                    name,
+                    "guild,talents,items,stats",
+                    accessToken.getAuthorization()
+            );
+
+            Response<JsonObject> response = call.execute();
+            if (response.isSuccessful()) {
+                bPlayer = new CharacterMember(response.body());
+            } else {
+                Logs.errorLog(Update.class, "BlizzAPI haven a error to '" + name + "' --> " + response.code());
+                if(response.code() == 404) {
+                    bPlayer = new CharacterMember(name, realm, false);
+                    bPlayer.saveInDB();
+                }
             }
+
+            return bPlayer;
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getMemberFromBlizz " + e);
         }
 
-        return bPlayer;
+        return null;
 
     }
 
@@ -1060,20 +1108,20 @@ public class Update {
     public void getPlayableClass() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.playableClassIndex(
+        Call<JsonObject> call = apiCalls.playableClassIndex(
                 "static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray playClass = (JSONArray) response.body().get("classes");
+                    JsonArray playClass = response.body().get("classes").getAsJsonArray();
                     for (int i = 0; i < playClass.size(); i++) {
-                        JSONObject info = (JSONObject) playClass.get(i);
-                        PlayableClass pClassDB = new PlayableClass(((Long) info.get("id")).intValue());
+                        JsonObject info = playClass.get(i).getAsJsonObject();
+                        PlayableClass pClassDB = new PlayableClass( info.get("id").getAsInt() );
                         PlayableClass pClassBlizz = new PlayableClass(info);
                         if (pClassDB.isInternalData()) {
                             pClassBlizz.setId(pClassDB.getId());
@@ -1087,7 +1135,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - PlayableClass " + throwable);
             }
         });
@@ -1102,19 +1150,19 @@ public class Update {
         if (accessToken == null) throw new DataException("Acces Token Not Found");
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.playableSpecialization(
+        Call<JsonObject> call = apiCalls.playableSpecialization(
                 "static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray playClass = (JSONArray) response.body().get("character_specializations");
+                    JsonArray playClass = response.body().get("character_specializations").getAsJsonArray();
                     for (int i = 0; i < playClass.size(); i++) {
-                        JSONObject info = (JSONObject) playClass.get(i);
-                        String urlDetail = ((JSONObject) info.get("key")).get("href").toString();
+                        JsonObject info = playClass.get(i).getAsJsonObject();
+                        String urlDetail = info.get("key").getAsJsonObject().get("href").getAsString();
                         try {
                             loadPlayableSpecDetail(urlDetail);
                         } catch (IOException e) {
@@ -1127,7 +1175,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getPlayableSpec " + throwable);
             }
         });
@@ -1142,17 +1190,17 @@ public class Update {
     private void loadPlayableSpecDetail(String url) throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.freeUrl(
+        Call<JsonObject> call = apiCalls.freeUrl(
                 url,
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     PlayableSpec pSpecBlizz = new PlayableSpec(response.body());
-                    PlayableSpec pSpecDB = new PlayableSpec(((Long) response.body().get("id")).intValue());
+                    PlayableSpec pSpecDB = new PlayableSpec( response.body().get("id").getAsInt() );
                     if (pSpecDB.isInternalData()) {
                         pSpecBlizz.setIsInternalData(true);
                     }
@@ -1163,7 +1211,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - loadPlayableSpecDetail " + throwable);
             }
         });
@@ -1179,19 +1227,19 @@ public class Update {
     public void getPlayableRaces() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.playableRaces(
+        Call<JsonObject> call = apiCalls.playableRaces(
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray races = (JSONArray) response.body().get("races");
+                    JsonArray races = response.body().get("races").getAsJsonArray();
                     for (int i = 0; i < races.size(); i++) {
-                        JSONObject info = (JSONObject) races.get(i);
-                        PlayableRace raceDB = new PlayableRace(((Long) info.get("id")).intValue());
+                        JsonObject info = races.get(i).getAsJsonObject();
+                        PlayableRace raceDB = new PlayableRace( info.get("id").getAsInt() );
                         PlayableRace raceBlizz = new PlayableRace(info);
                         if (raceDB.isInternalData()) {
                             raceBlizz.setId(raceDB.getId());
@@ -1205,7 +1253,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getPlayableRaces " + throwable);
             }
         });
@@ -1219,21 +1267,25 @@ public class Update {
      * @throws DataException
      * @throws IOException
      */
-    public Spell getSpellInformationBlizz(int id) throws IOException {
-        if (accessToken.isExpired()) generateAccessToken();
+    @Nullable
+    public Spell getSpellInformationBlizz(int id) {
 
-        Call<JSONObject> call = apiCalls.spell(
-                id,
-                GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
-                accessToken.getAuthorization()
-        );
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
 
-        Response<JSONObject> resp = call.execute();
-        if (resp.isSuccessful()) {
-            Spell spBlizz = new Spell(resp.body());
+            Call<JsonObject> call = apiCalls.spell(
+                    id,
+                    GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
+                    accessToken.getAuthorization()
+            );
+
+            Spell spBlizz = new Spell(call.execute().body());
             spBlizz.saveInDB();
             Logs.infoLog(Update.class, "Spell is save in DB " + id + " - " + spBlizz.getName());
             return spBlizz;
+
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getSpellInformationBlizz " + e);
         }
 
         return null;
@@ -1248,7 +1300,7 @@ public class Update {
      */
     public void updateSpellInformation() throws DataException, SQLException, IOException {
         if (accessToken.isExpired()) generateAccessToken();
-        JSONArray spellInDb = dbConnect.select(Spell.SPELLS_TABLE_NAME,
+        JsonArray spellInDb = dbConnect.select(Spell.SPELLS_TABLE_NAME,
                 new String[]{"id"},
                 "id != 0",
                 new String[]{});
@@ -1256,26 +1308,27 @@ public class Update {
         Logs.infoLog(Update.class, "0%");
         for (int i = 0; i < spellInDb.size(); i++) {
 
-            Call<JSONObject> call = apiCalls.spell(
-                    (Integer) ((JSONObject) spellInDb.get(i)).get("id"),
+            JsonObject spDb = spellInDb.get(i).getAsJsonObject();
+            Call<JsonObject> call = apiCalls.spell(
+                    spDb.get("id").getAsInt(),
                     GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                     accessToken.getAuthorization()
             );
 
-            call.enqueue(new Callback<JSONObject>() {
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
                         Spell spBlizz = new Spell(response.body());
                         spBlizz.setIsInternalData(true);
                         spBlizz.saveInDB();
                     } else {
-                        Logs.infoLog(Update.class, "ERROR - updateSpellInformation " + response.code());
+                        Logs.infoLog(Update.class, "ERROR - updateSpellInformation - "+ spDb.get("id") +" --> "+ response.code());
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JSONObject> call, Throwable throwable) {
+                public void onFailure(Call<JsonObject> call, Throwable throwable) {
                     Logs.infoLog(Update.class, "FAIL - updateSpellInformation " + throwable);
                 }
             });
@@ -1298,24 +1351,24 @@ public class Update {
      */
     public void updateItemInformation() throws DataException, SQLException, IOException {
         if (accessToken.isExpired()) generateAccessToken();
-        JSONArray itemInDB = dbConnect.select(Item.ITEM_TABLE_NAME,
+        JsonArray itemInDB = dbConnect.select(Item.ITEM_TABLE_NAME,
                 new String[]{"id"},
                 "id != 0",
                 new String[]{});
         int iProgress = 1;
         Logs.infoLog(Update.class, "0%");
         for (int i = 0; i < itemInDB.size(); i++) {
-            int id = (Integer) ((JSONObject) itemInDB.get(i)).get("id");
+            int id = itemInDB.get(i).getAsJsonObject().get("id").getAsInt();
 
-            Call<JSONObject> call = apiCalls.item(
+            Call<JsonObject> call = apiCalls.item(
                     id,
                     GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                     accessToken.getAuthorization()
             );
 
-            call.enqueue(new Callback<JSONObject>() {
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
                         Item itemBlizz = new Item(response.body());
                         itemBlizz.setIsInternalData(true);
@@ -1326,7 +1379,7 @@ public class Update {
                 }
 
                 @Override
-                public void onFailure(Call<JSONObject> call, Throwable throwable) {
+                public void onFailure(Call<JsonObject> call, Throwable throwable) {
                     Logs.infoLog(Update.class, "FAIL - updateItemInformation " + throwable);
                 }
             });
@@ -1346,17 +1399,19 @@ public class Update {
      * @param id
      * @return Item object (blizzard information)
      */
-    public Item getItemFromBlizz(int id) throws IOException {
+    @Nullable
+    public Item getItemFromBlizz(int id) {
 
-        Call<JSONObject> call = apiCalls.item(
-                id,
-                GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
-                accessToken.getAuthorization()
-        );
-
-        Response<JSONObject> resp = call.execute();
-        if (resp.isSuccessful()) {
-            return new Item(resp.body());
+        try {
+            if (accessToken.isExpired()) generateAccessToken();
+            Call<JsonObject> call = apiCalls.item(
+                    id,
+                    GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
+                    accessToken.getAuthorization()
+            );
+            return new Item(call.execute().body());
+        } catch (IOException e) {
+            Logs.infoLog(Update.class, "FAIL - getItemFromBlizz " + e);
         }
 
         return null;
@@ -1371,16 +1426,16 @@ public class Update {
     public void getGuildAchievementsLists() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.guildAchievements(
+        Call<JsonObject> call = apiCalls.guildAchievements(
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray achivGroup = (JSONArray) response.body().get("achievements");
+                    JsonArray achivGroup = response.body().get("achievements").getAsJsonArray();
                     saveGuildAchievements(achivGroup);
                 } else {
                     Logs.infoLog(Update.class, "ERROR - updateSpellInformation " + response.code());
@@ -1388,30 +1443,30 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getGuildAchievementsLists " + throwable);
             }
         });
     }
 
-    private void saveGuildAchievements(JSONArray achievGroup) {
+    private void saveGuildAchievements(JsonArray achievGroup) {
         for (int i = 0; i < achievGroup.size(); i++) {
-            JSONObject info = (JSONObject) achievGroup.get(i);
-            String classification = info.get("name").toString();
-            JSONArray achiv = (JSONArray) info.get("achievements");
+            JsonObject info = achievGroup.get(i).getAsJsonObject();
+            String classification = info.get("name").getAsString();
+            JsonArray achiv = info.get("achievements").getAsJsonArray();
             for (int j = 0; j < achiv.size(); j++) {
-                ((JSONObject) achiv.get(j)).put("classification", classification);
+                (achiv.get(j).getAsJsonObject()).addProperty("classification", classification);
 
-                GuildAchievementsList gaDB = new GuildAchievementsList(((Long) ((JSONObject) achiv.get(j)).get("id")).intValue());
-                GuildAchievementsList gaBlizz = new GuildAchievementsList((JSONObject) achiv.get(j));
+                GuildAchievementsList gaDB = new GuildAchievementsList( achiv.get(j).getAsJsonObject().get("id").getAsInt() );
+                GuildAchievementsList gaBlizz = new GuildAchievementsList(achiv.get(j).getAsJsonObject());
                 if (gaDB.isInternalData()) {
                     gaBlizz.setId(gaDB.getId());
                     gaBlizz.setIsInternalData(true);
                 }
                 gaBlizz.saveInDB();
             }
-            if (info.containsKey("categories")) {
-                JSONArray acGroup = (JSONArray) info.get("categories");
+            if (info.has("categories")) {
+                JsonArray acGroup = info.get("categories").getAsJsonArray();
                 saveGuildAchievements(acGroup);
             }
         }
@@ -1425,16 +1480,16 @@ public class Update {
     public void getCharacterAchievementsLists() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.characterAchievements(
+        Call<JsonObject> call = apiCalls.characterAchievements(
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray achivGroup = (JSONArray) response.body().get("achievements");
+                    JsonArray achivGroup = response.body().get("achievements").getAsJsonArray();
                     saveCharacterAchievements(achivGroup);
                 } else {
                     Logs.infoLog(Update.class, "ERROR - updateSpellInformation " + response.code());
@@ -1442,53 +1497,53 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getGuildAchievementsLists " + throwable);
             }
         });
 
     }
 
-    private void saveCharacterAchievements(JSONArray achievGroup) {
+    private void saveCharacterAchievements(JsonArray achievGroup) {
         for (int i = 0; i < achievGroup.size(); i++) {
             //Category
-            JSONObject info = (JSONObject) achievGroup.get(i);
+            JsonObject info = achievGroup.get(i).getAsJsonObject();
             saveCharacterAchievement(info, null);
         }
     }
 
-    private void saveCharacterAchievement(JSONObject info, CharacterAchivementsCategory fatherCat) {
+    private void saveCharacterAchievement(JsonObject info, CharacterAchivementsCategory fatherCat) {
         //Category
-        int catId = ((Long) info.get("id")).intValue();
+        int catId = info.get("id").getAsInt();
         CharacterAchivementsCategory category = new CharacterAchivementsCategory(catId);
         if (!category.isInternalData()) {
-            String catName = info.get("name").toString();
-            JSONObject catInfo = new JSONObject();
-            catInfo.put("id", catId);
-            catInfo.put("name", catName);
+            String catName = info.get("name").getAsString();
+            JsonObject catInfo = new JsonObject();
+            catInfo.addProperty("id", catId);
+            catInfo.addProperty("name", catName);
             if (fatherCat != null)
-                catInfo.put("father_id", fatherCat.getId());
+                catInfo.addProperty("father_id", fatherCat.getId());
             category = new CharacterAchivementsCategory(catInfo);
             category.saveInDB();
         }
         //Achievements
-        if (info.containsKey("achievements")) {
-            JSONArray achievements = (JSONArray) info.get("achievements");
+        if (info.has("achievements")) {
+            JsonArray achievements = info.get("achievements").getAsJsonArray();
             for (int i = 0; i < achievements.size(); i++) {
-                JSONObject achiInfo = (JSONObject) achievements.get(i);
-                CharacterAchivementsList achv = new CharacterAchivementsList(((Long) achiInfo.get("id")).intValue());
+                JsonObject achiInfo = achievements.get(i).getAsJsonObject();
+                CharacterAchivementsList achv = new CharacterAchivementsList( achiInfo.get("id").getAsInt() );
                 if (!achv.isInternalData()) {
-                    achiInfo.put("category_id", catId);
+                    achiInfo.addProperty("category_id", catId);
                     achv = new CharacterAchivementsList(achiInfo);
                     achv.saveInDB();
                 }
             }
         }
         //If have a sub categories
-        if (info.containsKey("categories")) {
-            JSONArray subCat = (JSONArray) info.get("categories");
+        if (info.has("categories")) {
+            JsonArray subCat = (JsonArray) info.get("categories");
             for (int i = 0; i < subCat.size(); i++) {
-                saveCharacterAchievement((JSONObject) subCat.get(i), category);
+                saveCharacterAchievement(subCat.get(i).getAsJsonObject(), category);
             }
         }
     }
@@ -1504,7 +1559,7 @@ public class Update {
     public void getGuildChallenges() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> challenge = apiCalls.guild(
+        Call<JsonObject> challenge = apiCalls.guild(
                 GeneralConfig.getStringConfig("GUILD_REALM"),
                 GeneralConfig.getStringConfig("GUILD_NAME"),
                 GeneralConfig.getStringConfig("SERVER_LOCATION"),
@@ -1512,54 +1567,53 @@ public class Update {
                 accessToken.getAuthorization()
         );
 
-        challenge.enqueue(new Callback<JSONObject>() {
+        challenge.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray challenges = (JSONArray) response.body().get("challenge");
+                    JsonArray challenges = response.body().get("challenge").getAsJsonArray();
 
                     int iProgress = 1;
                     Logs.infoLog(Update.class, "0%");
                     for (int i = 0; i < challenges.size(); i++) {
                         try {
-                            JSONObject challenge = (JSONObject) challenges.get(i);
-                            JSONObject map = (JSONObject) challenge.get("map");
-                            JSONArray groups = (JSONArray) challenge.get("groups");
+                            JsonObject challenge = challenges.get(i).getAsJsonObject();
+                            JsonObject map = challenge.get("map").getAsJsonObject();
+                            JsonArray groups = challenge.get("groups").getAsJsonArray();
                             if (groups.size() > 0) {
                                 Challenge ch = new Challenge(map);
                                 //Validate is old save this map...
-                                JSONArray id = dbConnect.select(Challenge.CHALLENGES_TABLE_NAME,
+                                JsonArray id = dbConnect.select(Challenge.CHALLENGES_TABLE_NAME,
                                         new String[]{"id"},
                                         "id=?",
-                                        new String[]{(map.get("id")).toString()});
+                                        new String[]{(map.get("id")).getAsString()});
                                 if (id.size() > 0) ch.setIsInternalData(true);
 
                                 for (int j = 0; j < groups.size(); j++) {
-                                    JSONObject group = (JSONObject) groups.get(j);
+                                    JsonObject group = groups.get(j).getAsJsonObject();
                                     ChallengeGroup chGroup = new ChallengeGroup(ch.getId(), group);
                                     //Validate if exist this group.
-                                    JSONArray idGroup = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
+                                    JsonArray idGroup = dbConnect.select(ChallengeGroup.CHALLENGE_GROUPS_TABLE_NAME,
                                             new String[]{"group_id"},
                                             "challenge_id=? AND time_date=?",
                                             new String[]{ch.getId() + "", ChallengeGroup.getDBDate(chGroup.getTimeDate())});
                                     if (idGroup.size() > 0) {
-                                        chGroup.setId((Integer) ((JSONObject) idGroup.get(0)).get("group_id"));
+                                        chGroup.setId( idGroup.get(0).getAsJsonObject().get("group_id").getAsInt() );
                                         chGroup.setIsInternalData(true);
                                     }
 
                                     //Members
-                                    JSONArray members = (JSONArray) group.get("members");
+                                    JsonArray members = (JsonArray) group.get("members");
                                     members.forEach((member) -> {
-
-                                        JSONObject inMeb = (JSONObject) member;
-                                        if (inMeb.containsKey("character")) {
-                                            JSONObject character = (JSONObject) inMeb.get("character");
-                                            JSONObject spec = (JSONObject) inMeb.get("spec");
+                                        JsonObject inMeb = member.getAsJsonObject();
+                                        if (inMeb.has("character")) {
+                                            JsonObject character = inMeb.get("character").getAsJsonObject();
+                                            JsonObject spec = inMeb.get("spec").getAsJsonObject();
                                             //Get info about this member.
 
-                                            CharacterMember mb = new CharacterMember(character.get("name").toString(), character.get("realm").toString());
+                                            CharacterMember mb = new CharacterMember(character.get("name").getAsString(), character.get("realm").getAsString());
                                             if (mb.isData()) {
-                                                mb.setActiveSpec(spec.get("name").toString(), spec.get("role").toString());
+                                                mb.setActiveSpec(spec.get("name").getAsString(), spec.get("role").getAsString());
                                                 //Add Member
                                                 chGroup.addMember(mb);
                                             }
@@ -1590,7 +1644,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.errorLog(Update.class, "FAILERUS - BlizzAPI haven a error to guild Challengses "+ throwable);
             }
         });
@@ -1604,30 +1658,30 @@ public class Update {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public void getWowToken() throws IOException {
+    public void getWowToken() throws IOException  {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> wowToken = apiCalls.token(
+        Call<JsonObject> wowToken = apiCalls.token(
                 "dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE"),
                 accessToken.getAuthorization()
         );
 
-        wowToken.enqueue(new Callback<JSONObject>() {
+        wowToken.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONObject wowTokenPrice = (JSONObject) response.body();
+                    JsonObject wowTokenPrice = response.body();
 
-                    String lastUpdate = wowTokenPrice.get("last_updated_timestamp").toString();
-                    String priceUpdate = wowTokenPrice.get("price").toString();
+                    String lastUpdate = wowTokenPrice.get("last_updated_timestamp").getAsString();
+                    String priceUpdate = wowTokenPrice.get("price").getAsString();
 
                     try {
-                        JSONArray oldValue = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
+                        JsonArray oldValue = dbConnect.select(DBStructure.WOW_TOKEN_TABLE_NAME,
                                 new String[]{"last_updated_timestamp"},
                                 "last_updated_timestamp=?",
                                 new String[]{lastUpdate});
-                        if (oldValue.isEmpty()) {//Not exit this update, save a new infor
+                        if (oldValue.size() == 0) { // Not exit this update, save a new info
                             dbConnect.insert(DBStructure.WOW_TOKEN_TABLE_NAME,
                                     DBStructure.WOW_TOKEN_TABLE_KEY,
                                     DBStructure.WOW_TOKEN_TABLE_STRUCTURE,
@@ -1647,7 +1701,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.errorLog(Update.class, "FAIL - getWowToken "+ throwable);
             }
         });
@@ -1662,14 +1716,14 @@ public class Update {
      */
     public void getUsersCharacters() throws SQLException, DataException, ClassNotFoundException, IOException {
 
-        JSONArray users = dbConnect.select(User.USER_TABLE_NAME,
+        JsonArray users = dbConnect.select(User.USER_TABLE_NAME,
                 new String[]{"id", "access_token"},
                 "access_token IS NOT NULL AND wowinfo=?",
                 new String[]{"1"});
         //For all account have an accessToken and set a member info
         for (int i = 0; i < users.size(); i++) {
-            String acToken = ((JSONObject) users.get(i)).get("access_token").toString();
-            int userID = (Integer) ((JSONObject) users.get(i)).get("id");
+            String acToken = users.get(i).getAsJsonObject().get("access_token").getAsString();
+            int userID = users.get(i).getAsJsonObject().get("id").getAsInt();
             setMemberCharacterInfo(acToken, userID);
         }
         //Re set a guild rank from ALL members~
@@ -1680,23 +1734,23 @@ public class Update {
          *           WHERE u.id = gm.user_id ORDER BY u.id ASC, gm.rank ASC) tab
          *   WHERE rn = 1;
          */
-        JSONArray allUsers = dbConnect.select(User.USER_TABLE_NAME,
+        JsonArray allUsers = dbConnect.select(User.USER_TABLE_NAME,
                 new String[]{"id", "guild_rank", "discord_user_id"});
         for (int i = 0; i < allUsers.size(); i++) {
-            int uderID = (Integer) ((JSONObject) allUsers.get(i)).get("id");
-            int actualUserRank = (Integer) ((JSONObject) allUsers.get(i)).get("guild_rank");
+            int uderID = allUsers.get(i).getAsJsonObject().get("id").getAsInt();
+            int actualUserRank = allUsers.get(i).getAsJsonObject().get("guild_rank").getAsInt();
             String discUserId = null;
-            if (((JSONObject) allUsers.get(i)).get("discord_user_id") != null)
-                discUserId = ((JSONObject) allUsers.get(i)).get("discord_user_id").toString();
+            if (!allUsers.get(i).getAsJsonObject().get("discord_user_id").isJsonNull())
+                discUserId = allUsers.get(i).getAsJsonObject().get("discord_user_id").getAsString();
             int membersRank = -1;
             //Select player have a guild rank
             //select * from gMembers_id_name where user_id = 1 AND rank is not null order by rank limit 1;
-            JSONArray charRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
+            JsonArray charRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                     new String[]{"rank"},
                     "user_id=? AND in_guild=? AND isDelete=? AND rank is not null order by rank limit 1",
                     new String[]{uderID + "", "1", "0"});
             if (charRank.size() > 0) {
-                membersRank = (Integer) ((JSONObject) charRank.get(0)).get("rank");
+                membersRank = charRank.get(0).getAsJsonObject().get("rank").getAsInt();
             }
             //Save if is different
             if (membersRank != actualUserRank) {
@@ -1722,24 +1776,24 @@ public class Update {
     public void setMemberCharacterInfo(String userAccessToken, int userID) throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.userCharacter(
-                userAccessToken,
-                accessToken.getAuthorization()
+        Call<JsonObject> call = apiCalls.userCharacter(
+                userAccessToken
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONObject blizzInfo = response.body();
-                    if (blizzInfo.size() > 0) {
-                        JSONArray characters = (JSONArray) blizzInfo.get("characters");
+                    JsonObject blizzInfo = response.body();
+                    if (blizzInfo.has("characters")) {
+
+                        JsonArray characters = blizzInfo.get("characters").getAsJsonArray();
 
                         // defined all the characters for this player
                         for (int i = 0; i < characters.size(); i++) {
-                            JSONObject pj = (JSONObject) characters.get(i);
-                            String name = pj.get("name").toString();
-                            String realm = pj.get("realm").toString();
+                            JsonObject pj = characters.get(i).getAsJsonObject();
+                            String name = pj.get("name").getAsString();
+                            String realm = pj.get("realm").getAsString();
                             CharacterMember mb = new CharacterMember(name, realm);
 
                             if (mb != null && mb.isData()) {
@@ -1754,7 +1808,7 @@ public class Update {
                                             new String[]{getCurrentTimeStamp()},
                                             User.USER_TABLE_KEY + "=?",
                                             new String[]{userID + ""});
-                                } catch (ClassNotFoundException | SQLException | DataException ex) {
+                                } catch (SQLException | DataException ex) {
                                     Logs.fatalLog(Update.class, "Fail to insert userID info " + ex);
                                 }
                             }
@@ -1762,20 +1816,18 @@ public class Update {
 
                         // Get a most 'elevado' rank member, like 0 is GM, 1 is officers ...
                         try {
-                            JSONArray guildRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
+                            JsonArray guildRank = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME,
                                     new String[]{"rank"},
                                     "in_guild=? AND user_id=? AND isDelete=? ORDER BY rank ASC LIMIT 1",
                                     new String[]{"1", userID + "", "0"});
                             if (guildRank.size() > 0) {//Save a rank from this player...
-                                int rank = (Integer) ((JSONObject) guildRank.get(0)).get("rank");
+                                int rank = guildRank.get(0).getAsJsonObject().get("rank").getAsInt();
                                 try {
                                     dbConnect.update(User.USER_TABLE_NAME,
                                             new String[]{"guild_rank"},
                                             new String[]{rank + ""},
                                             "id=?",
                                             new String[]{userID + ""});
-                                } catch (ClassNotFoundException ex) {
-                                    Logs.fatalLog(Update.class, "Fail to save guild rank from user " + userID + " - " + ex);
                                 } catch (DataException e) {
                                     Logs.fatalLog(Update.class, "Fail to save guild rank from user Data Exception " + userID + " - " + e);
                                 }
@@ -1791,18 +1843,27 @@ public class Update {
                                     "id=?",
                                     new String[]{userID + ""});
                             Logs.infoLog(Update.class, "Wow access token is update!");
-                        } catch (ClassNotFoundException | SQLException | DataException ex) {
+                        } catch (SQLException | DataException ex) {
                             Logs.fatalLog(Update.class, "Fail to set wowinfo is worikng from " + userID);
                         }
 
                     }
                 } else {
                     Logs.errorLog(Update.class, "ERROR - setMemberCharacterInfo "+ response.code());
+                    try {
+                        dbConnect.update(User.USER_TABLE_NAME,
+                                new String[]{"wowinfo"},
+                                new String[]{"0"},
+                                "id=?",
+                                new String[]{userID + ""});
+                    } catch (SQLException | DataException e) {
+                        Logs.fatalLog(Update.class, "FAIL - Update access token disabled "+ userID +" - "+ userAccessToken +" - "+ e);
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.errorLog(Update.class, "FAIL - setMemberCharacterInfo "+ throwable);
             }
         });
@@ -1816,28 +1877,28 @@ public class Update {
      */
     public void getGuildProgression() {
 
-        Call<JSONObject> call = apiRaiderIOService.guilds(
+        Call<JsonObject> call = apiRaiderIOService.guilds(
                 GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 GeneralConfig.getStringConfig("GUILD_REALM"),
                 GeneralConfig.getStringConfig("GUILD_NAME")
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
 
-                    JSONObject raiderIOGuildProgression = response.body();
-                    JSONArray raidRankings = (JSONArray) ((JSONObject) raiderIOGuildProgression.get("guildDetails")).get("raidRankings");
-                    JSONArray raidProgress = (JSONArray) ((JSONObject) raiderIOGuildProgression.get("guildDetails")).get("raidProgress");
+                    JsonObject raiderIOGuildProgression = response.body();
+                    JsonArray raidRankings = raiderIOGuildProgression.get("guildDetails").getAsJsonObject().get("raidRankings").getAsJsonArray();
+                    JsonArray raidProgress = raiderIOGuildProgression.get("guildDetails").getAsJsonObject().get("raidProgress").getAsJsonArray();
 
                     for (int i = 0; i < raidProgress.size(); i++) {
-                        JSONObject raid = (JSONObject) raidProgress.get(i);
+                        JsonObject raid = raidProgress.get(i).getAsJsonObject();
                         //Add rank info
-                        raid.put("rank", (JSONObject) ((JSONObject) raidRankings.get(i)).get("ranks"));
+                        raid.add("rank", raidRankings.get(i).getAsJsonObject().get("ranks"));
                         //Save raid
                         Raid itRaid = new Raid(raid);
-                        Raid oldRaid = new Raid(raid.get("raid").toString());
+                        Raid oldRaid = new Raid(raid.get("raid").getAsString());
                         if (oldRaid.isInternalData()) {
                             itRaid.setName(oldRaid.getName());
                             itRaid.setTotalBoss(oldRaid.getTotalBoss());
@@ -1853,7 +1914,7 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.errorLog(Update.class, "FAIL - GuildProgress "+ throwable);
             }
         });
@@ -1868,24 +1929,24 @@ public class Update {
     public void getBossInformation() throws IOException {
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JSONObject> call = apiCalls.bosses(
+        Call<JsonObject> call = apiCalls.bosses(
                 GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 accessToken.getAuthorization()
         );
 
-        call.enqueue(new Callback<JSONObject>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JSONArray bossList = (JSONArray) response.body().get("bosses");
+                    JsonArray bossList = (JsonArray) response.body().get("bosses");
                     for (int i = 0; i < bossList.size(); i++) {
-                        JSONObject bossInfo = (JSONObject) bossList.get(i);
-                        Boss inDB = new Boss(((Long) bossInfo.get("id")).intValue());
-                        JSONObject bossInfoCreate = new JSONObject();
-                        bossInfoCreate.put("id", bossInfo.get("id"));
-                        bossInfoCreate.put("description", bossInfo.get("description"));
-                        bossInfoCreate.put("name", bossInfo.get("name"));
-                        bossInfoCreate.put("slug", bossInfo.get("urlSlug"));
+                        JsonObject bossInfo = bossList.get(i).getAsJsonObject();
+                        Boss inDB = new Boss( bossInfo.get("id").getAsInt() );
+                        JsonObject bossInfoCreate = new JsonObject();
+                        bossInfoCreate.add("id", bossInfo.get("id"));
+                        bossInfoCreate.add("description", bossInfo.get("description"));
+                        bossInfoCreate.add("name", bossInfo.get("name"));
+                        bossInfoCreate.add("slug", bossInfo.get("urlSlug"));
                         /*
                         JSONArray npcList = (JSONArray) bossInfo.get("npcs");
                         Logs.infoLog(Update.class, "BOSS LIST - "+ bossInfo.get("urlSlug"));
@@ -1913,11 +1974,70 @@ public class Update {
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable throwable) {
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.errorLog(Update.class, "FAIL - getBossInformation "+ throwable);
             }
         });
 
+    }
+
+    /**
+     * v2
+     * @param code
+     * @return
+     * @throws IOException
+     */
+    @Nullable
+    public String getUserAccessToken(String code) {
+
+        try {
+
+            if (accessToken.isExpired()) generateAccessToken();
+
+            String redirectUrl = GeneralConfig.getStringConfig("MAIN_URL") +
+                            GeneralConfig.getStringConfig("BLIZZAR_LINK");
+
+            Call<JsonObject> call = apiOauthCalls.userToken(
+                    "authorization_code",
+                    "wow.profile",
+                    redirectUrl,
+                    code,
+                    Credentials.basic(GeneralConfig.getStringConfig("CLIENT_ID"), GeneralConfig.getStringConfig("CLIENT_SECRET"))
+            );
+
+            JsonObject bInfo = call.execute().body();
+            if (bInfo.has("access_token")) {
+                return bInfo.get("access_token").getAsString();
+            }
+        } catch (IOException e) {
+            Logs.errorLog(Update.class, "FAIL - getUserAccessToken "+ e);
+        }
+
+        return null;
+    }
+
+    /**
+     * v2 battle tag
+     * @param userAccessToken
+     * @return
+     */
+    @Nullable
+    public String getBattleTag(String userAccessToken) {
+
+        try {
+            Call<JsonObject> call = apiOauthCalls.userInfo(
+                    GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    "Bearer "+ userAccessToken
+            );
+
+            JsonObject bInfo = call.execute().body();
+            if (bInfo.has("battletag")) {
+                return bInfo.get("battletag").getAsString();
+            }
+        } catch (IOException ex) {
+            Logs.errorLog(User.class, "FAIL - getBattleTag "+ ex);
+        }
+        return null;
     }
 
     /**

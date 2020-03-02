@@ -9,13 +9,11 @@ import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.SQLException;
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 
 public class GuildChallenges
 {
@@ -36,11 +34,11 @@ public class GuildChallenges
             //Prepare list members
             List<Challenge> mList = new ArrayList<>();
             //Get members to DB			
-            JSONArray dbList = dbConnect.select(Challenge.CHALLENGES_TABLE_NAME, 
+            JsonArray dbList = dbConnect.select(Challenge.CHALLENGES_TABLE_NAME,
                                                 new String[] {"id"});	
             for(int i = 0; i < dbList.size(); i++)
             {
-                Challenge ch = new Challenge( (Integer)((JSONObject)dbList.get(i)).get("id") );
+                Challenge ch = new Challenge( dbList.get(i).getAsJsonObject().get("id").getAsInt() );
                 if(ch.isData()) mList.add(ch);
             }
             //Convert LIST to simple Member Array
