@@ -673,16 +673,13 @@ public class Update {
             if (accessToken.isExpired()) generateAccessToken();
 
             Call<JsonObject> call = apiCalls.auction(
-                    GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    GeneralConfig.getStringConfig("GUILD_REALM"),
                     accessToken.getAuthorization()
             );
 
             Response<JsonObject> resp = call.execute();
             JsonObject r = resp.body();
-            System.out.println("=== Debug Update.java");
-            System.out.println(resp.code());
-            System.out.println(r);
-            return call.execute().body().get("files").getAsJsonArray().get(0).getAsJsonObject();
+            return r.get("files").getAsJsonArray().get(0).getAsJsonObject();
         } catch (IOException e) {
             Logs.infoLog(Update.class, "FAIL - getURLAH " + e);
         }

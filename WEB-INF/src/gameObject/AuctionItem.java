@@ -12,7 +12,7 @@ public class AuctionItem extends GameObject
     public static final String AUCTION_ITEMS_TABLE_NAME = "auction_items";
     public static final String AUCTION_ITEMS_KEY = "auc";
     public static final String[] AUCTION_ITEMS_TABLE_STRUCTURE = {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
-                                                                    "owner", "ownerRealm", "context", "rand", "status", "auc_date"}; 
+                                                                    "ownerRealm", "context", "rand", "status", "auc_date"};
     //Atributes
     private int auc;
     private Item item;
@@ -20,7 +20,6 @@ public class AuctionItem extends GameObject
     private long bid;
     private int quantity;
     private String timeLeft;
-    private String owner;
     private String ownerRealm;
     private int context;
     private int rand;
@@ -53,7 +52,6 @@ public class AuctionItem extends GameObject
         this.buyout = objInfo.get("buyout").getAsLong();
         this.bid = objInfo.get("bid").getAsLong();
         this.timeLeft = objInfo.get("timeLeft").getAsString();
-        this.owner = objInfo.get("owner").getAsString();
         this.ownerRealm = objInfo.get("ownerRealm").getAsString();
         this.isData = true;        
     }
@@ -61,10 +59,10 @@ public class AuctionItem extends GameObject
     @Override
     public boolean saveInDB() {
         /* {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
-         * "owner", "ownerRealm", "context", "rand", "auc_date"}; 
+         * "ownerRealm", "context", "rand", "auc_date"};
 `        */
         switch(saveInDBObj(new String[] { this.auc+"", this.item.getId()+"", this.buyout +"", this.bid +"", this.quantity +"", this.timeLeft,
-                                        this.owner, this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0", this.aucDate}))
+                                        this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0", this.aucDate}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 return true;            
@@ -83,7 +81,6 @@ public class AuctionItem extends GameObject
     public Item getItem() { return this.item; }
     public int getQuantity() { return this.quantity; }
     public String getTimeLeft() { return this.timeLeft; }
-    public String getOwner() { return this.owner; }
     public String getOwnerRealm() { return this.ownerRealm; }
     public int getContext() { return this.context; }
     public int getRand() { return this.rand; }  

@@ -261,7 +261,6 @@ CREATE TABLE `auction_items` (
     `bid`       bigint NOT NULL,
     `quantity`  INT NOT NULL,
     `timeLeft`  VARCHAR(20) NOT NULL,
-    `owner`     VARCHAR(20) NOT NULL,
     `ownerRealm`    VARCHAR(20) NOT NULL,
     `context`   INT NOT NULL,
     `rand`      INT NOT NULL,
