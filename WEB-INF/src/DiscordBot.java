@@ -21,7 +21,8 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.ReadyEvent;
 
 public class DiscordBot extends ListenerAdapter
-{ 
+{
+    public static DiscordBot shared = new DiscordBot().build();
     private String guildDiscordChanel;
     private String botChanel;
     private long chanelId;

@@ -26,14 +26,12 @@ public class UpdateRunning implements ServletContextListener
     private Thread updateInterval = null;
     private DBConnect dbConnect;
     private ServletContext context;
-    public static DiscordBot discordBot;
     private int count = 0;
     private boolean isAssaultNotification = false;
 
     public UpdateRunning()
     {
         dbConnect = new DBConnect();
-        discordBot = new DiscordBot().build();
     }
 
     @Override
@@ -57,11 +55,12 @@ public class UpdateRunning implements ServletContextListener
                     try {
                         if(needGuildNewUpdate()) {
                             Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "WowToken"});
                         }
                     } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
                     try {
                         if(needAHUpdate()) {
-                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
                         }
                     } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - ACTION HOUSE "+ e); }
                     try {
@@ -95,30 +94,30 @@ public class UpdateRunning implements ServletContextListener
         {
             if(!this.isAssaultNotification)
             {
-                discordBot.sendMessajeNotification("The assault has started");
+                DiscordBot.shared.sendMessajeNotification("The assault has started");
                 this.isAssaultNotification = true;
             }
             int[] timeRemain = fAssault.getTimeRemainingCurrentAssault( );
             if(timeRemain[0] == 0 && timeRemain[1] == 30)
             {
-                discordBot.sendMessajeNotification(timeRemain[1] +"m remain for the assault to end");
+                DiscordBot.shared.sendMessajeNotification(timeRemain[1] +"m remain for the assault to end");
             }
         }
         else
         {
             if(this.isAssaultNotification)
             {
-                discordBot.sendMessajeNotification("The assault has finished");
+                DiscordBot.shared.sendMessajeNotification("The assault has finished");
                 this.isAssaultNotification = false;                
             }
             int[] timeRemain = fAssault.getTimeRemaining(fAssault.getNextAssault());
             if(timeRemain[0] == 1 && timeRemain[1] == 0)
             {
-                discordBot.sendMessajeNotification(timeRemain[0] +"h:"+ timeRemain[1] +"m to start the assault");
+                DiscordBot.shared.sendMessajeNotification(timeRemain[0] +"h:"+ timeRemain[1] +"m to start the assault");
             }
             else if(timeRemain[0] == 0 && timeRemain[1] == 30)
             {
-                discordBot.sendMessajeNotification(timeRemain[1] +"m to start the assault");
+                DiscordBot.shared.sendMessajeNotification(timeRemain[1] +"m to start the assault");
             }
         }
     }

@@ -12,6 +12,8 @@ import com.blizzardPanel.gameObject.GameObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.util.Arrays;
+
 public class CharacterSpec extends GameObject
 {
     //Specs  DB
@@ -42,7 +44,8 @@ public class CharacterSpec extends GameObject
     {
         super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = member.getId();
-        saveInfoFromBlizz(member, specInfo, talentsInfo);
+        if (!member.isDelete())
+            saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
     private void saveInfoFromBlizz(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
@@ -138,5 +141,15 @@ public class CharacterSpec extends GameObject
     public void setId(int id) { this.id = id; }
     public void setEnable(boolean e) { this.enable = e; }
     public void setMemberId(int id) { this.memberId = id; }
-        
+
+    @Override
+    public String toString() {
+        return "CharacterSpec{" +
+                "id=" + id +
+                ", memberId=" + memberId +
+                ", spec=" + spec +
+                ", enable=" + enable +
+                ", spells=" + Arrays.toString(spells) +
+                '}';
+    }
 }

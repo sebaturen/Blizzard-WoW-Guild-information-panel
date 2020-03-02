@@ -6,10 +6,8 @@
  */
 package com.blizzardPanel.blizzardAPI;
 
+import com.blizzardPanel.*;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.DataException;
-import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.Boss;
@@ -26,7 +24,6 @@ import com.blizzardPanel.gameObject.guild.New;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
-import com.blizzardPanel.User;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeon;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import com.blizzardPanel.gameObject.Realm;
@@ -933,7 +930,7 @@ public class Update {
             JsonObject member = members.get(i).getAsJsonObject(); //internal DB Members [internal_id, name, rank]
             CharacterMember mbDB = new CharacterMember( member.get(CharacterMember.GMEMBER_ID_NAME_TABLE_KEY).getAsInt());
             CharacterMember mbBlizz = getMemberFromBlizz(member.get("member_name").getAsString(), member.get("realm").getAsString());
-            if (mbBlizz != null) {//DB member need update!
+            if (mbBlizz != null) { // DB member need update!
                 if (!((Long) mbBlizz.getLastModified()).equals(mbDB.getLastModified())) {
 
                     // Save current updates...
@@ -966,14 +963,14 @@ public class Update {
                         @Override
                         public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                             if (response.isSuccessful()) {
-                                JsonObject currentPeriod = response.body();
+                                JsonObject currentPeriod = response.body().get("current_period").getAsJsonObject();
                                 if (currentPeriod.has("best_runs") && !currentPeriod.get("best_runs").isJsonNull()) {
                                     JsonArray bestRun = currentPeriod.get("best_runs").getAsJsonArray();
                                     for (int j = 0; j < bestRun.size(); j++) {
                                         JsonObject runDetail = bestRun.get(j).getAsJsonObject();
                                         KeystoneDungeonRun keyRunBlizz = new KeystoneDungeonRun(runDetail);
                                         KeystoneDungeonRun keyRunDB = new KeystoneDungeonRun(
-                                                runDetail.get("completed_timestamp").getAsInt(),
+                                                runDetail.get("completed_timestamp").getAsLong(),
                                                 runDetail.get("duration").getAsLong(),
                                                 runDetail.get("keystone_level").getAsInt(),
                                                 runDetail.get("dungeon").getAsJsonObject().get("id").getAsInt(),
@@ -1062,7 +1059,6 @@ public class Update {
      */
     @Nullable
     public CharacterMember getMemberFromBlizz(String name, String realm) {
-
         try {
             if (accessToken.isExpired()) generateAccessToken();
 
@@ -1758,7 +1754,7 @@ public class Update {
                         new String[]{uderID + ""});
                 //if new is -1, remove discord rank
                 if (discUserId != null && membersRank == -1) {
-                    UpdateRunning.discordBot.removeRank(discUserId);
+                    DiscordBot.shared.removeRank(discUserId);
                 }
             }
         }

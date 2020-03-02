@@ -36,7 +36,7 @@ public class KeystoneDungeonRun extends GameObject
 
     //Atributes
     private int id;
-    private long complatedTimeStamp;
+    private long completedTimeStamp;
     private long duration;
     private int keystoneLevel;
     private KeystoneDungeon ksDun;
@@ -68,7 +68,7 @@ public class KeystoneDungeonRun extends GameObject
 
     protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.complatedTimeStamp = objInfo.get("completed_timestamp").getAsLong();
+        this.completedTimeStamp = objInfo.get("completed_timestamp").getAsLong();
         this.duration = objInfo.get("duration").getAsLong();
         this.keystoneLevel = objInfo.get("keystone_level").getAsInt();
         if (objInfo.has("id")) { // from DB
@@ -176,14 +176,14 @@ public class KeystoneDungeonRun extends GameObject
         String[] saveData;
         if(this.isInternalData)
         {
-            saveData = new String[] {this.id+"", this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.getAsString()};
+            saveData = new String[] {this.id+"", this.completedTimeStamp +"", this.duration +"", this.keystoneLevel +"",
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
         }
         else
         {            
             setTableStructur(DBStructure.outKey(KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE));
-            saveData = new String[] {this.complatedTimeStamp +"", this.duration +"", this.keystoneLevel +"", 
-                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.getAsString()};
+            saveData = new String[] {this.completedTimeStamp +"", this.duration +"", this.keystoneLevel +"",
+                                        this.ksDun.getId() +"", (this.isCompleteInTime)? "1":"0", keyAffix.toString()};
         }
         switch (saveInDBObj(saveData))
         {
@@ -225,11 +225,11 @@ public class KeystoneDungeonRun extends GameObject
     //Getters and Setters
     @Override
     public int getId() { return this.id; }
-    public long getComplatedTimeStamp() { return this.complatedTimeStamp; }
+    public long getCompletedTimeStamp() { return this.completedTimeStamp; }
     public List<KeystoneAffix> getAffixes() { return this.keyAffixes; }
     public String getCompleteDate() 
     {        
-        Date time = new Date(this.complatedTimeStamp);
+        Date time = new Date(this.completedTimeStamp);
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
     }
     public long getDuration() { return this.duration; }
@@ -287,4 +287,17 @@ public class KeystoneDungeonRun extends GameObject
     @Override
     public void setId(int id) { this.id = id; }
 
+    @Override
+    public String toString() {
+        return "KeystoneDungeonRun{" +
+                "id=" + id +
+                ", complatedTimeStamp=" + completedTimeStamp +
+                ", duration=" + duration +
+                ", keystoneLevel=" + keystoneLevel +
+                ", ksDun=" + ksDun +
+                ", isCompleteInTime=" + isCompleteInTime +
+                ", members=" + members +
+                ", keyAffixes=" + keyAffixes +
+                '}';
+    }
 }
