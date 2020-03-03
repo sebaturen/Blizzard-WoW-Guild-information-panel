@@ -44,16 +44,17 @@ public class AuctionItem extends GameObject
         if (objInfo.has("auc_date")) {
             this.aucDate = objInfo.get("auc_date").getAsString();
         }
-        this.quantity = objInfo.get("quantity").getAsInt();
-        this.context = objInfo.get("context").getAsInt();
-        this.rand = objInfo.get("rand").getAsInt();
-        this.item = new Item(objInfo.get("item").getAsInt());
         this.auc = objInfo.get("auc").getAsInt();
-        this.buyout = objInfo.get("buyout").getAsLong();
+        this.item = new Item(objInfo.get("item").getAsInt());
         this.bid = objInfo.get("bid").getAsLong();
+        this.buyout = objInfo.get("buyout").getAsLong();
+        this.quantity = objInfo.get("quantity").getAsInt();
         this.timeLeft = objInfo.get("timeLeft").getAsString();
-        this.ownerRealm = objInfo.get("ownerRealm").getAsString();
-        this.isData = true;        
+        this.rand = objInfo.get("rand").getAsInt();
+        this.context = objInfo.get("context").getAsInt();
+        if (objInfo.has("ownerRealm"))
+            this.ownerRealm = objInfo.get("ownerRealm").getAsString();
+        this.isData = true;
     }
 
     @Override

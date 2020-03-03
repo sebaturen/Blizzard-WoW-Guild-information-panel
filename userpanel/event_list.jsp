@@ -31,11 +31,12 @@
                     if ( 
                         e.getMinRank() != null && 
                         (user.getGuildRank() <= (e.getMinRank().getId()))
-                    ) { %>
+                    ) { 
+                        User owner = e.getOwner(); %>
                     <tr>
                         <td><a href="?ev=<%= e.getId() %>"><%= e.getTitle() %></a></td>
                         <td><%= e.getDesc() %></td>
-                        <td><span class="character-<%= (user.getMainCharacter() != null)? user.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (user.getMainCharacter() != null)? user.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span></td>
+                        <td><span class="character-<%= (owner.getMainCharacter() != null)? owner.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (owner.getMainCharacter() != null)? owner.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span></td>
                         <td><%= e.totalAssist() %></td>
                         <td><%= e.getStringDate() %></td>
                         <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
@@ -54,7 +55,7 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Summoner</th>
+                    <th scope="col">Organizer</th>
                     <th scope="col">Total attendees</th>
                     <th scope="col">Date</th>
                     <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
@@ -69,7 +70,7 @@
                         (user.getGuildRank() <= (e.getMinRank().getId()))
                     ) { %>
                     <tr>
-                        <td><%= e.getTitle() %></td>
+                        <td><a href="?evHistory=<%= e.getId() %>"><%= e.getTitle() %></a></td>
                         <td><%= e.getDesc() %></td>
                         <td><span class="character-<%= (user.getMainCharacter() != null)? user.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (user.getMainCharacter() != null)? user.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span></td>
                         <td><%= e.totalAssist() %></td>
@@ -94,7 +95,7 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Summoner</th>
+                    <th scope="col">Organizer</th>
                     <th scope="col">Total attendees</th>
                     <th scope="col">Date</th>
                     <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
@@ -109,7 +110,7 @@
                         (user.getGuildRank() <= (e.getMinRank().getId()))
                     ) { %>
                     <tr>
-                        <td><%= e.getTitle() %></td>
+                        <td><a href="?evHistory=<%= e.getId() %>"><%= e.getTitle() %></a></td>
                         <td><%= e.getDesc() %></td>
                         <td><span class="character-<%= (user.getMainCharacter() != null)? user.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (user.getMainCharacter() != null)? user.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span></td>
                         <td><%= e.totalAssist() %></td>

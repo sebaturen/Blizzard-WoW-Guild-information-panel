@@ -3,11 +3,11 @@
 <%@ page import ="java.util.List" %>
 var wow_token_history = [];
 <% 
-    List<WoWToken> wTokenHistory = gameInfo.getWoWTokenHistory();
+    List<WoWToken> wTokenHistory = gameInfo.getWoWTokenHistory(10);
     for (WoWToken wToken : wTokenHistory) { %> 
         wow_token_history.push({
             'date': <%= wToken.getLastUpdate() %>,
             'gold': <%= wToken.getGold() %>
         });
     <%}
-%>
+%>s

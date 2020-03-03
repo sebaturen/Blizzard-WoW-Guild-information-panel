@@ -3,6 +3,8 @@
     String evUrlCode = "";
     if( request.getParameter("ev") != null && (Integer.parseInt(request.getParameter("ev"))) > 0) {
         evUrlCode = "?ev="+ request.getParameter("ev");
+    } else if ( request.getParameter("evHistory") != null && (Integer.parseInt(request.getParameter("evHistory"))) > 0)  {
+        evUrlCode = "?evHistory="+ request.getParameter("evHistory");
     }
     response.sendRedirect("login.jsp?rdir="+URLEncoder.encode("events.jsp"+ evUrlCode, "UTF-8"));
 } else {%>
@@ -25,7 +27,9 @@
         <div id="ev_container" class="container fill">
             <% if( request.getParameter("ev") != null && (Integer.parseInt(request.getParameter("ev"))) > 0) { /*event detail: */ %>
                 <%@include file="userpanel/event_detail.jsp" %>
-            <% } else { /* event list */ %>
+            <% } else if (request.getParameter("evHistory") != null && (Integer.parseInt(request.getParameter("evHistory"))) > 0) { %>
+                <%@include file="userpanel/event_show.jsp" %>
+            <% } else { /* end history */ %>
                 <%@include file="userpanel/event_list.jsp" %>
             <% } /*close event list*/ %>
         </div>

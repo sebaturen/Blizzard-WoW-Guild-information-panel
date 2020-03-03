@@ -162,7 +162,14 @@
                 System.out.println("date "+ eventDate);
                 System.out.println("lvl "+ minLv);
                 System.out.println("ranj "+ rankLv);
-                if(eventTitle == null || eventDesc == null || eventDate == null || minLv == -1 || rankLv == -1)
+                if( eventTitle == null || 
+                    (eventTitle != null && eventTitle.length() == 0) ||
+                    eventDesc == null || 
+                    (eventDesc != null && eventDesc.length() == 0) ||
+                    eventDate == null || 
+                    (eventDate != null && eventDate.length() == 0) ||
+                    minLv == -1 || 
+                    rankLv == -1)
                 {
                     json.addProperty("status", "fail");
                     json.addProperty("msg", "Error, complete all information");

@@ -270,6 +270,9 @@ public class CharacterMember extends GameObject {
 
     private void loadSpecFromBlizz() {
         CharacterMember tempMember = Update.shared.getMemberFromBlizz(this.name, this.realm);
+        tempMember.tryLoadFailSpecs = this.tryLoadFailSpecs;
+        tempMember.internalID = this.internalID;
+        tempMember.isInternalData = true;
         this.specs = tempMember.getSpecs();
         //Save new info in DB
         saveInDB();

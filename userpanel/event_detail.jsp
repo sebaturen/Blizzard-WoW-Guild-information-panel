@@ -13,12 +13,13 @@
 <% 
 Event ev = new Event(Integer.parseInt(request.getParameter("ev"))); 
 EventAsist evAsist = ev.getAssistDetail(user); 
+User owner = ev.getOwner();
 if (!ev.isEnable() || ev.isHide()) {
     response.sendRedirect("events.jsp");
 } else { %>
     <div class="loader ajaxLoad" style="display: none;"></div>
     <div id="event_add_result" style="display: none;"></div>
-    <span class="ev_owner character-<%= (user.getMainCharacter() != null)? user.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (user.getMainCharacter() != null)? user.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span>
+    <span class="ev_owner character-<%= (owner.getMainCharacter() != null)? owner.getMainCharacter().getMemberClass().getSlug():"BATTLE_TAG"%>"><%=  (owner.getMainCharacter() != null)? owner.getMainCharacter().getName():user.getBattleTag().split("#")[0] %></span>
     <div id="eventDetail" data-id="<%= ev.getId() %>" class="key_title key_divide_title"><h1><%= ev.getTitle() %></h1></div>
     <span class="right_small_date"><%= ev.getDate() %></span>
     <p><%= ev.getDesc() %></p>
