@@ -11,7 +11,7 @@
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div class="fails_keys">
-                <a href="/mythic_plus_fail.jsp" class="btn btn-outline-warning">Fails runs</a>
+                <a href="/mythic_plus_fail.jsp" class="btn btn-outline-warning">Failed runs</a>
             </div>
             <div id="afixLoad" class="loader"></div>
             <div id="bestRun" style="display: none;"></div>

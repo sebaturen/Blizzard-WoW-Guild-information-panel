@@ -44,7 +44,7 @@ var member_<%= memberID %> = {
         <% CharacterSpec acSpec = member.getActiveSpec();
             if (acSpec != null)
             {%>
-                'desc': "<%= (acSpec.getSpec().getDescript(member.getGender())).replaceAll("\"", "'").replaceAll("\r\n", "<br>").replaceAll("\r\n", "<br>") %>",
+                'desc': "<%= (acSpec.getSpec().getDecrypt(member.getGender())).replaceAll("\"", "'").replaceAll("\r\n", "<br>").replaceAll("\r\n", "<br>") %>",
                 'spells': {
                   <%int i = 0;
                     for(Spell sp : acSpec.getSpells())

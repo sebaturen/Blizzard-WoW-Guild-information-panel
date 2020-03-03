@@ -28,7 +28,7 @@ else
                 <button type='submit' class='btn btn-outline-warning btn-sm'>Force the Update</button>
             </a>
             <br><br>
-            <p>Setting Guild Ranks</p>
+            <p>Setting</p>
             <a href='guildRank/guild_rank.jsp'>
                 <button type='submit' class='btn btn-outline-warning btn-sm'>Guild Rank</button>
             </a>

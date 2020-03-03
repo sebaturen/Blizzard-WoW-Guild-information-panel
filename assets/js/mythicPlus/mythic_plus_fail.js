@@ -24,14 +24,14 @@ $(document).ready(function() {
 
 function weekRun(keyRuns)
 {    
-    $("#runList").html("<div class='key_title'><h1 class='key_divide_title'>Fails runs of the week</h1></div>");
+    $("#runList").html("<div class='key_title'><h1 class='key_divide_title'>Faileds runs of the week</h1></div>");
     $("#runList").append(renderRuns(keyRuns));
     $("#runList").show();
 }
 
 function bestRun(keyRuns)
 {    
-    $("#bestRun").html("<div class='key_title'><h1>Best Fail Runs</h1></div>");
+    $("#bestRun").html("<div class='key_title'><h1>Top failed Runs</h1></div>");
     $("#bestRun").append(renderRuns(keyRuns));
     $("#bestRun").show();
 }

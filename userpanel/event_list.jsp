@@ -49,7 +49,7 @@
         </table>
     <% } /*end iff events size > 0*/
     if(disableEvent.size() > 0) { %>
-        <h1 class='key_title key_divide_title'>Disable Events</h1>
+        <h1 class='key_title key_divide_title'>Disabled Events</h1>
         <table class="table table-dark events-tab">
             <thead>
                 <tr>
@@ -89,7 +89,7 @@
         </table>
     <% } /*end iff disable event size > 0*/
     if(expireEvent.size() > 0) { %>
-        <h1 class='key_title key_divide_title'>Expire Events</h1>
+        <h1 class='key_title key_divide_title'>Expired Events</h1>
         <table class="table table-dark events-tab">
             <thead>
                 <tr>

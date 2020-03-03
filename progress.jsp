@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <th scope='row'>Boss</th>
-                                <th scope='row'>First Defeated</th>
+                                <th scope='row'>First Killed</th>
                                 <th scope='row'>iLevel AVG</th>
                             </tr>
                         </thead>

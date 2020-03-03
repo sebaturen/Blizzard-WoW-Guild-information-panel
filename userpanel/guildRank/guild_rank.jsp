@@ -42,7 +42,7 @@ else
     <body>
         <%@include file="../../includes/menu.jsp" %>
         <div class="container fill">
-            <p>List of ranks detected</p>
+            <div class='key_title'><h1 class='key_divide_title'>Detected ranks list</h1></div>
             <form id='formRanks' method="post">
             <%  if(ranks.getRanks() != null) {
                 for(Rank r : ranks.getRanks()){ %>
@@ -57,7 +57,7 @@ else
                 </div>
           <%}/*end foreach ranks*/ } /*End if is getRanks null*/%>
                 <input type="hidden" value="true" name="save_apply" />
-                <button type="submit" class="btn btn-primary">Save change</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
         <%@include file="../../includes/footer.jsp" %>
