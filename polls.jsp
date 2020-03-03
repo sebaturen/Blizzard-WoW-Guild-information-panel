@@ -4,6 +4,7 @@
 } else {%>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
+<%@ page import ="java.util.Date" %>
 <%@ page import = "com.blizzardPanel.poll.Poll" %>
 <%@ page import = "com.blizzardPanel.poll.PollOption" %>
 <%@ page import = "com.blizzardPanel.poll.PollOptionResult" %>
@@ -120,9 +121,10 @@
                             </p>
                             <div class="poll_question returnCode">
                                 <%= p.getPollQuestion() %>
-                                <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { %>
+                                <% if (user.getGuildRank() == 0 || user.getGuildRank() == 1) { 
+                                    Date today = new Date(); %>
                                     <div class="poll_controll">
-                                        <button type="button" onclick='enablePoll(<%= p.getId() %>)' class="enable_poll btn btn-outline-warning">Enable</button>
+                                        <% if (p.getEndDateObj() == null || (p.getEndDateObj() != null && today.before(p.getEndDateObj())) ) { %><button type="button" onclick='enablePoll(<%= p.getId() %>)' class="enable_poll btn btn-outline-warning">Enable</button><% } %>
                                         <button type="button" onclick='removePoll(<%= p.getId() %>)' class="remove_poll btn btn-outline-danger" data-poll_id="<%= p.getId() %>">Remove</button>
                                     </div>
                                 <% } %>

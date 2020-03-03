@@ -24,9 +24,11 @@ else
         <title><%= guild_info.getName() %> - Create poll panel</title>
         <%@include file="../includes/header.jsp" %>
         <script src="../assets/js/poll_create.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet"/>
+        <!-- Date Picker! -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <!-- END Date Picker -->
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>
@@ -54,7 +56,7 @@ else
                 </div>
                 <!-- Settings -->
                 <div class="form-group row">
-                    <label class="col-2" for="exampleSelect1">Minimu guild level</label>
+                    <label class="col-2" for="exampleSelect1">Minimum guild level</label>
                     <div class="col-10">
                         <select name="guild_level" class="form-control" id="exampleSelect1">
                            <% if(ranks.getRanks() != null) {
@@ -67,20 +69,20 @@ else
                 <div class="form-check">
                     <label class="form-check-label">
                         <input type="checkbox" class="form-check-input" name="more_options">
-                        Other member can add more options?
+                        Enable to add more options
                     </label>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label">
                         <input type="checkbox" class="form-check-input" name="multi_options">
-                        Members can select multiple options?
+                        Enable to select multiple options
                     </label>
                 </div>
                 <div class="form-group row">
                     <div class="form-check col-2">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" name="limit_date" id="limitDate">
-                            Limit Date?
+                            Enable limit date
                         </label>
                     </div>
                     <div class="col-10" id="divDataPicker" style="display: none;">

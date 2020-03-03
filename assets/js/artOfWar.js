@@ -21,7 +21,7 @@ $(document).ready(function() {
     $('#navbarSupportedContent')
     .on('mouseover', '#token_price', function() {
         /*Load wow token prices */
-        $.getScript('assets/js/wowToken/wow_token_list.jsp', function() {
+        $.getScript('/assets/js/wowToken/wow_token_list.jsp', function() {
             console.log('token price history ready');
 
             var dataPoints = [];

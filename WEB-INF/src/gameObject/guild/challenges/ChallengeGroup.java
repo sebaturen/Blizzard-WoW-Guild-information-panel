@@ -156,7 +156,7 @@ public class ChallengeGroup extends GameObject
                                             new String[] { "internal_member_id", "group_id", "character_spec_id" },
                                             new String[] { m.getId() +"", this.id +"", m.getActiveSpec().getId() +"" });
                         }
-                    } catch (DataException|ClassNotFoundException|SQLException ex) {
+                    } catch (DataException | SQLException ex) {
                         Logs.errorLog(ChallengeGroup.class, "Fail to save members in groups: "+ ex);
                     }
                 });

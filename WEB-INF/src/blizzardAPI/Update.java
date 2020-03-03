@@ -169,7 +169,7 @@ public class Update {
                     UPDATE_INTERVAL_TABLE_KEY,
                     DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                     new String[]{UPDATE_TYPE_DYNAMIC + "", getCurrentTimeStamp()});
-        } catch (DataException | ClassNotFoundException | SQLException e) {
+        } catch (DataException | SQLException e) {
             Logs.errorLog(Update.class, "Fail to save update time: " + e);
         }
     }
@@ -250,7 +250,7 @@ public class Update {
                     UPDATE_INTERVAL_TABLE_KEY,
                     DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                     new String[]{UPDATE_TYPE_STATIC + "", getCurrentTimeStamp()});
-        } catch (DataException | ClassNotFoundException | SQLException e) {
+        } catch (DataException | SQLException e) {
             Logs.errorLog(Update.class, "Fail to save update time: " + e);
         }
     }
@@ -574,7 +574,7 @@ public class Update {
                     UPDATE_INTERVAL_TABLE_KEY,
                     DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                     new String[]{UPDATE_TYPE_AUCTION_CHECK + "", getCurrentTimeStamp()});
-        } catch (DataException | IOException | ClassNotFoundException | SQLException ex) {
+        } catch (DataException | IOException | SQLException ex) {
             Logs.errorLog(Update.class, "Fail to get AH " + ex);
         }
         Logs.infoLog(Update.class, "-------Update process is COMPLETE! (Auction House)------");
@@ -610,7 +610,7 @@ public class Update {
                     dbConnect.delete(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
                             AuctionItem.AUCTION_ITEMS_KEY + "=?",
                             new String[]{aucItemOLD.getId() + ""});
-                } catch (ClassNotFoundException | SQLException | DataException ex) {
+                } catch (SQLException | DataException ex) {
                     Logs.errorLog(Update.class, "Fail to save auc history to " + aucItemOLD.getId() + " - " + ex);
                 }
                 //Show update progress...
@@ -626,7 +626,7 @@ public class Update {
                     UPDATE_INTERVAL_TABLE_KEY,
                     DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                     new String[]{UPDATE_TYPE_CLEAR_AH_HISTORY + "", getCurrentTimeStamp()});
-        } catch (SQLException | DataException | ClassNotFoundException ex) {
+        } catch (SQLException | DataException ex) {
             Logs.errorLog(Update.class, "Fail to get current auc items " + ex);
         }
         Logs.infoLog(Update.class, "-------Update process is Complete! (Auction House move to History DB)------");
@@ -836,7 +836,7 @@ public class Update {
                                 }
                             }
                         }
-                    } catch (DataException | ClassNotFoundException | SQLException e) {
+                    } catch (DataException | SQLException e) {
                         Logs.infoLog(Update.class, "FAIL - getGuildMembers " + e);
                     }
                 } else {
@@ -894,7 +894,7 @@ public class Update {
                                 UPDATE_INTERVAL_TABLE_KEY,
                                 DBStructure.outKey(UPDATE_INTERVAL_TABLE_STRUCTURE),
                                 new String[]{UPDATE_TYPE_GUILD_NEWS + "", getCurrentTimeStamp()});
-                    } catch (DataException | ClassNotFoundException | SQLException e) {
+                    } catch (DataException | SQLException e) {
                         Logs.errorLog(Update.class, "Fail to save update guild new time: " + e);
                     }
                 } else {
@@ -1684,8 +1684,6 @@ public class Update {
                         Logs.errorLog(Update.class, "ERROR - WoW Token SQLException "+ e);
                     } catch (DataException e) {
                         Logs.errorLog(Update.class, "ERROR - WoW Token DataException "+ e);
-                    } catch (ClassNotFoundException e) {
-                        Logs.errorLog(Update.class, "ERROR - WoW Token ClassNotFoundException "+ e);
                     }
 
                 } else {
@@ -1949,8 +1947,8 @@ public class Update {
                             JSONObject npcInfo = (JSONObject) npcList.get(j);
                             if(npcInfo.get("id").equals(bossInfo.get("id")))
                             {//If have a NPC and have same ID, change the especial slug and complate name
-                                bossInfoCreate.put("name", npcInfo.get("name"));
-                                bossInfoCreate.put("slug", npcInfo.get("urlSlug"));
+                                bossInfoCreate.addProperty("name", npcInfo.get("name"));
+                                bossInfoCreate.addProperty("slug", npcInfo.get("urlSlug"));
                                 break;
                             }
                         }*/

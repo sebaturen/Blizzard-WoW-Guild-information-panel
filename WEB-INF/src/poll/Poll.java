@@ -152,6 +152,16 @@ public class Poll extends GameObject
     public Rank getMinRank() { return this.minRank; }
     public String getStartDate() { return this.startDate; }
     public String getEndDate() { return this.endDate; }
+    public Date getEndDateObj() {
+        if (this.endDate != null) {
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(this.endDate);
+            } catch (ParseException e) {
+                Logs.errorLog(this.getClass(), "FAILED - to parse date "+ e);
+            }
+        }
+        return null;
+    }
     public List<PollOption> getOptions() 
     { 
         loadOptions();        
@@ -201,8 +211,8 @@ public class Poll extends GameObject
     public void setStartDate(String startDate) { this.startDate = startDate; }
     public void setIsLimitDate(boolean isLimitDate) { this.isLimitDate = isLimitDate; }
     public void setEndDate(String endDate) { this.endDate = endDate; }
-    public void setIsEnable(boolean isEnable) { this.isEnable = isEnable; this.saveInDB(); }
-    public void setIsHide() { this.isHide = true; this.saveInDB(); }
+    public void setEnable(boolean isEnable) { this.isEnable = isEnable; this.saveInDB(); }
+    public void setHide() { this.isHide = true; this.saveInDB(); }
     public void addOption(PollOption op) { this.options.add(op); }
     public int addOption(String s, User u) 
     {

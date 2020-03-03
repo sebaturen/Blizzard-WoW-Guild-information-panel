@@ -259,13 +259,13 @@ function addResult(pollId, optId, userShowDiv)
     .done(function(mData) {
         if(mData.status != true)
         {
-            alert("Fail to save your choise - Error: 201");
+            alert("Failed to save your choice - Error: 201");
             console.log(mData);
             failAction();
         }
     })
     .fail(function() {
-        alert("Fail to save your choise - Error: 202");
+        alert("Failed to save your choice - Error: 202");
         failAction();
     })
     .always(function() {
@@ -382,11 +382,11 @@ function enablePoll(pollId) {
         else
         {
             console.log(mData);
-            alert("Fail to enable poll - Error 004");
+            alert("Failed to enable poll - Error 004");
         }
     })
     .fail(function() {
-        alert("Fail to enable poll - Error 001");
+        alert("Failed to enable poll - Error 001");
     })
     .always(function() {
         $(".ajaxLoad").hide();            
@@ -410,11 +410,11 @@ function disablePoll(pollId) {
         else
         {
             console.log(mData);
-            alert("Fail to disable poll - Error 004");
+            alert("Failed to disable poll - Error 004");
         }
     })
     .fail(function() {
-        alert("Fail to disable poll - Error 001");
+        alert("Failed to disable poll - Error 001");
     })
     .always(function() {
         $(".ajaxLoad").hide();            

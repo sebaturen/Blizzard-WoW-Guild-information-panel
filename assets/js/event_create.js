@@ -1,6 +1,15 @@
 //Send a ajax request to server...
 $(document).ready(function() {
-    $('#datetimepicker1').datetimepicker();
+    
+    $('input[name="event_date"]').daterangepicker({
+        timePicker: true,
+        singleDatePicker: true,
+        locale: {
+            format: 'Y-MM-D HH:mm:ss'
+          }
+    }, function(start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD'));
+    });
 
     //Create poll form!
     $("#event_create_form").submit(function(event) {

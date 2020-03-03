@@ -43,6 +43,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 <li class="nav-item <% out.write((currentPath.equals("polls.jsp"))? "active":""); %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp">Polls</a>
                 </li>
+                <li class="nav-item <% out.write((currentPath.equals("events.jsp"))? "active":""); %>">
+                    <a class="nav-link" href="<%= request.getContextPath() %>/events.jsp">Events</a>
+                </li>
             <% } %>
             <li class="nav-item <% out.write((currentPath.equals("faqs.jsp"))? "active":""); %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp">Simeo</a>

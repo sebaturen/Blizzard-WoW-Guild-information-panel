@@ -199,7 +199,7 @@ public class User
                                 new String[] { this.battleTag, this.accessToken, Update.getCurrentTimeStamp()});
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
-            } catch (DataException | ClassNotFoundException | SQLException ex) {
+            } catch (DataException | SQLException ex) {
                 Logs.errorLog(User.class, "Fail to insert user "+ this.battleTag);
             }
         }

@@ -146,10 +146,9 @@ public class DBConnect {
      * @param values
      * @return insert ID
      * @throws DataException
-     * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, ClassNotFoundException, SQLException {
+    public String insert(String table, String idColum, String[] columns, String[] values) throws DataException, SQLException {
         String id = null;
         if ((columns.length > 0 && values.length > 0) &&
                 (columns.length == values.length)) {
@@ -261,7 +260,6 @@ public class DBConnect {
 
     /**
      * Convert SQL Result to JSONArray
-     * @param result set
      * @return
      * @throws SQLException
      */

@@ -173,6 +173,10 @@ body > .container {
     filter: FlipH;
     -ms-filter: "FlipH";
 }
+/* date picker box */
+.calendar-table > .table-condensed {
+    color: #000;
+}
 /*END -------GENERAL------------*/
 
 /*-------COLOR ITEM QUALITY--------*/

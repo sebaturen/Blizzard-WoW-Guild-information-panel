@@ -11,6 +11,7 @@ import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.blizzardPanel.poll.PollOption;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -20,12 +21,12 @@ import java.util.List;
 
 public class EventAsist extends GameObject
 {
-    //DB Structure
+    // DB Structure
     public static final String EVENTS_ASIST_TABLE_NAME = "events_asist";
     public static final String EVENTS_ASIST_TABLE_KEY = "id_asis";
     public static final String[] EVENTS_ASIST_TABLE_STRUCTURE = {"id_asis", "id_event", "user_id" };
     
-    //Atribute
+    // Attribute
     private int idAsis = -1;
     private int idEvent;
     private User user;
@@ -53,22 +54,14 @@ public class EventAsist extends GameObject
     }
 
     @Override
-    public boolean saveInDB() 
+    public boolean saveInDB()
     {
-        String[] valArray = new String[] {this.idAsis+"", this.idEvent+"", this.user.getId()+""};
-        if(this.idAsis != -1)
-        {           
-            /* {"id_event", "user_id" }; */
-            setTableStructur(DBStructure.outKey(EVENTS_ASIST_TABLE_STRUCTURE));
-        }
-        else
-        {
-            valArray = DBStructure.outKey(valArray);
-        }        
-        switch (saveInDBObj(valArray))
+        setTableStructur(DBStructure.outKey(EVENTS_ASIST_TABLE_STRUCTURE));
+        switch (saveInDBObj(new String[] {this.idEvent+"", this.user.getId()+""}))
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.eventCharacter.forEach((evChar) -> {
+                    evChar.setAsisID(this.idAsis);
                     evChar.saveInDB();
                 });
                 return true;
@@ -82,8 +75,8 @@ public class EventAsist extends GameObject
         try {
             JsonArray charListDB = dbConnect.select(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_NAME,
                     new String[] { EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_KEY },
-                    "id_asis=? AND user_id=?",
-                    new String[] {this.idAsis+"", this.user.getId()+""});
+                    "id_asis=?",
+                    new String[] {this.idAsis+""});
             for(int i = 0; i < charListDB.size(); i++)
             {
                 EventAsistCharacter eChar = new EventAsistCharacter( charListDB.get(i).getAsJsonObject().get(EventAsistCharacter.EVENTS_ASIST_CHAR_TABLE_KEY).getAsInt() );
@@ -96,72 +89,91 @@ public class EventAsist extends GameObject
     
     public boolean setCharacters(CharacterMember mainChar, List<CharacterMember> altersChar)
     {
-        //Search in "eventCharacter" the MainCharacter ID (EventAsistCharacter ID)
-        //Search list all alters and save ID (EventAsistCharacter ID)
-        int[] listVal = new int[this.eventCharacter.size()];
-        int i = 0;
-        for(EventAsistCharacter eChar : this.eventCharacter)
-        {
-            if(eChar.isMain())
-                listVal[0] = eChar.getId();
-            else
-                listVal[i+1] = eChar.getId();
-            i++;
+        // Delete pre set elements
+        for (EventAsistCharacter eChar : this.eventCharacter) {
+            eChar.deleteFromDB();
         }
-        
-        //Clear old selection:
         this.eventCharacter = new ArrayList<>();
-        
-        //Save MAIN character:
-        if(listVal[0] != 0)
-        {
-            this.eventCharacter.get(listVal[0]).setCharacterMember(mainChar);            
+        // Add new characters
+        EventAsistCharacter main = new EventAsistCharacter();
+        main.setCharacterMember(mainChar);
+        main.setIsMain(true);
+        main.setIsData(true);
+        this.eventCharacter.add(main);
+
+        // Add alters
+        for(CharacterMember alt : altersChar) {
+            EventAsistCharacter altChar = new EventAsistCharacter();
+            altChar.setCharacterMember(alt);
+            altChar.setIsData(true);
+            this.eventCharacter.add(altChar);
         }
-        else
-        {
-            
+
+        // Save Event assistance
+        if(this.saveInDB()) {
+            return true;
         }
         return false;
-        
-        
-        //Verificar que existe main
-        //si existe, remplazar el nuevo main
-        //si no existe, guardar este nuevo como main.
-        
-        //----------
-        //Revisar si los alte existen
-        //si existen, actualizar
-        
     }
 
     @Override
     public void setId(int id) { this.idAsis = id; }
     public void setEventId(int eId) { this.idEvent = eId; }
     public void setUser(User u) { this.user = u; }
-    public void addAsisCharacter(EventAsistCharacter eaChar) { this.eventCharacter.add(eaChar); }
+    public void addAssistCharacter(EventAsistCharacter eaChar) { this.eventCharacter.add(eaChar); }
+    public boolean isAssistCharacter(CharacterMember chm) {
+        for(EventAsistCharacter eChar : this.eventCharacter)
+        {
+            if(eChar.getCharMember().getId() == chm.getId()) return true;
+        }
+        return false;
+    }
     
     @Override
     public int getId() { return this.idAsis; }
     public int getEventId() { return this.idEvent; }
     public User getUser() { return this.user; }
-    public List getEventAsistCharacter() { return this.eventCharacter; }
-    public CharacterMember getMainCharacter() 
+    public List getEventAssistCharacter() { return this.eventCharacter; }
+    public EventAsistCharacter getMainEventAssistCharacter()
     {
         for(EventAsistCharacter eChar : this.eventCharacter)
         {
-            if(eChar.isMain()) return eChar.getCharMember();
+            if(eChar.isMain()) return eChar;
         }
         return null;
     }
     
-    public List<CharacterMember> getAltersChar()
+    public List<EventAsistCharacter> getAlterEventAssistCharacter()
     {
-        List<CharacterMember> alterChar = new ArrayList<>();
+        List<EventAsistCharacter> alterChar = new ArrayList<>();
         for(EventAsistCharacter eChar : this.eventCharacter)
         {
-            if(!eChar.isMain()) alterChar.add(eChar.getCharMember());
+            if(!eChar.isMain()) alterChar.add(eChar);
         }
         return alterChar;
     }
-    
+    public boolean removeParticiple() {
+        try {
+            this.eventCharacter.forEach((resl) -> {
+                resl.deleteFromDB();
+            });
+            dbConnect.delete(EVENTS_ASIST_TABLE_NAME,
+                    EVENTS_ASIST_TABLE_KEY +"=?",
+                    new String[] { this.idAsis+"" });
+            return true;
+        } catch (SQLException | DataException ex) {
+            Logs.errorLog(PollOption.class, "Fail to delete event assits in > "+ this.idAsis +"--"+ ex);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "EventAsist{" +
+                "idAsis=" + idAsis +
+                ", idEvent=" + idEvent +
+                ", user=" + user +
+                ", eventCharacter=" + eventCharacter +
+                '}';
+    }
 }

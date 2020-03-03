@@ -85,7 +85,7 @@ public abstract class GameObject implements DBStructure
                     setId(Integer.parseInt(id));
                     this.isInternalData = true;
                     return SAVE_MSG_INSERT_OK;
-                } catch (DataException | ClassNotFoundException | SQLException ex) {
+                } catch (DataException | SQLException ex) {
                     Logs.errorLog(this.getClass(), "Fail to insert - "+ ex);
                     return SAVE_MSG_INSERT_ERROR;
                 }

@@ -1,6 +1,12 @@
 //Send a ajax request to server...
 $(document).ready(function() {
-    $('#sandbox-container .input-group.date').datepicker({ });
+
+    $('input[name="set_date_limit"]').daterangepicker({
+        singleDatePicker: true
+    }, function(start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD'));
+    });
+
     var totalOption = 1;
     $(".addOption").click(function() {
         var addOption = totalOption + 1;

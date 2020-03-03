@@ -17,7 +17,7 @@
         <div class="container fill">
             <% if (alters.getUsers() != null) { 
                 for(User u : alters.getUsers()) { %>
-                    <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= u.getBattleTag().split("#")[0] %>
+                    <img id="<%= u.getBattleTag().split("#")[0] %>" src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= u.getBattleTag().split("#")[0] %>
                     <span  class="right_small_date">Last Alters update: <%= u.getLastAltersUpdate() %></span>
                 <%  //User character info~
                     List<CharacterMember> memberChars = u.getCharacters();

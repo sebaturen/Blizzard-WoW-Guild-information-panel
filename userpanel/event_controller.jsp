@@ -15,7 +15,7 @@
 
         //Load event edit
         String eventAction = request.getParameter("event_action");
-        json.put("action", eventAction);
+        json.addProperty("action", eventAction);
 
         //Controll event:
         int eventId = -1;
@@ -23,18 +23,42 @@
         boolean canEdit = false;
 
         if(eventAction.equals("addMember") ||
-            eventAction.equals("event_add_result2") ||
-            eventAction.equals("event_add_result2") ||
-            eventAction.equals("event_add_result2"))
+            eventAction.equals("removeParticiple") ||
+            eventAction.equals("enableEvent") ||
+            eventAction.equals("disableEvent") ||
+            eventAction.equals("removeEvent"))
         {
             eventId = Integer.parseInt(request.getParameter("val[event_id]"));
-            System.out.println("ev ID> "+ eventId);
             editEvent = eventsControl.getEvent(eventId);
         }
 
         //Try action
         switch(eventAction)
         {
+            case "enableEvent":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editEvent.setEnable(true);
+                    json.addProperty("status", "ok");
+                }
+                break;
+            case "disableEvent":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editEvent.setEnable(false);
+                    json.addProperty("status", "ok");
+                }
+                break;
+            case "removeEvent":
+                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
+                if(canEdit) 
+                {
+                    editEvent.setHide();
+                    json.addProperty("status", "ok");
+                }
+                break;
             case "addMember":
                 int mainCharID = Integer.parseInt(request.getParameter("val[main_id]"));
                 int mainSpecID = Integer.parseInt(request.getParameter("val[main_spec]"));
@@ -69,79 +93,51 @@
                         }
                         if(!failAlter)
                         {
-                            //Set in event...
+                            // Set participed in event...
                             if(editEvent.addCharactersFormUser(user, mainChar, altersChar))
                             {
-                                json.put("status", "ok");
+                                json.addProperty("status", "ok");
                             }
                             else
                             {
-                                json.put("status", "fail");
-                                json.put("msg", "Failed to save in DB");
+                                json.addProperty("status", "fail");
+                                json.addProperty("msg", "Failed to save in DB");
                             }
                         }
                         else
                         {
-                            json.put("status", "fail");
-                            json.put("msg", "Error, alters character not is your character");
+                            json.addProperty("status", "fail");
+                            json.addProperty("msg", "Error, alters character not is your character");
                         }
                     }
                     else
                     {
-                        json.put("status", "fail");
-                        json.put("msg", "Error, main character not is your character");
+                        json.addProperty("status", "fail");
+                        json.addProperty("msg", "Error, main character not is your character");
                     }
                 }
                 else
                 {
-                    json.put("status", "fail");
-                    json.put("msg", "Error, main character or main spect character not is correct");
+                    json.addProperty("status", "fail");
+                    json.addProperty("msg", "Error, main character or main spect character not is correct");
                 }
                 break;
-            /*case "removeOption":
-                optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
-                if(editPoll.getOption(optId) != null)
-                {
-                    if(editPoll.getOption(optId).getOwner().equals(user) &&
-                       editPoll.getOption(optId).getResult().size() <= 1)
-                    {
-                        canEdit = true;
-                    }
-                }
-                if(canEdit)
-                {
-                    json.put("status", editPoll.removeOptionDB(optId));
+            case "removeParticiple":
+                if (editEvent.removeParticiple(user)) {
+                    json.addProperty("status", "ok");
+                } else {
+                    json.addProperty("status", "failde");
+                    json.addProperty("msg", "Error, to save remove participated");
                 }
                 break;
-            case "addOption":
-                String textOption = request.getParameter("poll_opt_add_text");
-                if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
-                if(editPoll.isCanAddMoreOptions())
-                {
-                    canEdit = true;
-                }
-                if(canEdit)
-                {
-                    int newIdOption = editPoll.addOption(textOption, user);
-                    json.put("status", "ok");
-                    json.put("option_id", newIdOption);
-                }
-                break;
-            case "addResult":
-                optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                json.put("status", editPoll.addResult(optId, user));
-                break;
-            case "removeResult":
-                optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                json.put("status", editPoll.removeResult(optId, user));
-                break;*/
             case "createEvent":
                 //Create event values
                 String eventTitle = null;
                 String eventDesc = null;
                 String eventDate = null;
-
+                int minLv = -1;
+                int rankLv = -1;
+                
                 //search values
                 int i = 0;
                 while(request.getParameter("val["+i+"][name]") != null)
@@ -155,58 +151,64 @@
                         case "event_title": eventTitle = valValue; break;
                         case "event_desc": eventDesc = valValue; break;
                         case "event_date": eventDate = valValue; break;
+                        case "event_lvl": minLv = Integer.parseInt(valValue); break;
+                        case "guild_level": rankLv = Integer.parseInt(valValue); break;
                     }
                     i++;
                 }
 
-                if(eventTitle != null && eventDesc != null && eventDate != null)
+                System.out.println("title "+ eventTitle);
+                System.out.println("desc "+ eventDesc);
+                System.out.println("date "+ eventDate);
+                System.out.println("lvl "+ minLv);
+                System.out.println("ranj "+ rankLv);
+                if(eventTitle == null || eventDesc == null || eventDate == null || minLv == -1 || rankLv == -1)
                 {
+                    json.addProperty("status", "fail");
+                    json.addProperty("msg", "Error, complete all information");
+                } else {
+                    System.out.println(eventDate);
                     //Try parse date time:
                     try
                     {
-                        eventDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(eventDate));
+                        eventDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(eventDate));
                         Date nowDate = new Date();
                         Date evDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(eventDate);
                         if(nowDate.compareTo(evDate) < 0)
                         {
                             //Try save in DB
-                            if(eventsControl.newEvent(user, eventTitle, eventDesc, eventDate))
+                            if(eventsControl.newEvent(user, eventTitle, eventDesc, eventDate, minLv, rankLv))
                             {
-                                json.put("status", "ok");
+                                json.addProperty("status", "ok");
                             }
                             else
                             {
-                                json.put("status", "fail");
-                                json.put("msg", "Failed to save in DB");
+                                json.addProperty("status", "fail");
+                                json.addProperty("msg", "Failed to save in DB");
                             }
                         }
                         else
                         {
-                            json.put("status", "fail");
-                            json.put("msg", "Error, the date must be later than the current one");
+                            json.addProperty("status", "fail");
+                            json.addProperty("msg", "Error, the date must be later than the current one");
                         }
                     } catch (java.text.ParseException ex) {
-                        json.put("status", "fail");
-                        json.put("msg", "Error, `date` not correct");
+                        json.addProperty("status", "fail");
+                        json.addProperty("msg", "Error, `date` not correct");
                     }
-                }
-                else
-                {
-                    json.put("status", "fail");
-                    json.put("msg", "Error, complete all information");
                 }
                 break;
             default:
-                json.put("status", "fail");
-                json.put("msg", "Acction not found");
+                json.addProperty("status", "fail");
+                json.addProperty("msg", "Acction not found");
                 break;
 
         }
     }
     else
     {
-        json.put("status", "fail");
-        json.put("msg", "Not user login detected");
+        json.addProperty("status", "fail");
+        json.addProperty("msg", "Not user login detected");
     }
     out.print(json);
     out.flush();

@@ -308,7 +308,7 @@ public class CharacterMember extends GameObject {
                             new String[]{name, realm, "0"});//asumed is 0 becouse in frist moment, we get all guilds members.
                     this.internalID = Integer.parseInt(id);
                 }
-            } catch (DataException | ClassNotFoundException | SQLException ex) {
+            } catch (DataException | SQLException ex) {
                 Logs.errorLog(CharacterMember.class, "Fail to generate a member ID " + this.name + " - " + ex);
             }
         }

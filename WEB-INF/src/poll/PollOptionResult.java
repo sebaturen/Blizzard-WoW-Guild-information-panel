@@ -71,8 +71,8 @@ public class PollOptionResult extends GameObject
     {
         try 
         {
-            dbConnect.delete(POLL_OPTION_RESULTS_TABLE_NAME, 
-                            "id=?",
+            dbConnect.delete(POLL_OPTION_RESULTS_TABLE_NAME,
+                    POLL_OPTION_RESULTS_TABLE_KEY+"=?",
                             new String[] { this.id+""});
             return true;
         } catch (SQLException | DataException ex) {

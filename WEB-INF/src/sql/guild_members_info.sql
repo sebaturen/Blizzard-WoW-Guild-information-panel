@@ -291,7 +291,7 @@ CREATE TABLE `polls` (
     `is_limit_date` TINYINT(1) NOT NULL,
     `end_date`	    DATETIME,
     `isEnable`      TINYINT(1) NOT NULL DEFAULT 1,
-    `isHide`        TINYINT(1) NOT NULL DEFAULT 1,
+    `isHide`        TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(min_rank) REFERENCES guild_rank(id)
@@ -368,6 +368,10 @@ CREATE TABLE `events` (
     `desc`          TEXT NOT NULL,
     `date`          DATETIME NOT NULL,
     `owner_id`      INT NOT NULL,
+    `min_rank`      INT,
+    `min_level`     INT,
+    `isEnable`      TINYINT(1) NOT NULL DEFAULT 1,
+    `isHide`        TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY(id),
     FOREIGN KEY(owner_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -378,19 +382,18 @@ CREATE TABLE `events_asist` (
     `user_id`   INT NOT NULL,
     PRIMARY KEY(id_asis),
     FOREIGN KEY(id_event) REFERENCES events(id),
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    UNIQUE(id_event, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `events_asist_char` (
     `id_asis_char`  INT NOT NULL AUTO_INCREMENT,
     `id_asis`       INT NOT NULL,
-    `user_id`       INT NOT NULL,
     `char_id`       INT NOT NULL,
     `spec_id`       INT NOT NULL,
     `is_main`       TINYINT(1) NOT NULL,
     PRIMARY KEY(id_asis_char),
     FOREIGN KEY(id_asis) REFERENCES events_asist(id_asis),
-    FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(char_id) REFERENCES gMembers_id_name(internal_id),
     FOREIGN KEY(spec_id) REFERENCES character_specs(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

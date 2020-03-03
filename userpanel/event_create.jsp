@@ -10,15 +10,19 @@ else
 %>
 <%@ page import ="java.text.SimpleDateFormat" %>
 <%@ page import ="java.util.Date" %>
+<%@ page import ="com.blizzardPanel.gameObject.guild.Rank" %>
+<jsp:useBean id="ranks" class="com.blizzardPanel.viewController.GuildRanks" scope="request"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
         <title><%= guild_info.getName() %> - Create Event panel</title>
         <%@include file="../includes/header.jsp" %>
         <script src="../assets/js/event_create.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+        <!-- Date Picker! -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <!-- END Date Picker -->
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>
@@ -33,12 +37,19 @@ else
                     <label>Description*</label>
                     <textarea class="form-control" id="exampleTextarea" rows="3" name="event_desc"></textarea>
                     <label>Date*</label>
-                    <div class="form-group">
-                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                            <input type="text" name="event_date" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+                    <input class="form-control" type="text" name="event_date" value="" />
+                    <label>Min level</label>
+                    <input class="form-control" type="number" name="event_lvl" value="120" />
+                    <br>
+                    <div class="form-group row">
+                        <label class="col-2" for="exampleSelect1">Minimum guild level</label>
+                        <div class="col-10">
+                            <select name="guild_level" class="form-control" id="exampleSelect1">
+                               <% if(ranks.getRanks() != null) {
+                                    for(Rank r : ranks.getRanks(false)){ %>
+                                        <option value="<%= r.getId() %>"><%= r.getTitle() %></option>
+                              <%}/*end foreach ranks*/ } /*End if is getRanks null*/ %>
+                            </select>
                         </div>
                     </div>
                 </div>

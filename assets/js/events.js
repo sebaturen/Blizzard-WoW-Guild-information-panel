@@ -36,6 +36,34 @@ $(document).ready(function() {
                 });
                 $("#participate_switch").prop('checked', false);
                 $("#btn_save_inf").attr("disabled", true);
+                // remove all selection
+                $(".ajaxLoad").show();
+                $("#btn_save_inf").attr("disabled", true);
+                $.ajax({
+                    method: "POST",
+                    url: "userpanel/event_controller.jsp",
+                    data: { event_action: "removeParticiple", 
+                            val: {
+                                event_id: $("#eventDetail").data("id")
+                        }},
+                    dataType: "json"
+                })
+                .done(function(mData) {
+                    if(mData.status == "ok")
+                    {
+                        document.location.reload()
+                    } else {
+                        console.log(mData);
+                        $("#event_add_result").html("<div class='alert alert-danger' role='alert'>"+ mData.msg +"</div>");
+                    }
+                })
+                .fail(function() {
+                    $("#event_add_result").html("<div class='alert alert-danger' role='alert'>Failed to save a new member information</div>");
+                })
+                .always(function() {
+                    $("#event_add_result").show();
+                    $(".ajaxLoad").hide();
+                });
             }
         }
         else
@@ -82,7 +110,7 @@ $(document).ready(function() {
                 .done(function(mData) {
                     if(mData.status == "ok")
                     {
-                        console.log("ok recargar (?)");
+                        document.location.reload()
                     }
                     else
                     {
@@ -194,6 +222,7 @@ function specSelecMain(imgSpec)
         $(this).attr("class", "black_white spec_select");
     });
     $(imgSpec).attr("class", "spec_select");
+    $("#btn_save_inf").attr("disabled", false);
 }
 
 function clearMain()
@@ -255,6 +284,7 @@ function specSelecAlter(imgSpec)
         $(this).attr("class", "black_white spec_select");
     });
     $(imgSpec).attr("class", "spec_select");
+    $("#btn_save_inf").attr("disabled", false);
 }
 
 function removeChar(charRemove)
@@ -262,4 +292,95 @@ function removeChar(charRemove)
     var idSeledChar = $(charRemove).data("char_id");
     $("#char_info_"+ idSeledChar).attr("class", "user_char");
     $("#alter_selec_spec_"+ idSeledChar).remove();
+    $("#btn_save_inf").attr("disabled", false);
+}
+
+function removeEvent(eventId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/event_controller.jsp",
+        data: { event_action: "removeEvent", 
+                val: {
+                    event_id: eventId
+                }},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Failed to remove event - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Failed to remove event - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
+    });
+}
+
+function enableEvent(eventId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/event_controller.jsp",
+        data: { event_action: "enableEvent", 
+                val: {
+                    event_id: eventId
+                }},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Failed to enable event - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Failed to enable event - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
+    });
+}
+
+function disableEvent(eventId) {
+    $(".ajaxLoad").show();
+    $.ajax({
+        method: "POST",
+        url: "userpanel/event_controller.jsp",
+        data: { event_action: "disableEvent", 
+                val: {
+                    event_id: eventId
+                }},
+        dataType: "json"
+    })
+    .done(function(mData) {
+        if(mData.status == "ok")
+        {
+            document.location.reload()
+        }
+        else
+        {
+            console.log(mData);
+            alert("Failed to disable event - Error 004");
+        }
+    })
+    .fail(function() {
+        alert("Failed to disable event - Error 001");
+    })
+    .always(function() {
+        $(".ajaxLoad").hide();            
+    });
 }

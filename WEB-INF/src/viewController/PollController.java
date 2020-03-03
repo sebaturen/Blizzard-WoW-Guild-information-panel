@@ -103,7 +103,7 @@ public class PollController
             else
                 return false;
         }
-        newPoll.setIsEnable(true);
+        newPoll.setEnable(true);
         newPoll.setStartDate(Update.getCurrentTimeStamp());
         //Add options
         if (options == null || options.size() == 0)
@@ -113,7 +113,6 @@ public class PollController
         {
             if (op.length() != 0)
             {
-                System.out.println("OP! "+ op);
                 PollOption pollOp = new PollOption();
                 pollOp.setOptionText(op);
                 pollOp.setOwner(owner);

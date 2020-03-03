@@ -14,7 +14,7 @@
 
         //Load poll edit
         String pollAction = request.getParameter("poll_action");
-        json.put("action", pollAction);
+        json.addProperty("action", pollAction);
 
         //Controll poll:
         int pollId = -1;
@@ -41,24 +41,24 @@
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
                 if(canEdit) 
                 {
-                    editPoll.setIsHide();
-                    json.put("status", "ok");
+                    editPoll.setHide();
+                    json.addProperty("status", "ok");
                 }
                 break;
             case "disablePoll":
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
                 if(canEdit) 
                 {
-                    editPoll.setIsEnable(false);
-                    json.put("status", "ok");
+                    editPoll.setEnable(false);
+                    json.addProperty("status", "ok");
                 }
                 break;
             case "enablePoll":
                 if(user.getGuildRank() == 0 || user.getGuildRank() == 1) canEdit = true;
                 if(canEdit) 
                 {
-                    editPoll.setIsEnable(true);
-                    json.put("status", "ok");
+                    editPoll.setEnable(true);
+                    json.addProperty("status", "ok");
                 }
                 break;
             case "removeOption":
@@ -80,14 +80,14 @@
                     else 
                     {
                         canEdit = false;
-                        json.put("status", "fail");
-                        json.put("msg", "You can remove all options in this poll");
+                        json.addProperty("status", "fail");
+                        json.addProperty("msg", "You can remove all options in this poll");
                     }
                 }
                 System.out.println("chupalo Edit2 "+ canEdit);
                 if(canEdit)
                 {
-                    json.put("status", editPoll.removeOptionDB(optId));
+                    json.addProperty("status", editPoll.removeOptionDB(optId));
                 }
                 break;
             case "addOption":
@@ -100,17 +100,17 @@
                 if(canEdit)
                 {
                     int newIdOption = editPoll.addOption(textOption, user);
-                    json.put("status", "ok");
-                    json.put("option_id", newIdOption);
+                    json.addProperty("status", "ok");
+                    json.addProperty("option_id", newIdOption);
                 }
                 break;
             case "addResult":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                json.put("status", editPoll.addResult(optId, user));
+                json.addProperty("status", editPoll.addResult(optId, user));
                 break;
             case "removeResult":
                 optId = Integer.parseInt(request.getParameter("poll_opt_id"));
-                json.put("status", editPoll.removeResult(optId, user));
+                json.addProperty("status", editPoll.removeResult(optId, user));
                 break;
             case "createPoll":
                 //Create poll values
@@ -153,40 +153,41 @@
                             limitDateSet = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse(limitDateSet +" 00:00:00"));
                         else
                             limitDateSet = null;
+                        System.out.println(limitDateSet);
                         //Try save in DB
                         if(pollControl.newPoll(
                             user, pollQuest, minGuildLevel, moreOptions,
                             multiOptions, limitDate,
                             limitDateSet, options))
                         {
-                            json.put("status", "ok");
+                            json.addProperty("status", "ok");
                         }
                         else
                         {
-                            json.put("status", "fail");
-                            json.put("msg", "Failed to save in DB");
+                            json.addProperty("status", "fail");
+                            json.addProperty("msg", "Failed to save in DB");
                         }
                     } catch (java.text.ParseException ex) {
-                        json.put("status", "fail");
-                        json.put("msg", "Error, limit date not correct");
+                        json.addProperty("status", "fail");
+                        json.addProperty("msg", "Error, limit date not correct");
                     }
                 }
                 else
                 {
-                    json.put("status", "fail");
-                    json.put("msg", "Error, complete all information");
+                    json.addProperty("status", "fail");
+                    json.addProperty("msg", "Error, complete all information");
                 }
                 break;
             default:
-                json.put("status", "fail");
+                json.addProperty("status", "fail");
                 break;
 
         }
     }
     else
     {
-        json.put("status", "fail");
-        json.put("msg", "Not user login detected");
+        json.addProperty("status", "fail");
+        json.addProperty("msg", "Not user login detected");
     }
     out.print(json);
     out.flush();

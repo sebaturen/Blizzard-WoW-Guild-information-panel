@@ -213,7 +213,7 @@ public class KeystoneDungeonRun extends GameObject
                                 //{"keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"};
                                 new String[] { this.id+"", m.getId()+"", m.getActiveSpec().getId()+"", m.getItemLevel()+"" });
                         }
-                    } catch (DataException|ClassNotFoundException|SQLException ex) {
+                    } catch (DataException | SQLException ex) {
                         Logs.errorLog(KeystoneDungeonRun.class, "Fail to save members in groups: "+ ex);
                     }
                 } );
