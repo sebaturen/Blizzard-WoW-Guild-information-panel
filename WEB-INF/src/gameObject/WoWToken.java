@@ -3,40 +3,20 @@ package com.blizzardPanel.gameObject;
 public class WoWToken
 {
     // Atribute
-    private int gold;
-    private int silver;
-    private int copper;
+    private Price price;
     private long lastUpdate;
 
-    public WoWToken(int gold, int silver, int copper)
+    public WoWToken(long price)
     {
-        this.gold = gold;
-        this.silver = silver;
-        this.copper = copper;
+        this.price = new Price(price);
     }
 
-    public int getGold() {
-        return gold;
+    public Price getPrice() {
+        return price;
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
-    }
-
-    public int getSilver() {
-        return silver;
-    }
-
-    public void setSilver(int silver) {
-        this.silver = silver;
-    }
-
-    public int getCopper() {
-        return copper;
-    }
-
-    public void setCopper(int copper) {
-        this.copper = copper;
+    public void setPrice(Price price) {
+        this.price = price;
     }
 
     public long getLastUpdate() {

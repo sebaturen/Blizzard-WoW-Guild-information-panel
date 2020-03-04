@@ -149,7 +149,7 @@ public class DiscordBot extends ListenerAdapter
     {
         //Valid if is command msg
         String msg = message.getContentDisplay();
-        if(msg.length() > 2 && msg.substring(0, 1).equals("!"))
+        if(msg.length() > 2 && (msg.substring(0, 1).equals("!") || msg.substring(0, 1).equals("-")))
         {
             String msgCommand = (msg.substring(1)).toLowerCase();
             if(msgCommand.indexOf(" ") > 0)
@@ -276,7 +276,7 @@ public class DiscordBot extends ListenerAdapter
                     } catch (java.lang.StringIndexOutOfBoundsException e) {
                         searchInfo = "anime name <temp>";
                     }
-                    channel.sendMessage(author.getAsMention() +" FRIKII!!! - try `!play "+ searchInfo +" opening`").queue();                    
+                    channel.sendMessage(author.getAsMention() +" FRIKII!!! - try `-play "+ searchInfo +" opening`").queue();
                     break;
             }
         }  

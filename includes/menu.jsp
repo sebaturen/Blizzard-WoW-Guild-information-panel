@@ -58,9 +58,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             <div id="token_price">
                 <p class="quality-wow-token">WoW Token</p>:&nbsp;
                 <% WoWToken tokenPrice = gameInfo.getWoWToken(); %>
-                <% if (tokenPrice.getGold() > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice.getGold()) %></span><% } %>
-                <% if (tokenPrice.getSilver() > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice.getSilver()) %></span><% } %>
-                <% if (tokenPrice.getCopper() > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice.getCopper()) %></span><% } %>
+                <% if (tokenPrice.getPrice().getGold() > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice.getPrice().getGold()) %></span><% } %>
+                <% if (tokenPrice.getPrice().getSilver() > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice.getPrice().getSilver()) %></span><% } %>
+                <% if (tokenPrice.getPrice().getCopper() > 0) { %><span class="moneycopper"><%= String.format("%,d", tokenPrice.getPrice().getCopper()) %></span><% } %>
             </div>
             <% //Blizzard account vinculation                                    
                 String redirectUri = request.getContextPath() +"/login.jsp";

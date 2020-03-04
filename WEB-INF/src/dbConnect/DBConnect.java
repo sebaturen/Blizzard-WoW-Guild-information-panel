@@ -110,6 +110,26 @@ public class DBConnect {
         return result;
     }
 
+    public JsonArray selectQuery(String query, String[] whereVal) throws SQLException, DataException {
+        JsonArray result = null;
+
+        //Prepare Connection and execute
+        try (
+                Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query);
+        ) {
+            if (whereVal != null)
+                for (int i = 0; i < whereVal.length; i++)
+                    pstmt.setString(i + 1, whereVal[i]);
+            //System.out.println("pstms"+ pstmt);
+            this.lastQuery = pstmt.toString();
+            result = resultToJsonConvert(pstmt.executeQuery());
+        } catch (DataException e) {
+            throw e; //Can get a connection
+        }
+        return result;
+    }
+
     /**
      * Delete data from DB Query
      * @param table

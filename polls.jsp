@@ -64,6 +64,7 @@
                                 boolean currentUserSelected = false;
                                 for(PollOptionResult pOptResult : pOpt.getResult())
                                 {
+                                    userSelected += "<a href='/alters.jsp#"+ pOptResult.getOwner().getBattleTag().split("#")[0] +"'>";
                                     if(pOptResult.getOwner().getMainCharacter() != null)
                                     {
                                         String className = pOptResult.getOwner().getMainCharacter().getMemberClass().getSlug();
@@ -71,8 +72,9 @@
                                     }
                                     else
                                     {
-                                        userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name'><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>"+ pOptResult.getOwner().getBattleTag().split("#")[0] +",</span>";
+                                        userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name battle-tag'><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>"+ pOptResult.getOwner().getBattleTag().split("#")[0] +",</span>";
                                     }
+                                    userSelected += "</a>";
                                     //if have a owner
                                     if(pOptResult.getOwner().equals(user))
                                     {
@@ -136,6 +138,7 @@
                                     boolean currentUserSelected = false;
                                     for(PollOptionResult pOptResult : pOpt.getResult())
                                     {
+                                        userSelected += "<a href='/alters.jsp#"+ pOptResult.getOwner().getBattleTag().split("#")[0] +"'>";
                                         if(pOptResult.getOwner().getMainCharacter() != null)
                                         {
                                             String className = pOptResult.getOwner().getMainCharacter().getMemberClass().getSlug();
@@ -143,8 +146,9 @@
                                         }
                                         else
                                         {
-                                            userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name'><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>"+ pOptResult.getOwner().getBattleTag().split("#")[0] +",</span>";
+                                            userSelected += "<span id='poll_"+ p.getId() +"_opt_"+ pOpt.getId() +"_user_"+ pOptResult.getOwner().getId() +"' class='mem-name battle-tag'><img src='assets/img/icons/Battlenet_icon_flat.svg' style='width: 20px'>"+ pOptResult.getOwner().getBattleTag().split("#")[0] +",</span>";
                                         }
+                                        userSelected += "</a>";
                                         //if have a owner
                                         if(pOptResult.getOwner().equals(user))
                                         {

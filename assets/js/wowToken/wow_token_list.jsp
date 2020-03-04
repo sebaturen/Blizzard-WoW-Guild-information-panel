@@ -7,7 +7,7 @@ var wow_token_history = [];
     for (WoWToken wToken : wTokenHistory) { %> 
         wow_token_history.push({
             'date': <%= wToken.getLastUpdate() %>,
-            'gold': <%= wToken.getGold() %>
+            'gold': <%= wToken.getPrice().getGold() %>
         });
     <%}
 %>s

@@ -108,9 +108,7 @@ public class GameInfo
                                                     new String[] {"1"});
             if (dateUpdate.size() > 0)
             {
-                String actuapPrice = dateUpdate.get(0).getAsJsonObject().get("price").getAsString();
-                int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actuapPrice));
-                this.outWoWToken = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
+                this.outWoWToken = new WoWToken(dateUpdate.get(0).getAsJsonObject().get("price").getAsLong());
             }
         }
         catch (SQLException|DataException e)
@@ -152,9 +150,7 @@ public class GameInfo
             if (dateUpdate.size() > 0)
             {
                 for(Object wToken : dateUpdate) {
-                    String actualPrice = (((JsonObject)wToken).get("price").getAsString());
-                    int[] tokenPrice = AuctionItem.dividePrice(Long.parseLong(actualPrice));
-                    WoWToken wT = new WoWToken(tokenPrice[0], tokenPrice[1], tokenPrice[2]);
+                    WoWToken wT = new WoWToken((((JsonObject)wToken).get("price").getAsLong()));
                     wT.setLastUpdate(Long.parseLong(((JsonObject)wToken).get("last_updated_timestamp").getAsString()));
                     this.outWoWTokenHistory.add(wT);
                 }
@@ -162,7 +158,8 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            Logs.errorLog(GameInfo.class, "Fail to get a wow Token price");
+            System.out.println(dbConnect.getLastQuery());
+            Logs.errorLog(GameInfo.class, "Fail to get a wow Token price "+ e);
         }
         lastWoWTokenHistoryUpdate = new Date();
     }

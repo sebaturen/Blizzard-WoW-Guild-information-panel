@@ -596,23 +596,7 @@ public class Update {
             for (int i = 0; i < aucItem.size(); i++) {
                 int aucId = aucItem.get(i).getAsJsonObject().get(AuctionItem.AUCTION_ITEMS_KEY).getAsInt();
                 AuctionItem aucItemOLD = new AuctionItem(aucId);
-                try {
-                    //Insert in History if have a price
-                    if (aucItemOLD.getBuyout() > 0) {
-                        dbConnect.insert(DBStructure.AUCTION_HISTORY_TABLE_NAME,
-                                DBStructure.AUCTION_HISTORY_TABLE_KEY,
-                                //{"item", "unique_price", "context", "date"};
-                                DBStructure.outKey(DBStructure.AUCTION_HISTORY_TABLE_STRUCTURE),
-                                new String[]{aucItemOLD.getItem().getId() + "", aucItemOLD.getUniqueBuyoutPrice() + "",
-                                        aucItemOLD.getContext() + "", aucItemOLD.getAucDate()});
-                    }
-                    //Delete from current AH
-                    dbConnect.delete(AuctionItem.AUCTION_ITEMS_TABLE_NAME,
-                            AuctionItem.AUCTION_ITEMS_KEY + "=?",
-                            new String[]{aucItemOLD.getId() + ""});
-                } catch (SQLException | DataException ex) {
-                    Logs.errorLog(Update.class, "Fail to save auc history to " + aucItemOLD.getId() + " - " + ex);
-                }
+               // WORK
                 //Show update progress...
                 if ((((iProgress * 2) * 10) * aucItem.size()) / 100 < i) {
                     Logs.infoLog(Update.class, "..." + ((iProgress * 2) * 10) + "%");
