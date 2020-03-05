@@ -62,7 +62,7 @@
     margin-left: 15px;
     margin-right: 15px;
 }
-.mainHand {
+.mainHand, .mainHand p {
     text-align: right;
 }
 .mainHand > .itemIcon {

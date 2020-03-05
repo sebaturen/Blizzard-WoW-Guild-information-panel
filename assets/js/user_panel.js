@@ -13,12 +13,12 @@ $(document).ready(function()
         .done(function(mData) {
             if(mData.status != "ok")
             {
-                alert("Fail to save Main Character - "+ mData.error);
+                alert("Failed to save Main Character - "+ mData.error);
                 setMain(actualMain);
             }
         })
         .fail(function() {
-            alert("Fail to save Main character - Error 003");
+            alert("Failed to save Main character - Error 003");
             setMain(actualMain);
         });
         setMain(idChange);
