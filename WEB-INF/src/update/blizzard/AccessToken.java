@@ -1,12 +1,11 @@
-package com.blizzardPanel.blizzardAPI;
+package com.blizzardPanel.update.blizzard;
 
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
 
 public class AccessToken {
 
-    // Atribute
+    // Attribute
     private String access_token;
     private String token_type;
     private double expire_in;

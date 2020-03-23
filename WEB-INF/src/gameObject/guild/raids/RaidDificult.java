@@ -136,5 +136,17 @@ public class RaidDificult extends GameObject
     public int getRankRegion() { return this.rankRegion; }
     public int getRankRealm() { return this.rankRealm; }
     public List<RaidDificultBoss> getDificultBoss() { return this.bosses; }
-    
+
+    @Override
+    public String toString() {
+        return "RaidDificult{" +
+                "id=" + id +
+                ", raidId=" + raidId +
+                ", name='" + name + '\'' +
+                ", rankWorld=" + rankWorld +
+                ", rankRegion=" + rankRegion +
+                ", rankRealm=" + rankRealm +
+                ", bosses=" + bosses +
+                '}';
+    }
 }

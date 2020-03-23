@@ -6,7 +6,7 @@
 package com.blizzardPanel.viewController;
 
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;

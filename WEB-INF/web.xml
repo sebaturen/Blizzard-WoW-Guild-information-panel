@@ -33,7 +33,7 @@
     </servlet>
 
     <listener>
-        <listener-class>com.blizzardPanel.blizzardAPI.UpdateRunning</listener-class>
+        <listener-class>com.blizzardPanel.update.UpdateService</listener-class>
     </listener>
 		
     <servlet-mapping>

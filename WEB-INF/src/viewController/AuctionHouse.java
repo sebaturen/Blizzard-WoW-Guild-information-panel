@@ -7,7 +7,7 @@ package com.blizzardPanel.viewController;
 
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.Item;
@@ -113,7 +113,6 @@ public class AuctionHouse
         }
         catch (SQLException|DataException e)
         {
-            System.out.println(dbConnect.getLastQuery());
             Logs.errorLog(AuctionHouse.class, "Fail to get items name like '"+ name +"' - "+ e);
         }
         return items;

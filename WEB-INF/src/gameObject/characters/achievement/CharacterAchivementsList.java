@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.characters.achievement;
 
 import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.blizzardAPI.WoWAPIService;
+import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.blizzardPanel.gameObject.GameObject;
 import com.google.gson.JsonObject;
 

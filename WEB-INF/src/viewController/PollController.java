@@ -8,7 +8,7 @@ package com.blizzardPanel.viewController;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.User;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.poll.Poll;

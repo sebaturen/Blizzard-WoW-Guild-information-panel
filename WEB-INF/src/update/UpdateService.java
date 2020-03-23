@@ -3,7 +3,7 @@
  * Desc : Update Running get actuali information every X time.
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.blizzardAPI;
+package com.blizzardPanel.update;
 
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.DiscordBot;
@@ -11,6 +11,8 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.FactionAssaultControl;
+import com.blizzardPanel.update.blizzard.BlizzardUpdate;
+import com.blizzardPanel.update.blizzard.Update;
 import com.google.gson.JsonArray;
 
 import java.sql.SQLException;
@@ -21,7 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-public class UpdateRunning implements ServletContextListener
+public class UpdateService implements ServletContextListener
 {
     private Thread updateInterval = null;
     private DBConnect dbConnect;
@@ -29,7 +31,7 @@ public class UpdateRunning implements ServletContextListener
     private int count = 0;
     private boolean isAssaultNotification = false;
 
-    public UpdateRunning()
+    public UpdateService()
     {
         dbConnect = new DBConnect();
     }
@@ -37,6 +39,7 @@ public class UpdateRunning implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent contextEvent)
     {
+        BlizzardUpdate.shared.achievements();
         //task
         updateInterval = new Thread(() -> {
             try {
@@ -44,34 +47,34 @@ public class UpdateRunning implements ServletContextListener
                     assaultNotification();
                     try {
                         if(needStaticUpdate()) {
-                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_STATIC+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateService.class, "FAIL TO UPDATE - STATIC UPDATE "+ e); }
                     try {
                         if(needDynamicUpdate()) {
-                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateService.class, "FAIL TO UPDATE - DYNAMIC UPDATE "+ e); }
                     try {
                         if(needGuildNewUpdate()) {
-                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
-                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "WowToken"});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "GuildNews"});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_DYNAMIC+"", "WowToken"});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateService.class, "FAIL TO UPDATE - GET GUILD NEWS "+ e); }
                     try {
                         if(needAHUpdate()) {
-                            Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
+                            //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_AUCTION+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - ACTION HOUSE "+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateService.class, "FAIL TO UPDATE - ACTION HOUSE "+ e); }
                     try {
                         if(needAHMove()) {
                             //Update.shared.setUpdate(new String[] {Update.UPDATE_TYPE_CLEAR_AH_HISTORY+""});
                         }
-                    } catch (Exception e) { Logs.errorLog(UpdateRunning.class, "FAIL TO UPDATE - CLEAR ACTION HOUSE"+ e); }
+                    } catch (Exception e) { Logs.errorLog(UpdateService.class, "FAIL TO UPDATE - CLEAR ACTION HOUSE"+ e); }
                     Thread.sleep(60000); //every minute
                 }
             } catch (Exception ex) {
-                Logs.errorLog(UpdateRunning.class, "FAIL IN UPDATE TIMELINE! "+ ex);
+                Logs.errorLog(UpdateService.class, "FAIL IN UPDATE TIMELINE! "+ ex);
             }
         });
         updateInterval.start();
@@ -156,7 +159,7 @@ public class UpdateRunning implements ServletContextListener
         int timeDynamicUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_DYNAMIC_UPDATE");
         if(timeDynamicUpdate <= 0)
         {
-            Logs.infoLog(UpdateRunning.class, "Dynamic Update time not found or have and error config, set default time (60)");
+            Logs.infoLog(UpdateService.class, "Dynamic Update time not found or have and error config, set default time (60)");
             timeDynamicUpdate = 60;
         }
         try {
@@ -166,7 +169,7 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.errorLog(UpdateRunning.class, ex.getMessage());
+            Logs.errorLog(UpdateService.class, ex.getMessage());
             return true;
         }
     }
@@ -176,7 +179,7 @@ public class UpdateRunning implements ServletContextListener
         int timeGuildNewUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_GUILD_NEW_UPDATE");
         if(timeGuildNewUpdate <= 0)
         {
-            Logs.infoLog(UpdateRunning.class, "Guild New Update time not found or have and error config, set default time (10)");
+            Logs.infoLog(UpdateService.class, "Guild New Update time not found or have and error config, set default time (10)");
             timeGuildNewUpdate = 10;
         }
         try {
@@ -186,7 +189,7 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.errorLog(UpdateRunning.class, ex.getMessage());
+            Logs.errorLog(UpdateService.class, ex.getMessage());
             return true;
         }
     }
@@ -196,7 +199,7 @@ public class UpdateRunning implements ServletContextListener
         int timeStatycUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_STATIC_UPDATE");
         if(timeStatycUpdate <= 0)
         {
-            Logs.infoLog(UpdateRunning.class, "Static Update time not found or have and error config, set default time (30)");
+            Logs.infoLog(UpdateService.class, "Static Update time not found or have and error config, set default time (30)");
             timeStatycUpdate = 30;
         }
         try {
@@ -206,7 +209,7 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.errorLog(UpdateRunning.class, ex.getMessage());
+            Logs.errorLog(UpdateService.class, ex.getMessage());
             return true;
         }
     }
@@ -216,7 +219,7 @@ public class UpdateRunning implements ServletContextListener
         int timeAHUpdate = GeneralConfig.getIntConfig("TIME_INTERVAL_AUCTION_HOUSE_UPDATE");
         if(timeAHUpdate <= 0)
         {
-            Logs.infoLog(UpdateRunning.class, "Auction House Update time not found or have and error config, set default time (10)");
+            Logs.infoLog(UpdateService.class, "Auction House Update time not found or have and error config, set default time (10)");
             timeAHUpdate = 10;
         }
         try {
@@ -226,7 +229,7 @@ public class UpdateRunning implements ServletContextListener
             Date nTimeAgo = cal.getTime();
             return (lastUpdate.compareTo(nTimeAgo) < 0);
         } catch (DataException ex) {
-            Logs.errorLog(UpdateRunning.class, ex.getMessage());
+            Logs.errorLog(UpdateService.class, ex.getMessage());
             return true;
         }
     }
@@ -245,7 +248,7 @@ public class UpdateRunning implements ServletContextListener
             Date toDay = c.getTime();
             return lastUpdate.before(toDay);
         } catch (DataException ex) {
-            Logs.errorLog(UpdateRunning.class, ex.getMessage());
+            Logs.errorLog(UpdateService.class, ex.getMessage());
             needUpdate = true;
         }
         return needUpdate;

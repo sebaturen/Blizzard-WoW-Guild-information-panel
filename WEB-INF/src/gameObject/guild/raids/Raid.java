@@ -152,5 +152,15 @@ public class Raid extends GameObject
     public String getSlug() { return this.slug; }
     public int getTotalBoss() { return this.totalBoss; }
     public List<RaidDificult> getDificults() { return this.dificults; }
-    
+
+    @Override
+    public String toString() {
+        return "Raid{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", slug='" + slug + '\'' +
+                ", dificults=" + dificults +
+                ", totalBoss=" + totalBoss +
+                '}';
+    }
 }

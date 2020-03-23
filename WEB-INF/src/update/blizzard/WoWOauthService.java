@@ -1,4 +1,4 @@
-package com.blizzardPanel.blizzardAPI;
+package com.blizzardPanel.update.blizzard;
 
 import com.google.gson.JsonObject;
 import retrofit2.Call;

@@ -9,7 +9,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.User;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.google.gson.JsonArray;

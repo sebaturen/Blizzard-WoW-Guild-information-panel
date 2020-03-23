@@ -7,9 +7,9 @@ package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 
-import com.blizzardPanel.blizzardAPI.WoWAPIService;
+import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 

@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject.guild.raids;
 
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.Boss;
 import com.blizzardPanel.gameObject.GameObject;
@@ -183,5 +183,16 @@ public class RaidDificultBoss extends GameObject
     public Date getFirstDefeated() { return this.firstDefeated; }
     public double getItemLevelAvg() { return this.itemLevelAvg; }
     public double getArtifactPowerAvg() { return this.artifactPowerAvg; }
-    
+
+    @Override
+    public String toString() {
+        return "RaidDificultBoss{" +
+                "id=" + id +
+                ", difiId=" + difiId +
+                ", boss=" + boss +
+                ", firstDefeated=" + firstDefeated +
+                ", itemLevelAvg=" + itemLevelAvg +
+                ", artifactPowerAvg=" + artifactPowerAvg +
+                '}';
+    }
 }

@@ -8,10 +8,9 @@ package com.blizzardPanel.viewController;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.dbConnect.DBStructure;
-import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.WoWToken;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -158,7 +157,6 @@ public class GameInfo
         }
         catch (SQLException|DataException e)
         {
-            System.out.println(dbConnect.getLastQuery());
             Logs.errorLog(GameInfo.class, "Fail to get a wow Token price "+ e);
         }
         lastWoWTokenHistoryUpdate = new Date();

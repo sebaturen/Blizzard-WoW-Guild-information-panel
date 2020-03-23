@@ -4,7 +4,7 @@
  *
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.blizzardAPI;
+package com.blizzardPanel.update.blizzard;
 
 import com.blizzardPanel.*;
 import com.blizzardPanel.dbConnect.DBConnect;
@@ -31,6 +31,7 @@ import com.blizzardPanel.gameObject.characters.PlayableSpec;
 
 import java.io.*;
 
+import com.blizzardPanel.update.raiderIO.RaiderIOService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -677,12 +678,18 @@ public class Update {
      * @throws DataException
      */
     public void getGuildProfile() throws IOException {
+        BlizzardUpdate.shared.guild();
+        /*
         if (accessToken.isExpired()) generateAccessToken();
 
-        Call<JsonObject> call = apiCalls.guildProfile(
-                GeneralConfig.getStringConfig("GUILD_REALM"),
-                GeneralConfig.getStringConfig("GUILD_NAME"),
-                "achievements",
+        Realm guildRealm = new Realm(GeneralConfig.getStringConfig("GUILD_REALM"));
+        String guildSlug = GeneralConfig.getStringConfig("GUILD_NAME").toLowerCase();
+        guildSlug = guildSlug.replace(" ", "-");
+
+        Call<JsonObject> call = apiCalls.guildAchievements(
+                guildRealm.getSlug(),
+                guildSlug,
+                "profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
                 accessToken.getAuthorization()
         );
 
@@ -690,7 +697,7 @@ public class Update {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    Guild aGuild = new Guild(response.body());
+                    Guild aGuild = new Guild(response.body().getAsJsonObject("guild"));
 
                     // Check if is in db
                     try {
@@ -716,6 +723,8 @@ public class Update {
                         Logs.infoLog(Update.class, "FAIL - getGuildProfile DB " + response.code() + " - "+ e);
                     }
                 } else {
+                    System.out.println("Fail Guild! "+ call.request());
+                    System.out.println("Fail Guild! "+ response.body());
                     Logs.infoLog(Update.class, "ERROR - getGuildProfile " + response.code());
                 }
             }
@@ -724,7 +733,7 @@ public class Update {
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
                 Logs.infoLog(Update.class, "FAIL - getGuildProfile " + throwable);
             }
-        });
+        }); */
     }
 
     /**

@@ -22,6 +22,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.xml.crypto.Data;
+
 public class DBConnect {
     //error SQL constant
     public static final int ERROR_FOREIGN_KEY = 1452;
@@ -228,6 +230,19 @@ public class DBConnect {
         return id;
     }
 
+    public String insert(String table, String idColum, List<Object> columns, List<Object> values) throws DataException, SQLException {
+        String nC[] = new String[columns.size()];
+        String nV[] = new String[values.size()];
+        // ArrayList to Array Conversion
+        for (int j = 0; j < columns.size(); j++) {
+            nC[j] = columns.get(j).toString();
+        }
+        for (int j = 0; j < values.size(); j++) {
+            nV[j] = values.get(j).toString();
+        }
+        return insert(table, idColum, nC, nV);
+    }
+
     /**
      * Update Query
      * @param table
@@ -276,6 +291,19 @@ public class DBConnect {
         } else {
             throw new DataException("Invalid data in SQL Insert");
         }
+    }
+
+    public void update(String table, List<Object> columns, List<Object> values, String where, String[] whereValues) throws DataException, SQLException {
+        String nC[] = new String[columns.size()];
+        String nV[] = new String[values.size()];
+        // ArrayList to Array Conversion
+        for (int j = 0; j < columns.size(); j++) {
+            nC[j] = columns.get(j).toString();
+        }
+        for (int j = 0; j < values.size(); j++) {
+            nV[j] = values.get(j).toString();
+        }
+        update(table, nC, nV, where, whereValues);
     }
 
     /**

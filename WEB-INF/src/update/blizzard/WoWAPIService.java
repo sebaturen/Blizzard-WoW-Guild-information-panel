@@ -1,4 +1,4 @@
-package com.blizzardPanel.blizzardAPI;
+package com.blizzardPanel.update.blizzard;
 
 import com.google.gson.JsonObject;
 import retrofit2.Call;
@@ -20,18 +20,87 @@ public interface WoWAPIService {
             @Header("Authorization") String basicAuth
     );
 
-    //------------------------------------------ WoW Info
+    @GET
+    Call<JsonObject> freeUrl(
+            @Url String url,
+            @Header("Authorization") String basicAuth,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
 
-    @GET("wow/guild/{realm}/{guildName}")
-    Call<JsonObject> guildProfile(
-            @Path("realm") String realm,
-            @Path("guildName") String guildName,
-            @Query("fields") String fields,
+    //------------------------------------------
+    // NEW API Sys
+    //------------------------------------------
+
+    //------------------------------------------
+    // Profile
+    //------------------------------------------
+    //------------------------------------------ Guild API
+
+    @GET("data/wow/guild/{realmSlug}/{nameSlug}")
+    Call<JsonObject> guild(
+            @Path("realmSlug") String realmSlug,
+            @Path("nameSlug") String nameSlug,
+            @Query("namespace") String namespace,
             @Header("Authorization") String token
     );
 
-    @GET("wow/guild/{realm}/{guildName}")
+    @GET("data/wow/guild/{realmSlug}/{nameSlug}")
     Call<JsonObject> guild(
+            @Path("realmSlug") String realmSlug,
+            @Path("nameSlug") String nameSlug,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    @GET("data/wow/guild/{realmSlug}/{nameSlug}/activity")
+    Call<JsonObject> guildActivity(
+            @Path("realmSlug") String realmSlug,
+            @Path("nameSlug") String nameSlug,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
+    @GET("data/wow/guild/{realmSlug}/{nameSlug}/achievements")
+    Call<JsonObject> guildAchievements(
+            @Path("realmSlug") String realmSlug,
+            @Path("nameSlug") String nameSlug,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
+    @GET("data/wow/guild/{realmSlug}/{nameSlug}/roster")
+    Call<JsonObject> guildRoster(
+            @Path("realmSlug") String realmSlug,
+            @Path("nameSlug") String nameSlug,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
+
+    //------------------------------------------
+    // Game Data
+    //------------------------------------------
+    //------------------------------------------ Achievements
+
+    @GET("data/wow/achievement-category/index")
+    Call<JsonObject> achievementCategories(
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
+    //------------------------------------------
+    //------------------------------------------
+    //------------------------------------------
+    //------------------------------------------
+    //------------------------------------------
+
+    //------------------------------------------ WoW Info
+
+
+
+    @GET("wow/guild/{realm}/{guildName}")
+    Call<JsonObject> guildOld(
             @Path("realm") String realm,
             @Path("guildName") String guildName,
             @Query("locale") String locale,

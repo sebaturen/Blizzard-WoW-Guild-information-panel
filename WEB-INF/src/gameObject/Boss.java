@@ -68,6 +68,14 @@ public class Boss extends GameObject
     public int getId() { return this.id; }
     public String getName() { return this.name; }
     public String getSlug() { return this.slug; }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Boss{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", slug='" + slug + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

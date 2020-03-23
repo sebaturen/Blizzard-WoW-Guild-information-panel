@@ -6,19 +6,16 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.WoWAPIService;
+import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.guild.Rank;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 
-import java.io.IOException;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

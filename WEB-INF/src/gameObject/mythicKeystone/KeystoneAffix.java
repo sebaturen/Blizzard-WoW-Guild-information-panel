@@ -6,7 +6,7 @@
 
 package com.blizzardPanel.gameObject.mythicKeystone;
 
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.gameObject.GameObject;
 import com.google.gson.JsonObject;
 

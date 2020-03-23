@@ -8,7 +8,7 @@ package com.blizzardPanel.gameObject.guild;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;

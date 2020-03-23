@@ -8,7 +8,7 @@ package com.blizzardPanel.gameObject.guild;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
-import static com.blizzardPanel.blizzardAPI.Update.parseUnixTime;
+import static com.blizzardPanel.update.blizzard.Update.parseUnixTime;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import java.sql.SQLException;

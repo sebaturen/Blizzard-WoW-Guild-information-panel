@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.GeneralConfig;
-import com.blizzardPanel.blizzardAPI.WoWAPIService;
+import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.google.gson.JsonObject;
 
 public class Spell extends GameObject

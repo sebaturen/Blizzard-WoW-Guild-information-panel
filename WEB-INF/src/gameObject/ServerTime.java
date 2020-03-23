@@ -6,7 +6,7 @@
 package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.blizzardAPI.WoWAPIService;
+import com.blizzardPanel.update.blizzard.WoWAPIService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

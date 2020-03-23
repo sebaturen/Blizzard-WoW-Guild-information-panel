@@ -5,7 +5,7 @@
  */
 package com.blizzardPanel;
 
-import com.blizzardPanel.blizzardAPI.Update;
+import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.google.gson.JsonArray;
