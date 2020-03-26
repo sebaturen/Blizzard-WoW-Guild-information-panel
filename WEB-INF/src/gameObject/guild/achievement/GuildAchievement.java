@@ -16,9 +16,9 @@ import com.google.gson.JsonObject;
 public class GuildAchievement extends GameObject
 {
     //TABLE STRUCTURE
-    public static final String GUILD_ACHIEVEMENTS_TABLE_NAME = "guild_achievements";
-    public static final String GUILD_ACHIEVEMENTS_TABLE_KEY = "achievement_id";
-    public static final String[] GUILD_ACHIEVEMENTS_TABLE_STRUCTURE = {"achievement_id", "time_completed"};
+    public static final String TABLE_NAME = "guild_achievements";
+    public static final String TABLE_KEY = "achievement_id";
+    public static final String[] TABLE_STRUCTURE = {"achievement_id", "time_completed"};
     
     //Atribute
     private int achivementId;
@@ -27,13 +27,13 @@ public class GuildAchievement extends GameObject
     
     public GuildAchievement(int ahId)
     {
-        super(GUILD_ACHIEVEMENTS_TABLE_NAME, GUILD_ACHIEVEMENTS_TABLE_KEY, GUILD_ACHIEVEMENTS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
         loadFromDB(ahId);
     }
     
     public GuildAchievement(JsonObject info)
     {
-        super(GUILD_ACHIEVEMENTS_TABLE_NAME, GUILD_ACHIEVEMENTS_TABLE_KEY, GUILD_ACHIEVEMENTS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 

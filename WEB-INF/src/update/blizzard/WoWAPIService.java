@@ -41,14 +41,6 @@ public interface WoWAPIService {
             @Path("realmSlug") String realmSlug,
             @Path("nameSlug") String nameSlug,
             @Query("namespace") String namespace,
-            @Header("Authorization") String token
-    );
-
-    @GET("data/wow/guild/{realmSlug}/{nameSlug}")
-    Call<JsonObject> guild(
-            @Path("realmSlug") String realmSlug,
-            @Path("nameSlug") String nameSlug,
-            @Query("namespace") String namespace,
             @Header("Authorization") String token,
             @Header("If-Modified-Since") String ifModifiedSince
     );
@@ -58,7 +50,8 @@ public interface WoWAPIService {
             @Path("realmSlug") String realmSlug,
             @Path("nameSlug") String nameSlug,
             @Query("namespace") String namespace,
-            @Header("Authorization") String token
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
     );
 
     @GET("data/wow/guild/{realmSlug}/{nameSlug}/achievements")
@@ -66,7 +59,8 @@ public interface WoWAPIService {
             @Path("realmSlug") String realmSlug,
             @Path("nameSlug") String nameSlug,
             @Query("namespace") String namespace,
-            @Header("Authorization") String token
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
     );
 
     @GET("data/wow/guild/{realmSlug}/{nameSlug}/roster")
@@ -74,20 +68,63 @@ public interface WoWAPIService {
             @Path("realmSlug") String realmSlug,
             @Path("nameSlug") String nameSlug,
             @Query("namespace") String namespace,
-            @Header("Authorization") String token
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
     );
 
+    //------------------------------------------ Character Profile API
+    @GET("profile/wow/character/{realmSlug}/{characterName}")
+    Call<JsonObject> characterProfileSummary(
+            @Path("realmSlug") String realm,
+            @Path("characterName") String name,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    @GET("profile/wow/character/{realmSlug}/{characterName}/status")
+    Call<JsonObject> characterProfileStatus(
+            @Path("realmSlug") String realm,
+            @Path("characterName") String name,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
 
     //------------------------------------------
     // Game Data
     //------------------------------------------
     //------------------------------------------ Achievements
-
     @GET("data/wow/achievement-category/index")
     Call<JsonObject> achievementCategories(
             @Query("namespace") String namespace,
             @Header("Authorization") String token
     );
+
+    //------------------------------------------ Playable Class
+    @GET("data/wow/playable-class/{classId}")
+    Call<JsonObject> playableClass(
+            @Path("classId") String classId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Playable Race
+    @GET("data/wow/playable-race/{playableRaceId}")
+    Call<JsonObject> playableRace(
+            @Path("playableRaceId") String classId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Connected Realm
+    @GET("data/wow/connected-realm/index")
+    Call<JsonObject> connectedRealmIndex(
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
 
     //------------------------------------------
     //------------------------------------------
@@ -104,14 +141,6 @@ public interface WoWAPIService {
             @Path("realm") String realm,
             @Path("guildName") String guildName,
             @Query("locale") String locale,
-            @Query("fields") String fields,
-            @Header("Authorization") String token
-    );
-
-    @GET("wow/character/{realm}/{name}")
-    Call<JsonObject> character(
-            @Path("realm") String realm,
-            @Path("name") String name,
             @Query("fields") String fields,
             @Header("Authorization") String token
     );
@@ -170,6 +199,13 @@ public interface WoWAPIService {
             @Path("name") String name,
             @Query("namespace") String namespace,
             @Query("locale") String locale,
+            @Header("Authorization") String token
+    );
+    @GET("profile/wow/character/{realmSlug}/{characterName}")
+    Call<JsonObject> character(
+            @Path("realmSlug") String realm,
+            @Path("characterName") String name,
+            @Query("namespace") String namespace,
             @Header("Authorization") String token
     );
 

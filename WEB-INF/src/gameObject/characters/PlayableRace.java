@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 public class PlayableRace extends GameObject
 {	
     //Races DB
-    public static final String RACES_TABLE_NAME = "playable_races";
-    public static final String RACES_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "playable_races";
+    public static final String TABLE_KEY = "id";
     public static final String[] RACES_TABLE_STRUCTURE = {"id", "mask", "side", "name"};
     
     //Attribute
@@ -23,13 +23,13 @@ public class PlayableRace extends GameObject
 
     public PlayableRace(int id)
     {
-        super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, RACES_TABLE_STRUCTURE);
         loadFromDB(id);
     }
 
     public PlayableRace(JsonObject exInfo)
     {
-        super(RACES_TABLE_NAME, RACES_TABLE_KEY, RACES_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, RACES_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 

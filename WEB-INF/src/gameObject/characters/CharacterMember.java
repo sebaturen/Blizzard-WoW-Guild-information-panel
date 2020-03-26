@@ -26,6 +26,12 @@ import java.util.Date;
 import java.util.List;
 
 public class CharacterMember extends GameObject {
+
+    // New DB
+    public static final String TABLE_NAME = "characters";
+    public static final String TABLE_KEY = "id";
+
+
     //Members - id - name DB
     public static final String GMEMBER_ID_NAME_TABLE_NAME = "gMembers_id_name";
     public static final String GMEMBER_ID_NAME_TABLE_KEY = "internal_id";

@@ -3,7 +3,8 @@ package com.blizzardPanel.update.blizzard;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
-import com.blizzardPanel.update.blizzard.gameData.AchievementAPI;
+import com.blizzardPanel.update.blizzard.gameData.*;
+import com.blizzardPanel.update.blizzard.profile.CharacterProfileAPI;
 import com.blizzardPanel.update.blizzard.profile.GuildAPI;
 import com.google.gson.JsonObject;
 import okhttp3.Credentials;
@@ -22,15 +23,20 @@ public class BlizzardUpdate {
     public static DBConnect dbConnect = new DBConnect();
 
     // API calls lib
-    private WoWAPIService apiCalls;
-    private WoWOauthService apiOauthCalls;
-    private AccessToken accessToken;
+    public WoWAPIService apiCalls;
+    public WoWOauthService apiOauthCalls;
+    public AccessToken accessToken;
 
     // Profiles
-    private GuildAPI guildAPI;
+    public GuildAPI guildAPI;
+    public CharacterProfileAPI characterProfileAPI;
 
     // Game Data
-    private AchievementAPI achievementAPI;
+    public StaticInformationAPI staticInformationAPI;
+    public AchievementAPI achievementAPI;
+    public PlayableClassAPI playableClassAPI;
+    public PlayableRaceAPI playableRaceAPI;
+    public ConnectedRealmAPI connectedRealmAPI;
 
     // Constructor
     private BlizzardUpdate() {
@@ -52,13 +58,19 @@ public class BlizzardUpdate {
 
         // Profiles
         guildAPI = new GuildAPI(apiCalls);
+        characterProfileAPI = new CharacterProfileAPI(apiCalls);
 
         // Game Data
         achievementAPI = new AchievementAPI(apiCalls);
+        staticInformationAPI = new StaticInformationAPI(apiCalls);
+        playableClassAPI = new PlayableClassAPI(apiCalls);
+        playableRaceAPI = new PlayableRaceAPI(apiCalls);
+        connectedRealmAPI = new ConnectedRealmAPI(apiCalls);
     }
 
     // Generate an AccessToken
-    private void generateAccessToken() {
+    public void generateAccessToken() {
+
 
         Call<JsonObject> call = apiOauthCalls.accessToken(
                 "client_credentials",
@@ -87,9 +99,8 @@ public class BlizzardUpdate {
 
     // Guild
     public void guild() {
-        if (accessToken == null || accessToken.isExpired()) generateAccessToken();
         Logs.infoLog(BlizzardUpdate.class, "=== Guild Update");
-        guildAPI.update(accessToken);
+        //guildAPI.update();
         Logs.infoLog(BlizzardUpdate.class, "=== Guild Update END");
     }
 
@@ -99,9 +110,8 @@ public class BlizzardUpdate {
 
     // Achievements
     public void achievements() {
-        if (accessToken == null || accessToken.isExpired()) generateAccessToken();
         Logs.infoLog(BlizzardUpdate.class, "=== Achievements Update");
-        achievementAPI.update(accessToken);
+        achievementAPI.update();
         Logs.infoLog(BlizzardUpdate.class, "=== Achievements Update END");
     }
 

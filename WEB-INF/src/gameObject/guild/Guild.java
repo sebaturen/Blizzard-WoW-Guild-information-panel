@@ -23,9 +23,9 @@ import com.google.gson.JsonObject;
 public class Guild extends GameObject
 {
     //Guild DB
-    public static final String GUILD_TABLE_NAME = "guild_info";
-    public static final String GUILD_TABLE_KEY = "id";
-    public static final String[] GUILD_TABLE_STRUCTURE = {"id", "name", "realm", "realm_slug", "lastModified", "battlegroup",
+    public static final String TABLE_NAME = "guild_info";
+    public static final String TABLE_KEY = "id";
+    public static final String[] TABLE_STRUCTURE = {"id", "name", "realm", "realm_slug", "lastModified", "battlegroup",
                                                         "level", "side", "achievementPoints"};
     //Attribute
     private int id;
@@ -44,7 +44,7 @@ public class Guild extends GameObject
     //Constructor
     public Guild()
     {
-        super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
         //Load guild from DB
         loadFromDB(1); //asumed the first guild is only this guild (this plataform)
     }
@@ -52,7 +52,7 @@ public class Guild extends GameObject
     //Load to JSON
     public Guild(JsonObject guildInfo)
     {
-        super(GUILD_TABLE_NAME, GUILD_TABLE_KEY, GUILD_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
         saveInternalInfoObject(guildInfo);
     }
 
@@ -105,13 +105,13 @@ public class Guild extends GameObject
     private void loadAchievementsFromDB()
     {
         try {
-            JsonArray dbAchiv = dbConnect.select(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_NAME,
-                                                new String[] {GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY},
+            JsonArray dbAchiv = dbConnect.select(GuildAchievement.TABLE_NAME,
+                                                new String[] {GuildAchievement.TABLE_KEY},
                                                 "1=? ORDER BY time_completed DESC",
                                                 new String[] {"1"});
             for(int i = 0; i < dbAchiv.size(); i++)
             {
-                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(GuildAchievement.GUILD_ACHIEVEMENTS_TABLE_KEY).getAsInt();
+                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(GuildAchievement.TABLE_KEY).getAsInt();
                 GuildAchievement gAh = new GuildAchievement(idAchiv);
                 this.achievements.add(gAh);
             }
@@ -146,7 +146,7 @@ public class Guild extends GameObject
         /* {"name", "realm","lastModified", "battlegroup",
          * "level", "side", "achievementPoints"};
          */
-        setTableStructur(DBStructure.outKey(GUILD_TABLE_STRUCTURE));
+        setTableStructur(DBStructure.outKey(TABLE_STRUCTURE));
         String[] values = { this.name,
                             this.realm,
                             this.realmSlug,

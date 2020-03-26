@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 public class PlayableClass extends GameObject
 {	
     //Playable Class DB
-    public static final String PLAYABLE_CLASS_TABLE_NAME = "playable_class";
-    public static final String PLAYABLE_CLASS_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "playable_class";
+    public static final String TABLE_KEY = "id";
     public static final String[] PLAYABLE_CLASS_TABLE_STRUCTURE = {"id", "slug", "name"};
     
     //Attribute
@@ -22,13 +22,13 @@ public class PlayableClass extends GameObject
 
     public PlayableClass(int id)
     {
-        super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
         loadFromDB(id);
     }
 	
     public PlayableClass(JsonObject exInfo)
     {
-        super(PLAYABLE_CLASS_TABLE_NAME, PLAYABLE_CLASS_TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, PLAYABLE_CLASS_TABLE_STRUCTURE);
         saveInternalInfoObject(exInfo);
     }
 	

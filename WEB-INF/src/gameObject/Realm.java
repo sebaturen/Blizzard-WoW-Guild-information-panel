@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 public class Realm extends GameObject
 {
     //DBStructure
-    public static final String REALM_TABLE_NAME = "realms";
-    public static final String REALM_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "realms";
+    public static final String TABLE_KEY = "id";
     public static final String[] REALM_TABLE_STRUCTURE = {"id", "connected_realm", "name", "slug", "locale"};
     
     //Atribute
@@ -24,19 +24,19 @@ public class Realm extends GameObject
     
     public Realm(int id)
     {
-        super(REALM_TABLE_NAME, REALM_TABLE_KEY, REALM_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
     public Realm(String name)
     {
-        super(REALM_TABLE_NAME, REALM_TABLE_KEY, REALM_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
         loadFromDBUniqued("name", name);        
     }
     
     public Realm(JsonObject info)
     {
-        super(REALM_TABLE_NAME, REALM_TABLE_KEY, REALM_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 

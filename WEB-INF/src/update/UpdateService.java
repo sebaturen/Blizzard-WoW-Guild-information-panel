@@ -39,7 +39,9 @@ public class UpdateService implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent contextEvent)
     {
-        BlizzardUpdate.shared.achievements();
+        //BlizzardUpdate.shared.guild();
+        //BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
+        BlizzardUpdate.shared.characterProfileAPI.syncAll();
         //task
         updateInterval = new Thread(() -> {
             try {
