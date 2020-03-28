@@ -41,7 +41,8 @@ public class UpdateService implements ServletContextListener
     {
         //BlizzardUpdate.shared.guild();
         //BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
-        BlizzardUpdate.shared.characterProfileAPI.syncAll();
+        BlizzardUpdate.shared.loadAllCharacterDetail();
+        //BlizzardUpdate.shared.characterProfileAPI.copyReIndex();
         //task
         updateInterval = new Thread(() -> {
             try {

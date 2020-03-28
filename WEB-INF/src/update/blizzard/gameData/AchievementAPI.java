@@ -5,8 +5,6 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Achievement;
 import com.blizzardPanel.gameObject.AchievementCategory;
-import com.blizzardPanel.gameObject.AchievementMedia;
-import com.blizzardPanel.update.blizzard.AccessToken;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
@@ -65,15 +63,20 @@ public class AchievementAPI extends BlizzardAPI {
             }
 
         } catch (IOException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get all categories "+ e);
+            Logs.fatalLog(AchievementAPI.class, "FAILED - to get all categories "+ e);
         }
     }
 
-    // Get detail for one category
+    /**
+     * Load detail for category
+     * @param category {"key": {"href": URL}, "id": ID}
+     */
     private void categoryDetail(JsonObject category) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = category.getAsJsonObject("key").get("href").getAsString();
+        urlHref = urlHref.split("namespace")[0];
+        urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
         String catId = category.get("id").getAsString();
 
         try {
@@ -82,7 +85,7 @@ public class AchievementAPI extends BlizzardAPI {
             JsonArray cat_db = BlizzardUpdate.dbConnect.select(
                     AchievementCategory.TABLE_NAME,
                     new String[] {"last_modified"},
-                    "id = ?",
+                    AchievementCategory.TABLE_KEY +" = ?",
                     new String[] {catId}
             );
             boolean isInDb = (cat_db.size() > 0);
@@ -128,11 +131,11 @@ public class AchievementAPI extends BlizzardAPI {
                             AchievementCategory.TABLE_NAME,
                             columns,
                             values,
-                            "id = ?",
+                            AchievementCategory.TABLE_KEY+" = ?",
                             new String[]{catId}
                     );
                 } else { // INSERT
-                    columns.add("id");
+                    columns.add(AchievementCategory.TABLE_KEY);
                     values.add(catId);
                     BlizzardUpdate.dbConnect.insert(
                             AchievementCategory.TABLE_NAME,
@@ -153,12 +156,12 @@ public class AchievementAPI extends BlizzardAPI {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement Category "+ catId);
                 } else {
-                    Logs.infoLog(AchievementAPI.class, "ERROR - achievement Category "+ catId +" - "+ resp.code());
+                    Logs.errorLog(AchievementAPI.class, "ERROR - achievement Category "+ catId +" - "+ resp.code());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get achievement category detail "+ e);
+            Logs.fatalLog(AchievementAPI.class, "FAILED - to get achievement category detail "+ e);
         }
     }
 
@@ -166,6 +169,8 @@ public class AchievementAPI extends BlizzardAPI {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = achievement.getAsJsonObject("key").get("href").getAsString();
+        urlHref = urlHref.split("namespace")[0];
+        urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
         String achievId = achievement.get("id").getAsString();
 
         try {
@@ -174,7 +179,7 @@ public class AchievementAPI extends BlizzardAPI {
             JsonArray achiev_db = BlizzardUpdate.dbConnect.select(
                     Achievement.TABLE_NAME,
                     new String[]{"last_modified"},
-                    "id = ?",
+                    Achievement.TABLE_KEY +" = ?",
                     new String[]{achievId}
             );
             boolean isInDb = (achiev_db.size() > 0);
@@ -206,14 +211,16 @@ public class AchievementAPI extends BlizzardAPI {
                 columns.add("points");
                 values.add(blizz_achiev.get("points").getAsString());
                 columns.add("media_id");
-                achievementMedia(blizz_achiev.get("media").getAsJsonObject());
                 values.add(blizz_achiev.get("media").getAsJsonObject().get("id").getAsString());
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(blizz_achiev.getAsJsonObject("media"));
+
                 columns.add("display_order");
                 values.add(blizz_achiev.get("display_order").getAsString());
                 columns.add("is_account_wide");
                 values.add((blizz_achiev.get("is_account_wide").getAsBoolean())? "1":"0");
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");
+
                 if (blizz_achiev.has("category_id")) {
                     columns.add("category_id");
                     values.add(blizz_achiev.get("category_id").getAsJsonObject().get("id").getAsString());
@@ -232,11 +239,11 @@ public class AchievementAPI extends BlizzardAPI {
                             Achievement.TABLE_NAME,
                             columns,
                             values,
-                            "id = ?",
+                            Achievement.TABLE_KEY +" = ?",
                             new String[]{achievId}
                     );
                 } else { // INSERT
-                    columns.add("id");
+                    columns.add(Achievement.TABLE_KEY);
                     values.add(achievId);
                     BlizzardUpdate.dbConnect.insert(
                             Achievement.TABLE_NAME,
@@ -252,90 +259,11 @@ public class AchievementAPI extends BlizzardAPI {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement detail "+ achievId);
                 } else {
-                    Logs.infoLog(AchievementAPI.class, "ERROR - achievement detail "+ achievId +" - "+ resp.code());
+                    Logs.errorLog(AchievementAPI.class, "ERROR - achievement detail "+ achievId +" - "+ resp.code());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get achievement detail "+ e);
-        }
-    }
-
-    private void achievementMedia(JsonObject achievMedia) {
-        if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
-
-        String urlHref = achievMedia.getAsJsonObject("key").get("href").getAsString();
-        String achievMediaId = achievMedia.get("id").getAsString();
-
-        try {
-
-            // Check is category previously exist:
-            JsonArray achievMedia_db = BlizzardUpdate.dbConnect.select(
-                    AchievementMedia.TABLE_NAME,
-                    new String[]{"last_modified"},
-                    "id = ?",
-                    new String[]{achievMediaId}
-            );
-            boolean isInDb = (achievMedia_db.size() > 0);
-            Long lastModified = 0L;
-            if (achievMedia_db.size() > 0) {
-                lastModified = achievMedia_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
-            }
-
-            // Prepare call
-            Call<JsonObject> call = apiCalls.freeUrl(
-                    urlHref,
-                    BlizzardUpdate.shared.accessToken.getAuthorization(),
-                    BlizzardUpdate.parseDateFormat(lastModified)
-            );
-
-
-            // Run call
-            Response<JsonObject> resp = call.execute();
-            if (resp.isSuccessful()) {
-                JsonObject blizz_achievMedia = resp.body();
-                JsonObject blizz_achievMedia_assets = blizz_achievMedia.getAsJsonArray("assets").get(0).getAsJsonObject();
-
-                // Prepare values:
-                List<Object> columns = new ArrayList<>();
-                List<Object> values = new ArrayList<>();
-                columns.add("key");
-                values.add(blizz_achievMedia_assets.get("key").getAsString());
-                columns.add("value");
-                values.add(blizz_achievMedia_assets.get("value").getAsString());
-                columns.add("last_modified");
-                values.add(resp.headers().getDate("Last-Modified").getTime() +"");
-
-                if (isInDb) { // UPDATE
-                    BlizzardUpdate.dbConnect.update(
-                            AchievementMedia.TABLE_NAME,
-                            columns,
-                            values,
-                            "id = ?",
-                            new String[]{achievMediaId}
-                    );
-                } else { // INSERT
-                    columns.add("id");
-                    values.add(achievMediaId);
-                    BlizzardUpdate.dbConnect.insert(
-                            AchievementMedia.TABLE_NAME,
-                            AchievementMedia.TABLE_KEY,
-                            columns,
-                            values
-                    );
-                }
-
-                Logs.infoLog(AchievementAPI.class, "Achievement media OK "+ achievMediaId);
-
-            } else {
-                if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement media "+ achievMediaId);
-                } else {
-                    Logs.infoLog(AchievementAPI.class, "ERROR - achievement media "+ achievMediaId +" - "+ resp.code());
-                }
-            }
-
-        } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get achievement media "+ e);
+            Logs.fatalLog(AchievementAPI.class, "FAILED - to get achievement detail "+ e);
         }
     }
 

@@ -1286,7 +1286,7 @@ public class Update {
      */
     public void updateSpellInformation() throws DataException, SQLException, IOException {
         if (accessToken.isExpired()) generateAccessToken();
-        JsonArray spellInDb = dbConnect.select(Spell.SPELLS_TABLE_NAME,
+        JsonArray spellInDb = dbConnect.select(Spell.TABLE_NAME,
                 new String[]{"id"},
                 "id != 0",
                 new String[]{});
@@ -1337,7 +1337,7 @@ public class Update {
      */
     public void updateItemInformation() throws DataException, SQLException, IOException {
         if (accessToken.isExpired()) generateAccessToken();
-        JsonArray itemInDB = dbConnect.select(Item.ITEM_TABLE_NAME,
+        JsonArray itemInDB = dbConnect.select(Item.TABLE_NAME,
                 new String[]{"id"},
                 "id != 0",
                 new String[]{});

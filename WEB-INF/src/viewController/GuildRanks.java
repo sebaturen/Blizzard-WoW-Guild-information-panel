@@ -45,7 +45,7 @@ public class GuildRanks
         CharacterMember[] mb = null;
         try
         {
-            JsonArray memberRank =  dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
+            JsonArray memberRank =  dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.INFO_TABLE_NAME +" c",
                                                 new String[] {"gm.internal_id"},
                                                 "in_guild=? AND gm.internal_id = c.internal_id AND rank=? ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
                                                 new String[] {"1", rankId+""}, true);	

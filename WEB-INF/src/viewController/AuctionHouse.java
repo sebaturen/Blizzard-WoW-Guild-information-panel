@@ -107,7 +107,7 @@ public class AuctionHouse
             JsonArray dataItems = dbConnect.selectQuery(sql, new String[] { "%"+name+"%"});
             for(int i = 0; i < dataItems.size(); i++)
             {
-                int itemId = dataItems.get(i).getAsJsonObject().get(Item.ITEM_TABLE_KEY).getAsInt();
+                int itemId = dataItems.get(i).getAsJsonObject().get(Item.TABLE_KEY).getAsInt();
                 items.add(new Item(itemId));
             }
         }

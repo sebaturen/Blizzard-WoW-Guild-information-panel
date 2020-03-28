@@ -25,6 +25,10 @@ public class PlayableClassAPI extends BlizzardAPI {
         super(apiCalls);
     }
 
+    /**
+     * Load class detail
+     * @param data {"id": ID, href not is required}
+     */
     public void classDetail(JsonObject data) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
@@ -36,7 +40,7 @@ public class PlayableClassAPI extends BlizzardAPI {
             JsonArray class_db = BlizzardUpdate.dbConnect.select(
                     PlayableClass.TABLE_NAME,
                     new String[]{"last_modified"},
-                    "id = ?",
+                    PlayableClass.TABLE_KEY +" = ?",
                     new String[]{classId}
             );
             boolean isInDb = (class_db.size() > 0);
@@ -75,11 +79,11 @@ public class PlayableClassAPI extends BlizzardAPI {
                             PlayableClass.TABLE_NAME,
                             columns,
                             values,
-                            "id=?",
+                            PlayableClass.TABLE_KEY+"=?",
                             new String[]{classId+""}
                     );
                 } else { // Insert
-                    columns.add("id");
+                    columns.add(PlayableClass.TABLE_KEY);
                     values.add(classId+"");
                     BlizzardUpdate.dbConnect.insert(
                             PlayableClass.TABLE_NAME,
@@ -94,11 +98,11 @@ public class PlayableClassAPI extends BlizzardAPI {
                 if (response.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(PlayableClassAPI.class, "NOT Modified Playable Class "+ classId);
                 } else {
-                    Logs.infoLog(PlayableClassAPI.class, "ERROR - Playable Class "+ classId +" - "+ response.code());
+                    Logs.errorLog(PlayableClassAPI.class, "ERROR - Playable Class "+ classId +" - "+ response.code());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(PlayableClassAPI.class, "FAIL - to get Playable Class info "+ e);
+            Logs.fatalLog(PlayableClassAPI.class, "FAILED - to get Playable Class info "+ e);
         }
 
     }

@@ -17,8 +17,8 @@ import java.util.Arrays;
 public class CharacterSpec extends GameObject
 {
     //Specs  DB
-    public static final String SPECS_TABLE_NAME = "character_specs";
-    public static final String SPECS_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "character_specs";
+    public static final String TABLE_KEY = "id";
     public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "spec_id", "enable",
                                                             "tier_0", "tier_1", "tier_2",
                                                             "tier_3", "tier_4", "tier_5",
@@ -36,13 +36,13 @@ public class CharacterSpec extends GameObject
 
     public CharacterSpec(int specId)
     {        
-        super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, SPECS_TABLE_STRUCTURE);
         loadFromDB(specId);
     }
     
     public CharacterSpec(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
     {
-        super(SPECS_TABLE_NAME, SPECS_TABLE_KEY, SPECS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, SPECS_TABLE_STRUCTURE);
         this.memberId = member.getId();
         if (!member.isDelete())
             saveInfoFromBlizz(member, specInfo, talentsInfo);

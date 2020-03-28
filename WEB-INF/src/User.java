@@ -245,7 +245,7 @@ public class User
     private void loadCharacters()
     {
         try {
-            JsonArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.CHARACTER_INFO_TABLE_NAME +" c",
+            JsonArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.INFO_TABLE_NAME +" c",
                     new String[] {"gm.internal_id" },
                     "gm.user_id=? AND gm.internal_id = c.internal_id AND c.lastModified != 0 AND"+
                     " gm.isDelete = 0 ORDER BY c.level DESC, gm.member_name ASC",

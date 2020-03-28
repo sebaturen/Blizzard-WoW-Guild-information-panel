@@ -42,7 +42,7 @@ public class ConnectedRealmAPI extends BlizzardAPI {
             }
 
         } catch (IOException e) {
-            Logs.infoLog(ConnectedRealmAPI.class, "FAIL - to get all realm index "+ e);
+            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get all realm index "+ e);
         }
 
     }
@@ -72,12 +72,12 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(ConnectedRealmAPI.class, "NOT Modified Realms Index detail "+ connectedRealms);
                 } else {
-                    Logs.infoLog(ConnectedRealmAPI.class, "ERROR - Realms Index detail "+ connectedRealms +" - "+ resp.code());
+                    Logs.errorLog(ConnectedRealmAPI.class, "ERROR - Realms Index detail "+ connectedRealms +" - "+ resp.code());
                 }
             }
 
         } catch (IOException e) {
-            Logs.infoLog(ConnectedRealmAPI.class, "FAIL - to get Realms Index detail "+ e);
+            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get Realms Index detail "+ e);
         }
 
     }
@@ -86,6 +86,8 @@ public class ConnectedRealmAPI extends BlizzardAPI {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = realmDetail.getAsJsonObject("key").get("href").getAsString();
+        urlHref = urlHref.split("namespace")[0];
+        urlHref += "namespace=dynamic-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
         String realmId = realmDetail.get("id").getAsString();
 
         try {
@@ -93,7 +95,7 @@ public class ConnectedRealmAPI extends BlizzardAPI {
             JsonArray realm_db = BlizzardUpdate.dbConnect.select(
                     Realm.TABLE_NAME,
                     new String[]{"last_modified"},
-                    "id=?",
+                    Realm.TABLE_KEY +"=?",
                     new String[]{realmId+""}
             );
             boolean isInDb = (realm_db.size() > 0);
@@ -117,11 +119,11 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(ConnectedRealmAPI.class, "NOT Modified realm detail "+ realmId);
                 } else {
-                    Logs.infoLog(ConnectedRealmAPI.class, "ERROR - realm detail "+ realmId +" - "+ resp.code());
+                    Logs.errorLog(ConnectedRealmAPI.class, "ERROR - realm detail "+ realmId +" - "+ resp.code());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(ConnectedRealmAPI.class, "FAIL - to get realm detail "+ e);
+            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get realm detail "+ e);
         }
 
     }
@@ -133,7 +135,7 @@ public class ConnectedRealmAPI extends BlizzardAPI {
             JsonArray realm_db = BlizzardUpdate.dbConnect.select(
                     Realm.TABLE_NAME,
                     new String[]{"id"},
-                    "id = ?",
+                    Realm.TABLE_KEY +" = ?",
                     new String[]{realmDetail.get("id").getAsString()}
             );
             boolean isInDb = (realm_db.size() > 0);
@@ -162,11 +164,11 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                         Realm.TABLE_NAME,
                         columns,
                         values,
-                        "id=?",
+                        Realm.TABLE_KEY+"=?",
                         new String[]{realmDetail.get("id").getAsString()}
                 );
             } else { // Insert
-                columns.add("id");
+                columns.add(Realm.TABLE_KEY);
                 values.add(realmDetail.get("id").getAsString());
                 BlizzardUpdate.dbConnect.insert(
                         Realm.TABLE_NAME,
@@ -178,7 +180,7 @@ public class ConnectedRealmAPI extends BlizzardAPI {
 
             Logs.infoLog(ConnectedRealmAPI.class, "Realm info OK "+ realmDetail.get("slug").getAsString());
         } catch (SQLException | DataException e) {
-            Logs.infoLog(ConnectedRealmAPI.class, "FAIL - real load detail "+ e +" -- "+ realmDetail);
+            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - real load detail "+ e +" -- "+ realmDetail);
         }
     }
 }

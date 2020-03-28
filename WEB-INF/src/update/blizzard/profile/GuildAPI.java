@@ -40,6 +40,8 @@ public class GuildAPI extends BlizzardAPI {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = detail.getAsJsonObject("key").get("href").getAsString();
+        urlHref = urlHref.split("namespace")[0];
+        urlHref += "namespace=profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
         String guildId = detail.get("id").getAsString();
 
         try {
@@ -47,13 +49,15 @@ public class GuildAPI extends BlizzardAPI {
             // Check if guild previously exist
             JsonArray guild_db = BlizzardUpdate.dbConnect.select(
                     Guild.TABLE_NAME,
-                    new String[] {"last_modified"},
-                    "id = ?",
+                    new String[] {"last_modified", "full_sync"},
+                    Guild.TABLE_KEY +" = ?",
                     new String[]{guildId}
             );
             boolean isInDb = (guild_db.size() > 0);
+            boolean fullSync = false;
             long lastModified = 0L;
             if (guild_db.size() > 0) {
+                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsInt() == 1;
                 lastModified = guild_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
             }
 
@@ -69,17 +73,17 @@ public class GuildAPI extends BlizzardAPI {
             if (resp.isSuccessful()) {
                 JsonObject guildInfo = resp.body();
 
-                loadInfo(guildInfo, resp.headers().getDate("Last-Modified").getTime(), isInDb);
+                loadInfo(guildInfo, resp.headers().getDate("Last-Modified").getTime(), isInDb, fullSync);
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(AchievementAPI.class, "NOT Modified guild detail "+ guildId);
+                    Logs.infoLog(GuildAPI.class, "NOT Modified guild detail "+ guildId);
                 } else {
-                    Logs.infoLog(AchievementAPI.class, "ERROR - guild detail "+ guildId +" - "+ resp.code());
+                    Logs.errorLog(GuildAPI.class, "ERROR - guild detail "+ guildId +" - "+ resp.code());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get guild detail "+ e);
+            Logs.fatalLog(GuildAPI.class, "FAILED - to get guild detail "+ e);
         }
 
     }
@@ -93,20 +97,23 @@ public class GuildAPI extends BlizzardAPI {
 
             String query = "SELECT" +
                     "   r.slug, " +
-                    "   g.last_modified " +
+                    "   g.last_modified, " +
+                    "   g.full_sync "+
                     "FROM " +
                     "   guild_info g, " +
                     "   realms r " +
                     "WHERE " +
-                    "   r. `id` = g. `realm_id` " +
+                    "   r.`id` = g.`realm_id` " +
                     "   AND g. `name` = '"+ name +"' " +
                     "   AND r. `name` like '%"+ realm +"%';";
             JsonArray guild_db = BlizzardUpdate.dbConnect.selectQuery(query);
             boolean isInDb = (guild_db.size() > 0);
+            boolean fullSync = false;
             String realmSlug = "NONE";
             long lastModified = 0L;
             if (guild_db.size() > 0) {
                 lastModified = guild_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsInt() == 1;
                 realmSlug = guild_db.get(0).getAsJsonObject().get("slug").getAsString();
             }
 
@@ -114,11 +121,11 @@ public class GuildAPI extends BlizzardAPI {
             if (!isInDb) {
                 JsonArray realm_db = BlizzardUpdate.dbConnect.selectQuery(
                         "SELECT " +
-                                "   slug " +
-                                "FROM " +
-                                "   realms " +
-                                "WHERE " +
-                                "   name like '%"+ realm +"%'"
+                        "   slug " +
+                        "FROM " +
+                        "   realms " +
+                        "WHERE " +
+                        "   name like '%"+ realm +"%'"
                 );
 
                 if (realm_db.size() > 0) {
@@ -127,11 +134,11 @@ public class GuildAPI extends BlizzardAPI {
                     BlizzardUpdate.shared.connectedRealmAPI.index();
                     realm_db = BlizzardUpdate.dbConnect.selectQuery(
                             "SELECT " +
-                                    "   slug " +
-                                    "FROM " +
-                                    "   realms " +
-                                    "WHERE " +
-                                    "   name like '%"+ realm +"%'"
+                            "   slug " +
+                            "FROM " +
+                            "   realms " +
+                            "WHERE " +
+                            "   name like '%"+ realm +"%'"
                     );
                     if (realm_db.size() > 0) {
                         realmSlug = realm_db.get(0).getAsJsonObject().get("slug").getAsString();
@@ -150,21 +157,21 @@ public class GuildAPI extends BlizzardAPI {
             Response<JsonObject> resp = call.execute();
 
             if (resp.isSuccessful()) {
-                loadInfo(resp.body(), resp.headers().getDate("Last-Modified").getTime(), isInDb);
+                loadInfo(resp.body(), resp.headers().getDate("Last-Modified").getTime(), isInDb, fullSync);
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(ConnectedRealmAPI.class, "NOT Modified guild detail "+ guildSlug);
+                    Logs.infoLog(GuildAPI.class, "NOT Modified guild detail "+ guildSlug);
                 } else {
-                    Logs.infoLog(GuildAPI.class, "ERROR - To get guild info "+ resp.code());
+                    Logs.errorLog(GuildAPI.class, "ERROR - To get guild info "+ resp.code());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(GuildAPI.class, "FAIL - Get Guild info "+ realm +"/"+ name);
+            Logs.fatalLog(GuildAPI.class, "FAILED - Get Guild info "+ realm +"/"+ name);
         }
     }
 
-    private void loadInfo(JsonObject detail, long lastModified, boolean isInDb) {
+    private void loadInfo(JsonObject detail, long lastModified, boolean isInDb, boolean fullInfo) {
 
         // Prepare values:
         List<Object> columns = new ArrayList<>();
@@ -200,12 +207,15 @@ public class GuildAPI extends BlizzardAPI {
                         Guild.TABLE_NAME,
                         columns,
                         values,
-                        "id=?",
+                        Guild.TABLE_KEY+"=?",
                         new String[]{detail.get("id").getAsString()}
                 );
             } else { // Insert
-                columns.add("id");
+                columns.add(Guild.TABLE_KEY);
                 values.add(detail.get("id").getAsString());
+                columns.add("full_sync");
+                values.add("0");
+
                 BlizzardUpdate.dbConnect.insert(
                         Guild.TABLE_NAME,
                         Guild.TABLE_KEY,
@@ -216,14 +226,26 @@ public class GuildAPI extends BlizzardAPI {
 
             Logs.infoLog(GuildAPI.class, "Guild info OK "+ detail.get("id").getAsString());
 
-            String nameSlug = detail.get("name").getAsString().toLowerCase().replace(" ", "-");
-            String realmSlug = detail.getAsJsonObject("realm").get("slug").getAsString();
-            int guildId = detail.get("id").getAsInt();
-            achievements(realmSlug, nameSlug, guildId);
-            roster(realmSlug, nameSlug, guildId);
+            // Load more info!
+            if (fullInfo) {
+                String nameSlug = detail.get("name").getAsString().toLowerCase().replace(" ", "-");
+                String realmSlug = detail.getAsJsonObject("realm").get("slug").getAsString();
+                int guildId = detail.get("id").getAsInt();
+
+                Logs.infoLog(GuildAPI.class, "START Full guild sync ("+ realmSlug +"/"+ nameSlug +")");
+
+                // Achievements
+                achievements(realmSlug, nameSlug, guildId);
+                // Rosters
+                roster(realmSlug, nameSlug, guildId);
+                // Activities
+                activities(realmSlug, nameSlug, guildId);
+                // Rank
+                //rank(realmSlug, nameSlug, guildId);
+            }
 
         } catch (DataException | SQLException e) {
-            Logs.infoLog(GuildAPI.class, "FAIL - to load guild detail "+ e);
+            Logs.fatalLog(GuildAPI.class, "FAILED - to load guild detail "+ e);
         }
     }
 
@@ -236,7 +258,7 @@ public class GuildAPI extends BlizzardAPI {
             JsonArray db_guild_roter = BlizzardUpdate.dbConnect.select(
                     Guild.TABLE_NAME,
                     new String[]{"roster_last_modified"},
-                    "id = ?",
+                    Guild.TABLE_KEY +" = ?",
                     new String[]{guildId + ""}
             );
             boolean isInDb = (db_guild_roter.size() > 0);
@@ -246,7 +268,7 @@ public class GuildAPI extends BlizzardAPI {
             }
 
             if (!isInDb) { // Guild not exist! stop!
-                Logs.infoLog(GuildAPI.class, "FAIL - Try load roster from not exist guild! "+ guildId);
+                Logs.fatalLog(GuildAPI.class, "FAILED - Try load roster from not exist guild! "+ guildId);
             } else { // Guild exist run all!
 
                 Call<JsonObject> call = apiCalls.guildRoster(
@@ -282,7 +304,7 @@ public class GuildAPI extends BlizzardAPI {
                                     JsonArray roster_db = BlizzardUpdate.dbConnect.select(
                                             Roster.TABLE_NAME,
                                             new String[]{"add_regist"},
-                                            "character_id = ?",
+                                            Roster.TABLE_KEY +" = ?",
                                             new String[]{character.get("id").getAsString()}
                                     );
                                     boolean isInDb = (roster_db.size() > 0);
@@ -292,7 +314,7 @@ public class GuildAPI extends BlizzardAPI {
                                                 Roster.TABLE_NAME,
                                                 new String[]{"rank"},
                                                 new String[]{member.get("rank").getAsString()},
-                                                "character_id=?",
+                                                Roster.TABLE_KEY+"=?",
                                                 new String[]{character.get("id").getAsString()}
                                         );
                                     } else { // Insert
@@ -315,7 +337,7 @@ public class GuildAPI extends BlizzardAPI {
                                     }
 
                                 } catch (DataException | SQLException e) {
-                                    Logs.infoLog(GuildAPI.class, "Fail to set guild roster "+ character.get("id").getAsString() +" - "+ e);
+                                    Logs.fatalLog(GuildAPI.class, "FAILED to set guild roster "+ character.get("id").getAsString() +" - "+ e);
                                 }
 
                             }
@@ -326,27 +348,27 @@ public class GuildAPI extends BlizzardAPI {
                                         Guild.TABLE_NAME,
                                         new String[]{"roster_last_modified"},
                                         new String[]{response.headers().getDate("Last-Modified").getTime() +""},
-                                        "id = ?",
+                                        Guild.TABLE_KEY+" = ?",
                                         new String[]{guildId+""}
                                 );
                             } catch (DataException | SQLException e ){
-                                Logs.infoLog(GuildAPI.class, "ERROR - Save guild update -roster update- "+ e);
+                                Logs.fatalLog(GuildAPI.class, "FAILED - Save guild update -roster update- "+ e);
                             }
 
                         } else {
-                            Logs.infoLog(GuildAPI.class, "ERROR - guildRoster "+ response.code() +" - ("+ call.request() +")");
+                            Logs.errorLog(GuildAPI.class, "ERROR - guildRoster "+ response.code() +" - ("+ call.request() +")");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                        Logs.infoLog(GuildAPI.class, "FAIL - guildRoster "+ throwable);
+                        Logs.fatalLog(GuildAPI.class, "FAILED - guildRoster "+ throwable);
                     }
                 });
 
             }
         } catch (SQLException | DataException e) {
-            Logs.infoLog(GuildAPI.class, "FAIL - try load info from guild "+ guildId);
+            Logs.fatalLog(GuildAPI.class, "FAILED - try load info from guild "+ guildId);
         }
     }
 
@@ -359,7 +381,7 @@ public class GuildAPI extends BlizzardAPI {
             JsonArray db_guild_achiev = BlizzardUpdate.dbConnect.select(
                     Guild.TABLE_NAME,
                     new String[] {"achievement_last_modified"},
-                    "id = ?",
+                    Guild.TABLE_KEY +" = ?",
                     new String[] {guildId+""}
             );
             boolean isInDb = (db_guild_achiev.size() > 0);
@@ -369,7 +391,7 @@ public class GuildAPI extends BlizzardAPI {
             }
 
             if (!isInDb) { // Guild not exist! stop!
-                Logs.infoLog(GuildAPI.class, "FAIL - Try load achievement from not exist guild! ");
+                Logs.fatalLog(GuildAPI.class, "FAILED - Try load achievement from not exist guild! ");
             } else { // Guild exist run all!
                 Call<JsonObject> call = apiCalls.guildAchievements(
                         realmSlug,
@@ -392,6 +414,8 @@ public class GuildAPI extends BlizzardAPI {
                                     // Prepare values:
                                     List<Object> columns = new ArrayList<>();
                                     List<Object> values = new ArrayList<>();
+                                    columns.add("guild_id");
+                                    values.add(guildId+"");
                                     columns.add("achievement_id");
                                     values.add(achievements.getAsJsonObject().get("id").getAsString());
                                     if (achievements.getAsJsonObject().has("completed_timestamp")) {
@@ -415,7 +439,7 @@ public class GuildAPI extends BlizzardAPI {
                                         );
                                     }
                                 } catch (DataException | SQLException e) {
-                                    Logs.infoLog(GuildAPI.class, "FAIL - Insert new guildAchievements - "+ e);
+                                    Logs.fatalLog(GuildAPI.class, "FAILED - Insert new guildAchievements - "+ e);
                                 }
                             }
                             System.out.println("=== GuildAchievements END");
@@ -426,68 +450,82 @@ public class GuildAPI extends BlizzardAPI {
                                         Guild.TABLE_NAME,
                                         new String[]{"achievement_last_modified"},
                                         new String[]{response.headers().getDate("Last-Modified").getTime() +""},
-                                        "id = ?",
+                                        Guild.TABLE_KEY+" = ?",
                                         new String[]{guildId+""}
                                 );
                             } catch (DataException | SQLException e ){
-                                Logs.infoLog(GuildAPI.class, "ERROR - Save guild update -last achievement update- "+ e);
+                                Logs.fatalLog(GuildAPI.class, "FAILED - Save guild update -last achievement update- "+ e);
                             }
                         } else {
                             if (response.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                                 Logs.infoLog(GuildAPI.class, "NOT Modified guildAchievements - "+ guildId);
                             } else {
-                                Logs.infoLog(GuildAPI.class, "ERROR - profile "+ response.code() +" - ("+ call.request() +")");
+                                Logs.errorLog(GuildAPI.class, "ERROR - profile "+ response.code() +" - ("+ call.request() +")");
                             }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                        Logs.infoLog(GuildAPI.class, "FAIL - guildAchievements "+ throwable);
+                        Logs.fatalLog(GuildAPI.class, "FAILED - guildAchievements "+ throwable);
                     }
                 });
             }
 
         } catch (DataException | SQLException e) {
-            Logs.infoLog(AchievementAPI.class, "FAIL - to get guildAchievements list "+ e);
+            Logs.fatalLog(GuildAPI.class, "FAILED - to get guildAchievements list "+ e);
         }
 
     }
 
     // Update guild roster
-    private void activity(int guildId) {
+    private void activities(String realmSlug, String nameSlug, int guildId) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
-        Realm guildRealm = new Realm(GeneralConfig.getStringConfig("GUILD_REALM"));
-        String guildSlug = GeneralConfig.getStringConfig("GUILD_NAME").toLowerCase();
-        guildSlug = guildSlug.replace(" ", "-");
+        try {
+            // Check is category previously exist:
+            JsonArray db_guild_activities = BlizzardUpdate.dbConnect.select(
+                    Guild.TABLE_NAME,
+                    new String[]{"activities_last_modified"},
+                    Guild.TABLE_KEY +" = ?",
+                    new String[]{guildId + ""}
+            );
+            Long lastModified = 0L;
+            if (db_guild_activities.size() > 0) {
+                lastModified = db_guild_activities.get(0).getAsJsonObject().get("activities_last_modified").getAsLong();
+            }
 
-        Call<JsonObject> call = apiCalls.guildActivity(
-                guildRealm.getSlug(),
-                guildSlug,
-                "profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
-                BlizzardUpdate.shared.accessToken.getAuthorization(),
-                "0"
-        );
+            Call<JsonObject> call = apiCalls.guildActivity(
+                    realmSlug,
+                    nameSlug,
+                    "profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    BlizzardUpdate.shared.accessToken.getAuthorization(),
+                    BlizzardUpdate.parseDateFormat(lastModified)
+            );
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    System.out.println("=== GuildActivity");
-                    for(JsonElement news : response.body().getAsJsonArray("activities")) {
-                        System.out.println("Type -- "+ news.getAsJsonObject().get("activity").getAsJsonObject().get("type").getAsString());
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+
+                        System.out.println("=== GuildActivity");
+                        for(JsonElement news : response.body().getAsJsonArray("activities")) {
+                            System.out.println("Type -- "+ news.getAsJsonObject().get("activity").getAsJsonObject().get("type").getAsString());
+                        }
+
+                    } else {
+                        Logs.errorLog(GuildAPI.class, "ERROR - guildActivity "+ response.code() +" - ("+ call.request() +")");
                     }
-                } else {
-                    Logs.infoLog(GuildAPI.class, "ERROR - guildActivity "+ response.code() +" - ("+ call.request() +")");
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                Logs.infoLog(GuildAPI.class, "FAIL - guildActivity "+ throwable);
-            }
-        });
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                    Logs.fatalLog(GuildAPI.class, "FAILED - guildActivity "+ throwable);
+                }
+            });
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(GuildAPI.class, "FAILED - try load info from guild "+ guildId);
+        }
     }
 
 }

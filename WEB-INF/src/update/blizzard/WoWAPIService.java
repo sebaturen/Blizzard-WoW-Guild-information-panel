@@ -84,7 +84,7 @@ public interface WoWAPIService {
 
     @GET("profile/wow/character/{realmSlug}/{characterName}/status")
     Call<JsonObject> characterProfileStatus(
-            @Path("realmSlug") String realm,
+            @Path("realmSlug") String realmSlug,
             @Path("characterName") String name,
             @Query("namespace") String namespace,
             @Header("Authorization") String token
@@ -112,7 +112,16 @@ public interface WoWAPIService {
     //------------------------------------------ Playable Race
     @GET("data/wow/playable-race/{playableRaceId}")
     Call<JsonObject> playableRace(
-            @Path("playableRaceId") String classId,
+            @Path("playableRaceId") String playableRaceId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Playable Specialization
+    @GET("data/wow/playable-specialization/{specId}")
+    Call<JsonObject> playableSpecialization(
+            @Path("specId") String specId,
             @Query("namespace") String namespace,
             @Header("Authorization") String token,
             @Header("If-Modified-Since") String ifModifiedSince
@@ -125,6 +134,23 @@ public interface WoWAPIService {
             @Header("Authorization") String token
     );
 
+    //------------------------------------------ Spell
+    @GET("data/wow/spell/{spellId}")
+    Call<JsonObject> spell(
+            @Path("spellId") String spellId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Item
+    @GET("data/wow/item/{itemId}")
+    Call<JsonObject> item(
+            @Path("itemId") String itemID,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
 
     //------------------------------------------
     //------------------------------------------

@@ -12,8 +12,8 @@ import com.google.gson.JsonObject;
 public class Spell extends GameObject
 {
     //Spells DB
-    public static final String SPELLS_TABLE_NAME = "spells";
-    public static final String SPELLS_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "spells";
+    public static final String TABLE_KEY = "id";
     public static final String[] SPELLS_TABLE_STRUCTURE = {"id", "name", "icon", "description",
                                                            "castTime", "cooldown", "range"};
     //Atribute
@@ -27,13 +27,13 @@ public class Spell extends GameObject
  
     public Spell(int id)
     {
-        super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, SPELLS_TABLE_STRUCTURE);
         loadFromDB(id);   
     }
     
     public Spell(JsonObject inf)
     {
-        super(SPELLS_TABLE_NAME, SPELLS_TABLE_KEY, SPELLS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, SPELLS_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
     

@@ -33,12 +33,15 @@ public class PlayableRaceAPI extends BlizzardAPI {
             // Check is race previously exist
             JsonArray race_db = BlizzardUpdate.dbConnect.select(
                     PlayableRace.TABLE_NAME,
-                    new String[]{"id"},
-                    "id=?",
+                    new String[]{PlayableRace.TABLE_KEY, "last_modified"},
+                    PlayableRace.TABLE_KEY+"=?",
                     new String[]{raceId+""}
             );
             boolean isInDb = (race_db.size() > 0);
             long lastModified = 0L;
+            if (race_db.size() > 0) {
+                lastModified = race_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+            }
 
             // Prepare call
             Call<JsonObject> call = apiCalls.playableRace(
@@ -69,16 +72,20 @@ public class PlayableRaceAPI extends BlizzardAPI {
                 values.add((blizz_race.get("is_selectable").getAsBoolean())? "1":"0");
                 columns.add("is_allied_race");
                 values.add((blizz_race.get("is_allied_race").getAsBoolean())? "1":"0");
+                columns.add("last_modified");
+                values.add(resp.headers().getDate("Last-Modified").getTime() +"");
 
                 if (isInDb) { // update
                     BlizzardUpdate.dbConnect.update(
                             PlayableRace.TABLE_NAME,
                             columns,
                             values,
-                            "id=?",
+                            PlayableRace.TABLE_KEY+"=?",
                             new String[]{raceId+""}
                     );
                 } else { //insert
+                    columns.add(PlayableRace.TABLE_KEY);
+                    values.add(blizz_race.get("id").getAsString());
                     BlizzardUpdate.dbConnect.insert(
                             PlayableRace.TABLE_NAME,
                             PlayableRace.TABLE_KEY,
@@ -92,12 +99,12 @@ public class PlayableRaceAPI extends BlizzardAPI {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(PlayableRaceAPI.class, "NOT Modified Playable Race "+ raceId);
                 } else {
-                    Logs.infoLog(PlayableRaceAPI.class, "ERROR - playable race "+ raceId +" - "+ resp.code());
+                    Logs.errorLog(PlayableRaceAPI.class, "ERROR - playable race "+ raceId +" - "+ resp.code());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.infoLog(PlayableRaceAPI.class, "FAIL - to get playable race "+ e);
+            Logs.fatalLog(PlayableRaceAPI.class, "FAILED - to get playable race "+ e);
         }
 
     }

@@ -16,8 +16,8 @@ import com.google.gson.JsonObject;
 public class Item extends GameObject
 {
     //Item DB
-    public static final String ITEM_TABLE_NAME = "items";
-    public static final String ITEM_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "items";
+    public static final String TABLE_KEY = "id";
     public static final String[] ITEM_TABLE_STRUCTURE = {"id", "name", "icon", "itemSpell", "gemInfo_bonus_name", "gemInfo_type"};
     
     //Atribute
@@ -30,7 +30,7 @@ public class Item extends GameObject
     
     public Item(int id)
     {
-        super(ITEM_TABLE_NAME,ITEM_TABLE_KEY,ITEM_TABLE_STRUCTURE);
+        super(TABLE_NAME,TABLE_KEY,ITEM_TABLE_STRUCTURE);
         loadFromDB(id);
         if(!this.isInternalData)
         {
@@ -40,7 +40,7 @@ public class Item extends GameObject
     
     public Item(JsonObject inf)
     {
-        super(ITEM_TABLE_NAME,ITEM_TABLE_KEY,ITEM_TABLE_STRUCTURE);
+        super(TABLE_NAME,TABLE_KEY,ITEM_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
 

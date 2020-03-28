@@ -17,8 +17,8 @@ import com.google.gson.JsonParser;
 public class CharacterItem extends GameObject
 {
     //Item Member DB
-    public static final String ITEMS_MEMBER_TABLE_NAME  = "character_items";
-    public static final String ITEMS_MEMBER_TABLE_KEY   = "id";
+    public static final String TABLE_NAME  = "character_items";
+    public static final String TABLE_KEY   = "id";
     public static final String[] ITEMS_MEMBER_TABLE_STRUCTURE = {"id", "member_id", "item_id", "quality", "post_item",
                                                                 "ilevel", "stats", "armor", "context", 
                                                                 "azerite_level", "azerite_power", "tooltipGem_id", "toolTipEnchant_id"};
@@ -43,19 +43,19 @@ public class CharacterItem extends GameObject
     
     public CharacterItem(int id)
     {
-        super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
     public CharacterItem(String position, int memberId)
     {
-        super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         loadFromDBUniqued(new String[] { "post_item", "member_id" }, new String[] { position, memberId+"" });
     }
     
     public CharacterItem(JsonObject inf)
     {
-        super(ITEMS_MEMBER_TABLE_NAME, ITEMS_MEMBER_TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, ITEMS_MEMBER_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);
     }
        

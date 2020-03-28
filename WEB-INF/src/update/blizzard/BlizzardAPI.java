@@ -4,7 +4,7 @@ public abstract class BlizzardAPI {
 
     protected WoWAPIService apiCalls;
 
-    public BlizzardAPI(WoWAPIService apiCalls) {
+    protected BlizzardAPI(WoWAPIService apiCalls) {
         this.apiCalls = apiCalls;
     }
 }

@@ -39,15 +39,15 @@ public class CharacterMember extends GameObject {
             "rank", "in_guild", "user_id", "isDelete"};
 
     //Character information DB
-    public static final String CHARACTER_INFO_TABLE_NAME = "character_info";
-    public static final String CHARACTER_INFO_TABLE_KEY = "internal_id";
-    public static final String[] CHARACTER_INFO_TABLE_STRUCTURE = {"internal_id", "battlegroup", "class",
+    public static final String INFO_TABLE_NAME = "character_info";
+    public static final String INFO_TABLE_KEY = "character_id";
+    public static final String[] INFO_TABLE_STRUCTURE = {"internal_id", "battlegroup", "class",
             "race", "gender", "level", "achievementPoints",
             "thumbnail", "calcClass", "faction", "totalHonorableKills",
             "bestMythicPlusScore", "mythicPlusScores",
             "guild_name", "lastModified"};
     //Constant
-    private static final String COMBIEN_TABLE_NAME = CHARACTER_INFO_TABLE_NAME + " c, " + GMEMBER_ID_NAME_TABLE_NAME + " gm";
+    private static final String COMBIEN_TABLE_NAME = INFO_TABLE_NAME + " c, " + GMEMBER_ID_NAME_TABLE_NAME + " gm";
     private static final String COMBIEN_TABLE_KEY = "c.internal_id";
     private static final String[] COMBIEN_TABLE_STRUCTURE = {"c.internal_id", "gm.realm", "c.lastModified", "c.battlegroup", "c.class",
             "c.race", "c.gender", "c.level", "c.achievementPoints", "c.thumbnail", "c.calcClass",
@@ -117,7 +117,7 @@ public class CharacterMember extends GameObject {
 
     //Load to JSON
     public CharacterMember(JsonObject playerInfo) {
-        super(CHARACTER_INFO_TABLE_NAME, CHARACTER_INFO_TABLE_KEY, CHARACTER_INFO_TABLE_STRUCTURE);
+        super(INFO_TABLE_NAME, INFO_TABLE_KEY, INFO_TABLE_STRUCTURE);
         saveInternalInfoObject(playerInfo);
     }
 
@@ -237,7 +237,7 @@ public class CharacterMember extends GameObject {
         this.specs = new ArrayList<>();
         if (!tryLoadFailSpecs && !this.isDelete) {
             try {
-                JsonArray memberSpec = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
+                JsonArray memberSpec = dbConnect.select(CharacterSpec.TABLE_NAME,
                         new String[]{"id"},
                         "member_id=? " + ((extraWhere != null) ? extraWhere : ""),
                         new String[]{this.internalID + ""});
@@ -283,7 +283,7 @@ public class CharacterMember extends GameObject {
 
     private void loadItemsFromDB() {
         try {
-            JsonArray itemDB = dbConnect.select(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
+            JsonArray itemDB = dbConnect.select(CharacterItem.TABLE_NAME,
                     new String[]{"id"},
                     "member_id=? AND item_id != 0",
                     new String[]{this.internalID + ""});
@@ -343,9 +343,9 @@ public class CharacterMember extends GameObject {
              * "bestMythicPlusScore", "mythicPlusScores",
              * "guild_name", "lastModified"};
              */
-            setTableName(CHARACTER_INFO_TABLE_NAME);
-            setTableKey(CHARACTER_INFO_TABLE_KEY);
-            setTableStructur(CHARACTER_INFO_TABLE_STRUCTURE);
+            setTableName(INFO_TABLE_NAME);
+            setTableKey(INFO_TABLE_KEY);
+            setTableStructur(INFO_TABLE_STRUCTURE);
             /* System.out.println("-----------SAVE '"+ this.name +"'-----------------");
             System.out.println(this.internalID +" - "+ this.battleGroup +" - "+ this.memberClass.getId());
             System.out.println(this.race.getId() +" - "+ this.gender +" - "+ this.level +" - "+ this.achievementPoints);
@@ -370,12 +370,12 @@ public class CharacterMember extends GameObject {
                         spc.setMemberId(this.internalID);
                         //valid if this member have a this spec in DB (set Update or Insert)
                         try {
-                            JsonArray specMember = dbConnect.select(CharacterSpec.SPECS_TABLE_NAME,
-                                    new String[]{CharacterSpec.SPECS_TABLE_KEY},
+                            JsonArray specMember = dbConnect.select(CharacterSpec.TABLE_NAME,
+                                    new String[]{CharacterSpec.TABLE_KEY},
                                     "member_id=? AND spec_id=?",
                                     new String[]{spc.getMemberId() + "", spc.getSpec().getId() + ""});
                             if (specMember.size() > 0) {
-                                int charSpecID = specMember.get(0).getAsJsonObject().get(CharacterSpec.SPECS_TABLE_KEY).getAsInt();
+                                int charSpecID = specMember.get(0).getAsJsonObject().get(CharacterSpec.TABLE_KEY).getAsInt();
                                 spc.setId(charSpecID);
                                 spc.setIsInternalData(true);
                             }
@@ -388,7 +388,7 @@ public class CharacterMember extends GameObject {
                     //Clear all old items:
                     if (this.items.isEmpty()) loadItemsFromDB();
                     try {
-                        dbConnect.update(CharacterItem.ITEMS_MEMBER_TABLE_NAME,
+                        dbConnect.update(CharacterItem.TABLE_NAME,
                                 CharacterItem.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE,
                                 CharacterItem.ITEMS_MEMBER_TABLE_CLEAR_STRUCTURE_VALUES,
                                 "member_id=?",
