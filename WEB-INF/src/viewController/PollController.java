@@ -92,7 +92,6 @@ public class PollController
         Poll newPoll = new Poll();
         newPoll.setUser(owner);
         newPoll.setPollQuestion(pollQuest);
-        newPoll.setMinRank(new Rank(guildLevel));
         newPoll.setCanAddMoreOptions(moreOptions);
         newPoll.setMultiSelect(multiOptions);
         newPoll.setIsLimitDate(limiDate);
@@ -104,7 +103,6 @@ public class PollController
                 return false;
         }
         newPoll.setEnable(true);
-        newPoll.setStartDate(Update.getCurrentTimeStamp());
         //Add options
         if (options == null || options.size() == 0)
             return false;
@@ -116,7 +114,6 @@ public class PollController
                 PollOption pollOp = new PollOption();
                 pollOp.setOptionText(op);
                 pollOp.setOwner(owner);
-                pollOp.setDate(Update.getCurrentTimeStamp());
                 pollOp.setIsData(true);
                 newPoll.addOption(pollOp);
                 i++;

@@ -3,7 +3,7 @@
  * Desc : Playable spec info
  * @author Sebastián Turén Croquevielle(seba@turensoft.com)
  */
-package com.blizzardPanel.gameObject.characters;
+package com.blizzardPanel.gameObject.characters.Static;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
@@ -48,14 +48,14 @@ public class PlayableSpec extends GameObject
         if (objInfo.has("slug")) { // from DB
             this.name = objInfo.get("name").getAsString();
             this.slug = objInfo.get("slug").getAsString();
-            this.pClass = new PlayableClass(objInfo.get("class").getAsInt());
+            //this.pClass = new PlayableClass(objInfo.get("class").getAsInt());
             this.role = objInfo.get("role").getAsString();
             this.descMale = objInfo.get("desc_male").getAsString();
             this.descFemale = objInfo.get("desc_female").getAsString();
         } else { // from blizzard
             this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
             this.slug =  objInfo.get("name").getAsJsonObject().get("en_US").getAsString().replaceAll("\\s+","-").toLowerCase();
-            this.pClass = new PlayableClass( objInfo.get("playable_class").getAsJsonObject().get("id").getAsInt() );
+            //this.pClass = new PlayableClass( objInfo.get("playable_class").getAsJsonObject().get("id").getAsInt() );
             this.role = objInfo.get("role").getAsJsonObject().get("type").getAsString();
             if(this.role.equals("DAMAGE")) this.role = "DPS";
             if(this.role.equals("HEALER")) this.role = "HEALING";
@@ -69,12 +69,6 @@ public class PlayableSpec extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        /* {"id", "slug", "name", "role"}; */
-        switch (saveInDBObj(new String[] {this.id +"", this.slug, this.pClass.getId() +"", this.name, this.role, this.descMale, this.descFemale}))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
-        }
         return false;
     }
 

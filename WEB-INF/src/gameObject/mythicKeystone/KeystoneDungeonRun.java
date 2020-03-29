@@ -8,7 +8,6 @@ package com.blizzardPanel.gameObject.mythicKeystone;
 
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Realm;
@@ -82,7 +81,7 @@ public class KeystoneDungeonRun extends GameObject
             if(!this.ksDun.isInternalData())
             {
                 String urlDunDetail = objInfo.get("dungeon").getAsJsonObject().get("key").getAsJsonObject().get("href").getAsString();
-                this.ksDun = Update.shared.getKeyStoneDungeonDetail(urlDunDetail);
+                //this.ksDun = Update.shared.getKeyStoneDungeonDetail(urlDunDetail);
             }
             this.isCompleteInTime = objInfo.get("is_completed_within_time").getAsBoolean();
             loadMembersFromBlizz(objInfo.get("members").getAsJsonArray());
@@ -129,16 +128,10 @@ public class KeystoneDungeonRun extends GameObject
             JsonObject memI = runMemsInfo.get(i).getAsJsonObject();
             JsonObject charInfo = memI.get("character").getAsJsonObject();
             String charName = charInfo.get("name").getAsString();
-            Realm charRealm = new Realm( charInfo.get("realm").getAsJsonObject().get("id").getAsInt() );
+            Realm charRealm = null; //new Realm( charInfo.get("realm").getAsJsonObject().get("id").getAsInt() );
             //New character
-            CharacterMember newMember = new CharacterMember(charName, charRealm.getName());
-            if(!newMember.isDelete())
-            {
-                newMember.setItemLevel( runMemsInfo.get(i).getAsJsonObject().get("equipped_item_level").getAsInt() );
-                JsonObject specDetail = runMemsInfo.get(i).getAsJsonObject().get("specialization").getAsJsonObject();
-                newMember.setActiveSpecPlayableSpec( specDetail.get("id").getAsInt() );
-                this.members.add(newMember);                
-            }
+            CharacterMember newMember = null; //new CharacterMember(charName, charRealm.getName());
+
         }
     }
     
@@ -153,9 +146,8 @@ public class KeystoneDungeonRun extends GameObject
             for(int i = 0; i < memsInfo.size(); i++)
             {
                 JsonObject memDetail = memsInfo.get(i).getAsJsonObject();
-                CharacterMember mem = new CharacterMember( memDetail.get("character_internal_id").getAsInt() );
-                mem.setItemLevel( memDetail.get("character_item_level").getAsInt() );
-                mem.setActiveSpec( memDetail.get("character_spec_id").getAsInt());
+                CharacterMember mem = null; //new CharacterMember( memDetail.get("character_internal_id").getAsInt() );
+
                 members.add(mem);
             }
         } catch (SQLException | DataException ex) {
@@ -190,32 +182,7 @@ public class KeystoneDungeonRun extends GameObject
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 this.members.forEach( (m) -> 
                 {
-                    try 
-                    {
-                        JsonArray memInGroupId = null;
-                        try 
-                        {
-                            //Verificate if this memers is previewsly register from this group
-                            memInGroupId = dbConnect.select(MEMBERS_TABLE_NAME,
-                                    new String[] { "id" },
-                                    "keystone_dungeon_run_id=? AND character_internal_id=?",
-                                    new String[] { this.id +"", m.getId() +"" } );
-                        } catch (SQLException ex) {
-                            Logs.errorLog(KeystoneDungeonRun.class, "Fail to get memberInGroupID "+ ex);
-                        }
-                        //Insert or update... if need insert is because not is register :D
-                        if ( (memInGroupId == null) || (memInGroupId.size() == 0) )
-                        {//insert
-                            dbConnect.insert(
-                                    MEMBERS_TABLE_NAME,
-                                MEMBERS_TABLE_KEY,
-                                DBStructure.outKey(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE),
-                                //{"keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"};
-                                new String[] { this.id+"", m.getId()+"", m.getActiveSpec().getId()+"", m.getItemLevel()+"" });
-                        }
-                    } catch (DataException | SQLException ex) {
-                        Logs.errorLog(KeystoneDungeonRun.class, "Fail to save members in groups: "+ ex);
-                    }
+
                 } );
                 return true;
         }
@@ -257,28 +224,15 @@ public class KeystoneDungeonRun extends GameObject
     public List<CharacterMember> getMembers() { return this.members; }
     public CharacterMember getTank() 
     {
-        for(CharacterMember cm : this.members)
-            if(cm.getActiveSpec().getSpec().getRole().equals("TANK"))
-                return cm;
         return null;
     }
     public CharacterMember getHealr() 
     {
-        for(CharacterMember cm : this.members)
-            if(cm.getActiveSpec().getSpec().getRole().equals("HEALING"))
-            {
-                //System.out.println(cm);
-                return cm;                
-            }
         return null;
     }
     public List<CharacterMember> getDPS() 
     {
-        List<CharacterMember> mDps = new ArrayList<>();
-        for(CharacterMember cm : this.members)
-            if(cm.getActiveSpec().getSpec().getRole().equals("DPS"))
-                mDps.add(cm);
-        return mDps;
+        return null;
     }
     
     

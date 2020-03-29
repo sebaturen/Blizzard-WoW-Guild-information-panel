@@ -6,7 +6,6 @@
 
 package com.blizzardPanel.gameObject.mythicKeystone;
 
-import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.gameObject.GameObject;
 import com.google.gson.JsonObject;
 
@@ -37,9 +36,6 @@ public class KeystoneAffix extends GameObject
     @Override
     protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        if (objInfo.has("key")) {
-            objInfo = Update.shared.loadKeyDetailFromBlizz( objInfo.get("key").getAsJsonObject().get("href").getAsString() );
-        }
         this.id = objInfo.get("id").getAsInt();
         this.name = objInfo.get("name").getAsString();
         this.description = objInfo.get("description").getAsString();

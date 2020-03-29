@@ -5,7 +5,6 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.update.blizzard.Update;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.Item;
@@ -158,7 +157,7 @@ public class CharacterItem extends GameObject
                     Spell azPowerD = new Spell( spellID );
                     if(!azPowerD.isInternalData())
                     {
-                        azPowerD = Update.shared.getSpellInformationBlizz(power.get("spellId").getAsInt());
+                        azPowerD = null; //Update.shared.getSpellInformationBlizz(power.get("spellId").getAsInt());
                     }
                     azPower[j] = azPowerD;
                 }

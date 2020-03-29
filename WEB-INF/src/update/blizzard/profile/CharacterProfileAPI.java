@@ -3,29 +3,20 @@ package com.blizzardPanel.update.blizzard.profile;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.gameObject.Media;
-import com.blizzardPanel.gameObject.Realm;
 import com.blizzardPanel.gameObject.characters.*;
-import com.blizzardPanel.gameObject.guild.Roster;
-import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeon;
 import com.blizzardPanel.gameObject.mythicKeystone.KeystoneDungeonRun;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
-import com.blizzardPanel.update.blizzard.gameData.AchievementAPI;
-import com.blizzardPanel.update.blizzard.gameData.PlayableClassAPI;
-import com.blizzardPanel.viewController.MythicPlusControl;
 import com.google.gson.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class CharacterProfileAPI extends BlizzardAPI {
@@ -304,7 +295,7 @@ public class CharacterProfileAPI extends BlizzardAPI {
         List<Object> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
 
-        columns.add("character_class");
+        columns.add("character_class_id");
         values.add(info.getAsJsonObject("character_class").get("id").getAsString());
         BlizzardUpdate.shared.playableClassAPI.classDetail(info.getAsJsonObject("character_class"));
 
@@ -341,27 +332,27 @@ public class CharacterProfileAPI extends BlizzardAPI {
 
         try {
             JsonArray isInDb = BlizzardUpdate.dbConnect.select(
-                    CharacterMember.INFO_TABLE_NAME,
-                    new String[]{CharacterMember.INFO_TABLE_KEY},
-                    CharacterMember.INFO_TABLE_KEY +"=?",
+                    CharacterInfo.TABLE_NAME,
+                    new String[]{CharacterInfo.TABLE_KEY},
+                    CharacterInfo.TABLE_KEY +"=?",
                     new String[]{characterId+""}
             );
 
             if (isInDb.size() > 0) { // Update
                 BlizzardUpdate.dbConnect.update(
-                        CharacterMember.INFO_TABLE_NAME,
+                        CharacterInfo.TABLE_NAME,
                         columns,
                         values,
-                        CharacterMember.INFO_TABLE_KEY +"=?",
+                        CharacterInfo.TABLE_KEY +"=?",
                         new String[]{characterId+""}
                 );
                 Logs.infoLog(this.getClass(), "OK - Character Info UPDATE ["+ characterId +"]");
             } else { // Insert
-                columns.add(CharacterMember.INFO_TABLE_KEY);
+                columns.add(CharacterInfo.TABLE_KEY);
                 values.add(characterId+"");
                 BlizzardUpdate.dbConnect.insert(
-                        CharacterMember.INFO_TABLE_NAME,
-                        CharacterMember.INFO_TABLE_KEY,
+                        CharacterInfo.TABLE_NAME,
+                        CharacterInfo.TABLE_KEY,
                         columns,
                         values
                 );

@@ -221,9 +221,9 @@ public class AchievementAPI extends BlizzardAPI {
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");
 
-                if (blizz_achiev.has("category_id")) {
+                if (blizz_achiev.has("category")) {
                     columns.add("category_id");
-                    values.add(blizz_achiev.get("category_id").getAsJsonObject().get("id").getAsString());
+                    values.add(blizz_achiev.get("category").getAsJsonObject().get("id").getAsString());
                 }
                 if (blizz_achiev.has("reward_description")) {
                     columns.add("reward_description");

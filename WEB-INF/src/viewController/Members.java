@@ -30,8 +30,6 @@ public class Members
     
     private void generateMembersList()
     {
-        try
-        {            
             //Only show members who logged in at least 1 month ago
             Calendar cal = java.util.Calendar.getInstance();
             cal.add(java.util.Calendar.MONTH, -1);
@@ -42,39 +40,20 @@ public class Members
             //Get members to DB		
             
             //select gm.internal_id from gMembers_id_name gm, character_info c where in_guild=1 AND gm.internal_id = c.internal_id AND c.lastModified > 1539003688424;
-            JsonArray dbList = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.INFO_TABLE_NAME +" c",
-                                                new String[] {"gm.internal_id"},
-                                                "in_guild=? AND gm.internal_id = c.internal_id AND c.lastModified > ? AND gm.isDelete=?"+
-                                                " ORDER BY gm.rank ASC, c.level DESC, gm.member_name ASC", 
-                                                new String[] {"1", oneMotheAgo.getTime() +"", "0"}, true);	
-            for(int i = 0; i < dbList.size(); i++)
-            {
-                int idMember = dbList.get(i).getAsJsonObject().get("internal_id").getAsInt() ;
-                CharacterMember member = new CharacterMember(idMember);
-                //If data is successful load, save a member
-                if(member.isData())
-                {
-                    member.getItemLevel();
-                    mList.add(member);
-                }
-            }
             //Convert LIST to simple Member Array
             if(mList.size() > 0) this.membersList = mList.toArray(new CharacterMember[mList.size()]);
-        }
-        catch (SQLException|DataException e)
-        {
-            Logs.errorLog(Members.class, "Fail to load members lists - Members View Controller "+ e);
-        }
+
     }
     
     public CharacterMember getMember(int id) 
     {
-        if(this.membersList == null) return new CharacterMember(id);
+        //if(this.membersList == null) return new CharacterMember(id);
         for(CharacterMember m : this.membersList)
         {
-            if(m.getId() == id) return m;
+            //if(m.getId() == id) return m;
         }
-        return new CharacterMember(id);
+        //return new CharacterMember(id);
+        return null;
     }
     
     public CharacterMember[] getMembersList() 

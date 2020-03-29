@@ -6,71 +6,45 @@
 package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.GameObject2;
 import com.google.gson.JsonObject;
 
-public class Rank extends GameObject
-{
-    //DB Rank structure
+public class Rank {
+
+    // Rank DB
     public static final String TABLE_NAME = "guild_rank";
     public static final String TABLE_KEY = "id";
-    public static final String[] GUILD_RANK_TABLE_STRUCTURE = {"id", "title"};
-    
-    //Atribute
-    private int id = -1;
+
+    // DB Attribute
+    private long id;
+    private long guild_id;
+    private int rank;
     private String title;
-    
-    public Rank(int id)
-    {
-        super(TABLE_NAME, TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
-        loadFromDB(id);
-        if(!this.isInternalData)
-        {
-            this.id = id;
-            this.title = id+"";
-            this.isData = true;
-            saveInDB();
+
+    public static class Builder extends GameObject2 {
+
+        private long id;
+        public Builder(long rankId) {
+            super(TABLE_NAME, Rank.class);
+            this.id = rankId;
+        }
+
+        public Rank build() {
+            return (Rank) load(TABLE_KEY +"=?", id);
         }
     }
-    
-    /**
-     * Force load only if exist in DB
-     * @param id
-     * @param validExit 
-     */
-    public Rank(int id, boolean validExit)
-    {
-        super(TABLE_NAME, TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
-        loadFromDB(id);      
+
+    private Rank() {
+
     }
 
     @Override
-    protected void saveInternalInfoObject(JsonObject objInfo)
-    {
-        this.id = objInfo.get("id").getAsInt();
-        this.title = objInfo.get("title").getAsString();
-        this.isData = true;
+    public String toString() {
+        return "{\"_class\":\"Rank\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"guild_id\":\"" + guild_id + "\"" + ", " +
+                "\"rank\":\"" + rank + "\"" + ", " +
+                "\"title\":" + (title == null ? "null" : "\"" + title + "\"") +
+                "}";
     }
-
-    @Override
-    public boolean saveInDB() 
-    {
-        /* {"id", "title"}; */
-        switch (saveInDBObj(new String[] {this.id +"", this.title}))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
-        }
-        return false;        
-    }
-
-    //Getters and Setters
-    @Override
-    public void setId(int id) { this.id = id; }
-    public void setTitle(String title) { this.title = title; }
-
-    @Override
-    public int getId() { return this.id; }
-    public String getTitle() { return this.title; }
-    
-    
 }

@@ -5,218 +5,239 @@
  */
 package com.blizzardPanel.gameObject.guild;
 
-import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
-import static com.blizzardPanel.update.blizzard.Update.parseUnixTime;
-import com.blizzardPanel.dbConnect.DBStructure;
-import com.blizzardPanel.gameObject.GameObject;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.blizzardPanel.gameObject.*;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class Guild extends GameObject
-{
-    //Guild DB
+import java.sql.SQLException;
+import java.util.*;
+
+public class Guild {
+
+    // Guild DB
     public static final String TABLE_NAME = "guild_info";
     public static final String TABLE_KEY = "id";
-    public static final String[] TABLE_STRUCTURE = {"id", "name", "realm", "realm_slug", "lastModified", "battlegroup",
-                                                        "level", "side", "achievementPoints"};
-    //Attribute
-    private int id;
+    // Achievement Guild DB
+    public static final String ACHIEVEMENT_TABLE_NAME = "guild_achievements";
+    public static final String ACHIEVEMENT_TABLE_KEY = "id";
+    // Roster Guild DB
+    public static final String ROSTER_TABLE_NAME = "guild_roster";
+    public static final String ROSTER_TABLE_KEY = "character_id";
+
+    // DB Attribute
+    private long id;
     private String name;
-    private String realm;
-    private String realmSlug;
-    private String battleGroup;
-    private long lastModified;
-    private long achievementPoints;
-    private int level;
-    private int side;
-    private List<GuildAchievement> achievements = new ArrayList<>();
-    private Date lastNewsUpdate;
-    private List<Activity> news = new ArrayList<>();
+    private long realm_id;
+    private String faction_type;
+    private long achievement_points;
+    private long created_timestamp;
+    private int member_count;
 
-    //Constructor
-    public Guild()
-    {
-        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
-        //Load guild from DB
-        loadFromDB(1); //asumed the first guild is only this guild (this plataform)
-    }
+    // Update control
+    private long last_modified;
+    private long achievement_last_modified;
+    private long roster_last_modified;
+    private long activities_last_modified;
+    private boolean full_sync;
 
-    //Load to JSON
-    public Guild(JsonObject guildInfo)
-    {
-        super(TABLE_NAME, TABLE_KEY, TABLE_STRUCTURE);
-        saveInternalInfoObject(guildInfo);
-    }
+    // Internal DATA
+    private Realm realm;
+    private StaticInformation faction;
+    private List<Achievement> achievements = new ArrayList<>();
+    private List<Activity> activities = new ArrayList<>();
+    private List<CharacterMember> rosters = new ArrayList<>();
+    private List<Rank> ranks = new ArrayList<>();
 
-    @Override
-    protected void saveInternalInfoObject(JsonObject guildInfo)
-    {
-        this.name = guildInfo.get("name").getAsString();
-        this.lastModified = Long.parseLong(guildInfo.get("lastModified").getAsString());
-        this.battleGroup = guildInfo.get("battlegroup").getAsString();
-        this.achievementPoints = Long.parseLong(guildInfo.get("achievementPoints").getAsString());
-        this.realm = guildInfo.get("realm").getAsString();
-        this.level = guildInfo.get("level").getAsInt();
-        this.side = guildInfo.get("side").getAsInt();
+    public static class Builder extends GameObject2 {
 
-        if(guildInfo.has("id")) { // load from DB
-            this.id = guildInfo.get("id").getAsInt();
-            if (guildInfo.has("realmSlug") && !guildInfo.get("realmSlug").isJsonNull())
-                this.realmSlug = guildInfo.get("realmSlug").getAsString();
-        } else { // load from blizz
-            loadAchievementsFromBlizz(guildInfo.get("achievements").getAsJsonObject());
+        private long id;
+        private boolean loadStatus = false;
+        private int maxActivities = 10;
+
+        public Builder(long guildId) {
+            super(TABLE_NAME, Guild.class);
+            this.id = guildId;
         }
 
-        this.isData = true;
-
-    }
-
-    private void loadAchievementsFromBlizz(JsonObject respond)
-    {
-        JsonArray achivs = respond.get("achievementsCompleted").getAsJsonArray();
-        JsonArray achivTimes = respond.get("achievementsCompletedTimestamp").getAsJsonArray();
-        for(int i = 0; i < achivs.size(); i++)
-        {
-            int idAchiv = achivs.get(i).getAsInt();
-            //Save achivement
-            GuildAchievement gAHDB = new GuildAchievement(idAchiv);
-            if(!gAHDB.isInternalData())
-            {
-                //Create achivement
-                String achivTime = parseUnixTime( achivTimes.get(i).getAsString() );
-                JsonObject infoAchiv = new JsonObject();
-                infoAchiv.addProperty("achievement_id", idAchiv);
-                infoAchiv.addProperty("time_completed", achivTime);
-
-                gAHDB = new GuildAchievement(infoAchiv);
-            }
-            this.achievements.add(gAHDB);
-        }
-    }
-
-    private void loadAchievementsFromDB()
-    {
-        try {
-            JsonArray dbAchiv = dbConnect.select(GuildAchievement.TABLE_NAME,
-                                                new String[] {GuildAchievement.TABLE_KEY},
-                                                "1=? ORDER BY time_completed DESC",
-                                                new String[] {"1"});
-            for(int i = 0; i < dbAchiv.size(); i++)
-            {
-                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(GuildAchievement.TABLE_KEY).getAsInt();
-                GuildAchievement gAh = new GuildAchievement(idAchiv);
-                this.achievements.add(gAh);
-            }
-        } catch (SQLException | DataException ex) {
-            Logs.errorLog(Guild.class, "Fail to load guild Achievements "+ ex);
-        }
-    }
-
-    private void loadNews(int cant)
-    {
-        this.news = new ArrayList<>();
-        try {
-            JsonArray dbAchiv = dbConnect.select(Activity.TABLE_NAME,
-                                                new String[] {Activity.TABLE_KEY},
-                                                "1=? ORDER BY timestamp DESC LIMIT "+ cant,
-                                                new String[] {"1"});
-            for(int i = 0; i < dbAchiv.size(); i++)
-            {
-                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(Activity.TABLE_KEY).getAsInt();
-                Activity gAh = new Activity(idAchiv);
-                this.news.add(gAh);
-            }
-        } catch (SQLException | DataException ex) {
-            Logs.errorLog(Guild.class, "Fail to load guild news "+ ex);
-        }
-        this.lastNewsUpdate = new Date();
-    }
-
-    @Override
-    public boolean saveInDB()
-    {
-        /* {"name", "realm","lastModified", "battlegroup",
-         * "level", "side", "achievementPoints"};
+        /**
+         * Enable load Achievements / Activities / Rosters / Rank
+         * @param loadStatus true load all
+         * @return
          */
-        setTableStructur(DBStructure.outKey(TABLE_STRUCTURE));
-        String[] values = { this.name,
-                            this.realm,
-                            this.realmSlug,
-                            this.lastModified +"",
-                            this.battleGroup,
-                            this.level +"",
-                            this.side +"",
-                            this.achievementPoints +"" };
-        switch (saveInDBObj(values))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                this.achievements.forEach(aH -> {
-                    if(!aH.isInternalData())
-                        aH.saveInDB();
-                });
-                return true;
+        public Builder fullLoad(boolean loadStatus) {
+            this.loadStatus = loadStatus;
+            return this;
         }
-        return false;
-    }
 
-    //GETTERS
-    @Override
-    public void setId(int id) { this.id = id; }
-    public void setRealmSlug(String realmSlug) { this.realmSlug = realmSlug; }
-
-    @Override
-    public int getId() { return this.id; }
-    public String getName() { return this.name; }
-    public String getRealm() { return this.realm; }
-    public String getRealmSlug() { return this.realmSlug; }
-    public String getBattleGroup() { return this.battleGroup; }
-    public long getLastModified() { return this.lastModified; }
-    public long getAchievementPoints() { return this.achievementPoints; }
-    public List<GuildAchievement> getAchievements() { loadAchievementsFromDB(); return this.achievements; }
-    public List<Activity> getNews(int cant)
-    {
-        if(this.news.isEmpty())
-        {
-            loadNews(cant);
+        /**
+         * Max activities
+         * @param max default 10
+         * @return
+         */
+        public Builder maxActivities(int max) {
+            this.maxActivities = max;
+            return this;
         }
-        else
-        {
-            //Only reload if least 10 min ago
-            Calendar cal = java.util.Calendar.getInstance();
-            cal.add(java.util.Calendar.MINUTE, -10);
-            Date tenMinuteAgo = cal.getTime();
-            if(this.lastNewsUpdate.compareTo(tenMinuteAgo) < 0)
-            {
-                loadNews(cant);
+
+        public Guild build() {
+            Guild newGuild = (Guild) load(TABLE_KEY +"=?", id);
+
+            // Load internal data:
+            newGuild.realm = new Realm.Builder(newGuild.realm_id).build();
+            newGuild.faction = new StaticInformation.Builder(newGuild.faction_type).build();
+
+            if (loadStatus) {
+                newGuild.loadAchievements();
+                newGuild.loadActivities(maxActivities);
+                newGuild.loadRosters();
+                newGuild.loadRanks();
             }
+            return newGuild;
         }
-        return this.news;
-    }
-    public int getLevel() { return this.level; }
-    public int getSide() { return this.side; }
 
-    //two guild equals method
+    }
+
+    // Constructor
+    private Guild() {
+
+    }
+
+    /**
+     * Load guild achievement
+     */
+    private void loadAchievements() {
+        try {
+            JsonArray achievements_db = GameObject2.dbConnect.select(
+                    ACHIEVEMENT_TABLE_NAME,
+                    new String[]{"achievement_id"},
+                    "guild_id=?",
+                    new String[]{id+""}
+            );
+
+            if (achievements_db.size() > 0) {
+                for(JsonElement achievement : achievements_db) {
+                    JsonObject achievementDetail = achievement.getAsJsonObject();
+                    achievements.add(new Achievement.Builder(achievementDetail.get("achievement_id").getAsLong()).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Guild not have an Achievement ["+ id +"]");
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a guild Achievement ["+ id +"] - "+ e);
+        }
+    }
+
+    /**
+     * Load guild activities
+     */
+    private void loadActivities(int maxActivities) {
+        try {
+            JsonArray activities_db = GameObject2.dbConnect.select(
+                    Activity.TABLE_NAME,
+                    new String[]{Activity.TABLE_KEY},
+                    "guild_id=? order by timestamp DESC limit "+ maxActivities,
+                    new String[]{id+""}
+            );
+
+            if (activities_db.size() > 0) {
+                for (JsonElement activity : activities_db) {
+                    JsonObject actDetail = activity.getAsJsonObject();
+                    activities.add(new Activity.Builder(actDetail.get(Activity.TABLE_KEY).getAsLong()).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Guild not have an Activities ["+ id +"]");
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a guild Activity ["+ id +"] - "+ e);
+        }
+    }
+
+    /**
+     * Load guild rosters
+     */
+    private void loadRosters() {
+        try {
+
+            //Only get members who logged in at least 1 month ago
+            Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.MONTH, -1);
+            Date oneMotheAgo = cal.getTime();
+
+            JsonArray rosters_db = GameObject2.dbConnect.selectQuery(
+                    "SELECT " +
+                            "    c.id " +
+                            "FROM " +
+                            "    guild_roster gr, " +
+                            "    `characters` c " +
+                            "WHERE " +
+                            "    gr.character_id = c.id " +
+                            "    AND    gr.guild_id = "+ id +
+                            "    AND c.last_modified > "+ oneMotheAgo.getTime() +";"
+            );
+
+            if (rosters_db.size() > 0) {
+                for (JsonElement roster : rosters_db) {
+                    JsonObject rosterDetail = roster.getAsJsonObject();
+                    rosters.add(new CharacterMember.Builder(rosterDetail.get("id").getAsLong()).fullLoad(true).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Guild not have an Rosters ["+ id +"]");
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a guild Rosters ["+ id +"] - "+ e);
+        }
+    }
+
+    /**
+     * Load guild ranks
+     */
+    private void loadRanks() {
+        try {
+            JsonArray ranks_db = GameObject2.dbConnect.select(
+                    Rank.TABLE_NAME,
+                    new String[]{Rank.TABLE_KEY},
+                    "guild_id=?",
+                    new String[]{id+""}
+            );
+
+            if (ranks_db.size() > 0) {
+                for (JsonElement rank : ranks_db) {
+                    JsonObject rankDetail = rank.getAsJsonObject();
+                    ranks.add(new Rank.Builder(rankDetail.get(Rank.TABLE_KEY).getAsLong()).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Guild not have a Ranks ["+ id +"]");
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a guild Ranks ["+ id +"] - "+ e);
+        }
+    }
+
     @Override
-    public boolean equals(Object o)
-    {
-        if(o == this) return true;
-        if(o == null || (this.getClass() != o.getClass())) return false;
-
-        String oName = ((Guild) o).getName();
-        long oLastModified = ((Guild) o).getLastModified();
-        return (
-                oName.equals(this.name)
-                &&
-                (Long.compare(oLastModified, this.lastModified) == 0)
-                );
+    public String toString() {
+        return "{\"_class\":\"Guild\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"name\":" + (name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"realm_id\":\"" + realm_id + "\"" + ", " +
+                "\"faction_type\":" + (faction_type == null ? "null" : "\"" + faction_type + "\"") + ", " +
+                "\"achievement_points\":\"" + achievement_points + "\"" + ", " +
+                "\"created_timestamp\":\"" + created_timestamp + "\"" + ", " +
+                "\"member_count\":\"" + member_count + "\"" + ", " +
+                "\"last_modified\":\"" + last_modified + "\"" + ", " +
+                "\"achievement_last_modified\":\"" + achievement_last_modified + "\"" + ", " +
+                "\"roster_last_modified\":\"" + roster_last_modified + "\"" + ", " +
+                "\"activities_last_modified\":\"" + activities_last_modified + "\"" + ", " +
+                "\"full_sync\":\"" + full_sync + "\"" + ", " +
+                "\"realm\":" + (realm == null ? "null" : realm) + ", " +
+                "\"faction\":" + (faction == null ? "null" : faction) + ", " +
+                "\"achievements\":" + (achievements == null ? "null" : Arrays.toString(achievements.toArray())) + ", " +
+                "\"activities\":" + (activities == null ? "null" : Arrays.toString(activities.toArray())) + ", " +
+                "\"rosters\":" + (rosters == null ? "null" : Arrays.toString(rosters.toArray())) + ", " +
+                "\"ranks\":" + (ranks == null ? "null" : Arrays.toString(ranks.toArray())) +
+                "}";
     }
-
 }

@@ -8,78 +8,66 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.GeneralConfig;
 import com.google.gson.JsonObject;
 
-public class Realm extends GameObject
+public class Realm
 {
-    //DBStructure
+    // Realm DB
     public static final String TABLE_NAME = "realms";
     public static final String TABLE_KEY = "id";
-    public static final String[] REALM_TABLE_STRUCTURE = {"id", "connected_realm", "name", "slug", "locale"};
     
-    //Atribute
+    // DB Attribute
     private int id;
-    private int connectedRealm;
-    private String name;
     private String slug;
+    private String name;
     private String locale;
-    
-    public Realm(int id)
-    {
-        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
-        loadFromDB(id);
-    }
-    
-    public Realm(String name)
-    {
-        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
-        loadFromDBUniqued("name", name);        
-    }
-    
-    public Realm(JsonObject info)
-    {
-        super(TABLE_NAME, TABLE_KEY, REALM_TABLE_STRUCTURE);
-        saveInternalInfoObject(info);
-    }
+    private String timezone;
+    private String type_type;
 
-    @Override
-    protected void saveInternalInfoObject(JsonObject objInfo)
-    {
-        this.id = objInfo.get("id").getAsInt();
-        this.slug = objInfo.get("slug").getAsString();
-        this.locale = objInfo.get("locale").getAsString();
-        this.connectedRealm = objInfo.get("connected_realm").getAsInt();
+    // Update control
+    private long last_modified;
 
-        if (objInfo.get("name").isJsonObject()) { // load from blizzard
-            this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
-        } else { // load from DB
-            this.name = objInfo.get("name").getAsString();
+    // Internal DATA
+    private StaticInformation type;
+
+    public static class Builder extends GameObject2 {
+
+        private long id;
+        private String realmSlug;
+
+        public Builder(long realmId) {
+            super(TABLE_NAME, Realm.class);
+            this.id = realmId;
         }
-        
-        this.isData = true;
-    }
 
-    @Override
-    public boolean saveInDB() 
-    {        
-        // {"id", "name", "slug", "locale"};
-        switch (saveInDBObj(new String[] {this.id +"", this.connectedRealm+"", this.name, this.slug, this.locale}))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
+        public Builder(String realmSlug) {
+            super(TABLE_NAME, Realm.class);
+            this.realmSlug = realmSlug;
         }
-        return false;
+
+        public Realm build() {
+            if (realmSlug == null) {
+                return (Realm) load(TABLE_KEY +"=?", id);
+            } else {
+                return (Realm) load("slug=?", realmSlug);
+            }
+        }
     }
 
-    //Getters and Setteres
-    @Override
-    public void setId(int id) { this.id = id; }
+    // Constructor
+    private Realm() {
+
+    }
 
     @Override
-    public int getId() { return this.id; }
-    public int getConnectedRealm() { return this.connectedRealm; }
-    public String getName() { return this.name; }
-    public String getSlug() { return this.slug; }
-    public String getLocale() { return this.locale; }
-
-    
-    
+    public String toString() {
+        return "{\"_class\":\"Realm\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"slug\":" + (slug == null ? "null" : "\"" + slug + "\"") + ", " +
+                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"locale\":" + (locale == null ? "null" : "\"" + locale + "\"") + ", " +
+                "\"timezone\":" + (timezone == null ? "null" : "\"" + timezone + "\"") + ", " +
+                "\"type_type\":" + (type_type == null ? "null" : "\"" + type_type + "\"") + ", " +
+                "\"last_modified\":\"" + last_modified + "\"" + ", " +
+                "\"type\":" + (type == null ? "null" : type) +
+                "}";
+    }
 }

@@ -75,7 +75,9 @@ public class DBConnect {
 
         if (where != null) sql += " WHERE " + where;
 
-        //Prepare Connection and excetute
+        System.out.println(sql);
+
+        //Prepare Connection and execute
         try (
                 Connection conn = (new Database(Database.DB_CONTROLLER_NAME)).getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -348,8 +350,10 @@ public class DBConnect {
                     case java.sql.Types.FLOAT:
                         obj.addProperty(column_name, rs.getFloat(column_name));
                         break;
-                    case java.sql.Types.INTEGER:
                     case java.sql.Types.TINYINT:
+                        obj.addProperty(column_name, rs.getInt(column_name) == 1);
+                        break;
+                    case java.sql.Types.INTEGER:
                     case java.sql.Types.SMALLINT:
                         obj.addProperty(column_name, rs.getInt(column_name));
                         break;

@@ -180,7 +180,7 @@ public class User
                 dbConnect.update(
                         User.USER_TABLE_NAME,
                         new String[] {"access_token", "last_login"},
-                        new String[] {this.accessToken, Update.getCurrentTimeStamp()},
+                        new String[] {this.accessToken, "0"},
                         "id=?",
                         new String[] {this.id +""}); 
                 vRet = true;
@@ -196,7 +196,7 @@ public class User
                                 User.USER_TABLE_NAME,
                                 User.USER_TABLE_KEY,
                                 new String[] {"battle_tag", "access_token", "last_login"},
-                                new String[] { this.battleTag, this.accessToken, Update.getCurrentTimeStamp()});
+                                new String[] { this.battleTag, this.accessToken, "0"});
                 this.id = Integer.parseInt(userIdDB);
                 vRet = true;
             } catch (DataException | SQLException ex) {
@@ -215,11 +215,6 @@ public class User
         Thread upChar = new Thread() {
             @Override
             public void run() {
-                try {
-                    Update.shared.setMemberCharacterInfo(accToken, uId);
-                } catch (IOException ex) {
-                    Logs.errorLog(User.class, "Fail to seve characters info "+ uId +" - "+ ex);
-                }
                 checkUser(true);
                 setIsCharsReady(true);
             }
@@ -229,44 +224,21 @@ public class User
     
     private String getAccessToken(String code)
     {
-        return Update.shared.getUserAccessToken(code);
+        return null;
     }
     
     private String getBlizzBattleTag(String accessToken)
     {
-        return Update.shared.getBattleTag(accessToken);
+        return null;
     }
     
     private void loadMainCharFromDB()
     {
-        this.mainCharacter = new CharacterMember(this.idMainChar);
     }
     
     private void loadCharacters()
     {
-        try {
-            JsonArray chars = dbConnect.select(CharacterMember.GMEMBER_ID_NAME_TABLE_NAME +" gm, "+ CharacterMember.INFO_TABLE_NAME +" c",
-                    new String[] {"gm.internal_id" },
-                    "gm.user_id=? AND gm.internal_id = c.internal_id AND c.lastModified != 0 AND"+
-                    " gm.isDelete = 0 ORDER BY c.level DESC, gm.member_name ASC",
-                    new String[] { this.id +""}, true);
-            for(int i = 0; i < chars.size(); i++)
-            {
-                int internalID = chars.get(i).getAsJsonObject().get("internal_id").getAsInt();
-                CharacterMember mb = new CharacterMember(internalID);
-                if(mb.isData())
-                {
-                    if(mb.getId() == this.idMainChar) 
-                    {
-                        mb.setIsMain(true);
-                        mainCharacter = mb;
-                    }
-                    this.characters.add(mb);
-                }
-            }
-        } catch (SQLException|DataException ex) {
-            Logs.errorLog(User.class, "Error get a character user info "+ this.id +" - "+ ex);
-        }
+
     }
     
     public int getId() { return this.id; }
@@ -295,23 +267,6 @@ public class User
         //valid if this id is from this member and remove old main Character
         for(CharacterMember m : this.characters) 
         {
-            if(m.getId() == id && m.isGuildMember())
-            {
-                try {
-                    m.setIsMain(true);
-                    dbConnect.update(USER_TABLE_NAME,
-                            new String[] {"main_character"},
-                            new String[] {id+""}, 
-                            USER_TABLE_KEY+"=?",
-                            new String[] {this.id+""});
-                    stateChange = true;
-                    this.mainCharacter = m;
-                } catch (DataException | SQLException ex) {
-                    Logs.errorLog(User.class, "Fail to save main character from user - "+ ex);
-                }
-            }
-            else
-                m.setIsMain(false);
         }
         if(!stateChange) this.mainCharacter = null;
         return stateChange;

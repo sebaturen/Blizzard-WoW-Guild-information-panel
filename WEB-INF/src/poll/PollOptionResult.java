@@ -33,7 +33,7 @@ public class PollOptionResult extends GameObject
         super(POLL_OPTION_RESULTS_TABLE_NAME, POLL_OPTION_RESULTS_TABLE_KEY, POLL_OPTION_RESULTS_TABLE_STRUCTURE);
         this.pollOptionId = pollOption;
         this.owner = owner;
-        this.date = Update.getCurrentTimeStamp();
+        //this.date = Update.getCurrentTimeStamp();
         this.isData = true;
         saveInDB();
     }

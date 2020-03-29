@@ -21,8 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class GameInfo
-{
+public class GameInfo {
     private final DBConnect dbConnect = new DBConnect();
     private static boolean configState = false;
     private String lastDynamicUpdate;

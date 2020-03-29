@@ -72,12 +72,6 @@ public class ChallengeGroup extends GameObject
                                                 new String[] {this.id +""});
             for(int i = 0; i < dbMem.size(); i++)
             {
-                CharacterMember cMem = new CharacterMember( dbMem.get(i).getAsJsonObject().get("internal_member_id").getAsInt() );
-                if(cMem.isData())
-                {
-                    cMem.setActiveSpec( dbMem.get(i).getAsJsonObject().get("character_spec_id").getAsInt() );
-                    members.add(cMem);                    
-                }
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(ChallengeGroup.class, "Fail to load members from challenge group id: "+ this.id);
@@ -136,29 +130,7 @@ public class ChallengeGroup extends GameObject
         {
             case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
                 //Save members
-                this.members.forEach((m) -> {                    
-                    try {
-                        JsonArray memInGroupId = null;
-                        try {
-                            //Verificate if this memers is previewsly register from this group
-                            memInGroupId = dbConnect.select(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
-                                    new String[] { "member_in_group_id" },
-                                    "internal_member_id=? AND group_id=?",
-                                    new String[] { m.getId() +"", this.id +"" } );
-                        } catch (SQLException ex) {
-                            Logs.errorLog(ChallengeGroup.class, "Fail to get memberInGroupID "+ ex);
-                        }
-                        //Insert or update... if need insert is because not is register :D
-                        if ( (memInGroupId == null) || (memInGroupId.size() == 0) )
-                        {//insert
-                            dbConnect.insert(CHALLENGE_GROUP_MEMBERS_TABLE_NAME,
-                                            CHALLENGE_GROUP_MEMBERS_TABLE_KEY,
-                                            new String[] { "internal_member_id", "group_id", "character_spec_id" },
-                                            new String[] { m.getId() +"", this.id +"", m.getActiveSpec().getId() +"" });
-                        }
-                    } catch (DataException | SQLException ex) {
-                        Logs.errorLog(ChallengeGroup.class, "Fail to save members in groups: "+ ex);
-                    }
+                this.members.forEach((m) -> {
                 });
                 return true;
         }

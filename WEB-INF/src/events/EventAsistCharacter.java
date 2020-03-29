@@ -5,16 +5,9 @@
  */
 package com.blizzardPanel.events;
 
-import com.blizzardPanel.DataException;
-import com.blizzardPanel.Logs;
-import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
-import com.blizzardPanel.gameObject.characters.PlayableSpec;
-import com.blizzardPanel.poll.PollOptionResult;
 import com.google.gson.JsonObject;
-
-import java.sql.SQLException;
 
 public class EventAsistCharacter extends GameObject
 {
@@ -43,10 +36,8 @@ public class EventAsistCharacter extends GameObject
     @Override
     protected void saveInternalInfoObject(JsonObject objInfo)
     {
-        this.idAsisChar = objInfo.get("id_asis_char").getAsInt();;
-        this.idAsis = objInfo.get("id_asis").getAsInt();;
-        this.charM = new CharacterMember(objInfo.get("char_id").getAsInt());
-        this.charM.setActiveSpec(objInfo.get("spec_id").getAsInt());
+        this.idAsisChar = objInfo.get("id_asis_char").getAsInt();
+        this.idAsis = objInfo.get("id_asis").getAsInt();
         this.isMain = objInfo.get("is_main").getAsBoolean();
         this.isData = true;
     }
@@ -54,25 +45,10 @@ public class EventAsistCharacter extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        setTableStructur(DBStructure.outKey(EVENTS_ASIST_CHAR_TABLE_STRUCTURE));
-        /* {"id_asis", "char_id", "spec_id" }; */
-        switch (saveInDBObj(new String[] {this.idAsis+"", this.charM.getId()+"", this.charM.getActiveSpec().getId()+"", (this.isMain)? "1":"0"}))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
-        }
         return false;
     }
 
     public boolean deleteFromDB() {
-        try {
-            dbConnect.delete(EVENTS_ASIST_CHAR_TABLE_NAME,
-                    EVENTS_ASIST_CHAR_TABLE_KEY+"=?",
-                    new String[] { this.idAsisChar+""});
-            return true;
-        } catch (SQLException | DataException ex) {
-            Logs.errorLog(EventAsistCharacter.class, "Fail to delete options - "+ this.idAsisChar +" - "+ this.charM.getId() +" - "+ ex);
-        }
         return false;
     }
 
@@ -80,7 +56,6 @@ public class EventAsistCharacter extends GameObject
     public void setId(int id) { this.idAsisChar = id; }
     public void setAsisID(int aId) { this.idAsis = aId; }
     public void setCharacterMember(CharacterMember cm) { this.charM = cm; }
-    public void setCharSpec(int idSpec) { this.charM.setActiveSpec(idSpec); }
     public void setIsMain(boolean isMain) { this.isMain = isMain; }
     
     @Override

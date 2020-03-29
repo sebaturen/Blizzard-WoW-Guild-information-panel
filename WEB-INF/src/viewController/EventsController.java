@@ -83,7 +83,6 @@ public class EventsController
         newEvent.setDate(eventDate);
         newEvent.setOwner(owner);
         newEvent.setMinLevel(minLvl);
-        newEvent.setMinRank(new Rank(guildLvl));
         newEvent.setEnable(true);
         newEvent.setIsData(true);
         return newEvent.saveInDB();

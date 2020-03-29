@@ -2,10 +2,71 @@ package com.blizzardPanel.gameObject;
 
 public class Achievement {
 
-    //Item DB
+    // Achievement DB
     public static final String TABLE_NAME = "achievements";
     public static final String TABLE_KEY = "id";
-    //public static final String[] TABLE_STRUCTURE = {};
 
+    // DB Attribute
+    private long id;
+    private String name;
+    private String description;
+    private String reward_description;
+    private String faction_type;
+    private int points;
+    private long media_id;
+    private int display_order;
+    private boolean is_account_wide;
+    private long category_id;
 
+    // Update control
+    private long last_modified;
+
+    // Internal DATA
+    private StaticInformation faction;
+    private AchievementCategory category;
+    private Media media;
+
+    public static class Builder extends GameObject2 {
+
+        private long id;
+        public Builder(long achievementId) {
+            super(TABLE_NAME, Achievement.class);
+            this.id = achievementId;
+        }
+
+        public Achievement build() {
+            Achievement newAchievement = (Achievement) load(TABLE_KEY +"=?", id);
+            newAchievement.category = new AchievementCategory.Builder(newAchievement.category_id).build();
+            newAchievement.media = new Media.Builder(newAchievement.media_id).build();
+            if (newAchievement.faction_type != null) {
+                newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
+            }
+            return newAchievement;
+        }
+    }
+
+    // Constructor
+    private Achievement() {
+
+    }
+
+    @Override
+    public String toString() {
+        return "{\"_class\":\"Achievement\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"description\": \"DESC\"," + //(description == null ? "null" : "\"" + description + "\"") + ", " +
+                "\"reward_description\": \"DESC\", " + //(reward_description == null ? "null" : "\"" + reward_description + "\"") + ", " +
+                "\"faction_type\":" + (faction_type == null ? "null" : "\"" + faction_type + "\"") + ", " +
+                "\"points\":\"" + points + "\"" + ", " +
+                "\"media_id\":\"" + media_id + "\"" + ", " +
+                "\"display_order\":\"" + display_order + "\"" + ", " +
+                "\"is_account_wide\":\"" + is_account_wide + "\"" + ", " +
+                "\"category_id\":\"" + category_id + "\"" + ", " +
+                "\"last_modified\":\"" + last_modified + "\"" + ", " +
+                "\"faction\":" + (faction == null ? "null" : faction) + ", " +
+                "\"category\":" + (category == null ? "null" : category) + ", " +
+                "\"media\":" + (media == null ? "null" : media) +
+                "}";
+    }
 }

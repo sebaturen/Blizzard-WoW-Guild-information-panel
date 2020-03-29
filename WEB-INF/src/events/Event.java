@@ -65,7 +65,6 @@ public class Event extends GameObject
         this.owner = new User(objInfo.get("owner_id").getAsInt());
         this.isEnable = objInfo.get("isEnable").getAsBoolean();
         this.isHide = objInfo.get("isHide").getAsBoolean();
-        this.minRank = new Rank(objInfo.get("min_rank").getAsInt());
         this.minLevel = objInfo.get("min_level").getAsInt();
         this.isData = true;
     }
@@ -89,16 +88,6 @@ public class Event extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        setTableStructur(DBStructure.outKey(EVENTS_TABLE_STRUCTURE));
-        /* {"title", "desc", "date", "owner_id"}; */
-        switch (saveInDBObj(new String[] {this.title, this.desc, this.date, this.owner.getId()+"", this.minRank.getId()+"", this.minLevel+"", (this.isEnable)? "1":"0", (this.isHide)? "1":"0" }))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                this.eventAsis.forEach((evAsis) -> {
-                    evAsis.saveInDB();
-                });
-                return true;
-        }
         return false;
     }    
     

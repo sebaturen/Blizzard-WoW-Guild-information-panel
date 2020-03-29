@@ -3,7 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.gameObject.characters.PlayableRace;
+import com.blizzardPanel.gameObject.characters.Static.PlayableRace;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;

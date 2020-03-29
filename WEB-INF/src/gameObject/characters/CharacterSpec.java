@@ -9,6 +9,7 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.characters.Static.PlayableSpec;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -43,21 +44,17 @@ public class CharacterSpec extends GameObject
     public CharacterSpec(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
     {
         super(TABLE_NAME, TABLE_KEY, SPECS_TABLE_STRUCTURE);
-        this.memberId = member.getId();
-        if (!member.isDelete())
-            saveInfoFromBlizz(member, specInfo, talentsInfo);
     }
     
     private void saveInfoFromBlizz(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
     {
         this.spells = new Spell[MAX_SPELL_TALENTS];
-        this.spec = new PlayableSpec(specInfo.get("name").getAsString(), specInfo.get("role").getAsString(), member.getMemberClass().getId());
+        //this.spec = new PlayableSpec(specInfo.get("name").getAsString(), specInfo.get("role").getAsString(), member.getMemberClass().getId());
         if(this.spec.getName() == null)
         {
             Logs.errorLog(CharacterSpec.class, "Fail to get Spec Member> "+ this.memberId);
             Logs.errorLog(CharacterSpec.class, "\tSpec Name: "+ specInfo.get("name").getAsString());
             Logs.errorLog(CharacterSpec.class, "\tSpec Role: "+ specInfo.get("role").getAsString());
-            Logs.errorLog(CharacterSpec.class, "\tClass ID: "+ member.getMemberClass().getId());
             System.exit(-1);
         }
         for(int i = 0; i < talentsInfo.size(); i++)

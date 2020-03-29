@@ -72,19 +72,14 @@ public class RaidDificultBoss extends GameObject
             if(!this.boss.isData())
             {
                 Logs.infoLog(RaidDificultBoss.class, "Boss '"+ objInfo.get("slug").getAsString() +"' not have info in DB, update to blizzard");
-                try {
-                    //In internal DB not have boss, so we need load a new boss DB...
-                    Update.shared.getBossInformation();
+                //In internal DB not have boss, so we need load a new boss DB...
+                    //Update.shared.getBossInformation();
                     this.boss = new Boss(getBlizzSlugFromRaiderIO(objInfo.get("slug").getAsString()));
                     if(!this.boss.isData())
                     {
                         Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO GET BOSS INFO!! "+ objInfo.get("slug").getAsString());
                         //System.exit(-1);
                     }
-                } catch (IOException ex) {
-                    Logs.errorLog(RaidDificultBoss.class, "FAIL (EXIT) TO UPDATE BOSS LIST!! "+ ex);
-                    //System.exit(-1);
-                }
             }
             else
             {                

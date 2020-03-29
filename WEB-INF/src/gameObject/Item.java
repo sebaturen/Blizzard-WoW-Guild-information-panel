@@ -7,7 +7,6 @@ package com.blizzardPanel.gameObject;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
-import com.blizzardPanel.update.blizzard.Update;
 
 import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.google.gson.JsonArray;
@@ -32,10 +31,6 @@ public class Item extends GameObject
     {
         super(TABLE_NAME,TABLE_KEY,ITEM_TABLE_STRUCTURE);
         loadFromDB(id);
-        if(!this.isInternalData)
-        {
-            cloneItem(Update.shared.getItemFromBlizz(id));
-        }
     }
     
     public Item(JsonObject inf)
@@ -55,7 +50,7 @@ public class Item extends GameObject
                 this.itemSpell = new Spell(spellId);
                 if(!this.itemSpell.isInternalData())
                 {
-                    this.itemSpell = Update.shared.getSpellInformationBlizz(spellId);
+                    this.itemSpell = null; //Update.shared.getSpellInformationBlizz(spellId);
                 }
             }
             else

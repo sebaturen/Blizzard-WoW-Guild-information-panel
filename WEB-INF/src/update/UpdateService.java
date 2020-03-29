@@ -11,6 +11,7 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.blizzardPanel.gameObject.FactionAssaultControl;
+import com.blizzardPanel.gameObject.guild.Guild;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.Update;
 import com.google.gson.JsonArray;
@@ -40,7 +41,13 @@ public class UpdateService implements ServletContextListener
     public void contextInitialized(ServletContextEvent contextEvent)
     {
         //BlizzardUpdate.shared.guild();
-        BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
+        //BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
+        System.out.println(
+                new Guild.Builder(61031120)
+                        .fullLoad(true)
+                        .build()
+        );
+        //BlizzardUpdate.shared.achievementAPI.update();
         //BlizzardUpdate.shared.updateOld();
         //BlizzardUpdate.shared.loadAllCharacterDetail();
         //BlizzardUpdate.shared.characterProfileAPI.copyReIndex();

@@ -6,15 +6,12 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.guild.Guild;
 import com.blizzardPanel.gameObject.guild.Activity;
 import com.blizzardPanel.gameObject.guild.Rank;
-import com.blizzardPanel.gameObject.guild.Roster;
-import com.blizzardPanel.gameObject.guild.achievement.GuildAchievement;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.dv8tion.jda.core.managers.GuildManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,7 +51,7 @@ public class GuildAPI extends BlizzardAPI {
             boolean fullSync = false;
             long lastModified = 0L;
             if (guild_db.size() > 0) {
-                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsLong() == 1;
+                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsBoolean();
                 lastModified = guild_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
             }
 
@@ -109,7 +106,7 @@ public class GuildAPI extends BlizzardAPI {
             long lastModified = 0L;
             if (guild_db.size() > 0) {
                 lastModified = guild_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
-                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsLong() == 1;
+                fullSync = guild_db.get(0).getAsJsonObject().get("full_sync").getAsBoolean();
                 realmSlug = guild_db.get(0).getAsJsonObject().get("slug").getAsString();
             }
 
@@ -299,7 +296,7 @@ public class GuildAPI extends BlizzardAPI {
                                 // Set rosters is in status change
                                 try {
                                     BlizzardUpdate.dbConnect.update(
-                                            Roster.TABLE_NAME,
+                                            Guild.ROSTER_TABLE_NAME,
                                             new String[]{"current_status"},
                                             new String[]{"0"},
                                             "guild_id = ?",
@@ -326,25 +323,25 @@ public class GuildAPI extends BlizzardAPI {
                                             // Save guild_roster DB
                                             // Check if exist in DB
                                             JsonArray roster_db = BlizzardUpdate.dbConnect.select(
-                                                    Roster.TABLE_NAME,
+                                                    Guild.ROSTER_TABLE_NAME,
                                                     new String[]{"add_regist"},
-                                                    Roster.TABLE_KEY +" = ?",
+                                                    Guild.ROSTER_TABLE_KEY +" = ?",
                                                     new String[]{characterId +""}
                                             );
 
                                             if (roster_db.size() > 0) { // Update
                                                 BlizzardUpdate.dbConnect.update(
-                                                        Roster.TABLE_NAME,
+                                                        Guild.ROSTER_TABLE_NAME,
                                                         new String[]{"rank"},
                                                         new String[]{member.get("rank").getAsString()},
-                                                        Roster.TABLE_KEY+"=?",
+                                                        Guild.ROSTER_TABLE_KEY+"=?",
                                                         new String[]{characterId+""}
                                                 );
                                                 Logs.infoLog(this.getClass(), "OK - Roster ["+ characterId +"] is UPDATE");
                                             } else { // Insert
                                                 BlizzardUpdate.dbConnect.insert(
-                                                        Roster.TABLE_NAME,
-                                                        Roster.TABLE_KEY,
+                                                        Guild.ROSTER_TABLE_NAME,
+                                                        Guild.ROSTER_TABLE_KEY,
                                                         new String[]{
                                                                 "character_id",
                                                                 "guild_id",
@@ -366,13 +363,14 @@ public class GuildAPI extends BlizzardAPI {
                                             JsonArray rank_db = BlizzardUpdate.dbConnect.select(
                                                     Rank.TABLE_NAME,
                                                     new String[]{Rank.TABLE_KEY},
-                                                    Guild.TABLE_KEY +"=?",
-                                                    new String[]{guildId+""}
+                                                    "guild_id=? and rank=?",
+                                                    new String[]{guildId+"", member.get("rank").getAsString()}
                                             );
+
                                             if (rank_db.size() == 0) { // Insert rank
                                                 BlizzardUpdate.dbConnect.insert(
-                                                        Rank.TABLE_NAME,
-                                                        Rank.TABLE_KEY,
+                                                        Guild.ROSTER_TABLE_NAME,
+                                                        Guild.ROSTER_TABLE_KEY,
                                                         new String[]{
                                                                 "guild_id",
                                                                 "rank"
@@ -394,7 +392,7 @@ public class GuildAPI extends BlizzardAPI {
                                 // Remove roster is out
                                 try {
                                     BlizzardUpdate.dbConnect.delete(
-                                            Roster.TABLE_NAME,
+                                            Guild.ROSTER_TABLE_NAME,
                                             "current_status is FALSE",
                                             new String[]{}
                                     );
@@ -489,17 +487,18 @@ public class GuildAPI extends BlizzardAPI {
                                         values.add(achievements.getAsJsonObject().get("completed_timestamp").getAsString());
                                     }
 
+                                    // Check if exist
                                     JsonArray guildAchievemet_db = BlizzardUpdate.dbConnect.select(
-                                            GuildAchievement.TABLE_NAME,
+                                            Guild.ACHIEVEMENT_TABLE_NAME,
                                             new String[]{"achievement_id"},
-                                            "achievement_id = ?",
-                                            new String[]{achievements.getAsJsonObject().get("id").getAsString()}
+                                            "achievement_id = ? AND guild_id = ? ",
+                                            new String[]{achievements.getAsJsonObject().get("id").getAsString(), guildId+""}
                                     );
 
                                     if (guildAchievemet_db.size() == 0) {
                                         String key = BlizzardUpdate.dbConnect.insert(
-                                                GuildAchievement.TABLE_NAME,
-                                                GuildAchievement.TABLE_KEY,
+                                                Guild.ACHIEVEMENT_TABLE_NAME,
+                                                Guild.ACHIEVEMENT_TABLE_KEY,
                                                 columns,
                                                 values
                                         );

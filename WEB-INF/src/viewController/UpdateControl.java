@@ -80,7 +80,6 @@ public class UpdateControl
             public void run()
             {
                 setIsRuning(true);
-                Update.shared.setUpdate(updArg);
                 setIsRuning(false);
                 setRunUpdate(false);
                 Logs.setUpdateControl(null);

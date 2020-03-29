@@ -63,7 +63,6 @@ public class Poll extends GameObject
         this.id = objInfo.get("id").getAsInt();
         this.user = new User(objInfo.get("user_id").getAsInt());
         this.pollQuestion = objInfo.get("poll_question").getAsString();
-        this.minRank = new Rank(objInfo.get("min_rank").getAsInt());
         this.multiSelect = objInfo.get("multi_select").getAsBoolean();
         this.canAddMoreOptions = objInfo.get("can_add_more_option").getAsBoolean();
         this.startDate = objInfo.get("start_date").getAsString();
@@ -95,38 +94,6 @@ public class Poll extends GameObject
     @Override
     public boolean saveInDB() 
     {
-        String[] strucInfo;
-        String[] info;
-        if(this.endDate != null)
-        {
-            strucInfo = DBStructure.outKey(POLLS_TABLE_STRUCTURE);
-            info = new String[] {this.user.getId()+"", this.pollQuestion, 
-                    this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", this.endDate, (this.isEnable)? "1":"0", (this.isHide)? "1":"0"};
-        }
-        else
-        {
-            strucInfo = new String[] {"user_id", "poll_question", 
-                                    "min_rank", "multi_select", "can_add_more_option", 
-                                    "start_date", "is_limit_date", "isEnable","isHide"};
-            info = new String[] {this.user.getId()+"", this.pollQuestion, 
-                    this.minRank.getId()+"", (this.multiSelect)? "1":"0", (this.canAddMoreOptions)? "1":"0",
-                    this.startDate, (this.isLimitDate)? "1":"0", (this.isEnable)? "1":"0", (this.isHide)? "1":"0"};
-        }
-        /* {"user_id", "poll_question", 
-         * "min_rank", "multi_select", "can_add_more_option", 
-         * "start_date", is_limit_date, "end_date", "isEnable"} */
-        setTableStructur(strucInfo);
-        switch (saveInDBObj(info))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                if(this.options.isEmpty()) loadOptions();
-                this.options.forEach((op) -> {
-                    op.setPollId(this.id);
-                    op.saveInDB();
-                });
-                return true;
-        }
         return false;
     }
     
@@ -222,7 +189,6 @@ public class Poll extends GameObject
             addOption.setPollId(this.id);
             addOption.setOptionText(s);
             addOption.setOwner(u);
-            addOption.setDate(Update.getCurrentTimeStamp());
             addOption.setIsData(true);
             if(!this.multiSelect)
             {

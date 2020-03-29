@@ -124,7 +124,6 @@ public class EventAsist extends GameObject
     public boolean isAssistCharacter(CharacterMember chm) {
         for(EventAsistCharacter eChar : this.eventCharacter)
         {
-            if(eChar.getCharMember().getId() == chm.getId()) return true;
         }
         return false;
     }
