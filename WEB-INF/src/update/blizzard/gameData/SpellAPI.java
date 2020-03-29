@@ -95,18 +95,18 @@ public class SpellAPI extends BlizzardAPI {
                     );
                 }
 
-                Logs.infoLog(Spell.class, "Spell is update "+ spellId);
+                Logs.infoLog(this.getClass(), "Spell is update "+ spellId);
 
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(Spell.class, "NOT Modified Spell Detail "+ spellId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Spell Detail "+ spellId);
                 } else {
-                    Logs.errorLog(Spell.class, "ERROR - Spell detail "+ spellId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - Spell detail "+ spellId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(Spell.class, "FAILED - to get Spell detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get Spell detail "+ e);
         }
 
     }

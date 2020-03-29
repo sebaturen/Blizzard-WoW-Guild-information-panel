@@ -13,8 +13,8 @@ import com.google.gson.JsonObject;
 public class KeystoneAffix extends GameObject
 {
     //DBStructure
-    public static final String KEYSTONE_AFFIXES_TABLE_NAME = "keystone_affixes";
-    public static final String KEYSTONE_AFFIXES_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "keystone_affixes";
+    public static final String TABLE_KEY = "id";
     public static final String[] KEYSTONE_AFFIXES_TABLE_STRUCTURE = {"id", "name", "description", "icon"};
     
     private int id;
@@ -24,13 +24,13 @@ public class KeystoneAffix extends GameObject
     
     public KeystoneAffix(int id)
     {
-        super(KEYSTONE_AFFIXES_TABLE_NAME, KEYSTONE_AFFIXES_TABLE_KEY, KEYSTONE_AFFIXES_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_AFFIXES_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
     public KeystoneAffix(JsonObject info)
     {
-        super(KEYSTONE_AFFIXES_TABLE_NAME, KEYSTONE_AFFIXES_TABLE_KEY, KEYSTONE_AFFIXES_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_AFFIXES_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 

@@ -38,14 +38,14 @@ public class ItemAPI extends BlizzardAPI {
 
             for(JsonElement item : items_db) {
                 asyncLoad(
-                        item.getAsJsonObject().get(Item.TABLE_KEY).getAsInt(),
+                        item.getAsJsonObject().get(Item.TABLE_KEY).getAsLong(),
                         item.getAsJsonObject().get("last_modified").getAsLong(),
                         true
                 );
             }
 
         } catch (SQLException | DataException e) {
-            Logs.fatalLog(ItemAPI.class, "FAILED to get all items in DB");
+            Logs.fatalLog(this.getClass(), "FAILED to get all items in DB");
         }
     }
 
@@ -54,10 +54,10 @@ public class ItemAPI extends BlizzardAPI {
      * @param detail {"href": xx, "id": ID}
      */
     public void itemDetail(JsonObject detail) {
-        load(detail.get("id").getAsInt());
+        load(detail.get("id").getAsLong());
     }
 
-    private void load(int id) {
+    private void load(long id) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String itemId = id+"";
@@ -95,18 +95,18 @@ public class ItemAPI extends BlizzardAPI {
                 );
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(ItemAPI.class, "NOT Modified Item Detail "+ itemId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Item Detail "+ itemId);
                 } else {
-                    Logs.errorLog(ItemAPI.class, "ERROR - Item detail "+ itemId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - Item detail "+ itemId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(ItemAPI.class, "FAILED - to get Item detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get Item detail "+ e);
         }
 
     }
 
-    private void asyncLoad(int id, long lastUpdate, boolean isInDb) {
+    private void asyncLoad(long id, long lastUpdate, boolean isInDb) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String itemId = id+"";
@@ -131,16 +131,16 @@ public class ItemAPI extends BlizzardAPI {
                     );
                 } else {
                     if (response.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                        Logs.infoLog(ItemAPI.class, "NOT Modified Item Detail "+ itemId);
+                        Logs.infoLog(this.getClass(), "NOT Modified Item Detail "+ itemId);
                     } else {
-                        Logs.errorLog(ItemAPI.class, "ERROR - Item detail "+ itemId +" - "+ response.code());
+                        Logs.errorLog(this.getClass(), "ERROR - Item detail "+ itemId +" - "+ response.code() +" // "+ call.request());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                Logs.fatalLog(ItemAPI.class, "FAILED to get Item detail ("+ itemId +") - "+ throwable);
+                Logs.fatalLog(this.getClass(), "FAILED to get Item detail ("+ itemId +") - "+ throwable);
             }
         });
     }
@@ -204,10 +204,10 @@ public class ItemAPI extends BlizzardAPI {
                 );
             }
 
-            Logs.infoLog(ItemAPI.class, "OK Item is update "+ itemId);
+            Logs.infoLog(this.getClass(), "OK Item is update "+ itemId);
 
         }  catch (DataException | SQLException e) {
-            Logs.fatalLog(ItemAPI.class, "FAILED - to save Item detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to save Item detail "+ e);
         }
     }
 }

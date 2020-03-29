@@ -25,14 +25,14 @@ public class GuildRanks
         Rank[] ranks = null;
         try 
         {
-            JsonArray rankDB = dbConnect.select(Rank.GUILD_RANK_TABLE_NAME,
-                    new String[] { Rank.GUILD_RANK_TABLE_KEY },
+            JsonArray rankDB = dbConnect.select(Rank.TABLE_NAME,
+                    new String[] { Rank.TABLE_KEY },
                     "1=? ORDER BY id "+ order,
                     new String[] {"1"});
             ranks = new Rank[rankDB.size()];
             for(int i = 0; i < rankDB.size(); i++)
             {
-                ranks[i] = new Rank( rankDB.get(i).getAsJsonObject().get(Rank.GUILD_RANK_TABLE_KEY).getAsInt() );
+                ranks[i] = new Rank( rankDB.get(i).getAsJsonObject().get(Rank.TABLE_KEY).getAsInt() );
             }
         } catch (SQLException | DataException ex) {
             Logs.errorLog(GuildRanks.class, "Fail to load ranks "+ ex);

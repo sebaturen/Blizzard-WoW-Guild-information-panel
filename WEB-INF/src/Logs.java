@@ -34,6 +34,13 @@ public class Logs
             upControl.messageForAll("[Info] ["+ c.getName() +"]: " + ms);
         LogManager.getLogger(c.getName()).info(ms);
     }
+
+    public static void warningLog(Class c, String ms) {
+        if (upControl != null) {
+            upControl.messageForAll("[WARNING] ["+ c.getName() +"]: "+ ms);
+        }
+        LogManager.getLogger(c.getName()).info(ms);
+    }
     
     public static void setUpdateControl(UpdateControl up) { upControl = up; }
     

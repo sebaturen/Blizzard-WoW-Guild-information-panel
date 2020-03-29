@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 public class Rank extends GameObject
 {
     //DB Rank structure
-    public static final String GUILD_RANK_TABLE_NAME = "guild_rank";
-    public static final String GUILD_RANK_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "guild_rank";
+    public static final String TABLE_KEY = "id";
     public static final String[] GUILD_RANK_TABLE_STRUCTURE = {"id", "title"};
     
     //Atribute
@@ -21,7 +21,7 @@ public class Rank extends GameObject
     
     public Rank(int id)
     {
-        super(GUILD_RANK_TABLE_NAME, GUILD_RANK_TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
         loadFromDB(id);
         if(!this.isInternalData)
         {
@@ -39,7 +39,7 @@ public class Rank extends GameObject
      */
     public Rank(int id, boolean validExit)
     {
-        super(GUILD_RANK_TABLE_NAME, GUILD_RANK_TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, GUILD_RANK_TABLE_STRUCTURE);
         loadFromDB(id);      
     }
 

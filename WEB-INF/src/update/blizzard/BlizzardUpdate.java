@@ -49,6 +49,7 @@ public class BlizzardUpdate {
     public MediaAPI mediaAPI;
     public SpellAPI spellAPI;
     public ItemAPI itemAPI;
+    public MythicKeystoneDungeonAPI mythicKeystoneDungeonAPI;
 
     // Constructor
     private BlizzardUpdate() {
@@ -59,10 +60,14 @@ public class BlizzardUpdate {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiOauthCalls = apiOauthCallsRetrofit.create(WoWOauthService.class);
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequests(BlizzardAPI.maxSecondRequest/2/2);
+        dispatcher.setMaxRequestsPerHost(BlizzardAPI.maxHourRequest);
         Retrofit apiCallsRetrofit = new Retrofit.Builder()
                 .baseUrl(String.format(WoWAPIService.API_ROOT_URL, GeneralConfig.getStringConfig("SERVER_LOCATION")))
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder()
+                        .dispatcher(dispatcher)
                         .addInterceptor(new RequestInterceptor())
                         .build()
                 )
@@ -86,11 +91,11 @@ public class BlizzardUpdate {
         mediaAPI = new MediaAPI(apiCalls);
         spellAPI = new SpellAPI(apiCalls);
         itemAPI = new ItemAPI(apiCalls);
+        mythicKeystoneDungeonAPI = new MythicKeystoneDungeonAPI(apiCalls);
     }
 
     // Generate an AccessToken
     public void generateAccessToken() {
-
 
         Call<JsonObject> call = apiOauthCalls.accessToken(
                 "client_credentials",
@@ -146,7 +151,33 @@ public class BlizzardUpdate {
         return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z").format(new Date(unixTime));
     }
 
-    //------- UPDATE OLD INFO
+    public void resetIndex() {
+        try {
+
+            JsonArray vals = BlizzardUpdate.dbConnect.select(
+                    CharacterMember.TABLE_NAME,
+                    new String[]{"id"}
+            );
+            long i = 1;
+            for(JsonElement mem : vals) {
+                long id = mem.getAsJsonObject().get("id").getAsLong();
+                BlizzardUpdate.dbConnect.update(
+                        CharacterMember.TABLE_NAME,
+                        new String[]{"id"},
+                        new String[]{i+""},
+                        "id=?",
+                        new String[]{id+""}
+                );
+                System.out.println("Move ["+ id +"] -> "+ i);
+                i++;
+            }
+
+        }catch (SQLException | DataException e ) {
+            System.out.println("FAILED "+ e);
+        }
+    }
+
+    /*------- UPDATE OLD INFO
     public static int counter = 0;
     public void loadAllCharacterDetail() {
         try {
@@ -220,14 +251,71 @@ public class BlizzardUpdate {
                         new String[]{dup.getAsJsonObject().get("name").getAsString(), dup.getAsJsonObject().get("realm_id").getAsString()}
                 );
 
+                int oldId = 0;
+                String oldName = "";
+                int oldRealmId = 0;
                 for(JsonElement mem : members) {
                     JsonObject m = mem.getAsJsonObject();
                     System.out.println("Member "+ m.get("id") +" == "+ m.get("name") +" // "+ m.get("realm_id"));
+
+                    if (oldName.equals(m.get("name").getAsString()) && oldRealmId == m.get("realm_id").getAsInt()) {
+
+                        System.out.println("Update OLD/NEW "+ oldId +"/"+ m.get("id") +" -- "+ oldName + "/"+ m.get("name") +" -- "+ oldRealmId +"/"+ m.get("realm_id"));
+                        if (false) {
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("update character_info set character_id = "+ m.get("id") +", faction_type = 'ALLIANCE' where character_id = "+ oldId +"; ");
+                                System.out.println("Char INFO - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char info FAILED - "+ e);
+                            }
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("update character_items set character_id = "+ m.get("id") +" where character_id = "+ oldId +"; ");
+                                System.out.println("Char ITEM - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char ITEM FAILED - "+ e);
+                            }
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("update character_specs set character_id = "+ m.get("id") +" where character_id = "+ oldId +"; ");
+                                System.out.println("Char SPEC - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char SPEC FAILED - "+ e);
+                            }
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("update guild_activities set character_id = "+ m.get("id") +" where character_id = "+ oldId +"; ");
+                                System.out.println("Char ACTIVITIES - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char ACTIVITIES FAILED - "+ e);
+                            }
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("update keystone_dungeon_run_members set character_id = "+ m.get("id") +" where character_id = "+ oldId +"; ");
+                                System.out.println("Char KEYRUNS - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char KEYRUNS FAILED - "+ e);
+                            }
+
+                            try {
+                                BlizzardUpdate.dbConnect.selectQuery("delete `characters` where id = "+ oldId +";");
+                                System.out.println("Char DELETE - OK");
+                            } catch (DataException | SQLException e) {
+                                System.out.println("Char DELETE FAILED - "+ e);
+                            }
+                        }
+
+                    } else {
+                        oldName = m.get("name").getAsString();
+                        oldRealmId = m.get("realm_id").getAsInt();
+                        oldId = m.get("id").getAsInt();
+                    }
                 }
             }
         } catch (SQLException | DataException e) {
             System.out.println("Failed to get a duplicate members "+ e);
         }
-    }
+    } */
 
 }

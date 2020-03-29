@@ -90,6 +90,15 @@ public interface WoWAPIService {
             @Header("Authorization") String token
     );
 
+    @GET("profile/wow/character/{realmSlug}/{characterName}/mythic-keystone-profile")
+    Call<JsonObject> characterMythicKeystoneProfileIndex(
+            @Path("realmSlug") String realm,
+            @Path("characterName") String name,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
     //------------------------------------------
     // Game Data
     //------------------------------------------

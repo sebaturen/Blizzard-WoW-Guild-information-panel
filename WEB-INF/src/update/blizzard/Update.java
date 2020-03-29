@@ -12,7 +12,6 @@ import com.blizzardPanel.dbConnect.DBStructure;
 import com.blizzardPanel.gameObject.AuctionItem;
 import com.blizzardPanel.gameObject.Boss;
 import com.blizzardPanel.gameObject.Item;
-import com.blizzardPanel.gameObject.guild.Guild;
 import com.blizzardPanel.gameObject.guild.achievement.GuildAchievementsList;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.blizzardPanel.gameObject.characters.PlayableClass;
@@ -20,7 +19,7 @@ import com.blizzardPanel.gameObject.characters.PlayableRace;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsCategory;
 import com.blizzardPanel.gameObject.characters.achievement.CharacterAchivementsList;
-import com.blizzardPanel.gameObject.guild.New;
+import com.blizzardPanel.gameObject.guild.Activity;
 import com.blizzardPanel.gameObject.guild.challenges.Challenge;
 import com.blizzardPanel.gameObject.guild.challenges.ChallengeGroup;
 import com.blizzardPanel.gameObject.guild.raids.Raid;
@@ -678,7 +677,6 @@ public class Update {
      * @throws DataException
      */
     public void getGuildProfile() throws IOException {
-        BlizzardUpdate.shared.guild();
         /*
         if (accessToken.isExpired()) generateAccessToken();
 
@@ -870,12 +868,12 @@ public class Update {
                     JsonArray news = response.body().get("news").getAsJsonArray();
                     for (int i = 0; i < news.size(); i++) {
                         JsonObject infoNew = news.get(i).getAsJsonObject();
-                        New guildNew = new New(infoNew.get("type").getAsString(), infoNew.get("timestamp").getAsString(), infoNew.get("character").getAsString());
-                        if (!guildNew.isInternalData()) {
-                            guildNew = new New(infoNew);
-                            guildNew.saveInDB();
+                        Activity guildActivity = new Activity(infoNew.get("type").getAsString(), infoNew.get("timestamp").getAsString(), infoNew.get("character").getAsString());
+                        if (!guildActivity.isInternalData()) {
+                            guildActivity = new Activity(infoNew);
+                            guildActivity.saveInDB();
                             //debug mode!
-                            if (guildNew.getType().equals("itemLoot") && guildNew.getItem().getId() == 0) {
+                            if (guildActivity.getType().equals("itemLoot") && guildActivity.getItem().getId() == 0) {
                                 Logs.errorLog(Update.class, "ERROR GUILD NEW! \t" + infoNew + "\n\t\t" + news);
                             }
                         }

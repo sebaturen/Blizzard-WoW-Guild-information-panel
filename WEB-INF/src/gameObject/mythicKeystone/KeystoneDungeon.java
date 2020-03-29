@@ -14,8 +14,8 @@ import com.google.gson.JsonObject;
 public class KeystoneDungeon extends GameObject
 {
     //DBStructure
-    public static final String KEYSTONE_DUNGEON_TABLE_NAME = "keystone_dungeon";
-    public static final String KEYSTONE_DUNGEON_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "keystone_dungeon";
+    public static final String TABLE_KEY = "id";
     public static final String[] KEYSTONE_DUNGEON_TABLE_STRUCTURE = {"id", "map_id", "name", "slug", 
                         "keystone_upgrades_1", "keystone_upgrades_2", "keystone_upgrades_3"};
 
@@ -30,13 +30,13 @@ public class KeystoneDungeon extends GameObject
 
     public KeystoneDungeon(int id)
     {
-        super(KEYSTONE_DUNGEON_TABLE_NAME, KEYSTONE_DUNGEON_TABLE_KEY, KEYSTONE_DUNGEON_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_DUNGEON_TABLE_STRUCTURE);
         loadFromDB(id);
     }
 
     public KeystoneDungeon(JsonObject info)
     {
-        super(KEYSTONE_DUNGEON_TABLE_NAME, KEYSTONE_DUNGEON_TABLE_KEY, KEYSTONE_DUNGEON_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_DUNGEON_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 

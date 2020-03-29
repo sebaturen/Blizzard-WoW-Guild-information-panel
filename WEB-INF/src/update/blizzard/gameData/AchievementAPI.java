@@ -45,25 +45,25 @@ public class AchievementAPI extends BlizzardAPI {
 
             // Get all [categories]
             JsonArray categories = resp.getAsJsonArray("categories");
-            Logs.infoLog(AchievementAPI.class, "Update - Get categories");
+            Logs.infoLog(this.getClass(), "Update - Get categories");
             for(JsonElement cat : categories) {
                 categoryDetail(cat.getAsJsonObject());
             }
             // Get all [root_categories]
             JsonArray root_categories = resp.getAsJsonArray("root_categories");
-            Logs.infoLog(AchievementAPI.class, "Update - Get root_categories");
+            Logs.infoLog(this.getClass(), "Update - Get root_categories");
             for(JsonElement cat : root_categories) {
                 categoryDetail(cat.getAsJsonObject());
             }
             // Get all [guild_categories]
             JsonArray guild_categories = resp.getAsJsonArray("guild_categories");
-            Logs.infoLog(AchievementAPI.class, "Update - Get guild_categories");
+            Logs.infoLog(this.getClass(), "Update - Get guild_categories");
             for(JsonElement cat : guild_categories) {
                 categoryDetail(cat.getAsJsonObject());
             }
 
         } catch (IOException e) {
-            Logs.fatalLog(AchievementAPI.class, "FAILED - to get all categories "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get all categories "+ e);
         }
     }
 
@@ -151,17 +151,17 @@ public class AchievementAPI extends BlizzardAPI {
                         achievementDetail(achievement.getAsJsonObject());
                     }
                 }
-                Logs.infoLog(AchievementAPI.class, "Achievement Category OK "+ catId);
+                Logs.infoLog(this.getClass(), "Achievement Category OK "+ catId);
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement Category "+ catId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Achievement Category "+ catId);
                 } else {
-                    Logs.errorLog(AchievementAPI.class, "ERROR - achievement Category "+ catId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - achievement Category "+ catId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(AchievementAPI.class, "FAILED - to get achievement category detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get achievement category detail "+ e);
         }
     }
 
@@ -253,17 +253,17 @@ public class AchievementAPI extends BlizzardAPI {
                     );
                 }
 
-                Logs.infoLog(AchievementAPI.class, "Achievement info OK "+ achievId);
+                Logs.infoLog(this.getClass(), "Achievement info OK "+ achievId);
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement detail "+ achievId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Achievement detail "+ achievId);
                 } else {
-                    Logs.errorLog(AchievementAPI.class, "ERROR - achievement detail "+ achievId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - achievement detail "+ achievId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(AchievementAPI.class, "FAILED - to get achievement detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get achievement detail "+ e);
         }
     }
 

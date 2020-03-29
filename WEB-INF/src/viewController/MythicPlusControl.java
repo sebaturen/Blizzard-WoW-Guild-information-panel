@@ -83,7 +83,7 @@ public class MythicPlusControl
     {
         try {
             JsonArray keyListInDb = dbConnect.select(
-                    KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
+                    KeystoneDungeonRun.MEMBERS_TABLE_NAME,
                     new String[] {"id"},
                     "completed_timestamp > ? order by completed_timestamp DESC",
                     new String[] {ServerTime.getLastResetTime()+""});

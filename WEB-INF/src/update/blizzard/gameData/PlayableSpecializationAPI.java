@@ -27,15 +27,15 @@ public class PlayableSpecializationAPI extends BlizzardAPI {
 
     /**
      * Load spec detail
-     * @param spec {"key": {"href": URL}, "id": ID}
+     * @param reference {"key": {"href": URL}, "id": ID}
      */
-    public void specializationDetail(JsonObject spec) {
+    public void specializationDetail(JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
-        String specId = spec.get("id").getAsString();
+        String specId = reference.get("id").getAsString();
 
         try {
-            // Check is category previously exist:
+            // Check if category previously exist:
             JsonArray spec_db = BlizzardUpdate.dbConnect.select(
                     PlayableSpec.TABLE_NAME,
                     new String[] {"last_modified"},
@@ -107,18 +107,18 @@ public class PlayableSpecializationAPI extends BlizzardAPI {
                     );
                 }
 
-                Logs.infoLog(PlayableSpecializationAPI.class, "Specialisation is update "+ specId);
+                Logs.infoLog(this.getClass(), "OK - Specialisation is update "+ specId);
 
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(PlayableSpecializationAPI.class, "NOT Modified Specialization Detail "+ specId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Specialization Detail "+ specId);
                 } else {
-                    Logs.errorLog(PlayableSpecializationAPI.class, "ERROR - specialization detail "+ specId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - specialization detail "+ specId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(PlayableSpecializationAPI.class, "FAILED - to get specialization detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get specialization detail "+ e);
         }
     }
 }

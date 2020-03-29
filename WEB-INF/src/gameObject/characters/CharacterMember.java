@@ -657,7 +657,7 @@ public class CharacterMember extends GameObject {
         KeystoneDungeonRun kBestRun = null;
         try {
             //select * from keystone_dungeon_run_members where character_internal_id = <this.internalId>;
-            JsonArray keyRunsMembersDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+            JsonArray keyRunsMembersDB = dbConnect.select(KeystoneDungeonRun.MEMBERS_TABLE_NAME,
                     new String[]{"keystone_dungeon_run_id"},
                     "character_internal_id=?",
                     new String[]{this.internalID + ""});
@@ -673,7 +673,7 @@ public class CharacterMember extends GameObject {
                 }
                 where += ")";
 
-                JsonArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.KEYSTONE_DUNGEON_RUN_TABLE_NAME,
+                JsonArray keyRunsDB = dbConnect.select(KeystoneDungeonRun.MEMBERS_TABLE_NAME,
                         new String[]{"id"},
                         where + " AND completed_timestamp > " + ServerTime.getLastResetTime() + " ORDER BY keystone_level DESC LIMIT 1",
                         whereValues);

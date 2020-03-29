@@ -19,11 +19,11 @@ import java.util.Date;
 
 import com.google.gson.JsonObject;
 
-public class New extends GameObject
+public class Activity extends GameObject
 {
     //DB News structure
-    public static final String GUILD_NEWS_TABLE_NAME = "guild_news";
-    public static final String GUILD_NEWS_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "guild_activities";
+    public static final String TABLE_KEY = "id";
     public static final String[] GUILD_NEWS_TABLE_STRUCTURE = {"id", "type", "member_id", "timestamp", "context",
                                             "item_id", "guild_achievement_id", "player_achievement_id"};
     //Atributes
@@ -36,22 +36,22 @@ public class New extends GameObject
     private GuildAchievementsList gAchievement;
     private CharacterAchivementsList cAchievement;
     
-    public New(int id)
+    public Activity(int id)
     {
-        super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
-    public New(String type, String timestamp, String member_name)
+    public Activity(String type, String timestamp, String member_name)
     {
-        super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         
         CharacterMember loadMember = new CharacterMember(member_name, GeneralConfig.getStringConfig("GUILD_REALM"));    
         try { //2018-10-17 02:39:00
             timestamp = Update.parseUnixTime(timestamp);
             timestamp = getDBDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp));
         } catch (ParseException ex) {
-            Logs.errorLog(New.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
+            Logs.errorLog(Activity.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
         //Load only if member have a info
         if(loadMember.isInternalData())
@@ -59,9 +59,9 @@ public class New extends GameObject
         
     }
     
-    public New(JsonObject inf)
+    public Activity(JsonObject inf)
     {
-        super(GUILD_NEWS_TABLE_NAME, GUILD_NEWS_TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, GUILD_NEWS_TABLE_STRUCTURE);
         saveInternalInfoObject(inf);        
     }
             
@@ -82,7 +82,7 @@ public class New extends GameObject
         try { //2018-10-17 02:39:00
             this.timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStamp);
         } catch (ParseException ex) {
-            Logs.errorLog(New.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
+            Logs.errorLog(Activity.class, "Fail to convert date from guild news! "+ this.id +" - "+ ex);
         }
         this.type = objInfo.get("type").getAsString();
         this.context = objInfo.get("context").getAsString();

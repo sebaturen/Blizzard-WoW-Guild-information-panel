@@ -40,9 +40,12 @@ public class UpdateService implements ServletContextListener
     public void contextInitialized(ServletContextEvent contextEvent)
     {
         //BlizzardUpdate.shared.guild();
-        //BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
-        BlizzardUpdate.shared.loadAllCharacterDetail();
+        BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
+        //BlizzardUpdate.shared.updateOld();
+        //BlizzardUpdate.shared.loadAllCharacterDetail();
         //BlizzardUpdate.shared.characterProfileAPI.copyReIndex();
+        //BlizzardUpdate.shared.characterProfileAPI.save("ragnaros", "Jetick");
+        //BlizzardUpdate.shared.resetIndex();
         //task
         updateInterval = new Thread(() -> {
             try {

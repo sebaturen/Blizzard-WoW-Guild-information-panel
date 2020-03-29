@@ -75,7 +75,6 @@ public class StaticInformationAPI extends BlizzardAPI {
     }
 
 
-
     private void staticInfo(JsonObject info) {
 
         try {
@@ -99,10 +98,10 @@ public class StaticInformationAPI extends BlizzardAPI {
                                 info.get("name").getAsJsonObject().toString()
                         }
                 );
+                Logs.infoLog(this.getClass(), "OK - Static info is save - "+ info.get("type").getAsString());
             }
-            Logs.infoLog(StaticInformationAPI.class, "OK - Static info is save - "+ info.get("type").getAsString());
         } catch (SQLException | DataException e ) {
-            Logs.fatalLog(StaticInformationAPI.class, "FAILED - to get/save static information");
+            Logs.fatalLog(this.getClass(), "FAILED - to get/save static information");
         }
 
     }

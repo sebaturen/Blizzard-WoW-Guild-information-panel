@@ -26,12 +26,12 @@ import com.google.gson.JsonParser;
 public class KeystoneDungeonRun extends GameObject
 {
     //DBStructure
-    public static final String KEYSTONE_DUNGEON_RUN_TABLE_NAME = "keystone_dungeon_run";
-    public static final String KEYSTONE_DUNGEON_RUN_TABLE_KEY = "id";
+    public static final String TABLE_NAME = "keystone_dungeon_run";
+    public static final String TABLE_KEY = "id";
     public static final String[] KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE = {"id", "completed_timestamp", "duration", "keystone_level", "keystone_dungeon_id", "is_complete_in_time", "key_affixes"};
     //DBstructure Members
-    public static final String KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME = "keystone_dungeon_run_members";
-    public static final String KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_KEY = "id";
+    public static final String MEMBERS_TABLE_NAME = "keystone_dungeon_run_members";
+    public static final String MEMBERS_TABLE_KEY = "id";
     public static final String[] KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE = {"id", "keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"};
 
     //Atributes
@@ -46,13 +46,13 @@ public class KeystoneDungeonRun extends GameObject
 
     public KeystoneDungeonRun(int id)
     {
-        super(KEYSTONE_DUNGEON_RUN_TABLE_NAME, KEYSTONE_DUNGEON_RUN_TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
         loadFromDB(id);
     }
     
     public KeystoneDungeonRun(long complateTimeStamp, long duration, int keyLevel, int keyDunId, boolean isCompletInTime)
     {
-        super(KEYSTONE_DUNGEON_RUN_TABLE_NAME, KEYSTONE_DUNGEON_RUN_TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
         loadFromDBUniqued(
                 new String[] {"completed_timestamp", "duration", "keystone_level", 
                             "keystone_dungeon_id", "is_complete_in_time"}, 
@@ -62,7 +62,7 @@ public class KeystoneDungeonRun extends GameObject
 
     public KeystoneDungeonRun(JsonObject info)
     {
-        super(KEYSTONE_DUNGEON_RUN_TABLE_NAME, KEYSTONE_DUNGEON_RUN_TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
+        super(TABLE_NAME, TABLE_KEY, KEYSTONE_DUNGEON_RUN_TABLE_STRUCTURE);
         saveInternalInfoObject(info);
     }
 
@@ -146,7 +146,7 @@ public class KeystoneDungeonRun extends GameObject
     {
         try 
         {
-            JsonArray memsInfo = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+            JsonArray memsInfo = dbConnect.select(MEMBERS_TABLE_NAME,
                                         KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE,
                                         "keystone_dungeon_run_id=?",
                                         new String[] {this.id+""});
@@ -196,7 +196,7 @@ public class KeystoneDungeonRun extends GameObject
                         try 
                         {
                             //Verificate if this memers is previewsly register from this group
-                            memInGroupId = dbConnect.select(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
+                            memInGroupId = dbConnect.select(MEMBERS_TABLE_NAME,
                                     new String[] { "id" },
                                     "keystone_dungeon_run_id=? AND character_internal_id=?",
                                     new String[] { this.id +"", m.getId() +"" } );
@@ -207,8 +207,8 @@ public class KeystoneDungeonRun extends GameObject
                         if ( (memInGroupId == null) || (memInGroupId.size() == 0) )
                         {//insert
                             dbConnect.insert(
-                                KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_NAME,
-                                KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_KEY,
+                                    MEMBERS_TABLE_NAME,
+                                MEMBERS_TABLE_KEY,
                                 DBStructure.outKey(KEYSTONE_DUNGEON_RUN_MEMBERS_TABLE_STRUCTURE),
                                 //{"keystone_dungeon_run_id", "character_internal_id", "character_spec_id", "character_item_level"};
                                 new String[] { this.id+"", m.getId()+"", m.getActiveSpec().getId()+"", m.getItemLevel()+"" });

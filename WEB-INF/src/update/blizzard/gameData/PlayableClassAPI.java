@@ -27,12 +27,12 @@ public class PlayableClassAPI extends BlizzardAPI {
 
     /**
      * Load class detail
-     * @param data {"id": ID, href not is required}
+     * @param reference {"id": ID, href not is required}
      */
-    public void classDetail(JsonObject data) {
+    public void classDetail(JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
-        String classId = data.get("id").getAsString();
+        String classId = reference.get("id").getAsString();
 
         try {
 
@@ -93,16 +93,16 @@ public class PlayableClassAPI extends BlizzardAPI {
                     );
                 }
 
-                Logs.infoLog(PlayableClassAPI.class, "Playable Class OK "+ classId);
+                Logs.infoLog(this.getClass(), "Playable Class OK "+ classId);
             } else {
                 if (response.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(PlayableClassAPI.class, "NOT Modified Playable Class "+ classId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Playable Class "+ classId);
                 } else {
-                    Logs.errorLog(PlayableClassAPI.class, "ERROR - Playable Class "+ classId +" - "+ response.code());
+                    Logs.errorLog(this.getClass(), "ERROR - Playable Class "+ classId +" - "+ response.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(PlayableClassAPI.class, "FAILED - to get Playable Class info "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get Playable Class info "+ e);
         }
 
     }

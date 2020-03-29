@@ -42,7 +42,7 @@ public class ConnectedRealmAPI extends BlizzardAPI {
             }
 
         } catch (IOException e) {
-            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get all realm index "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get all realm index "+ e);
         }
 
     }
@@ -70,14 +70,14 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                 }
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(ConnectedRealmAPI.class, "NOT Modified Realms Index detail "+ connectedRealms);
+                    Logs.infoLog(this.getClass(), "NOT Modified Realms Index detail "+ connectedRealms);
                 } else {
-                    Logs.errorLog(ConnectedRealmAPI.class, "ERROR - Realms Index detail "+ connectedRealms +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - Realms Index detail "+ connectedRealms +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException e) {
-            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get Realms Index detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get Realms Index detail "+ e);
         }
 
     }
@@ -117,13 +117,13 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                 load(resp.body(), lastModified);
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(ConnectedRealmAPI.class, "NOT Modified realm detail "+ realmId);
+                    Logs.infoLog(this.getClass(), "NOT Modified realm detail "+ realmId);
                 } else {
-                    Logs.errorLog(ConnectedRealmAPI.class, "ERROR - realm detail "+ realmId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - realm detail "+ realmId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - to get realm detail "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get realm detail "+ e);
         }
 
     }
@@ -178,9 +178,9 @@ public class ConnectedRealmAPI extends BlizzardAPI {
                 );
             }
 
-            Logs.infoLog(ConnectedRealmAPI.class, "Realm info OK "+ realmDetail.get("slug").getAsString());
+            Logs.infoLog(this.getClass(), "Realm info OK "+ realmDetail.get("slug").getAsString());
         } catch (SQLException | DataException e) {
-            Logs.fatalLog(ConnectedRealmAPI.class, "FAILED - real load detail "+ e +" -- "+ realmDetail);
+            Logs.fatalLog(this.getClass(), "FAILED - real load detail "+ e +" -- "+ realmDetail);
         }
     }
 }

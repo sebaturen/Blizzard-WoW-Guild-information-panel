@@ -24,10 +24,14 @@ public class PlayableRaceAPI extends BlizzardAPI {
         super(apicalls);
     }
 
-    public void raceDetail(JsonObject detail) {
+    /**
+     * Load race detail
+     * @param reference {"id": ID, ...}
+     */
+    public void raceDetail(JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
-        String raceId = detail.get("id").getAsString();
+        String raceId = reference.get("id").getAsString();
 
         try {
             // Check is race previously exist
@@ -93,18 +97,18 @@ public class PlayableRaceAPI extends BlizzardAPI {
                             values
                     );
                 }
-                Logs.infoLog(PlayableRaceAPI.class, "Playable Race OK "+ raceId);
+                Logs.infoLog(this.getClass(), "Playable Race OK "+ raceId);
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(PlayableRaceAPI.class, "NOT Modified Playable Race "+ raceId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Playable Race "+ raceId);
                 } else {
-                    Logs.errorLog(PlayableRaceAPI.class, "ERROR - playable race "+ raceId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - playable race "+ raceId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(PlayableRaceAPI.class, "FAILED - to get playable race "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get playable race "+ e);
         }
 
     }

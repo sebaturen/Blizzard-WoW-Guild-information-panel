@@ -24,14 +24,18 @@ public class MediaAPI extends BlizzardAPI {
         super(apiCalls);
     }
 
-    public void mediaDetail(JsonObject media) {
+    /**
+     * Load media details
+     * @param reference {"key": {"kref": URL}, "id": ID}
+     */
+    public void mediaDetail(JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
-        String urlHref = media.getAsJsonObject("key").get("href").getAsString();
+        String urlHref = reference.getAsJsonObject("key").get("href").getAsString();
         urlHref = urlHref.split("namespace")[0];
         urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
 
-        String achievMediaId = media.get("id").getAsString();
+        String achievMediaId = reference.get("id").getAsString();
 
         try {
 
@@ -43,7 +47,7 @@ public class MediaAPI extends BlizzardAPI {
                     new String[]{achievMediaId}
             );
             boolean isInDb = (achievMedia_db.size() > 0);
-            Long lastModified = 0L;
+            long lastModified = 0L;
             if (achievMedia_db.size() > 0) {
                 lastModified = achievMedia_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
             }
@@ -91,18 +95,18 @@ public class MediaAPI extends BlizzardAPI {
                     );
                 }
 
-                Logs.infoLog(AchievementAPI.class, "Achievement media OK "+ achievMediaId);
+                Logs.infoLog(this.getClass(), "Achievement media OK "+ achievMediaId);
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(AchievementAPI.class, "NOT Modified Achievement media "+ achievMediaId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Achievement media "+ achievMediaId);
                 } else {
-                    Logs.errorLog(AchievementAPI.class, "ERROR - achievement media "+ achievMediaId +" - "+ resp.code());
+                    Logs.errorLog(this.getClass(), "ERROR - achievement media "+ achievMediaId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(AchievementAPI.class, "FAILED - to get achievement media "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get achievement media "+ e);
         }
     }
 

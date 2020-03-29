@@ -39,7 +39,7 @@ public class Guild extends GameObject
     private int side;
     private List<GuildAchievement> achievements = new ArrayList<>();
     private Date lastNewsUpdate;
-    private List<New> news = new ArrayList<>();
+    private List<Activity> news = new ArrayList<>();
 
     //Constructor
     public Guild()
@@ -124,14 +124,14 @@ public class Guild extends GameObject
     {
         this.news = new ArrayList<>();
         try {
-            JsonArray dbAchiv = dbConnect.select(New.GUILD_NEWS_TABLE_NAME,
-                                                new String[] {New.GUILD_NEWS_TABLE_KEY},
+            JsonArray dbAchiv = dbConnect.select(Activity.TABLE_NAME,
+                                                new String[] {Activity.TABLE_KEY},
                                                 "1=? ORDER BY timestamp DESC LIMIT "+ cant,
                                                 new String[] {"1"});
             for(int i = 0; i < dbAchiv.size(); i++)
             {
-                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(New.GUILD_NEWS_TABLE_KEY).getAsInt();
-                New gAh = new New(idAchiv);
+                int idAchiv = dbAchiv.get(i).getAsJsonObject().get(Activity.TABLE_KEY).getAsInt();
+                Activity gAh = new Activity(idAchiv);
                 this.news.add(gAh);
             }
         } catch (SQLException | DataException ex) {
@@ -181,7 +181,7 @@ public class Guild extends GameObject
     public long getLastModified() { return this.lastModified; }
     public long getAchievementPoints() { return this.achievementPoints; }
     public List<GuildAchievement> getAchievements() { loadAchievementsFromDB(); return this.achievements; }
-    public List<New> getNews(int cant)
+    public List<Activity> getNews(int cant)
     {
         if(this.news.isEmpty())
         {
