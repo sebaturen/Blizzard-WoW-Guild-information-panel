@@ -5,15 +5,19 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
+import com.blizzardPanel.update.blizzard.BlizzardAPIError;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,30 @@ public class SpellAPI extends BlizzardAPI {
 
     public SpellAPI(WoWAPIService apiCalls) {
         super(apiCalls);
+    }
+
+    /**
+     * Update all spell is save in DB
+     */
+    public void update() {
+        if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
+
+        try {
+            JsonArray spells_db = BlizzardUpdate.dbConnect.select(
+                    Spell.TABLE_NAME,
+                    new String[]{Spell.TABLE_KEY},
+                    "is_valid=?",
+                    new String[]{"1"}
+            );
+
+            for (JsonElement spell : spells_db) {
+                JsonObject spellDetail = spell.getAsJsonObject();
+                spellDetail(spellDetail);
+            }
+
+        } catch (DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED - to update all spells... "+ e);
+        }
     }
 
     /**
@@ -99,7 +127,25 @@ public class SpellAPI extends BlizzardAPI {
 
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(this.getClass(), "NOT Modified Spell Detail "+ spellId);
+                    Logs.infoLog(this.getClass(), "NOT Modified Spell Detail " + spellId);
+                } else if (resp.code() == HttpServletResponse.SC_NOT_FOUND) {
+                    if (isInDb) {
+                        BlizzardAPIError error = new Gson().fromJson(resp.errorBody().charStream(), BlizzardAPIError.class);
+                        if (error.getType() != null && error.getType().equals("BLZWEBAPI00000404")) {
+                            BlizzardUpdate.dbConnect.update(
+                                    Spell.TABLE_NAME,
+                                    new String[]{"is_valid"},
+                                    new String[]{"0"},
+                                    Spell.TABLE_KEY +"=?",
+                                    new String[]{spellId}
+                            );
+                            Logs.errorLog(this.getClass(), "ERROR - Spell is disable (404) ["+ spellId +"]");
+                        } else {
+                            Logs.errorLog(this.getClass(), "ERROR - Spell not find (404) ["+ spellId +"]");
+                        }
+                    } else {
+                        Logs.errorLog(this.getClass(), "ERROR - Spell not exist 404 ["+ spellId +"]");
+                    }
                 } else {
                     Logs.errorLog(this.getClass(), "ERROR - Spell detail "+ spellId +" - "+ resp.code() +" // "+ call.request());
                 }

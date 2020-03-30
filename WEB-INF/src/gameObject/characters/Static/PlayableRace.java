@@ -38,7 +38,7 @@ public class PlayableRace {
         }
 
         public PlayableRace build() {
-            PlayableRace newRace = (PlayableRace) load(TABLE_KEY+"=?", id);
+            PlayableRace newRace = (PlayableRace) load(TABLE_KEY, id);
             newRace.faction = new StaticInformation.Builder(newRace.faction_type).build();
             return newRace;
         }

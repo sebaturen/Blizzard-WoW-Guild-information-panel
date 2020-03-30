@@ -84,7 +84,7 @@ public class Guild {
         }
 
         public Guild build() {
-            Guild newGuild = (Guild) load(TABLE_KEY +"=?", id);
+            Guild newGuild = (Guild) load(TABLE_KEY, id);
 
             // Load internal data:
             newGuild.realm = new Realm.Builder(newGuild.realm_id).build();
@@ -92,9 +92,9 @@ public class Guild {
 
             if (loadStatus) {
                 newGuild.loadAchievements();
-                newGuild.loadActivities(maxActivities);
-                newGuild.loadRosters();
-                newGuild.loadRanks();
+                //newGuild.loadActivities(maxActivities);
+                //newGuild.loadRanks();
+                //newGuild.loadRosters();
             }
             return newGuild;
         }
@@ -215,6 +215,16 @@ public class Guild {
         } catch (SQLException | DataException e) {
             Logs.fatalLog(this.getClass(), "FAILED to get a guild Ranks ["+ id +"] - "+ e);
         }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    // GET / SET
+    //
+    //------------------------------------------------------------------------------------------------------------------
+
+    public String getName() {
+        return name;
     }
 
     @Override

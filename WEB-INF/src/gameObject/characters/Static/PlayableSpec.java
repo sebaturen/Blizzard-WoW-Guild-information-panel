@@ -7,101 +7,73 @@ package com.blizzardPanel.gameObject.characters.Static;
 
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.gameObject.GameObject;
+import com.blizzardPanel.gameObject.GameObject2;
+import com.blizzardPanel.gameObject.Media;
+import com.blizzardPanel.gameObject.StaticInformation;
 import com.google.gson.JsonObject;
 
-public class PlayableSpec extends GameObject
-{    
-    //Playable Specs DB
+public class PlayableSpec {
+
+    // Playable Specs DB
     public static final String TABLE_NAME = "playable_spec";
     public static final String TABLE_KEY = "id";
-    public static final String[] PLAYABLE_SPEC_TABLE_STRUCTURE = {"id", "slug", "class", "name", "role", "desc_male","desc_female"};
-    
-    private int id;
-    private String slug;
-    private PlayableClass pClass;
+
+    // DB Attribute
+    private long id;
+    private long playable_class_id;
     private String name;
-    private String role;
-    private String descMale;
-    private String descFemale;
-    
-    public PlayableSpec(int id)
-    {
-        super(TABLE_NAME, TABLE_KEY, PLAYABLE_SPEC_TABLE_STRUCTURE);
-        loadFromDB(id);
-    }
-    
-    public PlayableSpec(String name, String role, int idClass)
-    {
-        super(TABLE_NAME, TABLE_KEY, PLAYABLE_SPEC_TABLE_STRUCTURE);
-        loadFromDBUniqued(new String[] {"name", "role", "class"}, new String[] { name, role, idClass+"" });        
-    }
-    
-    public PlayableSpec(JsonObject info)
-    {
-        super(TABLE_NAME, TABLE_KEY, PLAYABLE_SPEC_TABLE_STRUCTURE);
-        saveInternalInfoObject(info);
-    }
+    private String role_type;
+    private String desc_male;
+    private String desc_female;
+    private long media_id;
 
-    @Override
-    protected void saveInternalInfoObject(JsonObject objInfo)
-    {
-        if (objInfo.has("slug")) { // from DB
-            this.name = objInfo.get("name").getAsString();
-            this.slug = objInfo.get("slug").getAsString();
-            //this.pClass = new PlayableClass(objInfo.get("class").getAsInt());
-            this.role = objInfo.get("role").getAsString();
-            this.descMale = objInfo.get("desc_male").getAsString();
-            this.descFemale = objInfo.get("desc_female").getAsString();
-        } else { // from blizzard
-            this.name = objInfo.get("name").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
-            this.slug =  objInfo.get("name").getAsJsonObject().get("en_US").getAsString().replaceAll("\\s+","-").toLowerCase();
-            //this.pClass = new PlayableClass( objInfo.get("playable_class").getAsJsonObject().get("id").getAsInt() );
-            this.role = objInfo.get("role").getAsJsonObject().get("type").getAsString();
-            if(this.role.equals("DAMAGE")) this.role = "DPS";
-            if(this.role.equals("HEALER")) this.role = "HEALING";
-            this.descMale = objInfo.get("gender_description").getAsJsonObject().get("male").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
-            this.descFemale = objInfo.get("gender_description").getAsJsonObject().get("female").getAsJsonObject().get(GeneralConfig.getStringConfig("LANGUAGE_API_LOCALE")).getAsString();
+    // Update Control
+    private long last_modified;
+
+    // Internal DATA
+    private PlayableClass playableClass;
+    private StaticInformation role;
+    private Media media;
+
+    public static class Builder extends GameObject2 {
+
+        private long id;
+        public Builder(long specId) {
+            super(TABLE_NAME, PlayableSpec.class);
+            this.id = specId;
         }
-        this.id = objInfo.get("id").getAsInt();
-        this.isData = true;
-    }
 
-    @Override
-    public boolean saveInDB() 
-    {
-        return false;
-    }
+        public PlayableSpec build() {
+            PlayableSpec newSpec = (PlayableSpec) load(TABLE_KEY, id);
 
-    //Getters and Setters
-    @Override
-    public void setId(int id) { this.id = id;}
+            // Load internal data:
+            newSpec.playableClass = new PlayableClass.Builder(newSpec.playable_class_id).build();
+            newSpec.role = new StaticInformation.Builder(newSpec.role_type).build();
+            newSpec.media = new Media.Builder(newSpec.media_id).build();
 
-    @Override
-    public int getId() { return this.id; }
-    public String getSlug() { return this.slug; }
-    public String getName() { return this.name; }
-    public String getRole() { return this.role; }
-    public String getDecrypt(int gender)
-    {
-        switch(gender)
-        {
-            case 1: // female
-                return this.descFemale;
-            default: //0 - male
-                return this.descMale;
+            return newSpec;
         }
+    }
+
+    // Constructor
+    private PlayableSpec() {
+
     }
 
     @Override
     public String toString() {
-        return "PlayableSpec{" +
-                "id=" + id +
-                ", slug='" + slug + '\'' +
-                ", pClass=" + pClass +
-                ", name='" + name + '\'' +
-                ", role='" + role + '\'' +
-                ", descMale='" + descMale + '\'' +
-                ", descFemale='" + descFemale + '\'' +
-                '}';
+        return "{\"_class\":\"PlayableSpec\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"playable_class_id\":\"" + playable_class_id + "\"" + ", " +
+                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"role_type\":" + (role_type == null ? "null" : "\"" + role_type + "\"") + ", " +
+                "\"desc_male\": \"DESCMALE\", " + //(desc_male == null ? "null" : "\"" + desc_male + "\"") + ", " +
+                "\"desc_female\": \"DESCFEMALE\", " + //(desc_female == null ? "null" : "\"" + desc_female + "\"") + ", " +
+                "\"media_id\":\"" + media_id + "\"" + ", " +
+                "\"last_modified\":\"" + last_modified + "\"" + ", " +
+                "\"playableClass\":" + (playableClass == null ? "null" : playableClass) + ", " +
+                "\"role\":" + (role == null ? "null" : role) + ", " +
+                "\"media\":" + (media == null ? "null" : media) +
+                "}";
     }
 }

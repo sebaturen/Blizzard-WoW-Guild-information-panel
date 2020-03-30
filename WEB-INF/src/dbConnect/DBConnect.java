@@ -9,18 +9,11 @@ package com.blizzardPanel.dbConnect;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import javax.xml.crypto.Data;
 
@@ -361,7 +354,17 @@ public class DBConnect {
                         obj.addProperty(column_name, rs.getNString(column_name));
                         break;
                     case java.sql.Types.VARCHAR:
-                        obj.addProperty(column_name, rs.getString(column_name));
+                        String elem = rs.getString(column_name);
+                        if (elem != null && elem.length() > 50) {
+                            try {
+                                JsonElement jObject = JsonParser.parseString(elem);
+                                obj.add(column_name, jObject);
+                            } catch (JsonSyntaxException e) {
+                                obj.addProperty(column_name, elem);
+                            }
+                        } else {
+                            obj.addProperty(column_name, elem);
+                        }
                         break;
                     case java.sql.Types.DATE:
                         if (rs.getDate(column_name) != null)

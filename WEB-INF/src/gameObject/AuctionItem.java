@@ -45,7 +45,7 @@ public class AuctionItem extends GameObject
             this.aucDate = objInfo.get("auc_date").getAsString();
         }
         this.auc = objInfo.get("auc").getAsInt();
-        this.item = new Item(objInfo.get("item").getAsInt());
+        //this.item = new Item(objInfo.get("item").getAsInt());
         this.bid = objInfo.get("bid").getAsLong();
         this.buyout = objInfo.get("buyout").getAsLong();
         this.quantity = objInfo.get("quantity").getAsInt();
@@ -62,12 +62,6 @@ public class AuctionItem extends GameObject
         /* {"auc", "item", "buyout", "bid", "quantity", "timeLeft",
          * "ownerRealm", "context", "rand", "auc_date"};
 `        */
-        switch(saveInDBObj(new String[] { this.auc+"", this.item.getId()+"", this.buyout +"", this.bid +"", this.quantity +"", this.timeLeft,
-                                        this.ownerRealm, this.context +"", this.rand +"", (this.status)? "1":"0", this.aucDate}))
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;            
-        }
         return false;
     }
     

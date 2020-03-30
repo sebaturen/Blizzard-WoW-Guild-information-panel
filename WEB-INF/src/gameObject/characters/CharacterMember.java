@@ -11,9 +11,11 @@ import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.*;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,9 +44,9 @@ public class CharacterMember {
     // Internal DATA
     private Realm realm;
     private CharacterInfo info;
-    private CharacterItem item;
     private CharacterStats stats;
-    private List<CharacterSpec> specs;
+    private List<CharacterItem> item = new ArrayList<>();
+    private List<CharacterSpec> specs = new ArrayList<>();
 
     public static class Builder extends GameObject2 {
 
@@ -62,7 +64,7 @@ public class CharacterMember {
         }
 
         public CharacterMember build() {
-            CharacterMember charMember = (CharacterMember) load(TABLE_KEY +"=?", id);
+            CharacterMember charMember = (CharacterMember) load(TABLE_KEY, id);
 
             // Load internal data:
             charMember.realm = new Realm.Builder(charMember.realm_slug).build();
@@ -71,6 +73,7 @@ public class CharacterMember {
                 charMember.loadInfo();
                 charMember.loadItems();
                 charMember.loadSpec();
+                charMember.loadStats();
             }
 
             return charMember;
@@ -85,37 +88,64 @@ public class CharacterMember {
      * Load a character information (character_info)
      */
     private void loadInfo() {
-        try {
-            JsonArray info_db = GameObject2.dbConnect.select(
-                    CharacterInfo.TABLE_NAME,
-                    new String[]{CharacterInfo.TABLE_KEY},
-                    CharacterInfo.TABLE_KEY+"=?",
-                    new String[]{id+""}
-            );
-
-            if (info_db.size() > 0) {
-                JsonObject infoDetail = info_db.get(0).getAsJsonObject();
-                info = new CharacterInfo.Builder(infoDetail.get(CharacterInfo.TABLE_KEY).getAsLong()).build();
-            } else {
-                Logs.infoLog(this.getClass(), "Character not have an Info ["+ id +"]");
-            }
-        } catch (SQLException | DataException e) {
-            Logs.fatalLog(this.getClass(), "FAILED to get a Character info ["+ id +"] - "+ e);
-        }
+        info = new CharacterInfo.Builder(id).build();
     }
 
     /**
      * Load a character items (character_items)
      */
     private void loadItems() {
+        try {
+            JsonArray items_db = GameObject2.dbConnect.select(
+                    CharacterItem.TABLE_NAME,
+                    new String[]{CharacterItem.TABLE_KEY},
+                    "character_id=?",
+                    new String[]{id+""}
+            );
 
+            if (items_db.size() > 0) {
+                for (JsonElement itemDb : items_db) {
+                    JsonObject itemDetail = itemDb.getAsJsonObject();
+                    item.add(new CharacterItem.Builder(itemDetail.get(CharacterItem.TABLE_KEY).getAsLong()).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Character not have an Items ["+ id +"]");
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a Character items ["+ id +"]");
+        }
     }
 
     /**
      * Load a character spec (character_spec)
      */
     private void loadSpec() {
+        try {
+            JsonArray specs_db = GameObject2.dbConnect.select(
+                    CharacterSpec.TABLE_NAME,
+                    new String[]{CharacterSpec.TABLE_KEY},
+                    "character_id=?",
+                    new String[]{id+""}
+            );
 
+            if (specs_db.size() > 0) {
+                for (JsonElement specDb : specs_db) {
+                    JsonObject specDetail = specDb.getAsJsonObject();
+                    specs.add(new CharacterSpec.Builder(specDetail.get(CharacterSpec.TABLE_KEY).getAsLong()).build());
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Character not have a spec");
+            }
+        } catch (DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a Character spec ["+ id +"]");
+        }
+    }
+
+    /**
+     * Load a character statistics (character_stats)
+     */
+    private void loadStats() {
+        stats = new CharacterStats.Builder(id).build();
     }
 
     @Override

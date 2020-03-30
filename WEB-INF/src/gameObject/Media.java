@@ -23,7 +23,7 @@ public class Media {
         }
 
         public Media build() {
-            return (Media) load(TABLE_KEY +"=?", id);
+            return (Media) load(TABLE_KEY, id);
         }
 
     }

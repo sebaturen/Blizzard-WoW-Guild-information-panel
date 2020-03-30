@@ -7,8 +7,8 @@ package com.blizzardPanel.gameObject.guild;
 
 import com.blizzardPanel.gameObject.GameObject2;
 
-public class Activity
-{
+public class Activity {
+
     // Activity DB
     public static final String TABLE_NAME = "guild_activities";
     public static final String TABLE_KEY = "id";
@@ -29,7 +29,7 @@ public class Activity
         }
 
         public Activity build() {
-            return (Activity) load(TABLE_KEY+"=?", id);
+            return (Activity) load(TABLE_KEY, id);
         }
     }
 

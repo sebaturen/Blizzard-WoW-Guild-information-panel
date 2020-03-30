@@ -42,11 +42,8 @@ public class UpdateService implements ServletContextListener
     {
         //BlizzardUpdate.shared.guild();
         //BlizzardUpdate.shared.guildAPI.info("Ragnaros", "Art of War");
-        System.out.println(
-                new Guild.Builder(61031120)
-                        .fullLoad(true)
-                        .build()
-        );
+        System.out.println(new Guild.Builder(61031120).fullLoad(true).build());
+        //BlizzardUpdate.shared.spellAPI.update();
         //BlizzardUpdate.shared.achievementAPI.update();
         //BlizzardUpdate.shared.updateOld();
         //BlizzardUpdate.shared.loadAllCharacterDetail();

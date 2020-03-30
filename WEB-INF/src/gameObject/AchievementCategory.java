@@ -1,5 +1,7 @@
 package com.blizzardPanel.gameObject;
 
+import com.google.gson.JsonObject;
+
 public class AchievementCategory {
 
     // AchievementCategory DB
@@ -8,7 +10,7 @@ public class AchievementCategory {
 
     // DB Attribute
     private long id;
-    private String name;
+    private JsonObject name;
     private boolean is_guild_category;
     private int display_order;
     private long parent_category_id;
@@ -28,7 +30,7 @@ public class AchievementCategory {
         }
 
         public AchievementCategory build() {
-            AchievementCategory newCat = (AchievementCategory) load(TABLE_KEY+"=?", id);
+            AchievementCategory newCat = (AchievementCategory) load(TABLE_KEY, id);
 
             if (newCat.parent_category_id > 0) {
                 newCat.parentCategory = new AchievementCategory.Builder(newCat.parent_category_id).build();
@@ -47,7 +49,7 @@ public class AchievementCategory {
     public String toString() {
         return "{\"_class\":\"AchievementCategory\", " +
                 "\"id\":\"" + id + "\"" + ", " +
-                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"name\":" + (name == null ? "null" : name) + ", " +
                 "\"is_guild_category\":\"" + is_guild_category + "\"" + ", " +
                 "\"display_order\":\"" + display_order + "\"" + ", " +
                 "\"parent_category_id\":\"" + parent_category_id + "\"" + ", " +

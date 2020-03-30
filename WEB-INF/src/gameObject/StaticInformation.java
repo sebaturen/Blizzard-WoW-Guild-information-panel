@@ -1,5 +1,7 @@
 package com.blizzardPanel.gameObject;
 
+import com.google.gson.JsonObject;
+
 public class StaticInformation {
 
     // Static information DB
@@ -8,7 +10,7 @@ public class StaticInformation {
 
     // DB Attribute
     private String type;
-    private String name;
+    private JsonObject name;
 
     public static class Builder extends GameObject2 {
 
@@ -19,7 +21,7 @@ public class StaticInformation {
         }
 
         public StaticInformation build() {
-            return (StaticInformation) load(TABLE_KEY +"=?", type);
+            return (StaticInformation) load(TABLE_KEY, type);
         }
     }
 
@@ -32,7 +34,7 @@ public class StaticInformation {
     public String toString() {
         return "{\"_class\":\"StaticInformation\", " +
                 "\"type\":" + (type == null ? "null" : "\"" + type + "\"") + ", " +
-                "\"name\": \"NAME\"" + //(name == null ? "null" : "\"" + name + "\"") +
+                "\"name\":" + (name == null ? "null" : name) +
                 "}";
     }
 }

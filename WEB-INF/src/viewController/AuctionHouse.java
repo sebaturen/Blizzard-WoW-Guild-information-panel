@@ -108,7 +108,7 @@ public class AuctionHouse
             for(int i = 0; i < dataItems.size(); i++)
             {
                 int itemId = dataItems.get(i).getAsJsonObject().get(Item.TABLE_KEY).getAsInt();
-                items.add(new Item(itemId));
+                //items.add(new Item(itemId));
             }
         }
         catch (SQLException|DataException e)

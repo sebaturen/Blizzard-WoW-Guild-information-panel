@@ -5,9 +5,7 @@
  */
 package com.blizzardPanel.gameObject.guild;
 
-import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.GameObject2;
-import com.google.gson.JsonObject;
 
 public class Rank {
 
@@ -30,7 +28,7 @@ public class Rank {
         }
 
         public Rank build() {
-            return (Rank) load(TABLE_KEY +"=?", id);
+            return (Rank) load(TABLE_KEY, id);
         }
     }
 

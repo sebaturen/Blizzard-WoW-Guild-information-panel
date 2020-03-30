@@ -1,5 +1,7 @@
 package com.blizzardPanel.gameObject;
 
+import com.google.gson.JsonObject;
+
 public class Achievement {
 
     // Achievement DB
@@ -8,9 +10,9 @@ public class Achievement {
 
     // DB Attribute
     private long id;
-    private String name;
-    private String description;
-    private String reward_description;
+    private JsonObject name;
+    private JsonObject description;
+    private JsonObject reward_description;
     private String faction_type;
     private int points;
     private long media_id;
@@ -35,7 +37,7 @@ public class Achievement {
         }
 
         public Achievement build() {
-            Achievement newAchievement = (Achievement) load(TABLE_KEY +"=?", id);
+            Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
             newAchievement.category = new AchievementCategory.Builder(newAchievement.category_id).build();
             newAchievement.media = new Media.Builder(newAchievement.media_id).build();
             if (newAchievement.faction_type != null) {
@@ -54,9 +56,9 @@ public class Achievement {
     public String toString() {
         return "{\"_class\":\"Achievement\", " +
                 "\"id\":\"" + id + "\"" + ", " +
-                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
-                "\"description\": \"DESC\"," + //(description == null ? "null" : "\"" + description + "\"") + ", " +
-                "\"reward_description\": \"DESC\", " + //(reward_description == null ? "null" : "\"" + reward_description + "\"") + ", " +
+                "\"name\":" + (name == null ? "null" : name) + ", " +
+                //"\"description\":" + (description == null ? "null" : description) + ", " +
+                "\"reward_description\":" + (reward_description == null ? "null" : reward_description) + ", " +
                 "\"faction_type\":" + (faction_type == null ? "null" : "\"" + faction_type + "\"") + ", " +
                 "\"points\":\"" + points + "\"" + ", " +
                 "\"media_id\":\"" + media_id + "\"" + ", " +

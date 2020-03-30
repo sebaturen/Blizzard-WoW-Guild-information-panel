@@ -5,11 +5,10 @@
  */
 package com.blizzardPanel.gameObject;
 
-import com.blizzardPanel.GeneralConfig;
 import com.google.gson.JsonObject;
 
-public class Realm
-{
+public class Realm {
+
     // Realm DB
     public static final String TABLE_NAME = "realms";
     public static final String TABLE_KEY = "id";
@@ -17,7 +16,7 @@ public class Realm
     // DB Attribute
     private int id;
     private String slug;
-    private String name;
+    private JsonObject name;
     private String locale;
     private String timezone;
     private String type_type;
@@ -45,7 +44,7 @@ public class Realm
 
         public Realm build() {
             if (realmSlug == null) {
-                return (Realm) load(TABLE_KEY +"=?", id);
+                return (Realm) load(TABLE_KEY, id);
             } else {
                 return (Realm) load("slug=?", realmSlug);
             }
@@ -62,7 +61,7 @@ public class Realm
         return "{\"_class\":\"Realm\", " +
                 "\"id\":\"" + id + "\"" + ", " +
                 "\"slug\":" + (slug == null ? "null" : "\"" + slug + "\"") + ", " +
-                "\"name\": \"NAME\", " + //(name == null ? "null" : "\"" + name + "\"") + ", " +
+                "\"name\":" + (name == null ? "null" : name) + ", " +
                 "\"locale\":" + (locale == null ? "null" : "\"" + locale + "\"") + ", " +
                 "\"timezone\":" + (timezone == null ? "null" : "\"" + timezone + "\"") + ", " +
                 "\"type_type\":" + (type_type == null ? "null" : "\"" + type_type + "\"") + ", " +

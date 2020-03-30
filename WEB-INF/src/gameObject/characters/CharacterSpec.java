@@ -5,148 +5,97 @@
  */
 package com.blizzardPanel.gameObject.characters;
 
-import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.GameObject2;
 import com.blizzardPanel.gameObject.Spell;
-import com.blizzardPanel.dbConnect.DBStructure;
-import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.characters.Static.PlayableSpec;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class CharacterSpec extends GameObject
-{
+public class CharacterSpec {
+
     //Specs  DB
     public static final String TABLE_NAME = "character_specs";
     public static final String TABLE_KEY = "id";
-    public static final String[] SPECS_TABLE_STRUCTURE = {"id", "member_id", "spec_id", "enable",
-                                                            "tier_0", "tier_1", "tier_2",
-                                                            "tier_3", "tier_4", "tier_5",
-                                                            "tier_6"};    
-    //Constant
-    public static final int MAX_SPELL_TALENTS = 7; //Actualy u can get max 7 differents talents
-    
-    //Atribute
-    private int id;
-    private int memberId;
-    private PlayableSpec spec;
+
+    // DB Attribute
+    private long id;
+    private long character_id;
+    private long specialization_id;
     private boolean enable;
-    private Spell[] spells;
- 
+    private long tier_0;
+    private long tier_1;
+    private long tier_2;
+    private long tier_3;
+    private long tier_4;
+    private long tier_5;
+    private long tier_6;
 
-    public CharacterSpec(int specId)
-    {        
-        super(TABLE_NAME, TABLE_KEY, SPECS_TABLE_STRUCTURE);
-        loadFromDB(specId);
-    }
-    
-    public CharacterSpec(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
-    {
-        super(TABLE_NAME, TABLE_KEY, SPECS_TABLE_STRUCTURE);
-    }
-    
-    private void saveInfoFromBlizz(CharacterMember member, JsonObject specInfo, JsonArray talentsInfo)
-    {
-        this.spells = new Spell[MAX_SPELL_TALENTS];
-        //this.spec = new PlayableSpec(specInfo.get("name").getAsString(), specInfo.get("role").getAsString(), member.getMemberClass().getId());
-        if(this.spec.getName() == null)
-        {
-            Logs.errorLog(CharacterSpec.class, "Fail to get Spec Member> "+ this.memberId);
-            Logs.errorLog(CharacterSpec.class, "\tSpec Name: "+ specInfo.get("name").getAsString());
-            Logs.errorLog(CharacterSpec.class, "\tSpec Role: "+ specInfo.get("role").getAsString());
-            System.exit(-1);
+    // Internal DATA
+    private PlayableSpec spec;
+    private List<Spell> tiers = new ArrayList<>();
+
+    public static class Builder extends GameObject2 {
+
+        private long id;
+        public Builder(long charSpecId) {
+            super(TABLE_NAME, CharacterSpec.class);
+            this.id = charSpecId;
         }
-        for(int i = 0; i < talentsInfo.size(); i++)
-        {
-            JsonObject talentLevel = talentsInfo.get(i).getAsJsonObject(); //get("tier") talent level
-            if(talentsInfo.get(i) != null)
-            {
-                JsonObject skillBlizzDetail = talentLevel.get("spell").getAsJsonObject();
-                int spellID = skillBlizzDetail.get("id").getAsInt();
-                Spell sp = new Spell( spellID );
-                if(!sp.isInternalData())
-                {
-                    sp = new Spell(skillBlizzDetail);
-                    sp.saveInDB();
-                }
-                this.spells[ talentLevel.get("tier").getAsInt() ] = sp;
+
+        public CharacterSpec build() {
+            CharacterSpec newCSpec = (CharacterSpec) load(TABLE_KEY, id);
+
+            // Load internal data:
+            newCSpec.spec = new PlayableSpec.Builder(newCSpec.specialization_id).build();
+            if (newCSpec.tier_0 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
             }
-        }
-        this.isData = true;
-    }
-    
-    @Override
-    protected void saveInternalInfoObject(JsonObject specInfo)
-    {        
-        this.id = specInfo.get("id").getAsInt();
-        this.memberId = specInfo.get("member_id").getAsInt();
-        this.spec = new PlayableSpec(specInfo.get("spec_id").getAsInt());
-        this.enable = specInfo.get("enable").getAsBoolean();
-        this.spells = new Spell[MAX_SPELL_TALENTS];
-        if(specInfo.get("tier_0").getAsInt() != 0) this.spells[0] = new Spell( specInfo.get("tier_0").getAsInt() );
-        if(specInfo.get("tier_1").getAsInt() != 0) this.spells[1] = new Spell( specInfo.get("tier_1").getAsInt() );
-        if(specInfo.get("tier_2").getAsInt() != 0) this.spells[2] = new Spell( specInfo.get("tier_2").getAsInt() );
-        if(specInfo.get("tier_3").getAsInt() != 0) this.spells[3] = new Spell( specInfo.get("tier_3").getAsInt() );
-        if(specInfo.get("tier_4").getAsInt() != 0) this.spells[4] = new Spell( specInfo.get("tier_4").getAsInt() );
-        if(specInfo.get("tier_5").getAsInt() != 0) this.spells[5] = new Spell( specInfo.get("tier_5").getAsInt() );
-        if(specInfo.get("tier_6").getAsInt() != 0) this.spells[6] = new Spell( specInfo.get("tier_6").getAsInt() );
-        this.isData = true;
-    }
-
-    @Override
-    public boolean saveInDB() 
-    { 
-        String[] spellID = new String[MAX_SPELL_TALENTS];
-        for(int j = 0; j < this.spells.length; j++)
-        {
-            if(this.spells[j] != null)
-            {
-                spellID[j] = this.spells[j].getId() +"";
+            if (newCSpec.tier_1 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
             }
+            if (newCSpec.tier_2 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+            }
+            if (newCSpec.tier_3 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+            }
+            if (newCSpec.tier_4 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+            }
+            if (newCSpec.tier_5 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+            }
+            if (newCSpec.tier_6 > 0) {
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+            }
+
+            return newCSpec;
         }
-        String isEnable = (this.enable)? "1":"0";
-        
-        /* {"member_id", "name", "role", "enable",
-         * "tier_0", "tier_1", "tier_2",
-         * "tier_3", "tier_4", "tier_5",
-         * "tier_6"};
-         */
-        setTableStructur(DBStructure.outKey(SPECS_TABLE_STRUCTURE));
-        int valSave = saveInDBObj(new String[] { this.memberId +"", this.spec.getId() +"", isEnable,
-                                                spellID[0], spellID[1], spellID[2], 
-                                                spellID[3], spellID[4], spellID[5],
-                                                spellID[6]});
-        switch (valSave)
-        {
-            case SAVE_MSG_INSERT_OK: case SAVE_MSG_UPDATE_OK:
-                return true;
-        }
-        return false;
     }
 
-    //Getters and Setters
-    public boolean isEnable() { return this.enable; }
-    public boolean isThisSpec(int specId) { return this.spec.getId() == specId; }
-    public boolean isThisCharSpec(int id) { return (this.id == id); }
-    @Override
-    public int getId() { return this.id; }
-    public PlayableSpec getSpec() { return this.spec; }
-    public Spell[] getSpells() { return this.spells; }
-    public int getMemberId() { return this.memberId; }
-    @Override
-    public void setId(int id) { this.id = id; }
-    public void setEnable(boolean e) { this.enable = e; }
-    public void setMemberId(int id) { this.memberId = id; }
+    // Constructor
+    private CharacterSpec() {
+
+    }
 
     @Override
     public String toString() {
-        return "CharacterSpec{" +
-                "id=" + id +
-                ", memberId=" + memberId +
-                ", spec=" + spec +
-                ", enable=" + enable +
-                ", spells=" + Arrays.toString(spells) +
-                '}';
+        return "{\"_class\":\"CharacterSpec\", " +
+                "\"id\":\"" + id + "\"" + ", " +
+                "\"character_id\":\"" + character_id + "\"" + ", " +
+                "\"specialization_id\":\"" + specialization_id + "\"" + ", " +
+                "\"enable\":\"" + enable + "\"" + ", " +
+                "\"tier_0\":\"" + tier_0 + "\"" + ", " +
+                "\"tier_1\":\"" + tier_1 + "\"" + ", " +
+                "\"tier_2\":\"" + tier_2 + "\"" + ", " +
+                "\"tier_3\":\"" + tier_3 + "\"" + ", " +
+                "\"tier_4\":\"" + tier_4 + "\"" + ", " +
+                "\"tier_5\":\"" + tier_5 + "\"" + ", " +
+                "\"tier_6\":\"" + tier_6 + "\"" + ", " +
+                "\"spec\":" + (spec == null ? "null" : spec) + ", " +
+                "\"tiers\":" + (tiers == null ? "null" : Arrays.toString(tiers.toArray())) +
+                "}";
     }
 }

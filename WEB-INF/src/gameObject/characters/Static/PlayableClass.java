@@ -5,12 +5,10 @@
  */
 package com.blizzardPanel.gameObject.characters.Static;
 
-import com.blizzardPanel.gameObject.GameObject;
 import com.blizzardPanel.gameObject.GameObject2;
-import com.google.gson.JsonObject;
 
-public class PlayableClass
-{	
+public class PlayableClass {
+
     // Playable Class DB
     public static final String TABLE_NAME = "playable_class";
     public static final String TABLE_KEY = "id";
@@ -33,7 +31,7 @@ public class PlayableClass
         }
 
         public PlayableClass build() {
-            return (PlayableClass) load(TABLE_KEY+"=?", id);
+            return (PlayableClass) load(TABLE_KEY, id);
         }
     }
 

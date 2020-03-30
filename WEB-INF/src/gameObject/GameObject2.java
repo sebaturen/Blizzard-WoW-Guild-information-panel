@@ -4,6 +4,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBConnect;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -22,8 +23,8 @@ public abstract class GameObject2 {
         this.classObject = classObject;
     }
 
-    protected Object load(String where, long whereValue) { return load(where, new String[]{whereValue+""}); }
-    protected Object load(String where, String whereValue) { return load(where, new String[]{whereValue}); }
+    protected Object load(String where, long whereValue) { return load(where+"=?", new String[]{whereValue+""}); }
+    protected Object load(String where, String whereValue) { return load(where+"=?", new String[]{whereValue}); }
     protected Object load(String where, String[] whereValue) {
         try {
             JsonArray dbSelect = dbConnect.select(
@@ -36,7 +37,9 @@ public abstract class GameObject2 {
 
             if (dbSelect.size() > 0) {
                 JsonObject content = dbSelect.get(0).getAsJsonObject();
-                return new Gson().fromJson(content, classObject);
+                System.out.println("content! "+ content);
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                return gson.fromJson(content, classObject);
             } else {
                 Logs.errorLog(this.getClass(), "DATA NOT FOUND");
             }

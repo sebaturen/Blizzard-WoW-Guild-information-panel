@@ -15,8 +15,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
-public class ServerTime 
-{    
+public class ServerTime {
     //Constant
     public static final String PST_TIME_ZONE = "America/Los_Angeles";
     public static final String MST_TIME_ZONE = "";

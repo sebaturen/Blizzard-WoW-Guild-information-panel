@@ -41,7 +41,7 @@ public class CharacterInfo {
         }
 
         public CharacterInfo build() {
-            CharacterInfo newInfo = (CharacterInfo) load(TABLE_KEY+"=?", id);
+            CharacterInfo newInfo = (CharacterInfo) load(TABLE_KEY, id);
             newInfo.race = new PlayableRace.Builder(newInfo.race_id).build();
             newInfo.charClass = new PlayableClass.Builder(newInfo.character_class_id).build();
             newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
