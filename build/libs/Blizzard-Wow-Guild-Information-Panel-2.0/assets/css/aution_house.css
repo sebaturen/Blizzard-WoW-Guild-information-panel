@@ -1,0 +1,35 @@
+/*Aution house*/
+#AH_timeUpdate {
+    color: #6c757d;
+}
+.AH_item_icon {
+    width: 40px;
+    height: 40px;
+}
+.suggest_item_icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+#itemsSuggested {
+    width: 100%;
+    background-color: #fff;
+    color: #495057;
+    margin-top: -3px;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-right: 8px;
+}
+.suggest_item {
+    border-top: 1px solid #ced4da;
+    padding: 4px 0px 5px 11px;
+}
+.suggest_item:hover {
+    background-color: #e4dcdc;
+}
+.itemSuggestLoad {
+    width: 20px;
+    height: 20px;
+}

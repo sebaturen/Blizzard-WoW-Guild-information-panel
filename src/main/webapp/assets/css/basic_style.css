@@ -1,0 +1,504 @@
+/*Art of War Style page...*/
+html {
+    height: 100%;
+}
+body {
+    color: #fff;
+    position: relative;
+    padding-bottom: 13rem;
+    min-height: 100%;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: justify;
+}
+.right {
+    float: right;
+}
+.left {
+    float: left;
+}
+.bold {
+    font-weight: bold;
+}
+.table-dark {
+    background-color: transparent;
+}
+/*-------FONTS--------------*/
+@font-face {
+    font-family: "LifeCraft";
+    src: url("./../font/LifeCraft_Font.ttf");
+}
+@font-face {
+      font-family: 'iconset';
+      src: url("./../font/iconset.ttf");
+      font-weight: normal;
+      font-style: normal;
+}
+.artOfWar-icon {
+    font-family: "iconset";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    /* opacity: .8; */
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    margin-left: .2em;
+    /* font-size: 120%; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+/*END----FONTS--------------*/
+/*-------GENERAL------------*/
+.black_white {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.table-dark {
+    background: transparent;
+}
+.item-floting-desc {
+    padding: 10px;
+    padding-right: 20px;
+    z-index: 999;
+    display: none;
+    position: fixed;
+    overflow: hidden;
+    background-image: url('./../img/tooltip.png');
+}
+.tooltipDesc {
+    text-align: left !important;
+    text-shadow: none !important;
+}
+.tooltip-yellow {
+    color: #ffd100;
+}
+.azeritaPowerDesc, .itemSpellDetail {
+    max-width: 319px;
+    padding-left: 14px;
+}
+.azPower, .itemSpellDetail {
+    font-size: 0.8em;
+}
+.navbar {
+    box-shadow: 0 3px 8px 4px rgba(0,0,0,.5);
+}
+#footer {
+    background-color: #212529;
+    box-shadow: 0 -3px 8px 4px rgba(0,0,0,.5);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2rem;
+}
+
+.copyRight {
+    color: rgba(255,255,255,.25);
+    text-align: center;
+}
+.right_small_date {
+    font-size: 0.7em;
+    color: #a3a7ab;
+    float: right;
+    text-align: right;
+}
+.small_title {
+    /*text-align: center;*/
+    font-size: 2em;
+}
+.divder {
+    border-bottom: 1px solid #ffffff26;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+.img_fondo_pagina {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center center;
+    background-image: url("./../img/background/BFA (21).jpg");
+}
+.pointer {
+    cursor: pointer;
+}
+body > .container {
+    background-color: #212529;
+    margin-top: 21px;
+    padding: 25px;
+    /* border: 1px solid; */
+    box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
+    margin-bottom: 21px;
+}
+.moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta,
+.moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {
+    background: no-repeat right center;
+    display: inline-block;
+}
+.moneygold {
+    padding-right: 15px;
+    background-image: url("./../img/icons/money-gold.gif");
+}
+.moneysilver {
+    padding-right: 15px;
+    background-image: url("./../img/icons/money-silver.gif");
+}
+.moneycopper {
+    padding-right: 15px;
+    background-image: url("./../img/icons/money-copper.gif");
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #bf5861;
+    border-color: #ff001b;
+}
+.warcraft_font {
+    font-family: "LifeCraft";
+}
+.flipImg {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+/* date picker box */
+.calendar-table > .table-condensed {
+    color: #000;
+}
+.battle-tag { color: #fff; }
+/*END -------GENERAL------------*/
+
+/*-------COLOR ITEM QUALITY--------*/
+.quality-poor,.quality-0 {
+    color: #9d9d9d;
+}
+.quality-common,.quality-1 {
+    color: #ffffff;
+}
+.quality-uncommon, .quality-2{
+    color: #1eff00;
+}
+.quality-rare, .quality-3 {
+    color: #0070dd;
+}
+.quality-epic, .quality-4 {
+    color: #a335ee;
+}
+.quality-legendary, .quality-5 {
+    color: #ff8000;
+}
+.quality-artifact, .quality-6 {
+    color: #e6cc80;
+}
+.quality-heirloom, .quality-7 {
+    color: #00ccff;
+}
+.quality-wow-token, .quality-8 {
+    color: #00ccff;
+}
+/*END-------COLOR ITEM QUALITY--------*/
+
+/*-------PLAYABLE CLASS COLOR------------*/
+.character-1 { color: #C79C6E; }
+.character-2 { color: #F58CBA; }
+.character-3 { color: #ABD473; }
+.character-4 { color: #FFF569; }
+.character-5 { color: #FFFFFF; }
+.character-6 { color: #C41F3B; }
+.character-7 { color: #0070DE; }
+.character-8 { color: #40C7EB; }
+.character-9 { color: #8787ED; }
+.character-10 { color: #00FF96; }
+.character-11 { color: #FF7D0A; }
+.character-12 { color: #A330C9; }
+/*END -------PLAYABLE CLASS COLOR------------*/
+
+/*-------MENU------------*/
+#main-menu {
+    background-color: #00000096;
+    color: white;
+}
+
+#main-menu > nav {
+    text-align: center;
+}
+
+#main-menu > nav > li {
+    display: inline-block;
+}
+#token_price > p {
+    float: left;
+}
+/*END -------MENU------------*/
+
+/*-------GUILD CHALLENGE------------*/
+.dungeon-challenge-img {
+    background-size: cover;
+    background-position: center center;
+    margin: -25px -25px 0 -25px;
+}
+.dung-title {
+    padding: 50px;
+    text-align: center;
+    text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
+    color: #fff;
+}
+.group-time {
+    float: left;
+}
+.key-downgrade {
+    color: red;
+}
+.key-upgrade {
+    color: #19e219;
+    text-shadow: 0 0 15px #3dce43, 0 0 30px rgba(255,255,255,.3);
+}
+.key-date {
+    float: right;
+    font-size: 0.7em;
+    text-align: center;
+    padding-top: 2em;
+    margin-bottom: 0em;
+}
+/*END -------GUILD CHALLENGE------------*/
+
+/*-------GUILD PROGRESS------------*/
+.world-rank {
+    color: #fff;
+}
+.region-rank {
+    color: #1eff00;
+}
+.realm-rank {
+    color: #0070dd;
+}
+/*END -------GUILD PROGRESS------------*/
+
+/*-------FORCE UPDATE------------*/
+.returnCode {
+    padding: 5px;
+    border: solid 1px #000;
+    margin-top: 1em;
+    background-color: #0000003d;
+    min-height: 51px;
+}
+.returnCode > code {
+    color: white;
+}
+/*END -------FORCE UPDATE------------*/
+
+/*-------LOADING SPINNER------------*/
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/*END-------LOADING SPINNER------------*/
+
+/*-----------------ALTERS--------------*/
+.char-name {
+    /* background-color: rebeccapurple; */
+    width: 150px;
+}
+.char-class {
+    text-align: center;
+}
+/*END------------ALTERS--------------*/
+
+/*-----------------GUILD_RANK--------------*/
+.mem-name {
+    font-size: 0.8em;
+}
+/*END------------GUILD_RANK--------------*/
+
+/*-----------------USER PANEL--------------*/
+.main_char:hover {
+    color: #ffd100;
+}
+.discCode {
+    float: right;
+}
+.discCode > .returnCode {
+    float: right;
+    margin-top: 0;
+}
+
+/*END-----------------USER PANEL--------------*/
+
+/*-----------------CREATE POLL--------------*/
+.col-2 > .form-check-label {
+    margin-left: 0.96rem;
+}
+.addOption {
+    margin-right: 1em;
+}
+/*END-----------------CREATE POLL--------------*/
+
+/*-----------------POLL--------------*/
+.poll_question {
+    padding: 1em;
+    padding-bottom: 1.7em;
+}
+.poll_controll {
+    float: right;
+}
+.btn_poll_option, .btn_poll_option_delete {
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    padding-top: 2px;
+}
+.btn_poll_option_delete > i {
+    margin-top: -0.3em;
+}
+.deleteOption {
+    float: right;
+}
+.poll_options {
+    margin: 1em;
+}
+.poll_options > div {
+    margin-bottom: 0.5em;
+}
+.ajaxLoad {
+    float: left;
+    width: 20px;
+    height: 20px;
+}
+.poll_opt_mask {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+.poll_opts.row {
+    /* background-color: red; */
+    margin-left: 0;
+    margin-right: 0;
+}
+.poll_controll {
+    float: right;
+}
+/*END-----------------POLL--------------*/
+
+/*----------MYTHIC PLUS-----------------*/
+.key_run_dun_img {
+    height: 140px;
+    display: table;
+}
+.key_run_group {
+    padding-bottom: 15px;
+}
+.key_run_lvl {
+    background-image: url("./../img/icons/mythic_key_level.png");
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center center;
+    text-align: center;
+    padding-top: 29px;
+    font-size: 1.5em;
+    float: left;
+}
+.key_affixes {
+    text-align: center;
+}
+.key_affix_img {
+    margin-right: 2px;
+    width: 40px;
+    border: 1px solid #928c8c;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.key_run_dun_img > .dung-title {
+    padding: 0 40px 0 0;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+}
+.key_title {
+    text-align: center;
+    font-family: "LifeCraft";
+    padding-bottom: 39px;
+}
+.char-realm {
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.5em;
+    float: right;
+}
+.fails_keys {
+    float: right;
+}
+/*END----------MYTHIC PLUS-----------------*/
+
+/*-----------------EVENT--------------*/
+.ev_owner {
+    font-size: 0.7em;
+}
+#main_zone {
+    text-align: center;
+    position: relative;
+}
+#delete_main {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+.drop_zone {
+    width: 100%;
+    min-height: 7em;
+    background-color: #454d55;
+}
+.character-alter-tab > thead {
+    display: none;
+}
+.user_char_disable {
+    text-decoration-line: line-through;
+}
+.spec_select, .character-tab > tbody tr, .removeCharAlter, #delete_main {
+    cursor: pointer;
+}
+.spec_select:hover {
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+#ev_container {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+/*END-----------------EVENT--------------*/

@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.blizzardPanel'
+version '2.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Apache logging
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.1'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+
+    // Java Servlet and WEB sockets
+    implementation 'javax.servlet:javax.servlet-api:3.1.0'
+    implementation 'javax.websocket:javax.websocket-api:1.0'
+    implementation 'javax.servlet:jstl:1.2'
+
+    // Jersey API Restful
+    compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.25.1'
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.25.1'
+
+
+}

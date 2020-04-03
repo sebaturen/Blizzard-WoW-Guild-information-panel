@@ -1,0 +1,161 @@
+/*Only members Style~*/
+.memContent {
+    background-size: cover;
+    background-position: center center;
+}
+.infoMember {
+    min-height: 600px;
+    position: relative;
+}
+.last_update {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.5em;
+}
+.Media-image {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+    float: left;
+}
+.statDetail {
+    float: left;
+    width: 200px;
+}
+.img_profile {
+    min-height: 50px;
+    max-height: 50px;
+}
+.bestScoreMythc {
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.5em;
+}
+/*-------ITEMS ---------------*/
+.item_title {    
+    text-shadow: 0 0 15px, 0 0 30px rgba(255,255,255,.3);
+}
+.noLinkStyle a {
+    text-decoration: none;
+}
+.itemDetail {
+    min-width: 200px;
+    margin-bottom: 5px;
+}
+.itemIcon {
+    width: 56px;
+    height: 56px;
+    border: 1px solid #928c8c;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.itemsLeft .itemDesc {
+    padding-left: 10px;
+}
+.itemsRight .itemDesc {
+    text-align: right;
+    padding-right: 10px;
+}
+.equip.row {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.mainHand, .mainHand p {
+    text-align: right;
+}
+.mainHand > .itemIcon {
+    float: right;
+    margin-left: 10px;
+}
+.offHand > .itemIcon {
+    float: left; 
+    margin-right: 10px;
+}
+.gemIcon, .azeritaSkillImg {
+    height: 16px;
+    width: 16px;
+}
+.undefinedAzPower {
+    color: #b7b4b4;
+}
+/*END-------ITEMS ---------------*/
+
+/*-------STATS COLOR ---------*/
+.Icon--health {
+    color: #27cc4e;
+}
+.Icon--stamina {
+    color: #ff8b2d;
+}
+.Icon--critical-strike {
+    color: #e01c1c;
+}
+.Icon--haste {
+    color: #0ed59b;
+}
+.Icon--mastery {
+    color: #9256ff;
+}
+.Icon--versatility {
+    color: #bfbfbf;
+}
+.Icon--mana {
+    color: #1c8aff;
+}
+.Icon--focus {
+    color: #d45719;
+}
+.Icon--agility {
+    color: #ffd955;
+}
+.Icon--intellect {
+    color: #d26cd1;
+}
+.Icon--strength {
+    color: #f33232;
+}
+.Icon--rage {
+    color: #ab0000;
+}
+.Icon--runic-power {
+    color: #00bcde;
+}
+.Icon--energy {
+    color: #cb9501;
+}
+.Icon--fury {
+    color: #8400ff;
+}
+.Icon--pain {
+    color: #d45719;
+}
+.Icon--insanity {
+    color: #60f;
+}
+.Icon--maelstrom {
+    color: #008fff;
+}
+svg.Icon-svg {
+    fill: currentColor;
+}
+/*END-------STATS COLOR ---------*/
+
+/*----------SPEC DETAILS---------*/
+.spec {
+    padding-top: 1em;
+}
+.active_spec_spells {
+    border-top: 1px solid #ffffff26;
+    margin: 0;
+    padding-top: 1em;
+}
+.img_spell {
+    margin-right: 9px;
+    width: 40px;
+}
+.spell_inf {
+    float: left;
+}
+/*END----------SPEC DETAILS---------*/

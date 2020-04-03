@@ -1,0 +1,24 @@
+/*Index guild information style*/
+/*-------INDEX------------*/
+.home_name {
+    font-size: 6em;
+    text-align: center;
+}
+.log_artofwar {
+    text-align: center;
+}
+.log_artofwar img {
+    max-width: 100%;
+}
+.newDetail {
+    /*margin-left: 53px;*/
+}
+.newDetail > .desc {
+    font-size: 0.7em;
+}
+.icon_new {
+    text-align: center;
+}
+/*END -------INDEX------------*/
+
+

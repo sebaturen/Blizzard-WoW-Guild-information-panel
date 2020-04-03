@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="FxmlFile" />
+        <option value="Enum" />
+        <option value="JavaScript File" />
+        <option value="Jsp File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ZrPdPSgRFaVUddj2P3DzZ3gfyo" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/assets/js" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/classes" />
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle build :war" />
+      <command value="gradle build" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.Blizzard-Wow-Guild-Information-Panel [build]">
+    <configuration name="Blizzard-Wow-Guild-Information-Panel [build :war]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+            <option value=":war" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="Blizzard-Wow-Guild-Information-Panel [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.Blizzard-Wow-Guild-Information-Panel [build]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="" />
+      <created>1585594326778</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585594326778</updated>
+      <workItem from="1585850125041" duration="465000" />
+      <workItem from="1585850809072" duration="138000" />
+      <workItem from="1585850992518" duration="2410000" />
+      <workItem from="1585857656912" duration="103000" />
+      <workItem from="1585860144122" duration="16421000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585695418122">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585695418122" />
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1585879608122">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
+    </state>
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585879608122" />
+    <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585862074038" />
+    <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1585704246275" />
+    <state x="1627" y="458" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585784750127" />
+    <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1585861177977">
+      <screen x="0" y="23" width="1920" height="1113" />
+    </state>
+    <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585861177977" />
+    <state x="1160" y="-1160" key="#toString()_Generation_Settings" timestamp="1585875921640">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
+    </state>
+    <state x="1160" y="-1160" key="#toString()_Generation_Settings/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585875921640" />
+    <state width="2300" height="299" key="GridCell.Tab.0.bottom" timestamp="1585849931881">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state width="1687" height="299" key="GridCell.Tab.0.bottom/0.23.1920.1113@0.23.1920.1113" timestamp="1585704239243" />
+    <state width="2300" height="299" key="GridCell.Tab.0.bottom/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931881" />
+    <state width="2300" height="299" key="GridCell.Tab.0.center" timestamp="1585849931880">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state width="1687" height="299" key="GridCell.Tab.0.center/0.23.1920.1113@0.23.1920.1113" timestamp="1585704239242" />
+    <state width="2300" height="299" key="GridCell.Tab.0.center/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
+    <state width="2300" height="299" key="GridCell.Tab.0.left" timestamp="1585849931880">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state width="1687" height="299" key="GridCell.Tab.0.left/0.23.1920.1113@0.23.1920.1113" timestamp="1585704239242" />
+    <state width="2300" height="299" key="GridCell.Tab.0.left/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
+    <state width="2300" height="299" key="GridCell.Tab.0.right" timestamp="1585849931880">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state width="1687" height="299" key="GridCell.Tab.0.right/0.23.1920.1113@0.23.1920.1113" timestamp="1585704239243" />
+    <state width="2300" height="299" key="GridCell.Tab.0.right/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
+    <state x="953" y="379" key="SettingsEditor" timestamp="1585851468309">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state x="953" y="379" key="SettingsEditor/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851468309" />
+    <state x="1029" y="552" key="com.intellij.ide.util.TipDialog" timestamp="1585860145110">
+      <screen x="0" y="23" width="1920" height="1113" />
+    </state>
+    <state x="1029" y="552" key="com.intellij.ide.util.TipDialog/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585860145110" />
+    <state x="1372" y="666" key="com.intellij.ide.util.TipDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585850992539" />
+    <state x="959" y="577" width="683" height="497" key="find.popup" timestamp="1585785697880">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state x="959" y="577" width="683" height="497" key="find.popup/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585785697880" />
+    <state x="718" y="306" key="new project wizard" timestamp="1585594440692">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state x="718" y="306" key="new project wizard/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585594440692" />
+    <state x="1479" y="351" width="670" height="675" key="run.anything.popup" timestamp="1585851423482">
+      <screen x="0" y="23" width="2560" height="1353" />
+    </state>
+    <state x="1479" y="351" width="670" height="675" key="run.anything.popup/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851423482" />
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup" timestamp="1585876976967">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
+    </state>
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585876976967" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java</url>
+          <line>1114</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMedia.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java</url>
+          <line>122</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
