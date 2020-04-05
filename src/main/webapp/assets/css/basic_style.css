@@ -65,7 +65,7 @@ p {
 .table-dark {
     background: transparent;
 }
-.item-floting-desc {
+.item-floating-desc {
     padding: 10px;
     padding-right: 20px;
     z-index: 999;
@@ -120,7 +120,7 @@ p {
     margin-bottom: 5px;
     padding-bottom: 5px;
 }
-.img_fondo_pagina {
+.img_fondo_pagina_old {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -128,6 +128,15 @@ p {
     background-size: cover;
     background-position: center center;
     background-image: url("./../img/background/BFA (21).jpg");
+}
+.img_fondo_pagina {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center center;
+    background-image: url("./../img/background/SL.jpg");
 }
 .pointer {
     cursor: pointer;
@@ -258,10 +267,10 @@ body > .container {
 .group-time {
     float: left;
 }
-.key-downgrade {
+.key-false {
     color: red;
 }
-.key-upgrade {
+.key-true {
     color: #19e219;
     text-shadow: 0 0 15px #3dce43, 0 0 30px rgba(255,255,255,.3);
 }
@@ -301,13 +310,14 @@ body > .container {
 
 /*-------LOADING SPINNER------------*/
 .loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
 }
 
 /* Safari */

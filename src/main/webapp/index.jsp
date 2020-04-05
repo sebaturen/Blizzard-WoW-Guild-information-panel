@@ -7,7 +7,7 @@
 
     </head>
     <body>
-        <div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
+        <div id="img_fPage" class="img_fondo img_fondo_pagina_old"></div>
         <div class="container fill" style="margin-top: 0px;">
             <div id="welcome">
                 <div class="row guild_logoName divder">

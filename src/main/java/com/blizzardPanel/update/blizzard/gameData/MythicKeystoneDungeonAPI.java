@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.mythicKeystones.MythicAffix;
 import com.blizzardPanel.gameObject.mythicKeystones.MythicDungeon;
 import com.blizzardPanel.gameObject.mythicKeystones.MythicSeason;
@@ -198,7 +199,7 @@ public class MythicKeystoneDungeonAPI extends BlizzardAPI {
 
                 columns.add("media_id");
                 values.add(blizz_affix.getAsJsonObject("media").get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(blizz_affix.getAsJsonObject("media"));
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.KEYSTONE_AFFIX, blizz_affix.getAsJsonObject("media"));
 
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");

@@ -10,7 +10,6 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.*;
 import com.blizzardPanel.gameObject.achievements.Achievement;
-import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -47,9 +46,13 @@ public class Guild {
     private Realm realm;
     private StaticInformation faction;
     private List<Achievement> achievements;
-    private List<Activity> activities;
-    private List<Roster> rosters;
-    private List<Rank> ranks;
+    private List<GuildActivity> activities;
+    private List<GuildRoster> guildRosters;
+    private List<GuildRank> guildRanks;
+
+    // RunTime update control time
+    private Date lastRosterUpdate;
+    private Date lastActivitiesUpdate;
 
     public static class Builder extends DBLoadObject {
 
@@ -135,11 +138,12 @@ public class Guild {
      * Load guild activities
      */
     public void loadActivities(int maxActivities) {
+        lastActivitiesUpdate = new Date();
         activities = new ArrayList<>();
         try {
             JsonArray activities_db = DBLoadObject.dbConnect.select(
-                    Activity.TABLE_NAME,
-                    new String[]{Activity.TABLE_KEY},
+                    GuildActivity.TABLE_NAME,
+                    new String[]{GuildActivity.TABLE_KEY},
                     "guild_id=? order by timestamp DESC limit "+ maxActivities,
                     new String[]{id+""}
             );
@@ -147,7 +151,7 @@ public class Guild {
             if (activities_db.size() > 0) {
                 for (JsonElement activity : activities_db) {
                     JsonObject actDetail = activity.getAsJsonObject();
-                    activities.add(new Activity.Builder(actDetail.get(Activity.TABLE_KEY).getAsLong()).build());
+                    activities.add(new GuildActivity.Builder(actDetail.get(GuildActivity.TABLE_KEY).getAsLong()).build());
                 }
             } else {
                 Logs.infoLog(this.getClass(), "Guild not have an Activities ["+ id +"]");
@@ -161,7 +165,8 @@ public class Guild {
      * Load guild rosters
      */
     public void loadRosters() {
-        rosters = new ArrayList<>();
+        guildRosters = new ArrayList<>();
+        lastRosterUpdate = new Date();
         try {
 
             //Only get members who logged in at least 1 month ago
@@ -184,7 +189,7 @@ public class Guild {
             if (rosters_db.size() > 0) {
                 for (JsonElement roster : rosters_db) {
                     JsonObject rosterDetail = roster.getAsJsonObject();
-                    rosters.add(new Roster.Builder(rosterDetail.get("id").getAsLong()).build());
+                    guildRosters.add(new GuildRoster.Builder(rosterDetail.get("id").getAsLong()).build());
                 }
             } else {
                 Logs.infoLog(this.getClass(), "Guild not have an Rosters ["+ id +"]");
@@ -198,11 +203,11 @@ public class Guild {
      * Load guild ranks
      */
     public void loadRanks() {
-        ranks = new ArrayList<>();
+        guildRanks = new ArrayList<>();
         try {
             JsonArray ranks_db = DBLoadObject.dbConnect.select(
-                    Rank.TABLE_NAME,
-                    new String[]{Rank.TABLE_KEY},
+                    GuildRank.TABLE_NAME,
+                    new String[]{GuildRank.TABLE_KEY},
                     "guild_id=?",
                     new String[]{id+""}
             );
@@ -210,7 +215,7 @@ public class Guild {
             if (ranks_db.size() > 0) {
                 for (JsonElement rank : ranks_db) {
                     JsonObject rankDetail = rank.getAsJsonObject();
-                    ranks.add(new Rank.Builder(rankDetail.get(Rank.TABLE_KEY).getAsLong()).build());
+                    guildRanks.add(new GuildRank.Builder(rankDetail.get(GuildRank.TABLE_KEY).getAsLong()).build());
                 }
             } else {
                 Logs.infoLog(this.getClass(), "Guild not have a Ranks ["+ id +"]");
@@ -230,9 +235,16 @@ public class Guild {
         return name;
     }
 
-    public List<Activity> getActivities() {
+    public List<GuildActivity> getActivities() {
         if (activities == null) {
             loadActivities(10);
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if (lastActivitiesUpdate.compareTo(tenMinuteAgo) < 0) {
+                loadActivities(10);
+            }
         }
         return activities;
     }
@@ -241,11 +253,22 @@ public class Guild {
         return last_modified;
     }
 
-    public List<Roster> getRosters() {
-        if (rosters == null) {
+    public List<GuildRoster> getGuildRosters() {
+        if (guildRosters == null) {
             loadRosters();
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, -10);
+            Date tenMinuteAgo = cal.getTime();
+            if (lastRosterUpdate.compareTo(tenMinuteAgo) < 0) {
+                loadRosters();
+            }
         }
-        return rosters;
+        return guildRosters;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override
@@ -267,8 +290,8 @@ public class Guild {
                 "\"faction\":" + (faction == null ? "null" : faction) + ", " +
                 "\"achievements\":" + (achievements == null ? "null" : Arrays.toString(achievements.toArray())) + ", " +
                 "\"activities\":" + (activities == null ? "null" : Arrays.toString(activities.toArray())) + ", " +
-                "\"rosters\":" + (rosters == null ? "null" : Arrays.toString(rosters.toArray())) + ", " +
-                "\"ranks\":" + (ranks == null ? "null" : Arrays.toString(ranks.toArray())) +
+                "\"rosters\":" + (guildRosters == null ? "null" : Arrays.toString(guildRosters.toArray())) + ", " +
+                "\"ranks\":" + (guildRanks == null ? "null" : Arrays.toString(guildRanks.toArray())) +
                 "}";
     }
 }

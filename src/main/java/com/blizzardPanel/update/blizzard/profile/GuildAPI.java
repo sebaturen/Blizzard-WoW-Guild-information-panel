@@ -4,9 +4,9 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.guilds.Guild;
-import com.blizzardPanel.gameObject.guilds.Activity;
-import com.blizzardPanel.gameObject.guilds.Rank;
-import com.blizzardPanel.gameObject.guilds.Roster;
+import com.blizzardPanel.gameObject.guilds.GuildActivity;
+import com.blizzardPanel.gameObject.guilds.GuildRank;
+import com.blizzardPanel.gameObject.guilds.GuildRoster;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
@@ -297,7 +297,7 @@ public class GuildAPI extends BlizzardAPI {
                                 // Set rosters is in status change
                                 try {
                                     BlizzardUpdate.dbConnect.update(
-                                            Roster.TABLE_NAME,
+                                            GuildRoster.TABLE_NAME,
                                             new String[]{"current_status"},
                                             new String[]{"0"},
                                             "guild_id = ?",
@@ -324,19 +324,19 @@ public class GuildAPI extends BlizzardAPI {
                                             // Save rank
                                             // Check if exist in DB
                                             JsonArray rank_db = BlizzardUpdate.dbConnect.select(
-                                                    Rank.TABLE_NAME,
-                                                    new String[]{Rank.TABLE_KEY},
+                                                    GuildRank.TABLE_NAME,
+                                                    new String[]{GuildRank.TABLE_KEY},
                                                     "guild_id=? and rank_lvl=?",
                                                     new String[]{guildId+"", member.get("rank").getAsString()}
                                             );
                                             long rankId = 0;
 
                                             if (rank_db.size() > 0) {
-                                                rankId = rank_db.get(0).getAsJsonObject().get(Rank.TABLE_KEY).getAsLong();
+                                                rankId = rank_db.get(0).getAsJsonObject().get(GuildRank.TABLE_KEY).getAsLong();
                                             } else { // Insert rank
                                                 String rankIdDB = BlizzardUpdate.dbConnect.insert(
-                                                        Roster.TABLE_NAME,
-                                                        Roster.TABLE_KEY,
+                                                        GuildRoster.TABLE_NAME,
+                                                        GuildRoster.TABLE_KEY,
                                                         new String[]{
                                                                 "guild_id",
                                                                 "rank_lvl"
@@ -353,25 +353,25 @@ public class GuildAPI extends BlizzardAPI {
                                             // Save guild_roster DB
                                             // Check if exist in DB
                                             JsonArray roster_db = BlizzardUpdate.dbConnect.select(
-                                                    Roster.TABLE_NAME,
+                                                    GuildRoster.TABLE_NAME,
                                                     new String[]{"add_regist"},
-                                                    Roster.TABLE_KEY +" = ?",
+                                                    GuildRoster.TABLE_KEY +" = ?",
                                                     new String[]{characterId +""}
                                             );
 
                                             if (roster_db.size() > 0) { // Update
                                                 BlizzardUpdate.dbConnect.update(
-                                                        Roster.TABLE_NAME,
+                                                        GuildRoster.TABLE_NAME,
                                                         new String[]{"rank_id"},
                                                         new String[]{rankId+""},
-                                                        Roster.TABLE_KEY+"=?",
+                                                        GuildRoster.TABLE_KEY+"=?",
                                                         new String[]{characterId+""}
                                                 );
                                                 Logs.infoLog(this.getClass(), "OK - Roster ["+ characterId +"] is UPDATE");
                                             } else { // Insert
                                                 BlizzardUpdate.dbConnect.insert(
-                                                        Roster.TABLE_NAME,
-                                                        Roster.TABLE_KEY,
+                                                        GuildRoster.TABLE_NAME,
+                                                        GuildRoster.TABLE_KEY,
                                                         new String[]{
                                                                 "character_id",
                                                                 "guild_id",
@@ -397,7 +397,7 @@ public class GuildAPI extends BlizzardAPI {
                                 // Remove roster is out
                                 try {
                                     BlizzardUpdate.dbConnect.delete(
-                                            Roster.TABLE_NAME,
+                                            GuildRoster.TABLE_NAME,
                                             "current_status is FALSE",
                                             new String[]{}
                                     );
@@ -608,7 +608,7 @@ public class GuildAPI extends BlizzardAPI {
                                 // Check is activity previously exist:
                                 try {
                                     JsonArray db_guild_activities = BlizzardUpdate.dbConnect.select(
-                                            Activity.TABLE_NAME,
+                                            GuildActivity.TABLE_NAME,
                                             new String[]{"guild_id", "type", "timestamp"},
                                             "guild_id = ? AND type = ? AND timestamp = ?",
                                             new String[]{guildId + "", type, timeStamp}
@@ -617,8 +617,8 @@ public class GuildAPI extends BlizzardAPI {
 
                                     if (!isInDb) { // Insert
                                         String keyDB = BlizzardUpdate.dbConnect.insert(
-                                                Activity.TABLE_NAME,
-                                                Activity.TABLE_KEY,
+                                                GuildActivity.TABLE_NAME,
+                                                GuildActivity.TABLE_KEY,
                                                 columns,
                                                 values
                                         );
@@ -669,7 +669,7 @@ public class GuildAPI extends BlizzardAPI {
                         guild.getAsJsonObject().get("id").getAsLong());
             }
         } catch (SQLException | DataException e) {
-            System.out.println("fail to get old guilds");
+            Logs.fatalLog(this.getClass(), "FAILED to get old guilds "+ e);
         }
     }
 

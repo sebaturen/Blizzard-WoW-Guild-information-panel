@@ -4,6 +4,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Item;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
@@ -172,7 +173,7 @@ public class ItemAPI extends BlizzardAPI {
 
         columns.add("media_id");
         values.add(detail.getAsJsonObject("media").get("id").getAsString());
-        BlizzardUpdate.shared.mediaAPI.mediaDetail(detail.getAsJsonObject("media"));
+        BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.ITEM, detail.getAsJsonObject("media"));
 
         columns.add("inventory_type");
         values.add(detail.getAsJsonObject("inventory_type").get("type").getAsString());

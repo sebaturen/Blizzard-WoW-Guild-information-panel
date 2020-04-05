@@ -99,13 +99,20 @@ public interface WoWAPIService {
             @Header("If-Modified-Since") String ifModifiedSince
     );
 
-    @GET("/profile/wow/character/{realmSlug}/{characterName}/character-media")
+    @GET("profile/wow/character/{realmSlug}/{characterName}/character-media")
     Call<JsonObject> characterMedia(
             @Path("realmSlug") String realm,
             @Path("characterName") String name,
             @Query("namespace") String namespace,
             @Header("Authorization") String token,
             @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Account Profile
+    @GET("profile/user/wow")
+    Call<JsonObject> accountProfileSummary(
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
     );
 
     //------------------------------------------
@@ -187,6 +194,21 @@ public interface WoWAPIService {
     @GET("data/wow/mythic-keystone/season/{id}")
     Call<JsonObject> mythicKeystoneSeason(
             @Path("id") String seasonId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
+
+    //------------------------------------------ Journal
+    @GET("data/wow/journal-instance/index")
+    Call<JsonObject> journalInstanceIndex(
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
+
+    @GET("data/wow/journal-instance/{journalInstanceId}")
+    Call<JsonObject> journalInstance(
+            @Path("journalInstanceId") String journalInstanceId,
             @Query("namespace") String namespace,
             @Header("Authorization") String token,
             @Header("If-Modified-Since") String ifModifiedSince

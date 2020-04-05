@@ -41,7 +41,7 @@ public class MythicAffix {
     }
 
     private void loadMedia() {
-        media = new Media.Builder(media_id).build();
+        media = new Media.Builder(Media.type.KEYSTONE_AFFIX, media_id).build();
     }
 
     //------------------------------------------------------------------------------------------------------------------

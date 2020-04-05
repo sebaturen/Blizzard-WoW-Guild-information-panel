@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.characters.playable.PlayableClass;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
@@ -91,7 +92,7 @@ public class PlayableClassAPI extends BlizzardAPI {
                 values.add(playableClass.getAsJsonObject("gender_name").getAsJsonObject("female").toString());
                 columns.add("media_id");
                 values.add(playableClass.getAsJsonObject("media").get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(playableClass.getAsJsonObject("media"));
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.P_CLASS, playableClass.getAsJsonObject("media"));
                 columns.add("last_modified");
                 values.add(response.headers().getDate("Last-Modified").getTime() +"");
 

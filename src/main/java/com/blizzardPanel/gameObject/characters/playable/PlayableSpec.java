@@ -47,7 +47,7 @@ public class PlayableSpec {
             // Load internal data:
             newPlayableSpec.playableClass = new PlayableClass.Builder(newPlayableSpec.playable_class_id).build();
             newPlayableSpec.role = new StaticInformation.Builder(newPlayableSpec.role_type).build();
-            newPlayableSpec.media = new Media.Builder(newPlayableSpec.media_id).build();
+            newPlayableSpec.media = new Media.Builder(Media.type.P_SPEC, newPlayableSpec.media_id).build();
 
             return newPlayableSpec;
         }
@@ -74,6 +74,10 @@ public class PlayableSpec {
 
     public long getId() {
         return id;
+    }
+
+    public PlayableClass getPlayableClass() {
+        return playableClass;
     }
 
     @Override

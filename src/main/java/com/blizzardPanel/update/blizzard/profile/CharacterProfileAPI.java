@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.profile;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.characters.*;
 import com.blizzardPanel.gameObject.mythicKeystones.MythicDungeonMember;
 import com.blizzardPanel.gameObject.mythicKeystones.MythicDungeonRun;
@@ -26,6 +27,55 @@ public class CharacterProfileAPI extends BlizzardAPI {
         super(apiCalls);
     }
 
+    public void update(long characterId) {
+        try {
+            JsonArray character_db = BlizzardUpdate.dbConnect.select(
+                    CharacterMember.TABLE_NAME,
+                    new String[]{"name", "realm_slug", "last_modified"},
+                    CharacterMember.TABLE_KEY +"=? and is_valid = 1",
+                    new String[]{characterId+""}
+            );
+
+            for (JsonElement charDet : character_db) {
+                JsonObject charDbDet = charDet.getAsJsonObject();
+
+                summary(
+                        charDbDet.get("realm_slug").getAsString()+"",
+                        charDbDet.get("name").getAsString()+"",
+                        characterId,
+                        charDbDet.get("last_modified").getAsLong());
+            }
+        } catch (DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a character in DB ["+ characterId +"] - "+ e);
+        }
+    }
+
+    public long status(String realmSlug, String name) {
+        long characterId = -1;
+
+        Call<JsonObject> call = apiCalls.characterProfileStatus(
+                realmSlug,
+                name.toLowerCase(),
+                "profile-" + GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                BlizzardUpdate.shared.accessToken.getAuthorization()
+        );
+
+        try {
+            Response<JsonObject> resp = call.execute();
+            if (resp.isSuccessful()) {
+                JsonObject inf = resp.body();
+                if (inf.has("is_valid") && inf.get("is_valid").getAsBoolean()) {
+                    characterId = inf.get("id").getAsLong();
+                }
+            } else {
+                Logs.infoLog(this.getClass(), "Character (r:"+ realmSlug +"/u:"+ name +") NOT EXIST or is delete ["+ resp.code() +"]");
+            }
+        } catch (IOException e) {
+            Logs.errorLog(this.getClass(), "ERROR to get a character info (r:"+ realmSlug +"/u:"+ name +") "+ e);
+        }
+        return characterId;
+    }
+
     /**
      * Get from Blizzard the character info and save
      * @param realmSlug
@@ -37,96 +87,100 @@ public class CharacterProfileAPI extends BlizzardAPI {
 
         // Get a internal ID if exist
         boolean isInDb = false;
-        long characterId = -1;
+        long characterId = status(realmSlug, name);
         long lastModified = 0L;
-        JsonArray characterId_db;
-        try {
-            // Check if character previously exist exist
-            characterId_db = BlizzardUpdate.dbConnect.select(
-                    CharacterMember.TABLE_NAME,
-                    new String[]{CharacterMember.TABLE_KEY, "last_modified"},
-                    "name = ? and realm_slug = ?",
-                    new String[]{name, realmSlug}
+
+        if (characterId != -1) { // character exist in blizzard and can get a ID
+
+            try {
+                // Check if character previously exist in DB
+                JsonArray characterId_db = BlizzardUpdate.dbConnect.select(
+                        CharacterMember.TABLE_NAME,
+                        new String[]{CharacterMember.TABLE_KEY, "last_modified"},
+                        "id = ?",
+                        new String[]{characterId+""}
+                );
+                isInDb = (characterId_db.size() > 0);
+                if (isInDb) {
+                    lastModified = characterId_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+                }
+            } catch (SQLException | DataException e) {
+                Logs.fatalLog(this.getClass(), "FAILED to get realm or old information ("+ realmSlug +"/"+ name +") ["+ characterId +"] "+ e);
+            }
+
+            // Get an ID
+            Call<JsonObject> status = apiCalls.characterProfileStatus(
+                    realmSlug,
+                    name.toLowerCase(),
+                    "profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    BlizzardUpdate.shared.accessToken.getAuthorization()
             );
-            isInDb = (characterId_db.size() > 0);
-            if (isInDb) {
-                lastModified = characterId_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
-                characterId = characterId_db.get(0).getAsJsonObject().get(CharacterMember.TABLE_KEY).getAsLong();
-            }
-        } catch (SQLException | DataException e) {
-            Logs.fatalLog(this.getClass(), "FAILED to get realm or old information ("+ realmSlug +"/"+ name +") ["+ characterId +"] "+ e);
-        }
 
-        // Get an ID
-        Call<JsonObject> status = apiCalls.characterProfileStatus(
-                realmSlug,
-                name.toLowerCase(),
-                "profile-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
-                BlizzardUpdate.shared.accessToken.getAuthorization()
-        );
+            try {
+                Response<JsonObject> resp = status.execute();
 
-        try {
-            Response<JsonObject> resp = status.execute();
+                if (resp.isSuccessful()) {
+                    JsonObject respDetail = resp.body();
+                    long blizzId = respDetail.get("id").getAsLong();
 
-            if (resp.isSuccessful()) {
-                JsonObject respDetail = resp.body();
-                long blizzId = respDetail.get("id").getAsLong();
+                    if (isInDb) { // Update
+                        BlizzardUpdate.dbConnect.update(
+                                CharacterMember.TABLE_NAME,
+                                new String[]{
+                                        "blizzard_id",
+                                        "is_valid",
+                                },
+                                new String[]{
+                                        blizzId+"",
+                                        "1"
+                                },
+                                "id=?",
+                                new String[]{characterId+""}
+                        );
+                        Logs.infoLog(this.getClass(), "Character (r:"+ realmSlug +"/c:"+ name +") is small info update");
+                    } else { // Insert
+                        BlizzardUpdate.dbConnect.insert(
+                                CharacterMember.TABLE_NAME,
+                                CharacterMember.TABLE_KEY,
+                                new String[]{
+                                        "id",
+                                        "blizzard_id",
+                                        "name",
+                                        "realm_slug",
+                                        "is_valid"
+                                },
+                                new String[]{
+                                        blizzId+"",
+                                        blizzId+"",
+                                        name,
+                                        realmSlug,
+                                        "1"
+                                }
+                        );
+                        Logs.infoLog(this.getClass(), "Character (r:"+ realmSlug +"/c:"+ name +") is small info insert");
+                    }
 
-                if (isInDb) { // Update
-                    BlizzardUpdate.dbConnect.update(
-                            CharacterMember.TABLE_NAME,
-                            new String[]{
-                                    "blizzard_id",
-                                    "is_valid",
-                            },
-                            new String[]{
-                                    blizzId+"",
-                                    "1"
-                            },
-                            "id=?",
-                            new String[]{characterId+""}
-                    );
-                    Logs.infoLog(this.getClass(), "Character ("+ realmSlug +"/"+ name +") is small info update");
-                } else { // Insert
-                    BlizzardUpdate.dbConnect.insert(
-                            CharacterMember.TABLE_NAME,
-                            CharacterMember.TABLE_KEY,
-                            new String[]{
-                                    "blizzard_id",
-                                    "name",
-                                    "realm_slug",
-                                    "is_valid"
-                            },
-                            new String[]{
-                                    blizzId+"",
-                                    name,
-                                    realmSlug,
-                                    "1"
-                            }
-                    );
-                    Logs.infoLog(this.getClass(), "Character ("+ realmSlug +"/"+ name +") is small info insert");
-                }
+                    //------------------------------------------------------------------------------------------------------
+                    // GET all information:
+                    summary(realmSlug, name, characterId, lastModified);
 
-                //------------------------------------------------------------------------------------------------------
-                // GET all information:
-                summary(realmSlug, name, characterId, lastModified);
-
-            } else {
-                if (isInDb) { // Update IS_VALID = false
-                    BlizzardUpdate.dbConnect.update(
-                            CharacterMember.TABLE_NAME,
-                            new String[]{"is_valid"},
-                            new String[]{"0"},
-                            "id=?",
-                            new String[]{characterId+""}
-                    );
-                    Logs.infoLog(this.getClass(), "Character ("+ realmSlug +"/"+ name +") is NOT valid");
                 } else {
-                    Logs.errorLog(this.getClass(), "Character ("+ realmSlug +"/"+ name +") NOT exist or is inaccessible ["+ resp.code() +"]");
+                    if (isInDb) { // Update IS_VALID = false
+                        BlizzardUpdate.dbConnect.update(
+                                CharacterMember.TABLE_NAME,
+                                new String[]{"is_valid"},
+                                new String[]{"0"},
+                                "id=?",
+                                new String[]{characterId+""}
+                        );
+                        Logs.infoLog(this.getClass(), "Character (r:"+ realmSlug +"/c:"+ name +") is NOT valid - "+ resp.code());
+                    } else {
+                        Logs.errorLog(this.getClass(), "Character (r:"+ realmSlug +"/c:"+ name +") NOT exist or is inaccessible ["+ resp.code() +"]");
+                    }
                 }
+            } catch (IOException | SQLException | DataException e) {
+                Logs.fatalLog(this.getClass(), "FAILED - to get a character information ("+ realmSlug +"/"+ name +") "+ e);
             }
-        } catch (IOException | SQLException | DataException e) {
-            Logs.fatalLog(this.getClass(), "FAILED - to get a character information ("+ realmSlug +"/"+ name +") "+ e);
         }
 
         return characterId;
@@ -149,25 +203,56 @@ public class CharacterProfileAPI extends BlizzardAPI {
             JsonArray characterId_db = BlizzardUpdate.dbConnect.select(
                     CharacterMember.TABLE_NAME,
                     new String[]{CharacterMember.TABLE_KEY, "last_modified"},
-                    "name = ? and realm_slug = ?",
-                    new String[]{name, realmSlug}
+                    "id = ?",
+                    new String[]{minDetail.get("id").getAsString()}
             );
             if (characterId_db.size() == 0) { // Insert
                 BlizzardUpdate.dbConnect.insert(
                         CharacterMember.TABLE_NAME,
                         CharacterMember.TABLE_KEY,
-                        new String[]{"name", "realm_slug", "is_valid"},
-                        new String[]{name, realmSlug, "0"}
+                        new String[]{
+                                "id",
+                                "name",
+                                "realm_slug",
+                                "is_valid",
+                                "blizzard_id"
+                        },
+                        new String[]{
+                                minDetail.get("id").getAsString(),
+                                name,
+                                realmSlug,
+                                "0",
+                                minDetail.get("id").getAsString()
+                        }
                 );
             }
 
-            return save(realmSlug, name);
+            long saveId = save(realmSlug, name);
+
+            // If this character is save but have an other ID, this char is changed:
+            // - Delete
+            // - Change faction
+            // - Change Sex
+            // - etc
+            if (saveId != minDetail.get("id").getAsLong() && characterId_db.size() > 0) {
+                BlizzardUpdate.dbConnect.update(
+                        CharacterMember.TABLE_NAME,
+                        new String[]{"is_valid"},
+                        new String[]{"0"},
+                        "id=?",
+                        new String[]{minDetail.get("id").getAsString()}
+                );
+            }
+
+            return saveId;
         } catch (SQLException | DataException e) {
             Logs.fatalLog(this.getClass(), "FAILED to get character information ("+ realmSlug +"/"+ name +") "+ e);
         }
 
         return -1;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Prepare all character information to get:
@@ -183,7 +268,7 @@ public class CharacterProfileAPI extends BlizzardAPI {
      * @param characterId internal character id
      * @param lastModified last_modification from this character
      */
-    public void summary(String realmSlug, String characterName, long characterId, long lastModified) {
+    private void summary(String realmSlug, String characterName, long characterId, long lastModified) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         // Prepare call detail
@@ -279,7 +364,7 @@ public class CharacterProfileAPI extends BlizzardAPI {
                 } catch (SQLException | DataException e) {
                     Logs.fatalLog(this.getClass(), "FAILED - to get mythicPlus or achievement for guild/not member ["+ characterId +"] - "+ e);
                 }
-                Logs.infoLog(this.getClass(), "OK - Character ("+ realmSlug +"/"+ characterName +") - ["+ characterId +"] save process complete");
+                Logs.infoLog(this.getClass(), "OK - Character (r:"+ realmSlug +"/c:"+ characterName +") - ["+ characterId +"] save process complete");
             } else {
                 if (response.code() == HttpServletResponse.SC_NOT_MODIFIED) {
                     Logs.infoLog(this.getClass(), "NOT Modified Character Summary ["+ characterId +"]");
@@ -414,6 +499,13 @@ public class CharacterProfileAPI extends BlizzardAPI {
                             new String[]{"specializations_last_modified"},
                             new String[]{response.headers().getDate("Last-Modified").getTime() +""},
                             CharacterMember.TABLE_KEY +"=?",
+                            new String[]{characterId+""}
+                    );
+
+                    // Remove current specs...
+                    BlizzardUpdate.dbConnect.delete(
+                            CharacterSpec.TABLE_NAME,
+                            "character_id=?",
                             new String[]{characterId+""}
                     );
 
@@ -562,8 +654,10 @@ public class CharacterProfileAPI extends BlizzardAPI {
                             values.add(equipItemDetail.getAsJsonObject("quality").get("type").getAsString());
                             BlizzardUpdate.shared.staticInformationAPI.quality(equipItemDetail.getAsJsonObject("quality"));
 
-                            columns.add("level");
-                            values.add(equipItemDetail.getAsJsonObject("level").get("value").getAsString());
+                            if (equipItemDetail.has("level")) {
+                                columns.add("level");
+                                values.add(equipItemDetail.getAsJsonObject("level").get("value").getAsString());
+                            }
 
                             if (equipItemDetail.has("stats") && equipItemDetail.get("stats").toString().length() > 2) {
                                 columns.add("stats");
@@ -584,7 +678,7 @@ public class CharacterProfileAPI extends BlizzardAPI {
 
                             columns.add("media_id");
                             values.add(equipItemDetail.getAsJsonObject("media").get("id").getAsString());
-                            BlizzardUpdate.shared.mediaAPI.mediaDetail(equipItemDetail.getAsJsonObject("media"));
+                            BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.ITEM, equipItemDetail.getAsJsonObject("media"));
 
                             // Check is equipment item previously exist:
                             JsonArray equipItem_db = BlizzardUpdate.dbConnect.select(
@@ -1095,6 +1189,12 @@ public class CharacterProfileAPI extends BlizzardAPI {
 
     }
 
+    /**
+     * Save all image relative to this character
+     * @param realmSlug Slug realm
+     * @param characterName Name of character
+     * @param characterId internal character ID
+     */
     private void saveCharacterMedia(String realmSlug, String characterName, long characterId) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
         characterName = characterName.toLowerCase();

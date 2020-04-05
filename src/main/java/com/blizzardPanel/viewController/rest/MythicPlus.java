@@ -1,10 +1,13 @@
 package com.blizzardPanel.viewController.rest;
 
 import com.blizzardPanel.DataException;
+import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.ServerTime;
+import com.blizzardPanel.gameObject.characters.playable.PlayableSpec;
 import com.blizzardPanel.gameObject.mythicKeystones.*;
+import com.blizzardPanel.viewController.GuildController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Calendar;
 
 @Path("/mythicPlus")
 public class MythicPlus {
@@ -31,24 +33,22 @@ public class MythicPlus {
         try {
             String query =
                     "SELECT DISTINCT " +
-                    "    ex.id " +
-                    "FROM ( " +
-                    "    SELECT " +
-                    "        kr.id " +
-                    "    FROM " +
-                    "        keystone_dungeon_run_members km " +
+                    "    kr.id " +
+                    "FROM " +
+                    "    keystone_dungeon_run_members km " +
                     "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
                     "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
                     "WHERE " +
                     "    gr.character_id IS NOT NULL " +
+                    "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" "+
                     "    AND kr.is_completed_within_time = 1 " +
                     "    AND kr.completed_timestamp >= "+ mythicSeason.getStart_timestamp() +" " +
                     ((mythicSeason.getEnd_timestamp() > 0) ? "AND kr.completed_timestamp <= " + mythicSeason.getEnd_timestamp() : "") +
-                    " ORDER BY " +
-                    "    kr.keystone_level DESC " +
-                    "LIMIT 100 " +
-                    ") ex " +
+                    "ORDER BY " +
+                    "    kr.keystone_level DESC, " +
+                    "    kr.completed_timestamp DESC " +
                     "LIMIT 3;";
+
             return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (DataException | SQLException e) {
             Logs.errorLog(this.getClass(), "FATAL - error MythicPlus best season ["+ season +"] "+ e);
@@ -62,21 +62,18 @@ public class MythicPlus {
     public Response weekRuns(@DefaultValue("en_US") @QueryParam("locale") String locale) {
         try {
             String query =
-                    "SELECT DISTINCT " +
-                    "    ex.id " +
-                    "FROM ( " +
-                    "    SELECT " +
-                    "        kr.id " +
-                    "    FROM " +
-                    "        keystone_dungeon_run_members km " +
-                    "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
-                    "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
-                    "WHERE " +
-                    "    gr.character_id IS NOT NULL " +
-                    "    AND kr.completed_timestamp >= "+ ServerTime.getLastResetTime() +" " +
-                    "ORDER BY " +
-                    "    kr.keystone_level DESC " +
-                    ") ex;";
+                "SELECT DISTINCT " +
+                "    kr.id " +
+                "FROM " +
+                "    keystone_dungeon_run_members km " +
+                "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
+                "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
+                "WHERE " +
+                "    gr.character_id IS NOT NULL " +
+                "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" "+
+                "    AND kr.completed_timestamp >= "+ ServerTime.getLastResetTime() +" " +
+                "ORDER BY " +
+                "    kr.completed_timestamp DESC";
 
             return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (SQLException | DataException e) {
@@ -120,12 +117,24 @@ public class MythicPlus {
         for (MythicDungeonMember member : runOb.getMembers()) {
             JsonObject mem = new JsonObject();
             mem.addProperty("name", member.getCharacter().getName());
-            mem.addProperty("class", member.getCharacter().getInfo().getPlayableClass().getId());
-            mem.addProperty("spec", member.getCharacter().getActiveSpec().getPlayableSpec().getId());
-            mem.addProperty("rol", member.getCharacter().getActiveSpec().getPlayableSpec().getRole().getType());
             mem.addProperty("iLvl", member.getCharacter_item_level());
-            mem.addProperty("is_guildMember", "??");
             mem.addProperty("realm", member.getCharacter().getRealm().getName(locale));
+
+            boolean mainGuildStatus = false;
+            if (member.getCharacter().getInfo() != null) {
+                mainGuildStatus = (member.getCharacter().getInfo().getGuild_id() == GuildController.getInstance().getId());
+            }
+            mem.addProperty("main_guild", mainGuildStatus);
+
+            PlayableSpec spec;
+            try {
+                spec = member.getCharacter().getActiveSpec().getPlayableSpec();
+            } catch (NullPointerException e) {
+                spec = new PlayableSpec.Builder(member.getCharacter_spec_id()).build();
+            }
+            mem.addProperty("class", spec.getPlayableClass().getId());
+            mem.addProperty("spec", spec.getId());
+            mem.addProperty("rol", spec.getRole().getType());
 
             members.add(mem);
         }

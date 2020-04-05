@@ -3,9 +3,14 @@ package com.blizzardPanel.update.blizzard;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBConnect;
+import com.blizzardPanel.gameObject.characters.CharacterMember;
+import com.blizzardPanel.gameObject.guilds.Guild;
+import com.blizzardPanel.gameObject.guilds.GuildRoster;
 import com.blizzardPanel.update.UpdateService;
 import com.blizzardPanel.update.blizzard.gameData.*;
+import com.blizzardPanel.update.blizzard.profile.AccountProfileAPI;
 import com.blizzardPanel.update.blizzard.profile.CharacterProfileAPI;
 import com.blizzardPanel.update.blizzard.profile.GuildAPI;
 import com.google.gson.JsonArray;
@@ -21,7 +26,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class BlizzardUpdate implements Runnable {
 
@@ -37,6 +44,7 @@ public class BlizzardUpdate implements Runnable {
     // Profiles
     public GuildAPI guildAPI;
     public CharacterProfileAPI characterProfileAPI;
+    public AccountProfileAPI accountProfileAPI;
 
     // Game Data
     public StaticInformationAPI staticInformationAPI;
@@ -50,6 +58,7 @@ public class BlizzardUpdate implements Runnable {
     public ItemAPI itemAPI;
     public MythicKeystoneDungeonAPI mythicKeystoneDungeonAPI;
     public WoWTokenAPI woWToken;
+    public JournalAPI journalAPI;
 
     // Runnable Type
     private UpdateType type;
@@ -93,6 +102,7 @@ public class BlizzardUpdate implements Runnable {
         // Profiles
         newBlizzUpdate.guildAPI = new GuildAPI(newBlizzUpdate.apiCalls);
         newBlizzUpdate.characterProfileAPI = new CharacterProfileAPI(newBlizzUpdate.apiCalls);
+        newBlizzUpdate.accountProfileAPI = new AccountProfileAPI(newBlizzUpdate.apiCalls);
 
         // Game Data
         newBlizzUpdate.achievementAPI = new AchievementAPI(newBlizzUpdate.apiCalls);
@@ -106,6 +116,7 @@ public class BlizzardUpdate implements Runnable {
         newBlizzUpdate.itemAPI = new ItemAPI(newBlizzUpdate.apiCalls);
         newBlizzUpdate.mythicKeystoneDungeonAPI = new MythicKeystoneDungeonAPI(newBlizzUpdate.apiCalls);
         newBlizzUpdate.woWToken = new WoWTokenAPI(newBlizzUpdate.apiCalls);
+        newBlizzUpdate.journalAPI = new JournalAPI(newBlizzUpdate.apiCalls);
 
         return newBlizzUpdate;
     }
@@ -154,6 +165,9 @@ public class BlizzardUpdate implements Runnable {
                 break;
             case MYTHIC_KEYSTONE_SEASON:
                 BlizzardUpdate.shared.mythicKeystoneSeasonUpdate();
+                break;
+            case FULL_SYNC_ROSTERS:
+                BlizzardUpdate.shared.fullSyncRostersUpdate();
                 break;
         }
     }
@@ -209,6 +223,34 @@ public class BlizzardUpdate implements Runnable {
         Logs.infoLog(this.getClass(), "=== Guild News Update END");
     }
 
+    // Roster for full guild sync
+    public void fullSyncRostersUpdate() {
+        Logs.infoLog(this.getClass(), "=== Guild Rosters Update");
+        try {
+            JsonArray guilds_id = BlizzardUpdate.dbConnect.select(
+                    Guild.TABLE_NAME,
+                    new String[]{Guild.TABLE_KEY},
+                    "full_sync=?",
+                    new String[]{"1"}
+            );
+
+            for(JsonElement guild : guilds_id) {
+                JsonArray roster_db = BlizzardUpdate.dbConnect.select(
+                        GuildRoster.TABLE_NAME,
+                        new String[]{GuildRoster.TABLE_KEY},
+                        "guild_id=?",
+                        new String[]{guild.getAsJsonObject().get(Guild.TABLE_KEY).getAsString()}
+                );
+                for(JsonElement roster : roster_db) {
+                    characterProfileAPI.update(roster.getAsJsonObject().get(GuildRoster.TABLE_KEY).getAsLong());
+                }
+            }
+        } catch (DataException | SQLException e) {
+            Logs.infoLog(this.getClass(), "FAILED to get guilds or rosters "+ e);
+        }
+        Logs.infoLog(this.getClass(), "=== Guild Rosters Update END");
+    }
+
     //------------------------------------------
     // Game Data
     //------------------------------------------
@@ -222,9 +264,16 @@ public class BlizzardUpdate implements Runnable {
 
     // Reload Items info
     public void items() {
-        Logs.infoLog(BlizzardUpdate.class, "=== Items Update");
+        Logs.infoLog(this.getClass(), "=== Items Update");
         itemAPI.update();
-        Logs.infoLog(BlizzardUpdate.class, "=== Items Update END");
+        Logs.infoLog(this.getClass(), "=== Items Update END");
+    }
+
+    // Reload Spell info
+    public void spells() {
+        Logs.infoLog(this.getClass(), "=== Spell Update");
+        spellAPI.update();
+        Logs.infoLog(this.getClass(), "=== Spell Update END");
     }
 
     // Wow Token
@@ -246,8 +295,124 @@ public class BlizzardUpdate implements Runnable {
     }
 
     //------------------------------------------
+    // User Access
+    //------------------------------------------
+
+    public String getUserAccessToken(String code) {
+        Call<JsonObject> call = apiOauthCalls.userToken(
+                GeneralConfig.getStringConfig("MAIN_URL")+GeneralConfig.getStringConfig("BLIZZAR_LINK"),
+                "client_credentials",
+                "authorization_code",
+                code,
+                Credentials.basic(GeneralConfig.getStringConfig("CLIENT_ID"), GeneralConfig.getStringConfig("CLIENT_SECRET"))
+        );
+
+        try {
+            JsonObject resp = call.execute().body();
+            if (resp.has("access_token")) {
+                return resp.get("access_token").getAsString();
+            }
+        } catch (IOException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a user access token "+ e);
+        }
+        return null;
+    }
+
+    public String getBattleTag(String accessToken) {
+
+        Call<JsonObject> call = apiOauthCalls.userInfo(
+                GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                "Bearer "+ accessToken
+        );
+
+        try {
+            JsonObject bInfo = call.execute().body();
+            if (bInfo.has("battletag")) {
+                return bInfo.get("battletag").getAsString();
+            }
+        } catch (IOException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a user battle tag "+ e);
+        }
+
+        return null;
+    }
+
+    public int saveUser(User user) {
+        int id = 0;
+
+        try {
+
+            JsonArray user_db = dbConnect.select(
+                    User.TABLE_NAME,
+                    new String[]{User.TABLE_KEY},
+                    "battle_tag =?",
+                    new String[]{user.getBattle_tag()}
+            );
+
+            // Prepare values:
+            List<Object> columns = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+            columns.add("battle_tag");
+            values.add(user.getBattle_tag());
+            columns.add("access_token");
+            values.add(user.getAccess_token());
+
+            if (user_db.size() > 0) { // Update
+                id = user_db.get(0).getAsJsonObject().get("id").getAsInt();
+                dbConnect.update(
+                        User.TABLE_NAME,
+                        columns,
+                        values,
+                        "battle_tag=?",
+                        new String[]{user.getBattle_tag()}
+                );
+                Logs.infoLog(this.getClass(), "OK - User ["+ user.getBattle_tag() +"] is UPDATE");
+            } else { // Insert
+                id = Integer.parseInt(dbConnect.insert(
+                        User.TABLE_NAME,
+                        User.TABLE_KEY,
+                        columns,
+                        values
+                ));
+                Logs.infoLog(this.getClass(), "OK - User ["+ user.getBattle_tag() +"] is INSERT");
+            }
+        } catch (DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED - to upser/insert/select User ["+ user.getBattle_tag() +"] - "+ e);
+        }
+
+        return id;
+    }
+
+    //------------------------------------------
     // Static Methods
     //------------------------------------------
+
+    public void refreshAllCharacters() {
+        try {
+            JsonArray characters_db = dbConnect.select(
+                    CharacterMember.TABLE_NAME,
+                    new String[]{"id", "name", "realm_slug"}
+            );
+
+            int i = characters_db.size();
+            for (JsonElement charDet : characters_db) {
+                System.out.println(i-- +" ---- ["+ charDet.getAsJsonObject().get("id") +"]");
+                JsonObject minDet = new JsonObject();
+                minDet.addProperty("name", charDet.getAsJsonObject().get("name").getAsString());
+                minDet.addProperty("id", charDet.getAsJsonObject().get("id").getAsString());
+
+                JsonObject realm = new JsonObject();
+                realm.addProperty("slug", charDet.getAsJsonObject().get("realm_slug").getAsString());
+                minDet.add("realm", realm);
+
+                characterProfileAPI.save(minDet);
+            };
+            Logs.infoLog(this.getClass(), "All Characters IS refreshed");
+
+        } catch (DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to update all characters ... "+ e);
+        }
+    }
 
     public static void saveUpdateProcessComplete(UpdateType type) {
         try {

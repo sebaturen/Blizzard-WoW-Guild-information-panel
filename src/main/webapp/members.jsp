@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
     <head>
-        <title>${guild.name} - Guild members</title>
+        <title>${guild.name} - <fmt:message key="label.member_list" /></title>
         <%@include file="includes/header.jsp" %> 
         <link type="text/css" rel="stylesheet" href="assets/css/members.css">
         <script src="assets/js/members.js"></script>
@@ -79,12 +79,12 @@
                     <thead>
                         <tr>
                             <th scope="col" id="rankColum" class='pointer'>#</th>
-                            <th scope="col" id="nameColum" class='pointer'>Name</th>
-                            <th scope="col" id="classColum" class='pointer'>Class</th>
-                            <th scope="col" id="levelColum" class='pointer'>Level</th>
-                            <th scope="col" id="specColum" class='pointer'>Current Spec</th>
+                            <th scope="col" id="nameColum" class='pointer'><fmt:message key="label.name" /></th>
+                            <th scope="col" id="classColum" class='pointer'><fmt:message key="label.class" /></th>
+                            <th scope="col" id="levelColum" class='pointer'><fmt:message key="label.level" /></th>
+                            <th scope="col" id="specColum" class='pointer'><fmt:message key="label.current_spec" /></th>
                         <% if(guildMember) { %>
-                            <th scope="col" id="iLevelColum" class='pointer'>iLevel</th>
+                            <th scope="col" id="iLevelColum" class='pointer'><fmt:message key="label.ilvl" /></th>
                             <th scope="col" id="hoalvl" class='pointer'>HoA Lvl</th>
                             <th scope="col" id="ioScore" class='pointer'>Raider.IO</th>
                         <% } %>

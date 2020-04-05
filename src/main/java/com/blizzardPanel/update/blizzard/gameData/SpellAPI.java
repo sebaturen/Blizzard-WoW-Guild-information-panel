@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.Spell;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardAPIError;
@@ -98,7 +99,7 @@ public class SpellAPI extends BlizzardAPI {
 
                 columns.add("media_id");
                 values.add(blizz_spell.getAsJsonObject("media").get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(blizz_spell.getAsJsonObject("media"));
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.SPELL, blizz_spell.getAsJsonObject("media"));
 
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");

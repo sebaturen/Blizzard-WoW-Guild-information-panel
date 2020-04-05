@@ -44,7 +44,7 @@ public abstract class DBLoadObject {
             } else if (dbSelect.size() > 1) {
                 Logs.errorLog(this.getClass(), "TO MANY DATA");
             } else {
-                Logs.errorLog(this.getClass(), "DATA NOT FOUND");
+                Logs.errorLog(this.getClass(), "DATA NOT FOUND - "+ dbConnect.getLastQuery());
             }
         } catch (DataException | SQLException e) {
             Logs.fatalLog(this.getClass(), "FAILED to load element ["+ where +"] -> "+ e);

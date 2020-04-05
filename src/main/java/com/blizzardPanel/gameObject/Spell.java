@@ -39,7 +39,7 @@ public class Spell {
             Spell newSpell = (Spell) load(TABLE_KEY, id);
 
             // Load internal data:
-            newSpell.media = new Media.Builder(newSpell.media_id).build();
+            newSpell.media = new Media.Builder(Media.type.SPELL, newSpell.media_id).build();
 
             return newSpell;
         }

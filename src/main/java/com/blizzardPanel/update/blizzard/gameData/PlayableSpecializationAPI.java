@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.characters.playable.PlayableSpec;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
@@ -82,7 +83,7 @@ public class PlayableSpecializationAPI extends BlizzardAPI {
 
                 columns.add("media_id");
                 values.add(blizz_spec.getAsJsonObject("media").get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(blizz_spec.getAsJsonObject("media"));
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.P_SPEC, blizz_spec.getAsJsonObject("media"));
 
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");

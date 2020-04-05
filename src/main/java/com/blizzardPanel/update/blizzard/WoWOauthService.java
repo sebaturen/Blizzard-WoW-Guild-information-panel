@@ -21,9 +21,9 @@ public interface WoWOauthService {
     @FormUrlEncoded
     @POST("token")
     Call<JsonObject> userToken(
-            @Field("grant_type") String grantType,
-            @Field("scope") String scope,
             @Field("redirect_uri") String redirectUri,
+            @Field("scope") String scope,
+            @Field("grant_type") String grantType,
             @Field("code") String code,
             @Header("Authorization") String basicAuth
     );

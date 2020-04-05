@@ -3,7 +3,7 @@ String.prototype.capitalize = function() {
 };
 
 window.onmousemove = function (e) {
-    $(".item-floting-desc").each(function(i, tip) {
+    $(".item-floating-desc").each(function(i, tip) {
         var tooltip = $(tip);
         var left = (e.clientX + tooltip.width() + 20 < document.body.clientWidth)?
                 (e.clientX + 20 + "px") : (e.clientX - tooltip.width() + "px");
@@ -64,4 +64,12 @@ $(document).ready(function() {
     .on('mouseleave', '#token_price', function() {
         $(".tooltip-wow_token").hide();
     });
+
+    // Locale cookie
+    $("#locale").on("change", function() {
+        Cookies.set('locale', this.value);
+    });
+    if (typeof Cookies.get('locale') === 'undefined' || Cookies.get('locale') === null) {
+        Cookies.set('locale', 'es_MX');
+    }
 });

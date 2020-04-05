@@ -26,30 +26,65 @@ public class MediaAPI extends BlizzardAPI {
 
     /**
      * Load media details
+     * @param type Media TYPE
      * @param reference {"key": {"kref": URL}, "id": ID}
      */
-    public void mediaDetail(JsonObject reference) {
+    public void mediaDetail(Media.type type, JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = reference.getAsJsonObject("key").get("href").getAsString();
         urlHref = urlHref.split("namespace")[0];
         urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
 
-        String achievMediaId = reference.get("id").getAsString();
+        String mediaId = reference.get("id").getAsString();
+
+        // Prepare save type
+        String tableName = "";
+        String tableKey = "";
+        switch (type) {
+            case ITEM:
+                tableName = Media.ITEM_TABLE_NAME;
+                tableKey = Media.ITEM_TABLE_KEY;
+                break;
+            case P_SPEC:
+                tableName = Media.P_SPEC_TABLE_NAME;
+                tableKey = Media.P_SPEC_TABLE_KEY;
+                break;
+            case P_CLASS:
+                tableName = Media.P_CLASS_TABLE_NAME;
+                tableKey = Media.P_CLASS_TABLE_KEY;
+                break;
+            case ACHIEVEMENT:
+                tableName = Media.ACHIEVEMENT_TABLE_NAME;
+                tableKey = Media.ACHIEVEMENT_TABLE_KEY;
+                break;
+            case SPELL:
+                tableName = Media.SPELL_TABLE_NAME;
+                tableKey = Media.SPELL_TABLE_KEY;
+                break;
+            case KEYSTONE_AFFIX:
+                tableName = Media.KEYSTONE_AFFIX_TABLE_NAME;
+                tableKey = Media.KEYSTONE_AFFIX_TABLE_KEY;
+                break;
+            case INSTANCE:
+                tableName = Media.INSTANCE_TABLE_NAME;
+                tableKey = Media.INSTANCE_TABLE_KEY;
+                break;
+        }
 
         try {
 
             // Check is category previously exist:
-            JsonArray achievMedia_db = BlizzardUpdate.dbConnect.select(
-                    Media.TABLE_NAME,
+            JsonArray media_db = BlizzardUpdate.dbConnect.select(
+                    tableName,
                     new String[]{"last_modified"},
-                    Media.TABLE_KEY +" = ?",
-                    new String[]{achievMediaId}
+                    tableKey +" = ?",
+                    new String[]{mediaId}
             );
-            boolean isInDb = (achievMedia_db.size() > 0);
+            boolean isInDb = (media_db.size() > 0);
             long lastModified = 0L;
-            if (achievMedia_db.size() > 0) {
-                lastModified = achievMedia_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+            if (media_db.size() > 0) {
+                lastModified = media_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
             }
 
             // Prepare call
@@ -63,50 +98,49 @@ public class MediaAPI extends BlizzardAPI {
             // Run call
             Response<JsonObject> resp = call.execute();
             if (resp.isSuccessful()) {
-                JsonObject blizz_achievMedia = resp.body();
-                JsonObject blizz_achievMedia_assets = blizz_achievMedia.getAsJsonArray("assets").get(0).getAsJsonObject();
+                JsonObject blizz_mediaData = resp.body();
+                JsonObject blizz_mediaAsset = blizz_mediaData.getAsJsonArray("assets").get(0).getAsJsonObject();
 
                 // Prepare values:
                 List<Object> columns = new ArrayList<>();
                 List<Object> values = new ArrayList<>();
                 columns.add("key");
-                values.add(blizz_achievMedia_assets.get("key").getAsString());
+                values.add(blizz_mediaAsset.get("key").getAsString());
                 columns.add("value");
-                values.add(blizz_achievMedia_assets.get("value").getAsString());
+                values.add(blizz_mediaAsset.get("value").getAsString());
                 columns.add("last_modified");
                 values.add(resp.headers().getDate("Last-Modified").getTime() +"");
 
                 if (isInDb) { // UPDATE
                     BlizzardUpdate.dbConnect.update(
-                            Media.TABLE_NAME,
+                            tableName,
                             columns,
                             values,
-                            Media.TABLE_KEY+" = ?",
-                            new String[]{achievMediaId}
+                            tableKey+" = ?",
+                            new String[]{mediaId}
                     );
+                    Logs.infoLog(this.getClass(), type.toString() +" media IS UPDATE "+ mediaId);
                 } else { // INSERT
-                    columns.add(Media.TABLE_KEY);
-                    values.add(achievMediaId);
+                    columns.add(tableKey);
+                    values.add(mediaId);
                     BlizzardUpdate.dbConnect.insert(
-                            Media.TABLE_NAME,
-                            Media.TABLE_KEY,
+                            tableName,
+                            tableKey,
                             columns,
                             values
                     );
+                    Logs.infoLog(this.getClass(), type.toString() +" media IS INSERT "+ mediaId);
                 }
-
-                Logs.infoLog(this.getClass(), "Achievement media OK "+ achievMediaId);
-
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(this.getClass(), "NOT Modified Achievement media "+ achievMediaId);
+                    Logs.infoLog(this.getClass(), "NOT Modified "+ type.toString() +" media "+ mediaId);
                 } else {
-                    Logs.errorLog(this.getClass(), "ERROR - achievement media "+ achievMediaId +" - "+ resp.code() +" // "+ call.request());
+                    Logs.errorLog(this.getClass(), "ERROR - "+ type.toString() +" media "+ mediaId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(this.getClass(), "FAILED - to get achievement media "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get/update "+ type.toString() +" media "+ e);
         }
     }
 

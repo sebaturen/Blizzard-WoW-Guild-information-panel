@@ -18,6 +18,10 @@ public class UpdateService implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+
+        // work!
+        BlizzardUpdate.shared.journalAPI.update();
+
         // Attribute
         GuildController.getInstance().loadActivities(10);
         sce.getServletContext().setAttribute("guild", GuildController.getInstance());
@@ -29,6 +33,7 @@ public class UpdateService implements ServletContextListener {
         schedule.scheduleAtFixedRate(new BlizzardUpdate(UpdateType.GUILD), 0, 1, TimeUnit.HOURS);
         schedule.scheduleAtFixedRate(new BlizzardUpdate(UpdateType.GUILD_ACTIVITIES), 0, 10, TimeUnit.MINUTES);
         schedule.scheduleAtFixedRate(new BlizzardUpdate(UpdateType.WOW_TOKEN), 0, 10, TimeUnit.MINUTES);
+        schedule.scheduleAtFixedRate(new BlizzardUpdate(UpdateType.FULL_SYNC_ROSTERS), 1, 1, TimeUnit.HOURS);
 
         // Game Data Update
         schedule.scheduleAtFixedRate(new BlizzardUpdate(UpdateType.PLAYABLE_CLASS), 0, 30, TimeUnit.DAYS);

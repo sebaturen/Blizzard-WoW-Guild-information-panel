@@ -4,7 +4,7 @@ import com.blizzardPanel.gameObject.characters.CharacterInfo;
 import com.blizzardPanel.gameObject.characters.CharacterMedia;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.blizzardPanel.gameObject.characters.CharacterSpec;
-import com.blizzardPanel.gameObject.guilds.Roster;
+import com.blizzardPanel.gameObject.guilds.GuildRoster;
 import com.blizzardPanel.viewController.GuildController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,6 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,11 +27,11 @@ public class Members {
 
         // Load rosters
         JsonArray members = new JsonArray();
-        for(Roster roster : GuildController.getInstance().getRosters()) {
-            CharacterMember charMember = roster.getMember();
+        for(GuildRoster guildRoster : GuildController.getInstance().getGuildRosters()) {
+            CharacterMember charMember = guildRoster.getMember();
             JsonObject member = new JsonObject();
             member.addProperty("id", charMember.getId());
-            member.addProperty("rank", roster.getRank().getRank_lvl());
+            member.addProperty("rank", guildRoster.getGuildRank().getRank_lvl());
             member.addProperty("name", charMember.getName());
 
             // INFO ---------------------------
@@ -69,7 +70,9 @@ public class Members {
             members.add(member);
         }
 
-        return Response.ok(members.toString(), MediaType.APPLICATION_JSON).build();
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(1);
+        return Response.ok(members.toString(), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     }
 
     @GET

@@ -3,6 +3,7 @@ package com.blizzardPanel.update.blizzard.gameData;
 import com.blizzardPanel.DataException;
 import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
+import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.achievements.Achievement;
 import com.blizzardPanel.gameObject.achievements.Category;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
@@ -212,7 +213,7 @@ public class AchievementAPI extends BlizzardAPI {
                 values.add(blizz_achiev.get("points").getAsString());
                 columns.add("media_id");
                 values.add(blizz_achiev.get("media").getAsJsonObject().get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(blizz_achiev.getAsJsonObject("media"));
+                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.ACHIEVEMENT, blizz_achiev.getAsJsonObject("media"));
 
                 columns.add("display_order");
                 values.add(blizz_achiev.get("display_order").getAsString());

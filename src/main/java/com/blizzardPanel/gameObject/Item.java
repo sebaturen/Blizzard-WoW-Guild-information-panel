@@ -44,7 +44,7 @@ public class Item {
         public Item build() {
             Item newItem = (Item) load(TABLE_KEY, id);
             newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.media = new Media.Builder(newItem.media_id).build();
+            newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
             newItem.inventory = new StaticInformation.Builder(newItem.inventory_type).build();
 
             return newItem;

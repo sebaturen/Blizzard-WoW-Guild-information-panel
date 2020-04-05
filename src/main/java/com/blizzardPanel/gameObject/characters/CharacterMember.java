@@ -11,6 +11,7 @@ import com.blizzardPanel.DataException;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.*;
 
+import com.blizzardPanel.gameObject.mythicKeystones.MythicDungeonRun;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -50,6 +51,7 @@ public class CharacterMember {
     private CharacterMedia media;
     private List<CharacterItem> item;
     private List<CharacterSpec> specs;
+    private MythicDungeonRun bestMythicRun;
 
     public static class Builder extends DBLoadObject {
 
@@ -77,6 +79,7 @@ public class CharacterMember {
                 charMember.loadItems();
                 charMember.loadSpec();
                 charMember.loadStats();
+                charMember.loadBestMythicRun();
             }
 
             return charMember;
@@ -158,6 +161,31 @@ public class CharacterMember {
         media = new CharacterMedia.Builder(id).build();
     }
 
+    private void loadBestMythicRun() {
+        try {
+            JsonArray myRunDB = DBLoadObject.dbConnect.selectQuery(
+                    "SELECT " +
+                    "    kr.id " +
+                    "FROM " +
+                    "    keystone_dungeon_run kr, " +
+                    "    keystone_dungeon_run_members km " +
+                    "WHERE " +
+                    "    kr.id = km.keystone_dungeon_run_id " +
+                    "    AND kr.completed_timestamp > "+ ServerTime.getLastResetTime() +" " +
+                    "    AND km.character_id = '"+ id +"' " +
+                    "ORDER BY " +
+                    "    kr.keystone_level DESC " +
+                    "LIMIT 1;"
+            );
+
+            for(JsonElement myRun : myRunDB) {
+                bestMythicRun = new MythicDungeonRun.Builder(myRun.getAsJsonObject().get(MythicDungeonRun.TABLE_KEY).getAsLong()).build();
+            }
+        } catch (SQLException | DataException e) {
+            Logs.fatalLog(this.getClass(), "FAILED to get a best mythic plis! "+ e);
+        }
+    }
+
     /**
      * Set a active spec from specific ID
      * @param specId
@@ -170,6 +198,7 @@ public class CharacterMember {
             spec.setEnable((spec.getSpecialization_id() == specId));
         });
     }
+
     //------------------------------------------------------------------------------------------------------------------
     //
     // GET / SET
@@ -214,6 +243,17 @@ public class CharacterMember {
         return realm;
     }
 
+    public boolean isIs_valid() {
+        return is_valid;
+    }
+
+    public MythicDungeonRun getBestMythicRun() {
+        if (bestMythicRun == null) {
+            loadBestMythicRun();
+        }
+        return bestMythicRun;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterMember\", " +
@@ -232,8 +272,10 @@ public class CharacterMember {
                 "\"realm\":" + (realm == null ? "null" : realm) + ", " +
                 "\"info\":" + (info == null ? "null" : info) + ", " +
                 "\"stats\":" + (stats == null ? "null" : stats) + ", " +
+                "\"media\":" + (media == null ? "null" : media) + ", " +
                 "\"item\":" + (item == null ? "null" : Arrays.toString(item.toArray())) + ", " +
-                "\"specs\":" + (specs == null ? "null" : Arrays.toString(specs.toArray())) +
+                "\"specs\":" + (specs == null ? "null" : Arrays.toString(specs.toArray())) + ", " +
+                "\"bestMythicRun\":" + (bestMythicRun == null ? "null" : bestMythicRun) +
                 "}";
     }
 }

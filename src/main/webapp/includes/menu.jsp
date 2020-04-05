@@ -11,7 +11,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="item-floting-desc tooltip-wow_token">
+    <div class="item-floating-desc tooltip-wow_token">
         <div class="itemDesc tooltipDesc">
             <div id="graph">
                 <div id="tokenGraph" style="height: 370px; width: 500px;"></div>
@@ -22,33 +22,33 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item <% out.write((currentPath.equals("index.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/index.jsp">Home</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/index.jsp"><fmt:message key="label.home" /></a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("members.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/members.jsp">Members List</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/members.jsp"><fmt:message key="label.member_list" /></a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("mythic_plus.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/mythic_plus.jsp">Mythic Plus</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/mythic_plus.jsp"><fmt:message key="label.mythic_plus" /></a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("progress.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp">Guild Progress</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp"><fmt:message key="label.guild_progress" /></a>
             </li>
             <% if(guildMember) { %>
                 <li class="nav-item <% out.write((currentPath.equals("alters.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp">Alters</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp"><fmt:message key="label.alters" /></a>
                 </li>
                 <li class="nav-item <% out.write((currentPath.equals("auction_house.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp">Auction House</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp"><fmt:message key="label.auction_house" /></a>
                 </li>
                 <li class="nav-item <% out.write((currentPath.equals("polls.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp">Polls</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp"><fmt:message key="label.polls" /></a>
                 </li>
                 <li class="nav-item <% out.write((currentPath.equals("events.jsp"))? "active":""); %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/events.jsp">Events</a>
+                    <a class="nav-link" href="<%= request.getContextPath() %>/events.jsp"><fmt:message key="label.events" /></a>
                 </li>
             <% } %>
             <li class="nav-item <% out.write((currentPath.equals("faqs.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp">Simeo</a>
+                <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp"><fmt:message key="label.simeo" /></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link disabled" href="#">Last Update[<%= new Date(GuildController.getInstance().getLast_modified()) %>]</a>
@@ -56,7 +56,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
         </ul>
         <div class="form-inline my-2 my-lg-0">
             <div id="token_price">
-                <p class="quality-wow-token">WoW Token</p>:&nbsp;
+                <p class="quality-wow-token"><fmt:message key="label.wow_token" /></p>:&nbsp;
                 <% WoWToken tokenPrice = new WoWToken.Builder().build(); %>
                 <% if (tokenPrice.getPrice().getGold() > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice.getPrice().getGold()) %></span><% } %>
                 <% if (tokenPrice.getPrice().getSilver() > 0) { %><span class="moneysilver"><%= String.format("%,d", tokenPrice.getPrice().getSilver()) %></span><% } %>

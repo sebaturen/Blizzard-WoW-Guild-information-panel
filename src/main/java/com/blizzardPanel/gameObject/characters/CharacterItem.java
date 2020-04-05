@@ -51,7 +51,7 @@ public class CharacterItem {
             newItem.item = new Item.Builder(newItem.item_id).build();
             newItem.slot = new StaticInformation.Builder(newItem.slot_type).build();
             newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.media = new Media.Builder(newItem.media_id).build();
+            newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
 
             return newItem;
         }

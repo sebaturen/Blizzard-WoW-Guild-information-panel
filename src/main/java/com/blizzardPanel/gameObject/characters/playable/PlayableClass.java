@@ -38,7 +38,7 @@ public class PlayableClass {
 
         public PlayableClass build() {
             PlayableClass newClass = (PlayableClass) load(TABLE_KEY, id);
-            newClass.media = new Media.Builder(newClass.media_id).build();
+            newClass.media = new Media.Builder(Media.type.P_CLASS, newClass.media_id).build();
             return newClass;
         }
     }

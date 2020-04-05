@@ -74,6 +74,13 @@ public class StaticInformationAPI extends BlizzardAPI {
         staticInfo(info);
     }
 
+    /**
+     * Load mode type
+     * @param info {"type": NORMAL/HERO/MYTIC/..., "name": NAME}
+     */
+    public void mode(JsonObject info) {
+        staticInfo(info);
+    }
 
     private void staticInfo(JsonObject info) {
 

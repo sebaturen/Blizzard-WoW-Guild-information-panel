@@ -42,7 +42,7 @@ public class Achievement {
         public Achievement build() {
             Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
             newAchievement.category = new Category.Builder(newAchievement.category_id).build();
-            newAchievement.media = new Media.Builder(newAchievement.media_id).build();
+            newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
             if (newAchievement.faction_type != null) {
                 newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
             }

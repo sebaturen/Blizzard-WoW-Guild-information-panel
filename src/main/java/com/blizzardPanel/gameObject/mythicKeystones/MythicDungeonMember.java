@@ -57,6 +57,10 @@ public class MythicDungeonMember {
         return character_item_level;
     }
 
+    public long getCharacter_spec_id() {
+        return character_spec_id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"MythicDungeonMember\", " +

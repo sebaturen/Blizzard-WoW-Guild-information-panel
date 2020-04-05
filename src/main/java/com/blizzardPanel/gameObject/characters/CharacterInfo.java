@@ -43,10 +43,12 @@ public class CharacterInfo {
 
         public CharacterInfo build() {
             CharacterInfo newInfo = (CharacterInfo) load(TABLE_KEY, id);
-            newInfo.playableRace = new PlayableRace.Builder(newInfo.race_id).build();
-            newInfo.playableClass = new PlayableClass.Builder(newInfo.character_class_id).build();
-            newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
-            newInfo.faction = new StaticInformation.Builder(newInfo.faction_type).build();
+            if (newInfo != null) {
+                newInfo.playableRace = new PlayableRace.Builder(newInfo.race_id).build();
+                newInfo.playableClass = new PlayableClass.Builder(newInfo.character_class_id).build();
+                newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
+                newInfo.faction = new StaticInformation.Builder(newInfo.faction_type).build();
+            }
             return newInfo;
         }
     }
@@ -80,6 +82,14 @@ public class CharacterInfo {
 
     public PlayableClass getPlayableClass() {
         return playableClass;
+    }
+
+    public StaticInformation getFaction() {
+        return faction;
+    }
+
+    public long getGuild_id() {
+        return guild_id;
     }
 
     @Override

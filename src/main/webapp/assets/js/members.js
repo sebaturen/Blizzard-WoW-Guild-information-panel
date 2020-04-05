@@ -1,7 +1,7 @@
 /*Load members information!*/
 $(document).ready(function() {
     /*Load a member details*/
-    $.get("/rest/member/list", function(data) {
+    $.get("/rest/member/list?locale="+ Cookies.get('locale'), function(data) {
         console.log("members is load complete", data);
         addMember(data);
     });
