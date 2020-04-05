@@ -2,319 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Expansion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Instance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/AccountProfileAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/messages.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/messages_es_US.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/background/SL.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/370.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/raids/battle-of-dazaralor.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/login.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/login_form.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Encounter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Blizzard-Wow-Guild-Information-Panel.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/404.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/META-INF/context.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/classes/log4j2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/aopalliance-repackaged-2.5.0-b32.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/converter-gson-2.8.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/gson-2.8.6.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/hk2-api-2.5.0-b32.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/hk2-locator-2.5.0-b32.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/hk2-utils-2.5.0-b32.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-annotations-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-core-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-databind-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-jaxrs-base-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-jaxrs-json-provider-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jackson-module-jaxb-annotations-2.8.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javassist-3.20.0-GA.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.annotation-api-1.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.inject-1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.inject-2.5.0-b32.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.servlet-api-3.1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.websocket-api-1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/javax.ws.rs-api-2.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-client-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-common-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-container-servlet-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-container-servlet-core-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-entity-filtering-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-guava-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-media-jaxb-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-media-json-jackson-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jersey-server-2.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/jstl-1.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/log4j-api-2.13.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/log4j-core-2.13.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/okhttp-3.14.7.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/okio-1.17.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/osgi-resource-locator-1.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/retrofit-2.8.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/lib/validation-api-1.1.0.Final.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/WEB-INF/web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/css/aution_house.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/css/basic_style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/css/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/css/members.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/font/LifeCraft_Font.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/font/iconset.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/artofwar_logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/background/BFA (21).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/baner_creator.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/abyssal-commander-sivara.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/aggramar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/antoran-high-command.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/argus-the-unmaker.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/atrigan.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/blackwater-behemoth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/carapace-of-nzoth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/cenarius.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/chronomatic-anomaly.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/dark-inquisitor-xanesh.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/dragons-of-nightmare.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/drestagath.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/elerethe-renferal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/elisande.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/engine-of-souls.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/fallen-avatar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/felhounds-of-sargeras.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/fetid-devourer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/garothi-worldbreaker.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ghuun.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/goroth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/guarm.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/guldan.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/harjatan.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/helya.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/high-botanist-telarn.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/huntress-kasparian.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ilgynoth-corruption-reborn.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ilgynoth-heart-of-corruption.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ilgynoth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/imonar-the-soulhunter.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/kiljaeden.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/kingaroth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/krosus.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/lady-ashvane.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/maiden-of-vigilance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/maut.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/mistress-sasszine.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/mother.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/mythrax.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/nythendra.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/nzoth-the-corruptor.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/odin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/odyn.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/orgozoa.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/portal-keeper-hasabel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/prophet-skitra.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/queen-azshara.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/raden-the-despoiled.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/radiance-of-azshara.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/shadhar-the-insatiable.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/skorpyron.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/spellblade-aluriel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/star-augur-etraeus.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/taloc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/the-coven-of-shivarra.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/the-defense-of-eonar.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/the-hivemind.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/the-queens-court.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/the-restless-cabal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/tichondrius.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/trilliax.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ursoc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/uunat-harbinger-of-the-void.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/varimathras.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/vectis.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/vexiona.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/wrathion.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/xavius.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/ysondre.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/zaqul.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/zekvoz.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/bosses/zul.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_death-knight.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_demon-hunter.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_druid.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_hunter.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_mage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_monk.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_paladin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_priest.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_rogue.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_shaman.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_warlock.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/class_warrior.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_death-knight_blood.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_death-knight_frost.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_death-knight_unholy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_demon-hunter_havoc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_demon-hunter_vengeance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_druid_balance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_druid_feral.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_druid_guardian.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_druid_restoration.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_hunter_beast-mastery.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_hunter_marksmanship.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_hunter_survival.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_mage_arcane.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_mage_fire.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_mage_frost.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_monk_brewmaster.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_monk_mistweaver.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_monk_windwalker.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_paladin_holy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_paladin_protection.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_paladin_retribution.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_priest_discipline.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_priest_holy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_priest_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_rogue_assassination.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_rogue_outlaw.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_rogue_subtlety.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_shaman_elemental.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_shaman_enhancement.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_shaman_restoration.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warlock_affliction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warlock_demonology.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warlock_destruction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warrior_arms.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warrior_fury.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/classes/specs/spec_warrior_protection.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1594.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1754.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1762.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1763.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1771.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1822.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1841.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1862.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1864.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/1877.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/dungeon/2097.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/14.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/faqs/como_simular_dps_y_comparar_items/9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/Battlenet_icon_flat.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/DPS.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/Discord-Logo-Color.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/GameIcon-slots.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/HEALING.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/Logo-alliance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/Logo-horde.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/TANK.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/inv_misc_questionmark.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/money-copper.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/money-gold.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/money-silver.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/mythic_key_level.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/icons/stat-icon.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/antorus-the-burning-throne.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/crucible-of-storms.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/nyalotha-the-waking-city.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/the-emerald-nightmare.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/the-eternal-palace.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/the-nighthold.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/tomb-of-sargeras.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/trial-of-valor.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/raids/uldir.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/img/tooltip.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/assets/js/members/members.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/includes/footer.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/includes/globalObject.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/includes/header.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/includes/menu.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/index.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/index3.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Blizzard-Wow-Guild-Information-Panel-2.0/members.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/dbConnect/DBLoadObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/dbConnect/DBLoadObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Item.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Media.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Media.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Spell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Spell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/playable/PlayableClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/playable/PlayableClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/playable/PlayableSpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/playable/PlayableSpec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/Guild.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/Guild.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/Rank.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildRank.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/Roster.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildRoster.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicDungeonMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicDungeonMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/UpdateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/UpdateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/UpdateType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/UpdateType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Instance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Instance.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWOauthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWOauthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/ItemAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/ItemAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MediaAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MediaAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/PlayableClassAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/PlayableClassAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/PlayableSpecializationAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/PlayableSpecializationAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/SpellAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/SpellAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/StaticInformationAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/StaticInformationAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/GuildAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/GuildAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Members.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Members.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1594.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/247.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1754.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/245.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1762.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/249.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1763.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/244.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1771.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/246.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1822.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/353.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1841.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/251.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1862.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/248.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1864.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/252.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/1877.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/250.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/2097.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon/369.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/icons/Logo-alliance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/icons/Logo-horde.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythicPlus.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/globalObject.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/globalObject.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/header.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/header.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index3.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index3.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/members.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/members.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -529,7 +230,7 @@
       <workItem from="1585857656912" duration="103000" />
       <workItem from="1585860144122" duration="16421000" />
       <workItem from="1585914677381" duration="30476000" />
-      <workItem from="1586013850171" duration="25643000" />
+      <workItem from="1586013850171" duration="30029000" />
     </task>
     <servers />
   </component>
@@ -545,10 +246,10 @@
       <screen x="0" y="23" width="2560" height="1353" />
     </state>
     <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585695418122" />
-    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1586040234559">
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1586106865487">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586040234559" />
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586106865487" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585862074038" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1585966130290" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1114@0.23.1920.1114" timestamp="1585972823813" />
@@ -619,10 +320,10 @@
     <state x="1172" y="-1073" width="670" height="707" key="run.anything.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585914719022" />
     <state x="1109" y="293" width="670" height="556" key="run.anything.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1586045690393" />
     <state x="1479" y="351" width="670" height="675" key="run.anything.popup/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851423482" />
-    <state x="709" y="278" width="670" height="531" key="search.everywhere.popup" timestamp="1585967141438">
-      <screen x="0" y="23" width="1920" height="1113" />
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup" timestamp="1586106146862">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585955746420" />
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586106146862" />
     <state x="709" y="278" width="670" height="531" key="search.everywhere.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1585967141438" />
   </component>
   <component name="XDebuggerManager">
@@ -645,8 +346,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java</url>
-          <line>206</line>
+          <line>237</line>
           <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java</url>
+          <line>482</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/dbConnect/DBConnect.java</url>
+          <line>235</line>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

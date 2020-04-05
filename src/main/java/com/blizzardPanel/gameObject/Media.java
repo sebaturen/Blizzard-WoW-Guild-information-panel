@@ -20,6 +20,8 @@ public class Media {
     public static final String KEYSTONE_AFFIX_TABLE_KEY = "id";
     public static final String INSTANCE_TABLE_NAME = "instance_media";
     public static final String INSTANCE_TABLE_KEY = "id";
+    public static final String CREATURE_TABLE_NAME = "creature_media";
+    public static final String CREATURE_TABLE_KEY = "id";
 
     // DB Attribute
     private long id;
@@ -37,7 +39,8 @@ public class Media {
         P_CLASS(P_CLASS_TABLE_NAME),
         SPELL(SPELL_TABLE_NAME),
         KEYSTONE_AFFIX(KEYSTONE_AFFIX_TABLE_NAME),
-        INSTANCE(INSTANCE_TABLE_NAME);
+        INSTANCE(INSTANCE_TABLE_NAME),
+        CREATURE(CREATURE_TABLE_NAME);
 
         private final String val;
         private type(String val) {
@@ -76,6 +79,8 @@ public class Media {
                     return (Media) load(SPELL_TABLE_KEY, id);
                 case INSTANCE:
                     return (Media) load(INSTANCE_TABLE_KEY, id);
+                case CREATURE:
+                    return (Media) load(CREATURE_TABLE_KEY, id);
                 default:
                     Logs.fatalLog(this.getClass(), "FAILED media type process NOT EXIST! "+ mediaType);
             }

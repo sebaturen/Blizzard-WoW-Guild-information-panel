@@ -70,6 +70,10 @@ public class MediaAPI extends BlizzardAPI {
                 tableName = Media.INSTANCE_TABLE_NAME;
                 tableKey = Media.INSTANCE_TABLE_KEY;
                 break;
+            case CREATURE:
+                tableName = Media.CREATURE_TABLE_NAME;
+                tableKey = Media.CREATURE_TABLE_KEY;
+                break;
         }
 
         try {

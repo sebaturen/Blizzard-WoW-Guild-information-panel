@@ -213,4 +213,10 @@ public interface WoWAPIService {
             @Header("Authorization") String token,
             @Header("If-Modified-Since") String ifModifiedSince
     );
+
+    @GET("data/wow/journal-encounter/index")
+    Call<JsonObject> journalEncounterIndex(
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token
+    );
 }
