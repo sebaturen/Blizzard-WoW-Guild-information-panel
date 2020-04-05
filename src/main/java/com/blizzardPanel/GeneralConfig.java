@@ -42,4 +42,13 @@ public class GeneralConfig {
             return false;
         }
     }
+
+    public static String getDateFormat(String locale) {
+        switch (locale) {
+            case "es_MX":
+                return "HH:mm - dd/MM/yyyy";
+            default:
+                return "HH:mm - MM/dd/yyyy";
+        }
+    }
 }

@@ -27,22 +27,38 @@
                     <div class="col-md-8 guild_achievements">
                         <p class='small_title warcraft_font'><fmt:message key="label.activities" /></p>
                         <c:forEach items="${guild.activities}" var="ac">
-                            1- ${ac.type}<br>
-
-                            <div class="new divder row">
-                                <div class="col-2 icon_new"><img src="<%= img %>"/></div>
-                                <div class="newDetail col-10">
-                                    <p class="character-<%= inf.getMember().getMemberClass().getSlug() %>">
-                                        <%= inf.getMember().getName() %>
-                                        <span  class="right_small_date"><%= inf.getTimeStampString() %></span>
-                                    </p>
-                                    <p class="desc"><%= desc %> <%= inf.getContext() %></p>
-                                    <p class="desc"><%= iaDetail %></p>
+                            <c:if test="${ac.type == 'CHARACTER_ACHIEVEMENT'}">
+                                <div class="new divder row">
+                                    <div class="col-2 icon_new"><img src="${ac.characterAchievement.achievement.media.value}"/></div>
+                                    <div class="newDetail col-10">
+                                        <p class="character-${ac.characterAchievement.characterMember.info.playableClass.id}">
+                                            ${ac.characterAchievement.characterMember.name}
+                                            <span  class="right_small_date">
+                                                <jsp:setProperty name="dateObject" property="time" value="${ac.timestamp}" />
+                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />
+                                            </span>
+                                        </p>
+                                        <p class="desc"><fmt:message key="label.character_achievement" /></p>
+                                        <p class="desc">${ac.characterAchievement.achievement.getName(cookie['locale'].getValue())}</p>
+                                    </div>
                                 </div>
-                            </div>
-
-
-
+                            </c:if>
+                            <c:if test="${ac.type == 'ENCOUNTER'}">
+                                <div class="new divder row">
+                                    <div class="col-2 icon_new"><img src="${ac.guildEncounter.encounter.instance.media.value}"/></div>
+                                    <div class="newDetail col-10">
+                                        <p>
+                                                ${ac.guildEncounter.encounter.getName(cookie['locale'].getValue())}
+                                            <span  class="right_small_date">
+                                                <jsp:setProperty name="dateObject" property="time" value="${ac.timestamp}" />
+                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />
+                                            </span>
+                                        </p>
+                                        <p class="desc"><fmt:message key="label.guild_encounter" /></p>
+                                        <p class="desc">${ac.guildEncounter.mode.getName(cookie['locale'].getValue())}</p>
+                                    </div>
+                                </div>
+                            </c:if>
                         </c:forEach>
                     </div>
                     <div class="col-md-4">

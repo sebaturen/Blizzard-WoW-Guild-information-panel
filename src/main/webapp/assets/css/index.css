@@ -19,6 +19,9 @@
 .icon_new {
     text-align: center;
 }
+.icon_new > img {
+    height: 56px;
+}
 /*END -------INDEX------------*/
 
 

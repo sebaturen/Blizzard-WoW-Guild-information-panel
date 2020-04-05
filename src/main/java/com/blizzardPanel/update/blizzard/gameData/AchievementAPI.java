@@ -5,7 +5,7 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.achievements.Achievement;
-import com.blizzardPanel.gameObject.achievements.Category;
+import com.blizzardPanel.gameObject.achievements.AchievementCategory;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
@@ -84,9 +84,9 @@ public class AchievementAPI extends BlizzardAPI {
 
             // Check is category previously exist:
             JsonArray cat_db = BlizzardUpdate.dbConnect.select(
-                    Category.TABLE_NAME,
+                    AchievementCategory.TABLE_NAME,
                     new String[] {"last_modified"},
-                    Category.TABLE_KEY +" = ?",
+                    AchievementCategory.TABLE_KEY +" = ?",
                     new String[] {catId}
             );
             boolean isInDb = (cat_db.size() > 0);
@@ -129,18 +129,18 @@ public class AchievementAPI extends BlizzardAPI {
 
                 if (isInDb) { // UPDATE
                     BlizzardUpdate.dbConnect.update(
-                            Category.TABLE_NAME,
+                            AchievementCategory.TABLE_NAME,
                             columns,
                             values,
-                            Category.TABLE_KEY+" = ?",
+                            AchievementCategory.TABLE_KEY+" = ?",
                             new String[]{catId}
                     );
                 } else { // INSERT
-                    columns.add(Category.TABLE_KEY);
+                    columns.add(AchievementCategory.TABLE_KEY);
                     values.add(catId);
                     BlizzardUpdate.dbConnect.insert(
-                            Category.TABLE_NAME,
-                            Category.TABLE_KEY,
+                            AchievementCategory.TABLE_NAME,
+                            AchievementCategory.TABLE_KEY,
                             columns,
                             values
                     );
@@ -166,6 +166,10 @@ public class AchievementAPI extends BlizzardAPI {
         }
     }
 
+    /**
+     * Save achievement information
+     * @param achievement {"key": {"href": URL}, "id": ID}
+     */
     public void achievementDetail(JsonObject achievement) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 

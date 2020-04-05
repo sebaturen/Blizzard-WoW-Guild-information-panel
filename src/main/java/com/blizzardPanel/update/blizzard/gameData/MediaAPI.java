@@ -74,6 +74,9 @@ public class MediaAPI extends BlizzardAPI {
                 tableName = Media.CREATURE_TABLE_NAME;
                 tableKey = Media.CREATURE_TABLE_KEY;
                 break;
+            default:
+                Logs.fatalLog(this.getClass(), "MEDIA TYPE IS NOT PROVIDED");
+                System.exit(1);
         }
 
         try {
@@ -82,7 +85,7 @@ public class MediaAPI extends BlizzardAPI {
             JsonArray media_db = BlizzardUpdate.dbConnect.select(
                     tableName,
                     new String[]{"last_modified"},
-                    tableKey +" = ?",
+                    tableKey +"=?",
                     new String[]{mediaId}
             );
             boolean isInDb = (media_db.size() > 0);
@@ -123,7 +126,7 @@ public class MediaAPI extends BlizzardAPI {
                             tableKey+" = ?",
                             new String[]{mediaId}
                     );
-                    Logs.infoLog(this.getClass(), type.toString() +" media IS UPDATE "+ mediaId);
+                    Logs.infoLog(this.getClass(), type +" media IS UPDATE "+ mediaId);
                 } else { // INSERT
                     columns.add(tableKey);
                     values.add(mediaId);
@@ -133,18 +136,18 @@ public class MediaAPI extends BlizzardAPI {
                             columns,
                             values
                     );
-                    Logs.infoLog(this.getClass(), type.toString() +" media IS INSERT "+ mediaId);
+                    Logs.infoLog(this.getClass(), type +" media IS INSERT "+ mediaId);
                 }
             } else {
                 if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(this.getClass(), "NOT Modified "+ type.toString() +" media "+ mediaId);
+                    Logs.infoLog(this.getClass(), "NOT Modified "+ type +" media "+ mediaId);
                 } else {
-                    Logs.errorLog(this.getClass(), "ERROR - "+ type.toString() +" media "+ mediaId +" - "+ resp.code() +" // "+ call.request());
+                    Logs.errorLog(this.getClass(), "ERROR - "+ type +" media "+ mediaId +" - "+ resp.code() +" // "+ call.request());
                 }
             }
 
         } catch (IOException | DataException | SQLException e) {
-            Logs.fatalLog(this.getClass(), "FAILED - to get/update "+ type.toString() +" media "+ e);
+            Logs.fatalLog(this.getClass(), "FAILED - to get/update "+ type +" media ("+ tableName +"/"+ tableKey +") "+ e);
         }
     }
 

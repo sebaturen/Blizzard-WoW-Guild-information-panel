@@ -5,8 +5,12 @@ import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.Logs;
 import com.blizzardPanel.gameObject.Expansion;
 import com.blizzardPanel.gameObject.Media;
-import com.blizzardPanel.gameObject.journal.Encounter;
-import com.blizzardPanel.gameObject.journal.Instance;
+import com.blizzardPanel.gameObject.journal.encounter.Creature;
+import com.blizzardPanel.gameObject.journal.encounter.Encounter;
+import com.blizzardPanel.gameObject.journal.instance.Area;
+import com.blizzardPanel.gameObject.journal.instance.Instance;
+import com.blizzardPanel.gameObject.journal.instance.Location;
+import com.blizzardPanel.gameObject.journal.instance.Map;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
@@ -21,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class JournalAPI extends BlizzardAPI {
@@ -249,17 +252,20 @@ public class JournalAPI extends BlizzardAPI {
         String tableKey = "";
         switch (type) {
             case MAP:
-                tableName = Instance.MAP_TABLE_NAME;
-                tableKey = Instance.MAP_TABLE_KEY;
+                tableName = Map.TABLE_NAME;
+                tableKey = Map.TABLE_KEY;
                 break;
             case AREA:
-                tableName = Instance.AREA_TABLE_NAME;
-                tableKey = Instance.AREA_TABLE_KEY;
+                tableName = Area.TABLE_NAME;
+                tableKey = Area.TABLE_KEY;
                 break;
             case LOCATION:
-                tableName = Instance.LOCATION_TABLE_NAME;
-                tableKey = Instance.LOCATION_TABLE_KEY;
+                tableName = Location.TABLE_NAME;
+                tableKey = Location.TABLE_KEY;
                 break;
+            default:
+                Logs.fatalLog(this.getClass(), "ADDITIONAL TYPE IS REQUIRED");
+                System.exit(1);
         }
 
         try {
@@ -375,7 +381,7 @@ public class JournalAPI extends BlizzardAPI {
      * Load encounter detail
      * @param reference {"key": {"href": URL}, "id": ID, "name": {NAME}}
      */
-    private void encounter(JsonObject reference) {
+    public void encounter(JsonObject reference) {
         if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
 
         String urlHref = reference.getAsJsonObject("key").get("href").getAsString();
@@ -507,9 +513,9 @@ public class JournalAPI extends BlizzardAPI {
     private void creature(JsonObject detail) {
         try {
             JsonArray creature_db = BlizzardUpdate.dbConnect.select(
-                    Encounter.CREATURE_TABLE_NAME,
-                    new String[]{Encounter.TABLE_KEY},
-                    Encounter.TABLE_KEY +"=?",
+                    Creature.TABLE_NAME,
+                    new String[]{Creature.TABLE_KEY},
+                    Creature.TABLE_KEY +"=?",
                     new String[]{detail.get("id").getAsString()}
             );
 
@@ -519,9 +525,9 @@ public class JournalAPI extends BlizzardAPI {
 
                 // Add data
                 BlizzardUpdate.dbConnect.insert(
-                        Encounter.CREATURE_TABLE_NAME,
-                        Encounter.CREATURE_TABLE_KEY,
-                        new String[]{Encounter.CREATURE_TABLE_KEY, "name", "media_id"},
+                        Creature.TABLE_NAME,
+                        Creature.TABLE_KEY,
+                        new String[]{Creature.TABLE_KEY, "name", "media_id"},
                         new String[]{
                                 detail.get("id").getAsString(),
                                 detail.getAsJsonObject("name").toString(),

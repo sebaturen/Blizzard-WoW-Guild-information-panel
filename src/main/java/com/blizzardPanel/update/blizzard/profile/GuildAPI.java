@@ -605,6 +605,26 @@ public class GuildAPI extends BlizzardAPI {
                                 String iterNext = key.iterator().next();
                                 values.add(activityDet.getAsJsonObject(iterNext).toString());
 
+                                // Save data in activity
+                                switch (type) {
+                                    case "CHARACTER_ACHIEVEMENT":
+                                        BlizzardUpdate.shared.characterProfileAPI.save(
+                                                activityDet.getAsJsonObject(iterNext).getAsJsonObject("character")
+                                        );
+                                        BlizzardUpdate.shared.achievementAPI.achievementDetail(
+                                                activityDet.getAsJsonObject(iterNext).getAsJsonObject("achievement")
+                                        );
+                                        break;
+                                    case "ENCOUNTER":
+                                        BlizzardUpdate.shared.journalAPI.encounter(
+                                                activityDet.getAsJsonObject(iterNext).getAsJsonObject("encounter")
+                                        );
+                                        BlizzardUpdate.shared.staticInformationAPI.mode(
+                                                activityDet.getAsJsonObject(iterNext).getAsJsonObject("mode")
+                                        );
+                                        break;
+                                }
+
                                 // Check is activity previously exist:
                                 try {
                                     JsonArray db_guild_activities = BlizzardUpdate.dbConnect.select(
@@ -645,31 +665,6 @@ public class GuildAPI extends BlizzardAPI {
             });
         } catch (SQLException | DataException e) {
             Logs.fatalLog(this.getClass(), "FAILED - try load info from guild "+ guildId);
-        }
-    }
-
-    public void working() {
-        try {
-            JsonArray guilds_db = BlizzardUpdate.dbConnect.selectQuery(
-                    "SELECT " +
-                            "    g.id, " +
-                            "    g.`name`, " +
-                            "    r.slug " +
-                            "FROM " +
-                            "    guild_info g, " +
-                            "    realms r " +
-                            "WHERE " +
-                            "    g.realm_id = r.id;"
-            );
-
-            for(JsonElement guild : guilds_db) {
-                roster(
-                        guild.getAsJsonObject().get("slug").getAsString(),
-                        guild.getAsJsonObject().get("name").getAsString().replaceAll(" ", "-").toLowerCase(),
-                        guild.getAsJsonObject().get("id").getAsLong());
-            }
-        } catch (SQLException | DataException e) {
-            Logs.fatalLog(this.getClass(), "FAILED to get old guilds "+ e);
         }
     }
 

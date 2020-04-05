@@ -41,8 +41,8 @@ public class StaticInformation {
         return type;
     }
 
-    public JsonObject getName() {
-        return name;
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
     }
 
     @Override

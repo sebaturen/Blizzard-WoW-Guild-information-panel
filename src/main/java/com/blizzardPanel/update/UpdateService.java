@@ -19,9 +19,6 @@ public class UpdateService implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
-        // work!
-        BlizzardUpdate.shared.journalAPI.update();
-
         // Attribute
         GuildController.getInstance().loadActivities(10);
         sce.getServletContext().setAttribute("guild", GuildController.getInstance());

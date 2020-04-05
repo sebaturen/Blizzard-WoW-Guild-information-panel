@@ -9,6 +9,7 @@
 <!-- GENERAL CONTROLLER -->
 <jsp:useBean id="user" class="com.blizzardPanel.User" scope="session" />
 <jsp:useBean id="general_config" class="com.blizzardPanel.GeneralConfig" scope="application"/>
+<jsp:useBean id="dateObject" class="java.util.Date" />
 <fmt:setBundle basename="messages" />
 <%    
     // Setting if user is a guild member, or blizzardPanel is setting all information is public.

@@ -6,6 +6,8 @@
 package com.blizzardPanel.gameObject.guilds;
 
 import com.blizzardPanel.dbConnect.DBLoadObject;
+import com.blizzardPanel.gameObject.guilds.activity.GuildActivityCharacterAchievement;
+import com.blizzardPanel.gameObject.guilds.activity.GuildActivityEncounter;
 import com.google.gson.JsonObject;
 
 public class GuildActivity {
@@ -22,7 +24,8 @@ public class GuildActivity {
     private JsonObject detail;
 
     // Internal DATA
-    //private Achievement CharacterAchievement???
+    private GuildActivityCharacterAchievement characterAchievement;
+    private GuildActivityEncounter guildEncounter;
 
     public static class Builder extends DBLoadObject {
 
@@ -33,7 +36,19 @@ public class GuildActivity {
         }
 
         public GuildActivity build() {
-            return (GuildActivity) load(TABLE_KEY, id);
+            GuildActivity newActivity = (GuildActivity) load(TABLE_KEY, id);
+
+            // Load internal data:
+            switch ( newActivity.type) {
+                case "CHARACTER_ACHIEVEMENT":
+                    newActivity.characterAchievement = new GuildActivityCharacterAchievement(newActivity.detail);
+                    break;
+                case "ENCOUNTER":
+                    newActivity.guildEncounter = new GuildActivityEncounter(newActivity.detail);
+                    break;
+            }
+
+            return newActivity;
         }
     }
 
@@ -47,6 +62,18 @@ public class GuildActivity {
     // GET / SET
     //
     //------------------------------------------------------------------------------------------------------------------
+
+    public GuildActivityCharacterAchievement getCharacterAchievement() {
+        return characterAchievement;
+    }
+
+    public GuildActivityEncounter getGuildEncounter() {
+        return guildEncounter;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 
     public String getType() {
         return type;

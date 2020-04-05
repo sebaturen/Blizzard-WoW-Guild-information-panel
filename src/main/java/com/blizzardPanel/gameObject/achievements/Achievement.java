@@ -28,7 +28,7 @@ public class Achievement {
 
     // Internal DATA
     private StaticInformation faction;
-    private Category category;
+    private AchievementCategory achievementCategory;
     private Media media;
 
     public static class Builder extends DBLoadObject {
@@ -41,7 +41,7 @@ public class Achievement {
 
         public Achievement build() {
             Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
-            newAchievement.category = new Category.Builder(newAchievement.category_id).build();
+            newAchievement.achievementCategory = new AchievementCategory.Builder(newAchievement.category_id).build();
             newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
             if (newAchievement.faction_type != null) {
                 newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
@@ -53,6 +53,20 @@ public class Achievement {
     // Constructor
     private Achievement() {
 
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    // GET / SET
+    //
+    //------------------------------------------------------------------------------------------------------------------
+
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
+    }
+
+    public Media getMedia() {
+        return media;
     }
 
     @Override
@@ -70,7 +84,7 @@ public class Achievement {
                 "\"category_id\":\"" + category_id + "\"" + ", " +
                 "\"last_modified\":\"" + last_modified + "\"" + ", " +
                 "\"faction\":" + (faction == null ? "null" : faction) + ", " +
-                "\"category\":" + (category == null ? "null" : category) + ", " +
+                "\"category\":" + (achievementCategory == null ? "null" : achievementCategory) + ", " +
                 "\"media\":" + (media == null ? "null" : media) +
                 "}";
     }
