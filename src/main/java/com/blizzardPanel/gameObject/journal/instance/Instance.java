@@ -1,6 +1,7 @@
 package com.blizzardPanel.gameObject.journal.instance;
 
 import com.blizzardPanel.dbConnect.DBLoadObject;
+import com.blizzardPanel.gameObject.Expansion;
 import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.StaticInformation;
 import com.blizzardPanel.gameObject.journal.instance.Map;

@@ -2,28 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/WoWToken.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_es_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_es_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/messages_es_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_es_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Expansion.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Instance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Instance.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,6 +220,8 @@
       <workItem from="1585860144122" duration="16421000" />
       <workItem from="1585914677381" duration="30476000" />
       <workItem from="1586013850171" duration="52237000" />
+      <workItem from="1586178716505" duration="123000" />
+      <workItem from="1586199240688" duration="311000" />
     </task>
     <servers />
   </component>
@@ -254,12 +237,12 @@
       <screen x="0" y="23" width="2560" height="1353" />
     </state>
     <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585695418122" />
-    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1586175746162">
-      <screen x="-307" y="-1417" width="2560" height="1417" />
+    <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser" timestamp="1586199314362">
+      <screen x="0" y="23" width="1920" height="1113" />
     </state>
     <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586175746162" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585862074038" />
-    <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1586113457481" />
+    <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1586199314362" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1114@0.23.1920.1114" timestamp="1585972823813" />
     <state x="1627" y="458" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585784750127" />
     <state x="124" y="-1417" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586115114727">
@@ -269,10 +252,10 @@
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585861177977" />
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586047088650" />
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1920.1114@0.23.1920.1114" timestamp="1585969151500" />
-    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586133073946">
+    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586178741913">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586133073946" />
+    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586178741913" />
     <state x="698" y="334" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586112954705" />
     <state x="1160" y="-1160" key="#toString()_Generation_Settings" timestamp="1585875921640">
       <screen x="-307" y="-1417" width="2560" height="1417" />
@@ -311,11 +294,12 @@
     </state>
     <state x="652" y="-1285" key="SettingsEditor/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585945137887" />
     <state x="953" y="379" key="SettingsEditor/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851468309" />
-    <state x="1065" y="-744" key="com.intellij.ide.util.TipDialog" timestamp="1586013850485">
-      <screen x="-307" y="-1417" width="2560" height="1417" />
+    <state x="1029" y="552" key="com.intellij.ide.util.TipDialog" timestamp="1586199240673">
+      <screen x="0" y="23" width="1920" height="1113" />
     </state>
-    <state x="1065" y="-744" key="com.intellij.ide.util.TipDialog/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586013850485" />
+    <state x="1065" y="-744" key="com.intellij.ide.util.TipDialog/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586178716601" />
     <state x="1029" y="552" key="com.intellij.ide.util.TipDialog/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585860145110" />
+    <state x="1029" y="552" key="com.intellij.ide.util.TipDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586199240673" />
     <state x="1372" y="666" key="com.intellij.ide.util.TipDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585850992539" />
     <state x="645" y="-1117" width="683" height="521" key="find.popup" timestamp="1586178372973">
       <screen x="-307" y="-1417" width="2560" height="1417" />
