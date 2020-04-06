@@ -30,6 +30,7 @@
             }
         }
     }
+    response.addCookie(new Cookie("locale", "es_MX"));
 
 %>
 <c:if test="${empty guild}">

@@ -20,6 +20,7 @@ import retrofit2.Response;
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AccountProfileAPI extends BlizzardAPI {
@@ -40,6 +41,19 @@ public class AccountProfileAPI extends BlizzardAPI {
                 if (response.isSuccessful()) {
                     JsonObject detail = response.body();
                     if (detail.has("wow_accounts")) {
+
+                        try {
+                            BlizzardUpdate.dbConnect.update(
+                                    User.TABLE_NAME,
+                                    new String[]{"last_alters_update"},
+                                    new String[]{new Date().getTime()+""},
+                                    User.TABLE_KEY +"=?",
+                                    new String[]{u.getId()+""}
+                            );
+                        } catch (SQLException | DataException e) {
+                            Logs.fatalLog(this.getClass(), "FAILED to update user alters `is update` ["+ u.getId() +"] "+ e);
+                        }
+
                         for(JsonElement wowAccount : detail.get("wow_accounts").getAsJsonArray() ) {
                             JsonObject wowAccountDetail = wowAccount.getAsJsonObject();
                             if (wowAccountDetail.has("characters")) {

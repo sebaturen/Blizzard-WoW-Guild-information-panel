@@ -635,7 +635,6 @@ public class CharacterProfileAPI extends BlizzardAPI {
                         for (JsonElement equipItem : equipments) {
                             JsonObject equipItemDetail = equipItem.getAsJsonObject();
 
-
                             // Prepare Values
                             List<Object> columns = new ArrayList<>();
                             List<Object> values = new ArrayList<>();

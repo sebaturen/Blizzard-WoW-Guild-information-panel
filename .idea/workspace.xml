@@ -2,14 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/activity/GuildActivityCharacterAchievement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/activity/GuildActivityEncounter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/encounter/Creature.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/encounter/Encounter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Area.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Expansion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Location.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Map.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -20,24 +12,32 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/resources/main/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/resources/main/messages_es_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_es_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/GeneralConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/GeneralConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/StaticInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/StaticInformation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/AchievementCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Encounter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/Instance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/journal/instance/Instance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/UpdateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/UpdateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MediaAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MediaAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildRoster.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/guilds/GuildRoster.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/BlizzardUpdate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/AccountProfileAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/AccountProfileAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/GuildAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/GuildAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Members.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Members.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/messages_es_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_es_US.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/classes/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/globalObject.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/globalObject.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index3.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index3.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index3.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/members.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/members.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/user_panel/login_form.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/login_form.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,11 +116,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/webapp/assets" />
       <recent name="$PROJECT_DIR$/src/main/webapp" />
       <recent name="$PROJECT_DIR$/src/main/webapp/assets/img/background" />
       <recent name="$PROJECT_DIR$/src/main/webapp/assets/img/raids" />
-      <recent name="$PROJECT_DIR$/src/main/webapp/assets/js" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/webapp/assets/img/dungeon" />
@@ -252,7 +252,7 @@
       <workItem from="1585857656912" duration="103000" />
       <workItem from="1585860144122" duration="16421000" />
       <workItem from="1585914677381" duration="30476000" />
-      <workItem from="1586013850171" duration="38404000" />
+      <workItem from="1586013850171" duration="48869000" />
     </task>
     <servers />
   </component>
@@ -268,10 +268,10 @@
       <screen x="0" y="23" width="2560" height="1353" />
     </state>
     <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585695418122" />
-    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1586118387372">
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser" timestamp="1586126900533">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586118387372" />
+    <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586126900533" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585862074038" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1586113457481" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1114@0.23.1920.1114" timestamp="1585972823813" />
@@ -283,39 +283,40 @@
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585861177977" />
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586047088650" />
     <state x="323" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1920.1114@0.23.1920.1114" timestamp="1585969151500" />
-    <state x="698" y="334" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586112954705">
-      <screen x="0" y="23" width="1920" height="1113" />
+    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586133073946">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
+    <state x="624" y="-1021" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586133073946" />
     <state x="698" y="334" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586112954705" />
     <state x="1160" y="-1160" key="#toString()_Generation_Settings" timestamp="1585875921640">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
     <state x="1160" y="-1160" key="#toString()_Generation_Settings/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585875921640" />
-    <state width="2401" height="249" key="GridCell.Tab.0.bottom" timestamp="1586117792880">
+    <state width="2401" height="249" key="GridCell.Tab.0.bottom" timestamp="1586123357726">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state width="2401" height="249" key="GridCell.Tab.0.bottom/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586117792880" />
+    <state width="2401" height="249" key="GridCell.Tab.0.bottom/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357726" />
     <state width="1878" height="196" key="GridCell.Tab.0.bottom/0.23.1920.1113@0.23.1920.1113" timestamp="1586113007232" />
     <state width="1878" height="250" key="GridCell.Tab.0.bottom/0.23.1920.1114@0.23.1920.1114" timestamp="1585972729985" />
     <state width="2300" height="299" key="GridCell.Tab.0.bottom/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931881" />
-    <state width="2401" height="249" key="GridCell.Tab.0.center" timestamp="1586117792879">
+    <state width="2401" height="249" key="GridCell.Tab.0.center" timestamp="1586123357725">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state width="2401" height="249" key="GridCell.Tab.0.center/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586117792879" />
+    <state width="2401" height="249" key="GridCell.Tab.0.center/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357725" />
     <state width="1878" height="196" key="GridCell.Tab.0.center/0.23.1920.1113@0.23.1920.1113" timestamp="1586113007231" />
     <state width="1878" height="250" key="GridCell.Tab.0.center/0.23.1920.1114@0.23.1920.1114" timestamp="1585972729984" />
     <state width="2300" height="299" key="GridCell.Tab.0.center/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
-    <state width="2401" height="249" key="GridCell.Tab.0.left" timestamp="1586117792878">
+    <state width="2401" height="249" key="GridCell.Tab.0.left" timestamp="1586123357725">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state width="2401" height="249" key="GridCell.Tab.0.left/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586117792878" />
+    <state width="2401" height="249" key="GridCell.Tab.0.left/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357725" />
     <state width="1878" height="196" key="GridCell.Tab.0.left/0.23.1920.1113@0.23.1920.1113" timestamp="1586113007231" />
     <state width="1878" height="250" key="GridCell.Tab.0.left/0.23.1920.1114@0.23.1920.1114" timestamp="1585972729984" />
     <state width="2300" height="299" key="GridCell.Tab.0.left/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
-    <state width="2401" height="249" key="GridCell.Tab.0.right" timestamp="1586117792879">
+    <state width="2401" height="249" key="GridCell.Tab.0.right" timestamp="1586123357726">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state width="2401" height="249" key="GridCell.Tab.0.right/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586117792879" />
+    <state width="2401" height="249" key="GridCell.Tab.0.right/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357726" />
     <state width="1878" height="196" key="GridCell.Tab.0.right/0.23.1920.1113@0.23.1920.1113" timestamp="1586113007232" />
     <state width="1878" height="250" key="GridCell.Tab.0.right/0.23.1920.1114@0.23.1920.1114" timestamp="1585972729985" />
     <state width="2300" height="299" key="GridCell.Tab.0.right/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585849931880" />
@@ -341,10 +342,10 @@
       <screen x="0" y="23" width="2560" height="1353" />
     </state>
     <state x="718" y="306" key="new project wizard/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585594440692" />
-    <state x="1109" y="293" width="670" height="556" key="run.anything.popup" timestamp="1586045690393">
-      <screen x="0" y="23" width="1920" height="1113" />
+    <state x="1172" y="-1073" width="670" height="707" key="run.anything.popup" timestamp="1586123357707">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
-    <state x="1172" y="-1073" width="670" height="707" key="run.anything.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1585914719022" />
+    <state x="1172" y="-1073" width="670" height="707" key="run.anything.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357707" />
     <state x="1109" y="293" width="670" height="556" key="run.anything.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1586045690393" />
     <state x="1479" y="351" width="670" height="675" key="run.anything.popup/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851423482" />
     <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup" timestamp="1586106146862">
@@ -358,18 +359,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java</url>
-          <line>1214</line>
+          <line>1213</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/characters/CharacterMedia.java</url>
           <line>25</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp</url>
-          <line>24</line>
-          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/JournalAPI.java</url>
@@ -382,9 +378,19 @@
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/webapp/index3.jsp</url>
+          <url>file://$PROJECT_DIR$/src/main/webapp/index.jsp</url>
           <line>53</line>
           <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Item.java</url>
+          <line>47</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java</url>
+          <line>64</line>
+          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

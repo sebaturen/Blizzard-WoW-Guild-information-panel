@@ -1,19 +1,19 @@
 package com.blizzardPanel.viewController.rest;
 
-import com.blizzardPanel.gameObject.characters.CharacterInfo;
-import com.blizzardPanel.gameObject.characters.CharacterMedia;
-import com.blizzardPanel.gameObject.characters.CharacterMember;
-import com.blizzardPanel.gameObject.characters.CharacterSpec;
+import com.blizzardPanel.User;
+import com.blizzardPanel.gameObject.characters.*;
 import com.blizzardPanel.gameObject.guilds.GuildRoster;
 import com.blizzardPanel.viewController.GuildController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +23,8 @@ public class Members {
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response memberList() {
+    public Response memberList(@Context HttpServletRequest request) {
+        User currentUser = (User) request.getSession().getAttribute("user");
 
         // Load rosters
         JsonArray members = new JsonArray();
@@ -40,6 +41,29 @@ public class Members {
             if (charInfo != null) {
                 info.addProperty("lvl", charInfo.getLevel());
                 info.addProperty("race_id", charInfo.getPlayableRace().getId());
+
+                // Only if user is a guild member
+                if (currentUser.getGuildRank() != -1) {
+                    info.addProperty("equip_lvl", charInfo.getEquipped_item_level());
+                    info.addProperty("avg_lvl", charInfo.getAverage_item_level());
+
+                    if (charInfo.getBestMythicPlusScore() != null) {
+                        info.add("mythicScore", charInfo.getMythicPlusScores());
+                    }
+                    if (charInfo.getMythicPlusScores() != null) {
+                        info.add("bestMythicScore", charInfo.getBestMythicPlusScore());
+                    }
+
+                    int hoaLvl = 0;
+                    for (CharacterItem item : charMember.getItem()) {
+                        if (item.getAzerite_level() > 0) {
+                            hoaLvl = item.getAzerite_level();
+                        }
+                    }
+                    if (hoaLvl > 0) {
+                        info.addProperty("hoa_lvl", hoaLvl);
+                    }
+                }
 
                 JsonObject classMember = new JsonObject();
                 classMember.addProperty("id", charInfo.getPlayableClass().getId());

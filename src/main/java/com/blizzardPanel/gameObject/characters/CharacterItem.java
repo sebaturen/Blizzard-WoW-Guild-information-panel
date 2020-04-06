@@ -49,9 +49,12 @@ public class CharacterItem {
 
             // Load info
             newItem.item = new Item.Builder(newItem.item_id).build();
-            newItem.slot = new StaticInformation.Builder(newItem.slot_type).build();
             newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+            newItem.slot = new StaticInformation.Builder(newItem.slot_type).build();
+
+            if (newItem.media_id > 0) {
+                newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+            }
 
             return newItem;
         }
@@ -60,6 +63,16 @@ public class CharacterItem {
     // Constructor
     private CharacterItem() {
 
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    // GET / SET
+    //
+    //------------------------------------------------------------------------------------------------------------------
+
+    public int getAzerite_level() {
+        return azerite_level;
     }
 
     @Override

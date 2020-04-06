@@ -49,7 +49,7 @@ public class CharacterMember {
     private CharacterInfo info;
     private CharacterStats stats;
     private CharacterMedia media;
-    private List<CharacterItem> item;
+    private List<CharacterItem> items;
     private List<CharacterSpec> specs;
     private MythicDungeonRun bestMythicRun;
 
@@ -102,7 +102,7 @@ public class CharacterMember {
      * Load a character items (character_items)
      */
     private void loadItems() {
-        item = new ArrayList<>();
+        items = new ArrayList<>();
         try {
             JsonArray items_db = DBLoadObject.dbConnect.select(
                     CharacterItem.TABLE_NAME,
@@ -114,7 +114,7 @@ public class CharacterMember {
             if (items_db.size() > 0) {
                 for (JsonElement itemDb : items_db) {
                     JsonObject itemDetail = itemDb.getAsJsonObject();
-                    item.add(new CharacterItem.Builder(itemDetail.get(CharacterItem.TABLE_KEY).getAsLong()).build());
+                    items.add(new CharacterItem.Builder(itemDetail.get(CharacterItem.TABLE_KEY).getAsLong()).build());
                 }
             } else {
                 Logs.infoLog(this.getClass(), "Character not have an Items ["+ id +"]");
@@ -254,6 +254,13 @@ public class CharacterMember {
         return bestMythicRun;
     }
 
+    public List<CharacterItem> getItem() {
+        if (items == null) {
+            loadItems();
+        }
+        return items;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterMember\", " +
@@ -273,7 +280,7 @@ public class CharacterMember {
                 "\"info\":" + (info == null ? "null" : info) + ", " +
                 "\"stats\":" + (stats == null ? "null" : stats) + ", " +
                 "\"media\":" + (media == null ? "null" : media) + ", " +
-                "\"item\":" + (item == null ? "null" : Arrays.toString(item.toArray())) + ", " +
+                "\"items\":" + (items == null ? "null" : Arrays.toString(items.toArray())) + ", " +
                 "\"specs\":" + (specs == null ? "null" : Arrays.toString(specs.toArray())) + ", " +
                 "\"bestMythicRun\":" + (bestMythicRun == null ? "null" : bestMythicRun) +
                 "}";

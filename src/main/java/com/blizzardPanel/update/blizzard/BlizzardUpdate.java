@@ -352,6 +352,8 @@ public class BlizzardUpdate implements Runnable {
             // Prepare values:
             List<Object> columns = new ArrayList<>();
             List<Object> values = new ArrayList<>();
+            columns.add("last_login");
+            values.add(new Date().getTime());
             columns.add("battle_tag");
             values.add(user.getBattle_tag());
             columns.add("access_token");

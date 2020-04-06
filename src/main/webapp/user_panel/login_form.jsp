@@ -10,7 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="es">
 <head>
-    <title>${guild.name} - Login</title>
+    <title>${guild.name} - <fmt:message key="label.login" /></title>
     <%@include file="../includes/header.jsp" %>
 </head>
 <body>
@@ -19,7 +19,7 @@
     <div class="row justify-content-md-center">
         <% // "redirectUri" is generate in menu.jsp %>
         <a href="<%= redirectUri %>">
-            <button type="button" class="btn btn-primary">Blizzard Login</button>
+            <button type="button" class="btn btn-primary"><fmt:message key="label.blizzard_login" /></button>
         </a><br><br>
     </div>
 </div>

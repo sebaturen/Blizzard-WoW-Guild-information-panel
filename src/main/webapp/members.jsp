@@ -12,43 +12,43 @@
         <div class="container">
             <div id="character-content">
                 <% if(guildMember) { %>
-                <button type="button" class="btn btn-info" id='membersFilters'>Filters</button>
+                <button type="button" class="btn btn-info" id='membersFilters'><fmt:message key="label.filters" /></button>
                 <form style="display: none;" id='formFilter'>
                     <br>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label>Name</label>
+                                <label><fmt:message key="label.name" /></label>
                                 <input class="form-control" type="text" value="" id="nameInput"/>
                             </div>
                             <div class="form-group">
-                                <label>Guild Rank</label>
+                                <label><fmt:message key="label.guild_rank" /></label>
                                 <select class="form-control" id='guildRankSelect'>
-                                    <option>All</option>
+                                    <option><fmt:message key="label.all" /></option>
                                 </select>
                             </div>                                
                             <div class="form-group">
-                                <label>Class</label>
+                                <label><fmt:message key="label.class" /></label>
                                 <select class="form-control" id='classSelect'>
-                                    <option>All</option>
+                                    <option><fmt:message key="label.all" /></option>
                                 </select>
                             </div>
                         </div>
                         <div class='col'>
                             <div class="form-group">
-                                <label>Races</label>
+                                <label><fmt:message key="label.race" /></label>
                                 <select class="form-control" id='racesSelect'>
-                                    <option>All</option>
+                                    <option><fmt:message key="label.all" /></option>
                                 </select>
                             </div>
                             <div class="form-group">  
-                                <label>Level</label>                               
+                                <label><fmt:message key="label.level" /></label>
                                 <div class="row">
                                     <div class='col'> 
                                         <select class="form-control" id="levelSelect">
-                                            <option>All</option>
-                                            <option>Greater than</option>
-                                            <option>Less than</option>
+                                            <option><fmt:message key="label.all" /></option>
+                                            <option><fmt:message key="label.greater_then" /></option>
+                                            <option><fmt:message key="label.less_then" /></option>
                                         </select>                                      
                                     </div>
                                     <div class='col'>
@@ -57,13 +57,13 @@
                                 </div>                                
                             </div>
                             <div class="form-group">
-                                <label>Item Level</label>
+                                <label><fmt:message key="label.item_level" /></label>
                                 <div class='row'>
                                     <div class="col">
                                         <select class="form-control" id='ilevelSelect'>
-                                            <option>All</option>
-                                            <option>Greater than</option>
-                                            <option>Less than</option>
+                                            <option><fmt:message key="label.all" /></option>
+                                            <option><fmt:message key="label.greater_then" /></option>
+                                            <option><fmt:message key="label.less_then" /></option>
                                         </select>
                                     </div>
                                     <div class="col">

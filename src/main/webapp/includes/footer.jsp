@@ -1,9 +1,7 @@
 <div id="footer">
-    <div class="container fill">
+    <div class="fill">
         <div class="copyRight">
-            Blizzard WoW Guild Information Panel is created by Sebasti&#xE1;n Tur&#xE9;n<br/>
-            World of Warcraft game is owned by Blizzard Entertainment &#xA9; 2020<br/>
-            Guild Progress information is delivered by Raider.IO
+            <fmt:message key="label.panel_copy_right" /> | <fmt:message key="label.wow_copy_right" /> | <fmt:message key="label.io_info" />
         </div>
     </div>
 </div>

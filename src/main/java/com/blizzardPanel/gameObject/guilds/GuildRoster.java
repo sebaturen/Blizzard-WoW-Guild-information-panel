@@ -32,8 +32,10 @@ public class GuildRoster {
             GuildRoster newGuildRoster = (GuildRoster) load(TABLE_KEY, id);
 
             // Load internal data:
-            newGuildRoster.member = new CharacterMember.Builder(newGuildRoster.character_id).build();
-            newGuildRoster.guildRank = new GuildRank.Builder(newGuildRoster.rank_id).build();
+            if (newGuildRoster != null) {
+                newGuildRoster.member = new CharacterMember.Builder(newGuildRoster.character_id).build();
+                newGuildRoster.guildRank = new GuildRank.Builder(newGuildRoster.rank_id).build();
+            }
 
             return newGuildRoster;
         }

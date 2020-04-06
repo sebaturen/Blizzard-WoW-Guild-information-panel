@@ -258,7 +258,7 @@ public class GuildAPI extends BlizzardAPI {
                     new String[]{guildId + ""}
             );
             boolean isInDb = (db_guild_roter.size() > 0);
-            Long lastModified = 0L;
+            long lastModified = 0L;
             if (db_guild_roter.size() > 0) {
                 lastModified = db_guild_roter.get(0).getAsJsonObject().get("roster_last_modified").getAsLong();
             }
@@ -362,8 +362,8 @@ public class GuildAPI extends BlizzardAPI {
                                             if (roster_db.size() > 0) { // Update
                                                 BlizzardUpdate.dbConnect.update(
                                                         GuildRoster.TABLE_NAME,
-                                                        new String[]{"rank_id"},
-                                                        new String[]{rankId+""},
+                                                        new String[]{"rank_id", "current_status"},
+                                                        new String[]{rankId+"", "1"},
                                                         GuildRoster.TABLE_KEY+"=?",
                                                         new String[]{characterId+""}
                                                 );
@@ -376,13 +376,15 @@ public class GuildAPI extends BlizzardAPI {
                                                                 "character_id",
                                                                 "guild_id",
                                                                 "rank_id",
-                                                                "add_regist"
+                                                                "add_regist",
+                                                                "current_status"
                                                         },
                                                         new String[]{
                                                                 characterId+"",
                                                                 guildId+"",
                                                                 rankId+"",
-                                                                new Date().getTime() +""
+                                                                new Date().getTime() +"",
+                                                                "1"
                                                         }
                                                 );
                                                 Logs.infoLog(this.getClass(), "OK - Roster ["+ characterId +"] is INSERT");

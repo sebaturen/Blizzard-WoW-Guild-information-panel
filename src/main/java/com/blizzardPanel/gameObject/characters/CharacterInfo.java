@@ -92,6 +92,14 @@ public class CharacterInfo {
         return guild_id;
     }
 
+    public JsonObject getBestMythicPlusScore() {
+        return bestMythicPlusScore;
+    }
+
+    public JsonObject getMythicPlusScores() {
+        return mythicPlusScores;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterInfo\", " +

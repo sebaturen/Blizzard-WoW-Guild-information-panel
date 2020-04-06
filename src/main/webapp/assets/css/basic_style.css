@@ -3,9 +3,11 @@ html {
     height: 100%;
 }
 body {
-    color: #fff;
+    background-color: #26262c;
+    color: white;
     position: relative;
-    padding-bottom: 13rem;
+    padding-bottom: 4rem;
+    padding-top: 4em;
     min-height: 100%;
 }
 p {
@@ -89,11 +91,14 @@ p {
     font-size: 0.8em;
 }
 .navbar {
-    box-shadow: 0 3px 8px 4px rgba(0,0,0,.5);
+    background-color: #26262c;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 99999;
 }
 #footer {
-    background-color: #212529;
-    box-shadow: 0 -3px 8px 4px rgba(0,0,0,.5);
     position: absolute;
     right: 0;
     bottom: 0;
@@ -142,11 +147,8 @@ p {
     cursor: pointer;
 }
 body > .container {
-    background-color: #212529;
     margin-top: 21px;
     padding: 25px;
-    /* border: 1px solid; */
-    box-shadow: 0 7px 8px 4px rgba(0,0,0,.5);
     margin-bottom: 21px;
 }
 .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta,

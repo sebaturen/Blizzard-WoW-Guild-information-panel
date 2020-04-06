@@ -43,9 +43,13 @@ public class Item {
 
         public Item build() {
             Item newItem = (Item) load(TABLE_KEY, id);
+
+            // Load internal data
             newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
             newItem.inventory = new StaticInformation.Builder(newItem.inventory_type).build();
+            if (newItem.media_id > 0) {
+                newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+            }
 
             return newItem;
         }

@@ -2,13 +2,13 @@
 var countFinish = 0;
 $(document).ready(function() {
     /*Load a member details*/
-    $.get("/rest/mythicPlus/best/4?locale="+ Cookies.get('locale'), function(data) {
+    $.get("/v2/rest/mythicPlus/best/4?locale="+ Cookies.get('locale'), function(data) {
         console.log("mythic best load complete", data);
         bestRun(data);
     }).always(function() {
         complete();
     });
-    $.get("/rest/mythicPlus/weekRuns?locale="+ Cookies.get('locale'), function(data) {
+    $.get("/v2/rest/mythicPlus/weekRuns?locale="+ Cookies.get('locale'), function(data) {
         console.log("mythic is load complete", data);
         weekRun(data);
     }).always(function() {

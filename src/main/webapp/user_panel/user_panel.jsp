@@ -21,7 +21,7 @@
 <%@include file="../includes/menu.jsp" %>
 <div class="container fill">
     <img src="../assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattle_tag() %>
-    <%= (user.getGuild_rank() == 0 || user.getGuild_rank() == 1)? "<a href='userpanel/settings.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Settings</button></a>":"" %><br/>
+    <%= (user.getGuildRank() == 0 || user.getGuildRank() == 1)? "<a href='userpanel/settings.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'>Settings</button></a>":"" %><br/>
     <%
         //User character info~
         List<CharacterMember> memberChars = user.getCharacters();
@@ -96,13 +96,11 @@
             <img src="../assets/img/icons/Discord-Logo-Color.svg" style="width: 35px">
             <div class="returnCode">
                 <code id="discordCode" class="">
-                    <%
-                        if(user.getDiscord_user_id() > 0) {
+                    <% if(user.getDiscord_user_id() > 0) {
                             out.write("!regist "+ user.getAccess_token());
-                        } else {
-                            out.write("Account ready!");
-                        }
-                    %>
+                        } else { %>
+                            <fmt:message key="label.account_ready" />
+                    <% } %>
                 </code>
             </div>
         </div>

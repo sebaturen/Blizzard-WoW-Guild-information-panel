@@ -2,8 +2,7 @@
 <%@ page import ="com.blizzardPanel.update.blizzard.WoWOauthService" %>
 <% String[] path = (request.getRequestURI()).split("/");
 String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];%>
-<div id="img_fPage" class="img_fondo img_fondo_pagina"></div>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp">
         <img src="<%= request.getContextPath() %>/assets/img/artofwar_logo.png" height="30" alt="">
     </a>
@@ -51,7 +50,8 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp"><fmt:message key="label.simeo" /></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#">Last Update[<%= new Date(GuildController.getInstance().getLast_modified()) %>]</a>
+                <jsp:setProperty name="dateObject" property="time" value="${guild.last_modified}" />
+                <a class="nav-link disabled" href="#">Last Update[<fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />]</a>
             </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
@@ -78,7 +78,16 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     redirectUri += "&client_id=" + general_config.getStringConfig("CLIENT_ID");
                 }
             %>
-            &nbsp;<a href="<%= redirectUri %>"><button class="btn btn-outline-success" type="button"><%= (!user.isLogin())? "Login":"Account Info" %></button></a>
+            &nbsp;<a href="<%= redirectUri %>">
+                <button class="btn btn-outline-success" type="button">
+                    <c:if test="${user.login}">
+                        <fmt:message key="label.account_info" />
+                    </c:if>
+                    <c:if test="${!user.login}">
+                        <fmt:message key="label.login" />
+                    </c:if>
+                </button>
+        </a>
         </div>
     </div>
 </nav>

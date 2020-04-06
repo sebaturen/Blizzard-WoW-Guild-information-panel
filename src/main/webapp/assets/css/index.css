@@ -21,6 +21,8 @@
 }
 .icon_new > img {
     height: 56px;
+    border: 1px solid #ffffff26;
+    border-radius: 6px;
 }
 /*END -------INDEX------------*/
 
