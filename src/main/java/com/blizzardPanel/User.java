@@ -132,7 +132,6 @@ public class User {
                     GuildRoster roster = new GuildRoster.Builder(newC.getId()).build();
                     if (roster != null && (guildRank == -1 || guildRank > roster.getGuildRank().getRank_lvl())) {
                         guildRank = roster.getGuildRank().getRank_lvl();
-                        System.out.println("new rank! "+ guildRank);
                     }
                 }
             }

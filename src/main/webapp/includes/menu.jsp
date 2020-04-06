@@ -13,7 +13,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
     <div class="item-floating-desc tooltip-wow_token">
         <div class="itemDesc tooltipDesc">
             <div id="graph">
-                <div id="tokenGraph" style="height: 370px; width: 500px;"></div>
+                <div id="tokenGraph" style="height: 400px; width: 500px;"></div>
             </div>
         </div>
     </div>

@@ -17,53 +17,58 @@ window.onmousemove = function (e) {
 };
 
 $(document).ready(function() {
-    /*Mose over and leave in affix detail*/
+
+    /* Mouse over */
     $('#navbarSupportedContent')
-    .on('mouseover', '#token_price', function() {
-        /*Load wow token prices */
-        $.getScript('/assets/js/wowToken/wow_token_list.jsp', function() {
-            console.log('token price history ready');
 
-            var dataPoints = [];
+        // Token price
+        .on('mouseover', '#token_price', function() {
+            /* Load wow token prices */
+            $.get('rest/wow_token/history?max=10', function (data) {
+                console.log('token price history ready');
+                var dataPoints = [];
 
-            var options =  {
-                animationEnabled: true,
-                theme: "light2",
-                title: {
-                    text: "Change history"
-                },
-                axisX: {
-                    valueFormatString: "DD / HH:mm",
-                },
-                axisY: {
-                    title: "GOLD",
-                    titleFontSize: 24,
-                    includeZero: false
-                },
-                data: [{
-                    type: "spline",
-                    yValueFormatString: "$#,###.##",
-                    dataPoints: dataPoints
-                }]
-            };
+                var options =  {
+                    animationEnabled: true,
+                    theme: "light2",
+                    title: {
+                        text: "Change history"
+                    },
+                    axisX: {
+                        valueFormatString: "DD / HH:mm",
+                    },
+                    axisY: {
+                        title: "GOLD",
+                        titleFontSize: 24,
+                        includeZero: false
+                    },
+                    data: [{
+                        type: "spline",
+                        yValueFormatString: "$#,###.##",
+                        dataPoints: dataPoints
+                    }]
+                };
 
-            for (var i = 0; i < wow_token_history.length; i++) {
-                dataPoints.push({
-                    x: new Date(wow_token_history[i].date),
-                    y: wow_token_history[i].gold
-                });
-            }
+                for (var i = 0; i < data.length; i++) {
+                    dataPoints.push({
+                        x: new Date(data[i].date),
+                        y: data[i].price/10000
+                    });
+                }
 
-            console.log(dataPoints);
+                console.log(dataPoints);
 
-            $("#tokenGraph").CanvasJSChart(options);
+                $("#tokenGraph").CanvasJSChart(options);
 
+                $(".tooltip-wow_token").show();
+
+            });
+        })
+
+        // Tooltips
+        .on('mouseleave', '#token_price', function() {
+            $(".tooltip-wow_token").hide();
         });
-        $(".tooltip-wow_token").show();
-    })
-    .on('mouseleave', '#token_price', function() {
-        $(".tooltip-wow_token").hide();
-    });
 
     // Locale cookie
     $("#locale").on("change", function() {

@@ -51,7 +51,7 @@ public class MythicPlus {
 
             return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (DataException | SQLException e) {
-            Logs.errorLog(this.getClass(), "FATAL - error MythicPlus best season ["+ season +"] "+ e);
+            Logs.fatalLog(this.getClass(), "FATAL - error MythicPlus best season ["+ season +"] "+ e);
             return Response.serverError().build();
         }
     }
@@ -77,7 +77,7 @@ public class MythicPlus {
 
             return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (SQLException | DataException e) {
-            Logs.errorLog(this.getClass(), "FATAL - error MythicPlus week season "+ e);
+            Logs.fatalLog(this.getClass(), "FATAL - error MythicPlus week season "+ e);
             return Response.serverError().build();
         }
     }

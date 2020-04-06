@@ -100,6 +100,10 @@ public class CharacterInfo {
         return mythicPlusScores;
     }
 
+    public long getCharacter_class_id() {
+        return character_class_id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterInfo\", " +

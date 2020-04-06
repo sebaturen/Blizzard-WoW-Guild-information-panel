@@ -245,6 +245,9 @@ public class BlizzardUpdate implements Runnable {
                     characterProfileAPI.update(roster.getAsJsonObject().get(GuildRoster.TABLE_KEY).getAsLong());
                 }
             }
+
+            // Save process is complete
+            saveUpdateProcessComplete(UpdateType.FULL_SYNC_ROSTERS);
         } catch (DataException | SQLException e) {
             Logs.infoLog(this.getClass(), "FAILED to get guilds or rosters "+ e);
         }

@@ -1,7 +1,7 @@
 /*Load members information!*/
 $(document).ready(function() {
     /*Load a member details*/
-    $.get("/v2/rest/member/list?locale="+ Cookies.get('locale'), function(data) {
+    $.get("rest/member/list?locale="+ Cookies.get('locale'), function(data) {
         console.log("members is load complete", data);
         addMember(data);
     });
@@ -21,9 +21,9 @@ function addMember(members){
         if(typeof val.info.equip_lvl != 'undefined') {
 
             // Equip LVL
-            outForm += '<td scope="col">'+ val.info.equip_lvl +'<br>';
+            outForm += '<td scope="col">'+ val.info.avg_lvl +'<br>';
             if (val.info.equip_lvl != val.info.avg_lvl) {
-                outForm += '<div class="bestScoreMythc">'+ val.info.avg_lvl +'</div></td>';
+                outForm += '<div class="bestScoreMythc">'+ val.info.equip_lvl +'</div></td>';
             }
 
             // HOA lvl
