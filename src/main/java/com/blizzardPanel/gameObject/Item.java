@@ -8,6 +8,9 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Item {
 
     //Item DB
@@ -35,6 +38,8 @@ public class Item {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, Item> items = new HashMap<>();
+
         private long id;
         public Builder(long itemId) {
             super(TABLE_NAME, Item.class);
@@ -42,16 +47,19 @@ public class Item {
         }
 
         public Item build() {
-            Item newItem = (Item) load(TABLE_KEY, id);
+            if (!items.containsKey(id)) {
+                Item newItem = (Item) load(TABLE_KEY, id);
 
-            // Load internal data
-            newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.inventory = new StaticInformation.Builder(newItem.inventory_type).build();
-            if (newItem.media_id > 0) {
-                newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+                // Load internal data
+                newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
+                newItem.inventory = new StaticInformation.Builder(newItem.inventory_type).build();
+                if (newItem.media_id > 0) {
+                    newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+                }
+                items.put(id, newItem);
             }
 
-            return newItem;
+            return items.get(id);
         }
     }
 

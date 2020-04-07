@@ -9,6 +9,9 @@ import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.Media;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayableClass {
 
     // Playable Class DB
@@ -30,6 +33,8 @@ public class PlayableClass {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, PlayableClass> playableClasses = new HashMap<>();
+
         private long id;
         public Builder(long classId) {
             super(TABLE_NAME, PlayableClass.class);
@@ -37,9 +42,12 @@ public class PlayableClass {
         }
 
         public PlayableClass build() {
-            PlayableClass newClass = (PlayableClass) load(TABLE_KEY, id);
-            newClass.media = new Media.Builder(Media.type.P_CLASS, newClass.media_id).build();
-            return newClass;
+            if (!playableClasses.containsKey(id)) {
+                PlayableClass newClass = (PlayableClass) load(TABLE_KEY, id);
+                newClass.media = new Media.Builder(Media.type.P_CLASS, newClass.media_id).build();
+                playableClasses.put(id, newClass);
+            }
+            return playableClasses.get(id);
         }
     }
 

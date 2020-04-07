@@ -3,6 +3,9 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StaticInformation {
 
     // Static information DB
@@ -15,6 +18,8 @@ public class StaticInformation {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<String, StaticInformation> staticInformation = new HashMap<>();
+
         private String type;
         public Builder(String type) {
             super(TABLE_NAME, StaticInformation.class);
@@ -22,7 +27,10 @@ public class StaticInformation {
         }
 
         public StaticInformation build() {
-            return (StaticInformation) load(TABLE_KEY, type);
+            if (!staticInformation.containsKey(type)) {
+                staticInformation.put(type, (StaticInformation) load(TABLE_KEY, type));
+            }
+            return staticInformation.get(type);
         }
     }
 

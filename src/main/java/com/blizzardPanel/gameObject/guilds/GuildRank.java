@@ -7,6 +7,9 @@ package com.blizzardPanel.gameObject.guilds;
 
 import com.blizzardPanel.dbConnect.DBLoadObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GuildRank {
 
     // Rank DB
@@ -21,6 +24,8 @@ public class GuildRank {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, GuildRank> guildRanks = new HashMap<>();
+
         private long id;
         public Builder(long rankId) {
             super(TABLE_NAME, GuildRank.class);
@@ -28,7 +33,10 @@ public class GuildRank {
         }
 
         public GuildRank build() {
-            return (GuildRank) load(TABLE_KEY, id);
+            if (!guildRanks.containsKey(id)) {
+                guildRanks.put(id, (GuildRank) load(TABLE_KEY, id));
+            }
+            return guildRanks.get(id);
         }
     }
 

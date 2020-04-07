@@ -3,6 +3,8 @@ package com.blizzardPanel.gameObject.journal.instance;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+
 public class Map {
 
     // Map DB
@@ -15,6 +17,8 @@ public class Map {
 
     public static class Builder extends DBLoadObject {
 
+        private static java.util.Map<Long, Map> maps = new HashMap<>();
+
         private long id;
         public Builder(long locationId) {
             super(TABLE_NAME, Map.class);
@@ -22,7 +26,10 @@ public class Map {
         }
 
         public Map build() {
-            return (Map) load(TABLE_KEY, id);
+            if (!maps.containsKey(id)) {
+                maps.put(id, (Map) load(TABLE_KEY, id));
+            }
+            return maps.get(id);
         }
     }
 

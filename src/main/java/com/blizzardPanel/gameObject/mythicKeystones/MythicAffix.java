@@ -4,6 +4,9 @@ import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.Media;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MythicAffix {
 
     // Affix DB
@@ -24,6 +27,8 @@ public class MythicAffix {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, MythicAffix> mythicAffixes = new HashMap<>();
+
         private long id;
         public Builder(long affixId) {
             super(TABLE_NAME, MythicAffix.class);
@@ -31,7 +36,10 @@ public class MythicAffix {
         }
 
         public MythicAffix build() {
-            return (MythicAffix) load(TABLE_KEY, id);
+            if (!mythicAffixes.containsKey(id)) {
+                mythicAffixes.put(id, (MythicAffix) load(TABLE_KEY, id));
+            }
+            return mythicAffixes.get(id);
         }
     }
 

@@ -9,6 +9,9 @@ import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.StaticInformation;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayableRace {
 
     // Playable Race DB
@@ -32,6 +35,8 @@ public class PlayableRace {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, PlayableRace> playableRaces = new HashMap<>();
+
         private long id;
         public Builder(long raceId) {
             super(TABLE_NAME, PlayableRace.class);
@@ -39,9 +44,12 @@ public class PlayableRace {
         }
 
         public PlayableRace build() {
-            PlayableRace newPlayableRace = (PlayableRace) load(TABLE_KEY, id);
-            newPlayableRace.faction = new StaticInformation.Builder(newPlayableRace.faction_type).build();
-            return newPlayableRace;
+            if (!playableRaces.containsKey(id)) {
+                PlayableRace newPlayableRace = (PlayableRace) load(TABLE_KEY, id);
+                newPlayableRace.faction = new StaticInformation.Builder(newPlayableRace.faction_type).build();
+                playableRaces.put(id, newPlayableRace);
+            }
+            return playableRaces.get(id);
         }
     }
 

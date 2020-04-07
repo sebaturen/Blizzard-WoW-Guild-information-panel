@@ -1,7 +1,12 @@
 package com.blizzardPanel.gameObject.journal.instance;
 
 import com.blizzardPanel.dbConnect.DBLoadObject;
+import com.blizzardPanel.gameObject.Media;
+import com.blizzardPanel.gameObject.journal.encounter.Creature;
 import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Area {
 
@@ -15,6 +20,8 @@ public class Area {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, Area> areas = new HashMap<>();
+
         private long id;
         public Builder(long locationId) {
             super(TABLE_NAME, Area.class);
@@ -22,7 +29,10 @@ public class Area {
         }
 
         public Area build() {
-            return (Area) load(TABLE_KEY, id);
+            if (!areas.containsKey(id)) {
+                areas.put(id, (Area) load(TABLE_KEY, id));
+            }
+            return areas.get(id);
         }
     }
 

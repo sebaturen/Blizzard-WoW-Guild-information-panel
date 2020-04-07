@@ -2,6 +2,9 @@ package com.blizzardPanel.gameObject.mythicKeystones;
 
 import com.blizzardPanel.dbConnect.DBLoadObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MythicSeason {
 
     // Season DB
@@ -18,6 +21,8 @@ public class MythicSeason {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, MythicSeason> mythicSeasons = new HashMap<>();
+
         private long id;
         public Builder(long seasonId) {
             super(TABLE_NAME, MythicSeason.class);
@@ -25,7 +30,10 @@ public class MythicSeason {
         }
 
         public MythicSeason build() {
-            return (MythicSeason) load(TABLE_KEY, id);
+            if (!mythicSeasons.containsKey(id)) {
+                mythicSeasons.put(id, (MythicSeason) load(TABLE_KEY, id));
+            }
+            return mythicSeasons.get(id);
         }
     }
 

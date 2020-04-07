@@ -8,6 +8,9 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Spell {
 
     // Spells DB
@@ -29,6 +32,8 @@ public class Spell {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, Spell> spells = new HashMap<>();
+
         private long id;
         public Builder(long spellId) {
             super(TABLE_NAME, Spell.class);
@@ -36,12 +41,14 @@ public class Spell {
         }
 
         public Spell build() {
-            Spell newSpell = (Spell) load(TABLE_KEY, id);
+            if (!spells.containsKey(id)) {
+                Spell newSpell = (Spell) load(TABLE_KEY, id);
 
-            // Load internal data:
-            newSpell.media = new Media.Builder(Media.type.SPELL, newSpell.media_id).build();
-
-            return newSpell;
+                // Load internal data:
+                newSpell.media = new Media.Builder(Media.type.SPELL, newSpell.media_id).build();
+                spells.put(id, newSpell);
+            }
+            return spells.get(id);
         }
     }
 

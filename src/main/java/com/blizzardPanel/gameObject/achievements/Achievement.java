@@ -5,6 +5,9 @@ import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.StaticInformation;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Achievement {
 
     // Achievement DB
@@ -33,6 +36,8 @@ public class Achievement {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, Achievement> achievements = new HashMap<>();
+
         private long id;
         public Builder(long achievementId) {
             super(TABLE_NAME, Achievement.class);
@@ -40,13 +45,16 @@ public class Achievement {
         }
 
         public Achievement build() {
-            Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
-            newAchievement.achievementCategory = new AchievementCategory.Builder(newAchievement.category_id).build();
-            newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
-            if (newAchievement.faction_type != null) {
-                newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
+            if (!achievements.containsKey(id)) {
+                Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
+                newAchievement.achievementCategory = new AchievementCategory.Builder(newAchievement.category_id).build();
+                newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
+                if (newAchievement.faction_type != null) {
+                    newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
+                }
+                achievements.put(id, newAchievement);
             }
-            return newAchievement;
+            return achievements.get(id);
         }
     }
 

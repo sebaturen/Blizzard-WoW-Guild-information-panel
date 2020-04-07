@@ -4,6 +4,9 @@ import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.Media;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Creature {
 
     // Creature encounter DB
@@ -20,6 +23,8 @@ public class Creature {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, Creature> creatures = new HashMap<>();
+
         private long id;
         public Builder(long creatureId) {
             super(TABLE_NAME, Creature.class);
@@ -27,12 +32,14 @@ public class Creature {
         }
 
         public Creature build() {
-            Creature newCreature = (Creature) load(TABLE_KEY, id);
+            if (!creatures.containsKey(id)) {
+                Creature newCreature = (Creature) load(TABLE_KEY, id);
 
-            // Load internal data
-            newCreature.media = new Media.Builder(Media.type.CREATURE, newCreature.media_id).build();
-
-            return newCreature;
+                // Load internal data
+                newCreature.media = new Media.Builder(Media.type.CREATURE, newCreature.media_id).build();
+                creatures.put(id, newCreature);
+            }
+            return creatures.get(id);
         }
     }
 

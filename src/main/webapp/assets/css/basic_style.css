@@ -260,13 +260,13 @@ body > .container {
     background-position: center center;
     margin: -25px -25px 0 -25px;
 }
-.dung-title {
+.key_dung_title {
     padding: 50px;
     text-align: center;
     text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
     color: #fff;
 }
-.group-time {
+.key_group_time {
     float: left;
 }
 .key-false {
@@ -276,7 +276,7 @@ body > .container {
     color: #19e219;
     text-shadow: 0 0 15px #3dce43, 0 0 30px rgba(255,255,255,.3);
 }
-.key-date {
+.key_date {
     float: right;
     font-size: 0.7em;
     text-align: center;
@@ -424,7 +424,6 @@ body > .container {
 /*----------MYTHIC PLUS-----------------*/
 .key_run_dun_img {
     height: 140px;
-    display: table;
 }
 .key_run_group {
     padding-bottom: 15px;

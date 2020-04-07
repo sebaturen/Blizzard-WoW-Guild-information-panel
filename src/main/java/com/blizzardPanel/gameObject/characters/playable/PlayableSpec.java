@@ -10,6 +10,9 @@ import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.StaticInformation;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayableSpec {
 
     // Playable Specs DB
@@ -35,6 +38,8 @@ public class PlayableSpec {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, PlayableSpec> playableSpecs = new HashMap<>();
+
         private long id;
         public Builder(long specId) {
             super(TABLE_NAME, PlayableSpec.class);
@@ -42,14 +47,17 @@ public class PlayableSpec {
         }
 
         public PlayableSpec build() {
-            PlayableSpec newPlayableSpec = (PlayableSpec) load(TABLE_KEY, id);
+            if (!playableSpecs.containsKey(id)) {
+                PlayableSpec newPlayableSpec = (PlayableSpec) load(TABLE_KEY, id);
 
-            // Load internal data:
-            newPlayableSpec.playableClass = new PlayableClass.Builder(newPlayableSpec.playable_class_id).build();
-            newPlayableSpec.role = new StaticInformation.Builder(newPlayableSpec.role_type).build();
-            newPlayableSpec.media = new Media.Builder(Media.type.P_SPEC, newPlayableSpec.media_id).build();
+                // Load internal data:
+                newPlayableSpec.playableClass = new PlayableClass.Builder(newPlayableSpec.playable_class_id).build();
+                newPlayableSpec.role = new StaticInformation.Builder(newPlayableSpec.role_type).build();
+                newPlayableSpec.media = new Media.Builder(Media.type.P_SPEC, newPlayableSpec.media_id).build();
 
-            return newPlayableSpec;
+                playableSpecs.put(id, newPlayableSpec);
+            }
+            return playableSpecs.get(id);
         }
     }
 

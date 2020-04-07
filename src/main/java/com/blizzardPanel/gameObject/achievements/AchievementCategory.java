@@ -3,6 +3,9 @@ package com.blizzardPanel.gameObject.achievements;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AchievementCategory {
 
     // AchievementCategory DB
@@ -24,6 +27,8 @@ public class AchievementCategory {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, AchievementCategory> achievementCategories = new HashMap<>();
+
         private long id;
         public Builder(long achievementCategoryId) {
             super(TABLE_NAME, AchievementCategory.class);
@@ -31,13 +36,16 @@ public class AchievementCategory {
         }
 
         public AchievementCategory build() {
-            AchievementCategory newCat = (AchievementCategory) load(TABLE_KEY, id);
+            if (!achievementCategories.containsKey(id)) {
+                AchievementCategory newCat = (AchievementCategory) load(TABLE_KEY, id);
 
-            if (newCat.parent_category_id > 0) {
-                newCat.parentAchievementCategory = new AchievementCategory.Builder(newCat.parent_category_id).build();
+                if (newCat.parent_category_id > 0) {
+                    newCat.parentAchievementCategory = new AchievementCategory.Builder(newCat.parent_category_id).build();
+                }
+                achievementCategories.put(id, newCat);
             }
 
-            return newCat;
+            return achievementCategories.get(id);
         }
     }
 

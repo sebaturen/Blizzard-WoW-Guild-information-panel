@@ -3,6 +3,9 @@ package com.blizzardPanel.gameObject.mythicKeystones;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MythicDungeon {
 
     // Dungeon DB
@@ -22,6 +25,8 @@ public class MythicDungeon {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<Long, MythicDungeon> mythicDungeons = new HashMap<>();
+
         private long id;
         public Builder(long dungeonId) {
             super(TABLE_NAME, MythicDungeon.class);
@@ -29,7 +34,10 @@ public class MythicDungeon {
         }
 
         public MythicDungeon build() {
-            return (MythicDungeon) load(TABLE_KEY, id);
+            if (!mythicDungeons.containsKey(id)) {
+                mythicDungeons.put(id, (MythicDungeon) load(TABLE_KEY, id));
+            }
+            return mythicDungeons.get(id);
         }
     }
 

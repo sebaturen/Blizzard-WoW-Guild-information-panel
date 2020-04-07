@@ -8,6 +8,9 @@ package com.blizzardPanel.gameObject;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Realm {
 
     // Realm DB
@@ -30,6 +33,8 @@ public class Realm {
 
     public static class Builder extends DBLoadObject {
 
+        private static Map<String, Realm> realms = new HashMap<>();
+
         private long id;
         private String realmSlug;
 
@@ -44,11 +49,19 @@ public class Realm {
         }
 
         public Realm build() {
+            // If is for ID
             if (realmSlug == null) {
-                return (Realm) load(TABLE_KEY, id);
-            } else {
-                return (Realm) load("slug", realmSlug);
+                Realm newRealm = (Realm) load(TABLE_KEY, id);
+                realms.put(newRealm.slug, newRealm);
+                return newRealm;
             }
+
+            // If is for slug
+            if (!realms.containsKey(realmSlug)) {
+                realms.put(realmSlug, (Realm) load("slug", realmSlug));
+            }
+
+            return realms.get(realmSlug);
         }
     }
 
