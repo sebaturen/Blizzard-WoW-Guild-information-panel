@@ -54,7 +54,7 @@ public class Item {
                 newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
                 newItem.inventory = new StaticInformation.Builder(newItem.inventory_type).build();
                 if (newItem.media_id > 0) {
-                    newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+                    newItem.loadMedia();
                 }
                 items.put(id, newItem);
             }
@@ -66,6 +66,31 @@ public class Item {
     // Constructor
     private Item() {
 
+    }
+
+    private void loadMedia() {
+        media = new Media.Builder(Media.type.ITEM, media_id).build();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    // GET / SET
+    //
+    //------------------------------------------------------------------------------------------------------------------
+
+    public long getId() {
+        return id;
+    }
+
+    public Media getMedia() {
+        if (media == null) {
+            loadMedia();
+        }
+        return media;
+    }
+
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
     }
 
     @Override

@@ -192,31 +192,31 @@ body > .container {
 /*END -------GENERAL------------*/
 
 /*-------COLOR ITEM QUALITY--------*/
-.quality-poor,.quality-0 {
+.quality-poor,.quality-0, .quality-POOR {
     color: #9d9d9d;
 }
-.quality-common,.quality-1 {
+.quality-common,.quality-1, .quality-COMMON {
     color: #ffffff;
 }
-.quality-uncommon, .quality-2{
+.quality-uncommon, .quality-2, .quality-UNCOMMON{
     color: #1eff00;
 }
-.quality-rare, .quality-3 {
+.quality-rare, .quality-3, .quality-RARE {
     color: #0070dd;
 }
-.quality-epic, .quality-4 {
+.quality-epic, .quality-4, .quality-EPIC {
     color: #a335ee;
 }
-.quality-legendary, .quality-5 {
+.quality-legendary, .quality-5, .quality-LEGENDARY {
     color: #ff8000;
 }
-.quality-artifact, .quality-6 {
+.quality-artifact, .quality-6, .quality-ARTIFCAT {
     color: #e6cc80;
 }
-.quality-heirloom, .quality-7 {
+.quality-heirloom, .quality-7, .quality-HEIRLOOM {
     color: #00ccff;
 }
-.quality-wow-token, .quality-8 {
+.quality-wow-token, .quality-8, .quality-WOW-TOKEN {
     color: #00ccff;
 }
 /*END-------COLOR ITEM QUALITY--------*/

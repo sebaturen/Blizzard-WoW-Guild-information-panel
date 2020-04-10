@@ -60,21 +60,12 @@ $(document).ready(function() {
 
                 $("#tokenGraph").CanvasJSChart(options);
 
-                $(".tooltip-wow_token").show();
-
             });
+            $(".tooltip-wow_token").show();
         })
 
         // Tooltips
         .on('mouseleave', '#token_price', function() {
             $(".tooltip-wow_token").hide();
         });
-
-    // Locale cookie
-    $("#locale").on("change", function() {
-        Cookies.set('locale', this.value);
-    });
-    if (typeof Cookies.get('locale') === 'undefined' || Cookies.get('locale') === null) {
-        Cookies.set('locale', 'es_MX');
-    }
 });

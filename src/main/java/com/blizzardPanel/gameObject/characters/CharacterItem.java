@@ -39,21 +39,41 @@ public class CharacterItem {
     public static class Builder extends DBLoadObject {
 
         private long id;
+        private String slotType;
         public Builder(long cItemId) {
             super(TABLE_NAME, CharacterItem.class);
             this.id = cItemId;
         }
 
+        public Builder(String slotType) {
+            super(TABLE_NAME, CharacterItem.class);
+            this.slotType = slotType;
+        }
+
         public CharacterItem build() {
-            CharacterItem newItem = (CharacterItem) load(TABLE_KEY, id);
+            CharacterItem newItem;
+            if (slotType == null) {
+                newItem = (CharacterItem) load(TABLE_KEY, id);
 
-            // Load info
-            newItem.item = new Item.Builder(newItem.item_id).build();
-            newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
-            newItem.slot = new StaticInformation.Builder(newItem.slot_type).build();
+                // Load info
+                newItem.item = new Item.Builder(newItem.item_id).build();
+                newItem.quality = new StaticInformation.Builder(newItem.quality_type).build();
+                newItem.slot = new StaticInformation.Builder(newItem.slot_type).build();
 
-            if (newItem.media_id > 0) {
-                newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+                if (newItem.media_id > 0) {
+                    newItem.media = new Media.Builder(Media.type.ITEM, newItem.media_id).build();
+                }
+            } else {
+                newItem = new CharacterItem();
+                newItem.id = -1;
+                newItem.character_id = -1;
+                newItem.slot_type = slotType;
+                newItem.item_id = -1;
+                newItem.level = -1;
+                newItem.armor = -1;
+                newItem.azerite_level = -1;
+                newItem.media_id = -1;
+                newItem.item = new Item.Builder(0).build();
             }
 
             return newItem;
@@ -71,8 +91,28 @@ public class CharacterItem {
     //
     //------------------------------------------------------------------------------------------------------------------
 
+    public long getId() {
+        return id;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public String getQuality_type() {
+        return quality_type;
+    }
+
     public int getAzerite_level() {
         return azerite_level;
+    }
+
+    public String getSlot_type() {
+        return slot_type;
     }
 
     @Override

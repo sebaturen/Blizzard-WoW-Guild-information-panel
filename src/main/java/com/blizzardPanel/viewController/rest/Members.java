@@ -53,15 +53,8 @@ public class Members {
                     if (charInfo.getMythicPlusScores() != null) {
                         info.add("bestMythicScore", charInfo.getBestMythicPlusScore());
                     }
-
-                    int hoaLvl = 0;
-                    for (CharacterItem item : charMember.getItem()) {
-                        if (item.getAzerite_level() > 0) {
-                            hoaLvl = item.getAzerite_level();
-                        }
-                    }
-                    if (hoaLvl > 0) {
-                        info.addProperty("hoa_lvl", hoaLvl);
+                    if (charMember.getHoaLvl() > 0) {
+                        info.addProperty("hoa_lvl", charMember.getHoaLvl());
                     }
                 }
 
@@ -102,10 +95,46 @@ public class Members {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response memberDetail(@PathParam("id") long id) {
-        JsonObject memberDetail = new JsonObject();
-        memberDetail.addProperty("id", id);
+    public Response memberDetail(@PathParam("id") long id, @Context HttpServletRequest request) {
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser.getGuildRank() != -1) {
+            CharacterMember cm = new CharacterMember.Builder(id).build();
+            if (cm != null) {
+                JsonObject memberDetail = new JsonObject();
 
-        return Response.ok(memberDetail.toString(), MediaType.APPLICATION_JSON_TYPE).build();
+                // Basic information
+                memberDetail.addProperty("name", cm.getName());
+
+                // Information
+                JsonObject info = new JsonObject();
+                info.addProperty("class", cm.getInfo().getClass_id());
+                info.addProperty("level", cm.getInfo().getLevel());
+                info.addProperty("img", cm.getMedia().getRender_url());
+                info.addProperty("race", cm.getInfo().getRace_id());
+                memberDetail.add("info", info);
+
+                // Statistics
+                JsonObject stats = new JsonObject();
+                memberDetail.add("stats", stats);
+
+                // Active Specialization
+                JsonObject activeSpec = new JsonObject();
+                memberDetail.add("active_spec", activeSpec);
+
+                // Items
+                JsonObject items = new JsonObject();
+                memberDetail.add("items", items);
+
+                return Response.ok(memberDetail.toString(), MediaType.APPLICATION_JSON_TYPE).build();
+            }
+            JsonObject notFound = new JsonObject();
+            notFound.addProperty("code", 1);
+            notFound.addProperty("msg", "Character Member not found");
+            return Response.status(404).type(MediaType.APPLICATION_JSON_TYPE).entity(notFound.toString()).build();
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
     }
 }

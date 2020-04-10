@@ -175,15 +175,23 @@ public class Guild {
             Date oneMotheAgo = cal.getTime();
 
             JsonArray rosters_db = DBLoadObject.dbConnect.selectQuery(
-                    "SELECT " +
+                    " SELECT " +
                     "    c.id " +
                     "FROM " +
                     "    guild_roster gr, " +
-                    "    `characters` c " +
+                    "    guild_rank grk, " +
+                    "    `characters` c, " +
+                    "    character_info ci " +
                     "WHERE " +
                     "    gr.character_id = c.id " +
-                    "    AND    gr.guild_id = "+ id +
-                    "    AND c.last_modified > "+ oneMotheAgo.getTime() +";"
+                    "    AND c.id = ci.character_id " +
+                    "    AND gr.rank_id = grk.id " +
+                    "    AND gr.guild_id = "+ id +" " +
+                    "    AND c.last_modified > "+ oneMotheAgo.getTime() +" " +
+                    "ORDER BY " +
+                    "    grk.rank_lvl ASC, " +
+                    "    ci. `level` DESC, " +
+                    "    c.`name` ASC;"
             );
 
             if (rosters_db.size() > 0) {

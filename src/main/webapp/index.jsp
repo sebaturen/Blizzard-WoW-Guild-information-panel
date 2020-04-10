@@ -35,11 +35,11 @@
                                             ${ac.characterAchievement.characterMember.name}
                                             <span  class="right_small_date">
                                                 <jsp:setProperty name="dateObject" property="time" value="${ac.timestamp}" />
-                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />
+                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(locale)}" />
                                             </span>
                                         </p>
                                         <p class="desc"><fmt:message key="label.character_achievement" /></p>
-                                        <p class="desc">${ac.characterAchievement.achievement.getName(cookie['locale'].getValue())}</p>
+                                        <p class="desc">${ac.characterAchievement.achievement.getName(locale)}</p>
                                     </div>
                                 </div>
                             </c:if>
@@ -48,14 +48,14 @@
                                     <div class="col-2 icon_new"><img src="${ac.guildEncounter.encounter.instance.media.value}"/></div>
                                     <div class="newDetail col-10">
                                         <p>
-                                                ${ac.guildEncounter.encounter.getName(cookie['locale'].getValue())}
+                                                ${ac.guildEncounter.encounter.getName(locale)}
                                             <span  class="right_small_date">
                                                 <jsp:setProperty name="dateObject" property="time" value="${ac.timestamp}" />
-                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />
+                                                <fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(locale)}" />
                                             </span>
                                         </p>
                                         <p class="desc"><fmt:message key="label.guild_encounter" /></p>
-                                        <p class="desc">${ac.guildEncounter.mode.getName(cookie['locale'].getValue())}</p>
+                                        <p class="desc">${ac.guildEncounter.mode.getName(locale)}</p>
                                     </div>
                                 </div>
                             </c:if>

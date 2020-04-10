@@ -15,7 +15,6 @@
     <head>
         <title>${guild.name} - User Panel</title>
         <%@include file="../includes/header.jsp" %>
-        <script src="assets/js/user_panel.js"></script>
     </head>
     <body>
         <%@include file="../includes/menu.jsp" %>
@@ -54,10 +53,10 @@
                                     </c:if>
                                 </i>
                             </td>
-                            <td class="character-${cm.info.character_class_id}">${cm.name}</td>
+                            <td class="character-${cm.info.class_id}">${cm.name}</td>
                             <td>
                                 <c:if test="${cm.activeSpec.specialization_id != 1}">
-                                    <img src="assets/img/classes/specs/spec_${cm.info.character_class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
+                                    <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
                                 </c:if>
                             </td>
                             <td>${cm.info.level}</td>
@@ -66,28 +65,31 @@
                                     ${cm.bestMythicRun.keystone_level}
                                 </c:if>
                             </td>
-                            <td>${cm.realm.getName(cookie['locale'].getValue())}</td>
+                            <td>${cm.realm.getName(locale)}</td>
                             <td><img src="assets/img/icons/${cm.info.faction.type}.png" style="width: 22px;"/></td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
             </c:if>
-            <fmt:message key="label.select_language" />
-            <select class="form-control" id="locale" style="width: auto;">
-                <option value="en_US" <%= (locale.equals("en_US"))? "selected":"" %>>English (U.S.)</option>
-                <option value="es_MX" <%= (locale.equals("es_MX"))? "selected":"" %>>Spanish (Mexican)</option>
-                <option value="pt_BR" <%= (locale.equals("pt_BR"))? "selected":"" %>>Portuguese (Brazilian)</option>
-                <option value="de_DE" <%= (locale.equals("de_DE"))? "selected":"" %>>German</option>
-                <option value="en_GB" <%= (locale.equals("en_GB"))? "selected":"" %>>English (U.K.)</option>
-                <option value="es_ES" <%= (locale.equals("es_ES"))? "selected":"" %>>Spanish (Spain)</option>
-                <option value="fr_FR" <%= (locale.equals("fr_FR"))? "selected":"" %>>French</option>
-                <option value="it_IT" <%= (locale.equals("it_IT"))? "selected":"" %>>Italian</option>
-                <option value="ru_RU" <%= (locale.equals("ru_RU"))? "selected":"" %>>Russian</option>
-                <option value="ko_KR" <%= (locale.equals("ko_KR"))? "selected":"" %>>Korean</option>
-                <option value="zh_TW" <%= (locale.equals("zh_TW"))? "selected":"" %>>Chinese (Taiwan)</option>
-                <option value="zh_CN" <%= (locale.equals("zh_CN"))? "selected":"" %>>Chinese (Simplified)</option>
-            </select><br>
+            <form method="get" class="form-inline">
+                <fmt:message key="label.select_language" />
+                <select name="locale" class="form-control mx-sm-3 mb-2" id="locale" style="width: auto;">
+                    <option value="en_US" <c:if test="${locale == 'en_US'}">selected</c:if> >English (U.S.)</option>
+                    <option value="es_MX" <c:if test="${locale == 'es_MX'}">selected</c:if> >Spanish (Mexican)</option>
+                    <option value="pt_BR" <c:if test="${locale == 'pt_BR'}">selected</c:if> >Portuguese (Brazilian)</option>
+                    <option value="de_DE" <c:if test="${locale == 'de_DE'}">selected</c:if> >German</option>
+                    <option value="en_GB" <c:if test="${locale == 'en_GB'}">selected</c:if> >English (U.K.)</option>
+                    <option value="es_ES" <c:if test="${locale == 'es_ES'}">selected</c:if> >Spanish (Spain)</option>
+                    <option value="fr_FR" <c:if test="${locale == 'fr_FR'}">selected</c:if> >French</option>
+                    <option value="it_IT" <c:if test="${locale == 'it_IT'}">selected</c:if> >Italian</option>
+                    <option value="ru_RU" <c:if test="${locale == 'ru_RU'}">selected</c:if> >Russian</option>
+                    <option value="ko_KR" <c:if test="${locale == 'ko_KR'}">selected</c:if> >Korean</option>
+                    <option value="zh_TW" <c:if test="${locale == 'zh_TW'}">selected</c:if> >Chinese (Taiwan)</option>
+                    <option value="zh_CN" <c:if test="${locale == 'zh_CN'}">selected</c:if> >Chinese (Simplified)</option>
+                </select>
+                <button type="submit" class="btn btn-outline-secondary"><fmt:message key="label.save" /></button>
+            </form>
             <form method="post">
                 <input name="logOut" type="hidden" value="true"/>
                 <button type="submit" class="btn btn-primary"><fmt:message key="label.log_out" /></button>

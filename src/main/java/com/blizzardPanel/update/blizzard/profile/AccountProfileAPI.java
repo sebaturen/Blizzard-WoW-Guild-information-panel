@@ -135,7 +135,7 @@ public class AccountProfileAPI extends BlizzardAPI {
             columns.add("character_id");
             values.add(charId+"");
 
-            columns.add("character_class_id");
+            columns.add("class_id");
             values.add(charDet.getAsJsonObject("playable_class").get("id").getAsString());
             BlizzardUpdate.shared.playableClassAPI.classDetail(charDet.getAsJsonObject("playable_class"));
 

@@ -24,7 +24,7 @@
     <Environment name="MAIN_URL"        value="" override="false" type="java.lang.String" />
     <Environment name="BLIZZAR_LINK"    value="blizzLink.jsp" override="false" type="java.lang.String" />
     <!-- If in page you want all visitor can see all members information, or only guild members -->
-    <Environment name="REQUERID_LOGIN_TO_INFO" value="true" override="false" type="java.lang.Boolean" />
+    <Environment name="REQUIRED_LOGIN_TO_INFO" value="true" override="false" type="java.lang.Boolean" />
 
     <!-- SET AN API ACCESS INFORMATION -->
     <Environment name="CLIENT_ID"       value="" override="false" type="java.lang.String" />

@@ -1,5 +1,7 @@
 package com.blizzardPanel;
 
+import com.blizzardPanel.gameObject.characters.CharacterMember;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -50,5 +52,9 @@ public class GeneralConfig {
             default:
                 return "HH:mm - MM/dd/yyyy";
         }
+    }
+
+    public static CharacterMember getMember(long charId) {
+        return new CharacterMember.Builder(charId).fullLoad(true).build();
     }
 }

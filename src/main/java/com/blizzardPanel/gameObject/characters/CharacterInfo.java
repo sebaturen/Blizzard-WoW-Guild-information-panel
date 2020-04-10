@@ -14,7 +14,7 @@ public class CharacterInfo {
 
     // DB Attribute
     private long character_id;
-    private long character_class_id;
+    private long class_id;
     private long race_id;
     private String gender_type;
     private int level;
@@ -45,7 +45,7 @@ public class CharacterInfo {
             CharacterInfo newInfo = (CharacterInfo) load(TABLE_KEY, id);
             if (newInfo != null) {
                 newInfo.playableRace = new PlayableRace.Builder(newInfo.race_id).build();
-                newInfo.playableClass = new PlayableClass.Builder(newInfo.character_class_id).build();
+                newInfo.playableClass = new PlayableClass.Builder(newInfo.class_id).build();
                 newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
                 newInfo.faction = new StaticInformation.Builder(newInfo.faction_type).build();
             }
@@ -100,15 +100,19 @@ public class CharacterInfo {
         return mythicPlusScores;
     }
 
-    public long getCharacter_class_id() {
-        return character_class_id;
+    public long getClass_id() {
+        return class_id;
+    }
+
+    public long getRace_id() {
+        return race_id;
     }
 
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterInfo\", " +
                 "\"character_id\":\"" + character_id + "\"" + ", " +
-                "\"character_class_id\":\"" + character_class_id + "\"" + ", " +
+                "\"character_class_id\":\"" + class_id + "\"" + ", " +
                 "\"race_id\":\"" + race_id + "\"" + ", " +
                 "\"gender_type\":" + (gender_type == null ? "null" : "\"" + gender_type + "\"") + ", " +
                 "\"level\":\"" + level + "\"" + ", " +

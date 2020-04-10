@@ -388,7 +388,7 @@ public class CharacterProfileAPI extends BlizzardAPI {
         List<Object> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
 
-        columns.add("character_class_id");
+        columns.add("class_id");
         values.add(info.getAsJsonObject("character_class").get("id").getAsString());
         BlizzardUpdate.shared.playableClassAPI.classDetail(info.getAsJsonObject("character_class"));
 

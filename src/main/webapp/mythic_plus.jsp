@@ -42,13 +42,13 @@
             </div>
             <div id="bestRun" style="display: none;">
                 <div class="key_title">
-                    <h1>Best Runs</h1><br>
-                    <h3 clsdd="key_divide_title">(Season 4)</h3>
+                    <h1><fmt:message key="label.best_runs" /></h1><br>
+                    <h3 clsdd="key_divide_title">(<fmt:message key="label.season" /> 4)</h3>
                 </div>
             </div>
             <div id="runList" style="display: none;">
                 <div class="key_title">
-                    <h1 class="key_divide_title">Best Runs</h1>
+                    <h1 class="key_divide_title"><fmt:message key="label.runs_of_the_week" /></h1>
                 </div>
 
             </div>

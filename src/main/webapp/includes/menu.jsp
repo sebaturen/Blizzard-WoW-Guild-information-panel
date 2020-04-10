@@ -1,7 +1,7 @@
 <%@ page import ="com.blizzardPanel.gameObject.WoWToken" %>
 <%@ page import ="com.blizzardPanel.update.blizzard.WoWOauthService" %>
 <% String[] path = (request.getRequestURI()).split("/");
-String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];%>
+String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1]; %>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="<%= request.getContextPath() %>/index.jsp">
         <img src="<%= request.getContextPath() %>/assets/img/artofwar_logo.png" height="30" alt="">
@@ -20,7 +20,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item <% out.write((currentPath.equals("index.jsp"))? "active":""); %>">
+            <li class="nav-item <% out.write((currentPath.equals("index.jsp") || currentPath.equals(""))? "active":""); %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/index.jsp"><fmt:message key="label.home" /></a>
             </li>
             <li class="nav-item <% out.write((currentPath.equals("members.jsp"))? "active":""); %>">
@@ -51,7 +51,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             </li>
             <li class="nav-item">
                 <jsp:setProperty name="dateObject" property="time" value="${guild.last_modified}" />
-                <a class="nav-link disabled" href="#">Last Update[<fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(cookie['locale'].getValue())}" />]</a>
+                <a class="nav-link disabled" href="#">Last Update[<fmt:formatDate value="${dateObject}" pattern="${general_config.getDateFormat(locale)}" />]</a>
             </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">

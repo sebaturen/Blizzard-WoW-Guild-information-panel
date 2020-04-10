@@ -27,10 +27,19 @@
 .img_profile {
     min-height: 50px;
     max-height: 50px;
+    border: 1px solid #ffffff26;
+    border-radius: 6px;
 }
 .bestScoreMythc {
     color: rgba(255, 255, 255, 0.44);
     font-size: 0.5em;
+}
+.member_bg_content {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center center;
 }
 /*-------ITEMS ---------------*/
 .item_title {    
@@ -79,6 +88,24 @@
 }
 .undefinedAzPower {
     color: #b7b4b4;
+}
+.itemIlvl {
+    position: absolute;
+    padding-top: 21px;
+    padding-left: 68px;
+    padding-right: 68px;
+    font-size: 13px;
+}
+.character-tab a {
+    color: white;
+    text-decoration: none;
+}
+.pjInfo {
+    padding: 0.5em 0em;
+    border-bottom: 1px solid #ffffff26;
+}
+.hand_items {
+    padding-top: 4em;
 }
 /*END-------ITEMS ---------------*/
 
@@ -159,3 +186,57 @@ svg.Icon-svg {
     float: left;
 }
 /*END----------SPEC DETAILS---------*/
+
+/*-------EQUIP NOT FOUND IMG POSITION---------*/
+.equip_unknown_HEAD {
+    background-position-y: 0px;
+}
+.equip_unknown_NECK {
+    background-position-y: -56px;
+}
+.equip_unknown_SHOULDER {
+    background-position-y: -112px;
+}
+.equip_unknown_BACK {
+    background-position-y: -168px;
+}
+.equip_unknown_CHEST {
+    background-position-y: -168px;
+}
+.equip_unknown_SHIRT {
+    background-position-y: -280px;
+}
+.equip_unknown_TABARD {
+    background-position-y: -224px;
+}
+.equip_unknown_WRIST {
+    background-position-y: -336px;
+}
+.equip_unknown_HANDS {
+    background-position-y: -392px;
+}
+.equip_unknown_WAIST {
+    background-position-y: -448px;
+}
+.equip_unknown_LEGS {
+    background-position-y: -504px;
+}
+.equip_unknown_FEET {
+    background-position-y: -560px;
+}
+.equip_unknown_FINGER_1 {
+    background-position-y: -616px;
+}
+.equip_unknown_FINGER_2 {
+    background-position-y: -616px;
+}
+.equip_unknown_TRINKET_1 {
+    background-position-y: -672px;
+}
+.equip_unknown_MAIN_HAND {
+    background-position-y: -728px;
+}
+.equip_unknown_OFF_HAND {
+    background-position-y: -784px;
+}
+/*END----------EQUIP NOT FOUND IMG POSITION---------*/

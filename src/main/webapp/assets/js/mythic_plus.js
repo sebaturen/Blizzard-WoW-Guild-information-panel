@@ -76,7 +76,7 @@ function renderRuns(keyRuns, loadLocation) {
         });
         $(prepareAffix).html(affixContent);
         $('.key_characters', prepareKey).append(prepareAffix);
-        
+
         $(prepareKey).show();
 
         // Divide keys

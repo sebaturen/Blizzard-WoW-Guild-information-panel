@@ -17,9 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CharacterMember {
 
@@ -49,7 +47,8 @@ public class CharacterMember {
     private CharacterInfo info;
     private CharacterStats stats;
     private CharacterMedia media;
-    private List<CharacterItem> items;
+    private Map<String, CharacterItem> items;
+    private int hoaLvl;
     private List<CharacterSpec> specs;
     private MythicDungeonRun bestMythicRun;
 
@@ -72,14 +71,17 @@ public class CharacterMember {
             CharacterMember charMember = (CharacterMember) load(TABLE_KEY, id);
 
             // Load internal data:
-            charMember.realm = new Realm.Builder(charMember.realm_slug).build();
-            if (loadStatus && charMember.is_valid) {
-                // load info, item, spec y mythicPlus
-                charMember.loadInfo();
-                charMember.loadItems();
-                charMember.loadSpec();
-                charMember.loadStats();
-                charMember.loadBestMythicRun();
+            if (charMember != null) {
+                charMember.realm = new Realm.Builder(charMember.realm_slug).build();
+                if (loadStatus && charMember.is_valid) {
+                    // load info, item, spec y mythicPlus
+                    charMember.loadInfo();
+                    charMember.loadItems();
+                    charMember.loadSpec();
+                    charMember.loadStats();
+                    charMember.loadBestMythicRun();
+                    charMember.loadMedia();
+                }
             }
 
             return charMember;
@@ -102,11 +104,11 @@ public class CharacterMember {
      * Load a character items (character_items)
      */
     private void loadItems() {
-        items = new ArrayList<>();
+        items = new HashMap<>();
         try {
             JsonArray items_db = DBLoadObject.dbConnect.select(
                     CharacterItem.TABLE_NAME,
-                    new String[]{CharacterItem.TABLE_KEY},
+                    new String[]{CharacterItem.TABLE_KEY, "slot_type"},
                     "character_id=?",
                     new String[]{id+""}
             );
@@ -114,7 +116,14 @@ public class CharacterMember {
             if (items_db.size() > 0) {
                 for (JsonElement itemDb : items_db) {
                     JsonObject itemDetail = itemDb.getAsJsonObject();
-                    items.add(new CharacterItem.Builder(itemDetail.get(CharacterItem.TABLE_KEY).getAsLong()).build());
+                    CharacterItem newItem = new CharacterItem.Builder(itemDetail.get(CharacterItem.TABLE_KEY).getAsLong()).build();
+                    if (newItem.getSlot_type().equals("NECK")) {
+                        hoaLvl = newItem.getAzerite_level();
+                    }
+                    items.put(
+                            newItem.getSlot_type(),
+                            newItem
+                    );
                 }
             } else {
                 Logs.infoLog(this.getClass(), "Character not have an Items ["+ id +"]");
@@ -254,11 +263,32 @@ public class CharacterMember {
         return bestMythicRun;
     }
 
-    public List<CharacterItem> getItem() {
+    public Map<String, CharacterItem> getItems() {
         if (items == null) {
             loadItems();
         }
         return items;
+    }
+
+    public int getHoaLvl() {
+        if (items == null) {
+            loadItems();
+        }
+        return hoaLvl;
+    }
+
+    public CharacterStats getStats() {
+        if (stats == null) {
+            loadStats();
+        }
+        return stats;
+    }
+
+    public CharacterItem getItem(String slot) {
+        if (items.containsKey(slot)) {
+            return items.get(slot);
+        }
+        return new CharacterItem.Builder(slot).build();
     }
 
     @Override
@@ -280,7 +310,8 @@ public class CharacterMember {
                 "\"info\":" + (info == null ? "null" : info) + ", " +
                 "\"stats\":" + (stats == null ? "null" : stats) + ", " +
                 "\"media\":" + (media == null ? "null" : media) + ", " +
-                "\"items\":" + (items == null ? "null" : Arrays.toString(items.toArray())) + ", " +
+                "\"items\":" + (items == null ? "null" : "\"" + items + "\"") + ", " +
+                "\"hoaLvl\":\"" + hoaLvl + "\"" + ", " +
                 "\"specs\":" + (specs == null ? "null" : Arrays.toString(specs.toArray())) + ", " +
                 "\"bestMythicRun\":" + (bestMythicRun == null ? "null" : bestMythicRun) +
                 "}";

@@ -100,6 +100,10 @@ public class Media {
     //
     //------------------------------------------------------------------------------------------------------------------
 
+    public long getId() {
+        return id;
+    }
+
     public String getValue() {
         return value;
     }
