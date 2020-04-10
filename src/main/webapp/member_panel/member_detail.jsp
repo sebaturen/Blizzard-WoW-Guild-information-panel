@@ -11,7 +11,19 @@
         <%@include file="../includes/menu.jsp" %>
         <div class="member_bg_content" style="background-image: url('${character.media.render_url}')">
             <div class="container">
-                <h1 class="warcraft_font">${character.name}</h1>
+                <div class="name_title">
+                    <c:set var="title" value="${character.info.getTitle(locale)}"/>
+                    <c:choose>
+                        <c:when test="${not empty title}">
+                            <c:set var="charName" value="<h1 class='warcraft_font' style='display: inline;'>${character.name}</h1>" />
+                            <c:set var="name" value="${fn:replace(title, '{name}', charName)}"/>
+                            ${name}
+                        </c:when>
+                        <c:otherwise>
+                            <h1 class="warcraft_font">${character.name}</h1>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
                 <div class="member_items row">
                     <div class="itemsLeft col items_left">
                         <c:set var="leftEquip" value="${['HEAD','NECK','SHOULDER','BACK','CHEST','SHIRT','TABARD','WRIST']}" scope="application" />

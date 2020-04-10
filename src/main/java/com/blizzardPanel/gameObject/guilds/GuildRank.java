@@ -54,6 +54,14 @@ public class GuildRank {
         return rank_lvl;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"Rank\", " +

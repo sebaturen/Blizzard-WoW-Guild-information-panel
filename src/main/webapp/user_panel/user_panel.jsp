@@ -20,7 +20,7 @@
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
             <img src="assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattle_tag() %>
-            <c:if test="${user.guildRank == 0 || user.guildRank == 1}">
+            <c:if test="${user.guild_rank == 0 || user.guild_rank == 1}">
                 <a href='userpanel/settings.jsp' class='right'><button type='submit' class='btn btn-outline-warning btn-sm'><fmt:message key="label.settings" /></button></a>
             </c:if>
             <br/>
@@ -28,49 +28,45 @@
                 <fmt:message key="label.character_loading" /><br><br>
             </c:if>
             <c:if test="${user.characters.size() != 0}">
-                <table class="table table-dark character-tab">
-                    <thead>
-                    <tr>
-                        <th scope="col"><fmt:message key="label.main" /></th>
-                        <th scope="col"><fmt:message key="label.name" /></th>
-                        <th scope="col"><fmt:message key="label.spec" /></th>
-                        <th scope="col"><fmt:message key="label.level" /></th>
-                        <th scope="col"><fmt:message key="label.best_run" /></th>
-                        <th scope="col"><fmt:message key="label.server" /></th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div class="table table-dark character-tab">
+                    <div class="row pjInfo">
+                        <div class="col-md-1 col-2"></div>
+                        <div class="col-md-2 col-4"><fmt:message key="label.name" /></div>
+                        <div class="col-md-2 d-none d-md-block"><fmt:message key="label.spec" /></div>
+                        <div class="col-md-1 d-none d-md-block"><fmt:message key="label.level" /></div>
+                        <div class="col-md-2 col-2"><fmt:message key="label.best_run" /></div>
+                        <div class="col-md-2 d-none d-md-block"><fmt:message key="label.server" /></div>
+                        <div class="col-md-2 col-4"><fmt:message key="label.faction"/></div>
+                    </div>
                     <c:forEach items="${user.characters}" var="cm">
-                        <tr>
-                            <td>
-                                <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">
-                                    <c:if test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
-                                        &#xe801;
-                                    </c:if>
-                                    <c:if test="${user.mainCharacter == null || user.mainCharacter.id != cm.id}">
-                                        &#xe800;
-                                    </c:if>
-                                </i>
-                            </td>
-                            <td class="character-${cm.info.class_id}">${cm.name}</td>
-                            <td>
-                                <c:if test="${cm.activeSpec.specialization_id != 1}">
-                                    <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
+                    <div class="row pjInfo">
+                        <div class="col-md-1 col-2">
+                            <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">
+                                <c:if test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
+                                    &#xe801;
                                 </c:if>
-                            </td>
-                            <td>${cm.info.level}</td>
-                            <td>
-                                <c:if test="${cm.bestMythicRun != null}">
-                                    ${cm.bestMythicRun.keystone_level}
+                                <c:if test="${user.mainCharacter == null || user.mainCharacter.id != cm.id}">
+                                    &#xe800;
                                 </c:if>
-                            </td>
-                            <td>${cm.realm.getName(locale)}</td>
-                            <td><img src="assets/img/icons/${cm.info.faction.type}.png" style="width: 22px;"/></td>
-                        </tr>
+                            </i>
+                        </div>
+                        <div class="col-md-2 col-4 character-${cm.info.class_id}">${cm.name}</div>
+                        <div class="col-md-2 d-none d-md-block">
+                            <c:if test="${cm.activeSpec.specialization_id != 1}">
+                                <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
+                            </c:if>
+                        </div>
+                        <div class="col-md-1 d-none d-md-block">${cm.info.level}</div>
+                        <div class="col-md-2 col-2">
+                            <c:if test="${cm.bestMythicRun != null}">
+                                ${cm.bestMythicRun.keystone_level}
+                            </c:if>
+                        </div>
+                        <div class="col-md-2 d-none d-md-block">${cm.realm.getName(locale)}</div>
+                        <div class="col-md-2 col-4"><img src="assets/img/icons/${cm.info.faction.type}.png" style="width: 22px;"/></div>
+                    </div>
                     </c:forEach>
-                    </tbody>
-                </table>
+                </div>
             </c:if>
             <form method="get" class="form-inline">
                 <fmt:message key="label.select_language" />
@@ -92,18 +88,22 @@
             </form>
             <form method="post">
                 <input name="logOut" type="hidden" value="true"/>
-                <button type="submit" class="btn btn-primary"><fmt:message key="label.log_out" /></button>
-                <div class="discCode">
-                    <img src="assets/img/icons/Discord-Logo-Color.svg" style="width: 35px">
-                    <div class="returnCode">
-                        <code id="discordCode" class="">
-                            <c:if test="${user.discord_user_id > 0}">
-                                !regist ${user.access_token}
-                            </c:if>
-                            <c:if test="${user.discord_user_id == 0}">
-                                <fmt:message key="label.account_ready" />
-                            </c:if>
-                        </code>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="col btn btn-primary" style="width: auto"><fmt:message key="label.log_out" /></button>
+                    </div>
+                    <div class="col discCode">
+                        <img src="assets/img/icons/Discord-Logo-Color.svg" style="width: 35px; float: right;">
+                        <div class="returnCode">
+                            <code id="discordCode" class="">
+                                <c:if test="${user.discord_user_id > 0}">
+                                    !regist ${user.access_token}
+                                </c:if>
+                                <c:if test="${user.discord_user_id == 0}">
+                                    <fmt:message key="label.account_ready" />
+                                </c:if>
+                            </code>
+                        </div>
                     </div>
                 </div>
             </form>

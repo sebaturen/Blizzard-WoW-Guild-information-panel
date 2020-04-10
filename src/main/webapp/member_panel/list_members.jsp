@@ -13,8 +13,8 @@
             <div id="character-content">
                 <% if(guildMember) { %>
                 <div id="fullLoad"></div>
-                <button type="button" class="btn btn-info" id='membersFilters'><fmt:message key="label.filters" /></button>
-                <form style="display: none;" id='formFilter'>
+                <button type="button" class="btn btn-info" id='membersFilters' style="display: none;"><fmt:message key="label.filters" /></button>
+                <div style="display: none;" id='formFilter'>
                     <br>
                     <div class="row">
                         <div class="col">
@@ -25,13 +25,13 @@
                             <div class="form-group">
                                 <label><fmt:message key="label.guild_rank" /></label>
                                 <select class="form-control" id='guildRankSelect'>
-                                    <option><fmt:message key="label.all" /></option>
+                                    <option value="-1"><fmt:message key="label.all" /></option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label><fmt:message key="label.class" /></label>
                                 <select class="form-control" id='classSelect'>
-                                    <option><fmt:message key="label.all" /></option>
+                                    <option value="-1"><fmt:message key="label.all" /></option>
                                 </select>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <label><fmt:message key="label.race" /></label>
                                 <select class="form-control" id='racesSelect'>
-                                    <option><fmt:message key="label.all" /></option>
+                                    <option value="-1"><fmt:message key="label.all" /></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -47,13 +47,13 @@
                                 <div class="row">
                                     <div class='col'>
                                         <select class="form-control" id="levelSelect">
-                                            <option><fmt:message key="label.all" /></option>
-                                            <option><fmt:message key="label.greater_then" /></option>
-                                            <option><fmt:message key="label.less_then" /></option>
+                                            <option value="-1"><fmt:message key="label.all" /></option>
+                                            <option value="1"><fmt:message key="label.greater_then" /></option>
+                                            <option value="2"><fmt:message key="label.less_then" /></option>
                                         </select>
                                     </div>
                                     <div class='col'>
-                                        <input class="form-control" type="number" value="" id="levelInput" disabled/>
+                                        <input class="vInput form-control" type="number" value="" id="levelInput" disabled/>
                                     </div>
                                 </div>
                             </div>
@@ -62,31 +62,31 @@
                                 <div class='row'>
                                     <div class="col">
                                         <select class="form-control" id='ilevelSelect'>
-                                            <option><fmt:message key="label.all" /></option>
-                                            <option><fmt:message key="label.greater_then" /></option>
-                                            <option><fmt:message key="label.less_then" /></option>
+                                            <option value="-1"><fmt:message key="label.all" /></option>
+                                            <option value="1"><fmt:message key="label.greater_then" /></option>
+                                            <option value="2"><fmt:message key="label.less_then" /></option>
                                         </select>
                                     </div>
                                     <div class="col">
-                                        <input class="form-control" type="number" value="" id="ilevelInput" disabled/>
+                                        <input class="vInput form-control" type="number" value="" id="ilevelInput" disabled/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
                 <% } %>
                 <div class="table table-dark character-tab">
                     <div class="row pjInfo">
-                        <div class="col" id="rankColum" class='pointer'>#</div>
-                        <div class="col" id="nameColum" class='pointer'><fmt:message key="label.name" /></div>
-                        <div class="col" id="classColum" class='pointer'><fmt:message key="label.class" /></div>
-                        <div class="col" id="levelColum" class='pointer'><fmt:message key="label.level" /></div>
-                        <div class="col" id="specColum" class='pointer'><fmt:message key="label.current_spec" /></div>
+                        <div class="col pointer" id="rankColum">#</div>
+                        <div class="col pointer" id="nameColum"><fmt:message key="label.name" /></div>
+                        <div class="col pointer" id="classColum"><fmt:message key="label.class" /></div>
+                        <div class="col pointer" id="levelColum"><fmt:message key="label.level" /></div>
+                        <div class="col pointer d-none d-md-block" id="specColum"><fmt:message key="label.current_spec" /></div>
                         <% if(guildMember) { %>
-                            <div class="col" id="iLevelColum" class='pointer'><fmt:message key="label.ilvl" /></div>
-                            <div class="col" id="hoalvl" class='pointer'>HoA Lvl</div>
-                            <div class="col" id="ioScore" class='pointer'>Raider.IO</div>
+                            <div class="col d-none d-md-block pointer" id="iLevelColum"><fmt:message key="label.ilvl" /></div>
+                            <div class="col d-none d-md-block pointer" id="hoalvl">HoA Lvl</div>
+                            <div class="col d-none d-md-block pointer" id="ioScore">Raider.IO</div>
                         <% } %>
                     </div>
                     <div id="charContent">

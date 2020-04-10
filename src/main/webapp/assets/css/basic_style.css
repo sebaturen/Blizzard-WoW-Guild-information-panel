@@ -189,6 +189,10 @@ body > .container {
     color: #000;
 }
 .battle-tag { color: #fff; }
+.pjInfo {
+    padding: 0.5em 0em;
+    border-bottom: 1px solid #ffffff26;
+}
 /*END -------GENERAL------------*/
 
 /*-------COLOR ITEM QUALITY--------*/

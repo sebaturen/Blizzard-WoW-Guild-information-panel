@@ -74,7 +74,7 @@ public class CharacterStats {
     //
     //------------------------------------------------------------------------------------------------------------------
 
-    
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterStats\", " +

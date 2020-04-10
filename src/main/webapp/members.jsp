@@ -1,7 +1,7 @@
 <%@ page import="com.blizzardPanel.gameObject.characters.CharacterMember" %>
 <%@include file="includes/globalObject.jsp" %>
 <c:choose>
-    <c:when test="${not empty param.id && user.login && user.guildMember}">
+    <c:when test="${not empty param.id && user.login && user.is_guild_member}">
         <% CharacterMember mDetail = general_config.getMember(Long.parseLong(request.getParameter("id")));
         if (mDetail != null) {
             request.setAttribute("character", mDetail);

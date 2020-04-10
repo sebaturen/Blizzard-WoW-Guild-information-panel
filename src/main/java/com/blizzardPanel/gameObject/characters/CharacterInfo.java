@@ -20,6 +20,7 @@ public class CharacterInfo {
     private int level;
     private long achievement_points;
     private String faction_type;
+    private long active_title_id;
     private JsonObject bestMythicPlusScore;
     private JsonObject mythicPlusScores;
     private long guild_id;
@@ -32,6 +33,7 @@ public class CharacterInfo {
     private PlayableClass playableClass;
     private StaticInformation gender;
     private StaticInformation faction;
+    private CharacterTitle activeTitle;
 
     public static class Builder extends DBLoadObject {
 
@@ -48,6 +50,7 @@ public class CharacterInfo {
                 newInfo.playableClass = new PlayableClass.Builder(newInfo.class_id).build();
                 newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
                 newInfo.faction = new StaticInformation.Builder(newInfo.faction_type).build();
+                newInfo.activeTitle = new CharacterTitle.Builder(newInfo.active_title_id).build();
             }
             return newInfo;
         }
@@ -106,6 +109,18 @@ public class CharacterInfo {
 
     public long getRace_id() {
         return race_id;
+    }
+
+    public String getTitle(String locale) {
+        if (activeTitle != null) {
+            switch (gender_type) {
+                case "MALE":
+                    return activeTitle.getGender_name_male(locale);
+                case "FEMALE":
+                    return activeTitle.getGender_name_female(locale);
+            }
+        }
+        return null;
     }
 
     @Override

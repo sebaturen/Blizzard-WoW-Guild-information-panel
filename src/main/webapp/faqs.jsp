@@ -34,15 +34,18 @@
             }
             .dung-title {
                 padding: 70px;
+                text-align: center;
             }
         </style>
     </head>
     <body>
     <%@include file="includes/menu.jsp" %>
-        <div class="container fill">
-            <div class="dungeon-challenge-img" style="background-image: url('assets/img/raids/battle-of-dazaralor.jpg');">
+        <div class="dungeon-challenge-img" style="background-image: url('assets/img/raids/battle-of-dazaralor.jpg');">
+            <div class="container">
                 <h1 class="dung-title">Como simular DPS y Comparar ítems.</h1>
             </div>
+        </div>
+        <div class="container fill">
             <br>
                 <i><p>Antes de empezar con el tutorial quiero dejar en claro que esto es en base a mi experiencia
                     personal y, por lo tanto, cabe la posibilidad de que dentro de esta guie existan algunos detalles

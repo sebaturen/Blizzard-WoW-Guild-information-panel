@@ -361,6 +361,11 @@ public class BlizzardUpdate implements Runnable {
             values.add(user.getBattle_tag());
             columns.add("access_token");
             values.add(user.getAccess_token());
+            columns.add("is_guild_member");
+            values.add(user.getIs_guild_member()? "1":"0");
+            columns.add("guild_rank");
+            values.add(user.getGuild_rank());
+
 
             if (user_db.size() > 0) { // Update
                 id = user_db.get(0).getAsJsonObject().get("id").getAsInt();

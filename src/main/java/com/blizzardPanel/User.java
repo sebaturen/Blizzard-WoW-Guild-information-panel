@@ -31,30 +31,34 @@ public class User {
     private long main_character_id;
     private long last_login;
     private long last_alters_update;
+    private Boolean is_guild_member = false;
+    private int guild_rank = -1;
 
     // Internal DATA
     private CharacterMember mainCharacter;
     private List<CharacterMember> characters;
     private List<CharacterMember> invalidCharacters;
-    private boolean guildMember = false;
-    private int guildRank = -1;
 
     public static class Builder extends DBLoadObject {
 
         private int id;
         private String code;
+        private String battleTag;
+
         public Builder(int userId) {
             super(TABLE_NAME, User.class);
             this.id = userId;
         }
-
-        public Builder() {
+        public Builder(String battleTag) {
             super(TABLE_NAME, User.class);
+            this.battleTag = battleTag;
         }
-
         public Builder setCode(String code) {
             this.code = code;
             return this;
+        }
+        public Builder() {
+            super(TABLE_NAME, User.class);
         }
 
         public User build() {
@@ -63,23 +67,29 @@ public class User {
             if (id > 0) {
                 newUser = (User) load(TABLE_KEY, id);
             }
+            if (battleTag != null) {
+                newUser = (User) load("battle_tag", battleTag);
+            }
             if (code != null) {
-                String accesToken = BlizzardUpdate.shared.getUserAccessToken(this.code);
-                if (accesToken != null) {
-                    String battleTag = BlizzardUpdate.shared.getBattleTag(accesToken);
+                String accessToken = BlizzardUpdate.shared.getUserAccessToken(this.code);
+                if (accessToken != null) {
+                    String battleTag = BlizzardUpdate.shared.getBattleTag(accessToken);
                     if (battleTag != null) {
-                        newUser = new User();
-                        newUser.access_token = accesToken;
-                        newUser.battle_tag = battleTag;
-                        newUser.id = BlizzardUpdate.shared.saveUser(newUser);
+                        newUser = new User.Builder(battleTag).build();
+                        if (newUser == null) {
+                            newUser = new User();
+                            newUser.battle_tag = battleTag;
+                            newUser.id = BlizzardUpdate.shared.saveUser(newUser);
+                        }
+                        newUser.access_token = accessToken;
                     }
                 }
             }
 
             // Load info
             if (newUser != null) {
-                newUser.loadMainCharacter();
                 newUser.updateCharacters();
+                newUser.loadMainCharacter();
             }
 
             return newUser;
@@ -107,6 +117,8 @@ public class User {
                     "user_id = ?",
                     new String[]{id+""}
             );
+            int guildRank = -1;
+            boolean isGuildMember = false;
             for(JsonElement charDB : chars_db) {
                 // Add Characters for a user
                 CharacterMember newC = new CharacterMember.Builder(charDB.getAsJsonObject().get("character_id").getAsLong()).build();
@@ -117,8 +129,9 @@ public class User {
                 }
 
                 // Check if is a guild member
-                if (newC.getInfo().getGuild_id() == GuildController.getInstance().getId()) {
-                    guildMember = true;
+                if (newC.getInfo().getGuild_id() == GuildController.getInstance().getId()
+                && !isGuildMember) {
+                    isGuildMember = true;
                 }
 
                 // Set a Guild rank
@@ -135,6 +148,11 @@ public class User {
                     }
                 }
             }
+            if (guildRank != guild_rank || isGuildMember != is_guild_member) {
+                guild_rank = guildRank;
+                is_guild_member = isGuildMember;
+                BlizzardUpdate.shared.saveUser(this);
+            }
         } catch (DataException | SQLException e) {
             Logs.fatalLog(this.getClass(), "FAILED - to load characters for a user ["+ battle_tag +"] "+ e);
         }
@@ -142,6 +160,9 @@ public class User {
 
     private void updateCharacters() {
         BlizzardUpdate.shared.accountProfileAPI.summary(this);
+        if (!is_guild_member) {
+            loadCharacters();
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -166,12 +187,12 @@ public class User {
         return id;
     }
 
-    public boolean isGuildMember() {
-        return guildMember;
+    public int getGuild_rank() {
+        return guild_rank;
     }
 
-    public int getGuildRank() {
-        return guildRank;
+    public Boolean getIs_guild_member() {
+        return is_guild_member;
     }
 
     public List<CharacterMember> getCharacters() {
@@ -195,12 +216,17 @@ public class User {
         battle_tag = u.battle_tag;
         access_token = u.access_token;
         discord_user_id = u.discord_user_id;
-        guildRank = u.guildRank;
+        guild_rank = u.guild_rank;
         main_character_id = u.main_character_id;
         last_login = u.last_login;
         last_alters_update = u.last_alters_update;
         mainCharacter = u.mainCharacter;
         characters = u.characters;
+        is_guild_member = u.is_guild_member;
+    }
+
+    public long getLast_login() {
+        return last_login;
     }
 
     @Override
@@ -213,11 +239,11 @@ public class User {
                 "\"main_character_id\":\"" + main_character_id + "\"" + ", " +
                 "\"last_login\":\"" + last_login + "\"" + ", " +
                 "\"last_alters_update\":\"" + last_alters_update + "\"" + ", " +
+                "\"is_guild_member\":" + (is_guild_member == null ? "null" : "\"" + is_guild_member + "\"") + ", " +
+                "\"guild_rank\":\"" + guild_rank + "\"" + ", " +
                 "\"mainCharacter\":" + (mainCharacter == null ? "null" : mainCharacter) + ", " +
                 "\"characters\":" + (characters == null ? "null" : Arrays.toString(characters.toArray())) + ", " +
-                "\"invalidCharacters\":" + (invalidCharacters == null ? "null" : Arrays.toString(invalidCharacters.toArray())) + ", " +
-                "\"guildMember\":\"" + guildMember + "\"" + ", " +
-                "\"guildRank\":\"" + guildRank + "\"" +
+                "\"invalidCharacters\":" + (invalidCharacters == null ? "null" : Arrays.toString(invalidCharacters.toArray())) +
                 "}";
     }
 }

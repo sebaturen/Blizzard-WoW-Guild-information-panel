@@ -405,6 +405,12 @@ public class CharacterProfileAPI extends BlizzardAPI {
         columns.add("achievement_points");
         values.add(info.get("achievement_points").getAsString());
 
+        if (info.has("active_title") && info.getAsJsonObject("active_title").has("id")) {
+            columns.add("active_title_id");
+            values.add(info.getAsJsonObject("active_title").get("id").getAsString());
+            saveCharacterTitle(info.getAsJsonObject("active_title"));
+        }
+
         columns.add("faction_type");
         values.add(info.getAsJsonObject("faction").get("type").getAsString());
         BlizzardUpdate.shared.staticInformationAPI.faction(info.getAsJsonObject("faction"));
@@ -1294,5 +1300,86 @@ public class CharacterProfileAPI extends BlizzardAPI {
             Logs.fatalLog(this.getClass(), "FAILED - to get character media ["+ characterId +"] "+ e);
         }
 
+    }
+
+    private void saveCharacterTitle(JsonObject reference) {
+        if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
+
+        String urlHref = reference.getAsJsonObject("key").get("href").getAsString();
+        urlHref = urlHref.split("namespace")[0];
+        urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
+
+        String titleId = reference.get("id").getAsString();
+
+        try {
+            // Check is title previously exist:
+            JsonArray title_db = BlizzardUpdate.dbConnect.select(
+                    CharacterTitle.TABLE_NAME,
+                    new String[]{"last_modified"},
+                    CharacterTitle.TABLE_KEY +"=?",
+                    new String[]{titleId}
+            );
+            boolean isInDb = (title_db.size() > 0);
+            long lastModified =0L;
+            if (title_db.size() > 0) {
+                lastModified = title_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+            }
+
+            // Prepare Call
+            Call<JsonObject> call = apiCalls.freeUrl(
+                    urlHref,
+                    BlizzardUpdate.shared.accessToken.getAuthorization(),
+                    BlizzardUpdate.parseDateFormat(lastModified)
+            );
+
+            // Run cal
+            Response<JsonObject> resp = call.execute();
+            if (resp.isSuccessful()) {
+                JsonObject title_blizz = resp.body();
+
+                // Prepare values:
+                List<Object> columns = new ArrayList<>();
+                List<Object> values = new ArrayList<>();
+                columns.add("name");
+                values.add(title_blizz.getAsJsonObject("name").toString());
+                columns.add("gender_name_male");
+                values.add(title_blizz.getAsJsonObject("gender_name").getAsJsonObject("male").toString());
+                columns.add("gender_name_female");
+                values.add(title_blizz.getAsJsonObject("gender_name").getAsJsonObject("female").toString());
+                columns.add("last_modified");
+                values.add(resp.headers().getDate("Last-Modified").getTime() +"");
+
+                if (isInDb) { // Update
+                    BlizzardUpdate.dbConnect.update(
+                            CharacterTitle.TABLE_NAME,
+                            columns,
+                            values,
+                            CharacterTitle.TABLE_KEY +"=?",
+                            new String[]{titleId}
+                    );
+                    Logs.infoLog(this.getClass(), "OK Title is UPDATE ["+ titleId +"]");
+                } else { // Insert
+                    columns.add("id");
+                    values.add(titleId);
+                    BlizzardUpdate.dbConnect.insert(
+                            CharacterTitle.TABLE_NAME,
+                            CharacterTitle.TABLE_KEY,
+                            columns,
+                            values
+                    );
+                    Logs.infoLog(this.getClass(), "OK Titles is INSERT ["+ titleId +"]");
+                }
+
+            } else {
+                if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
+                    Logs.infoLog(this.getClass(), "NOT Modified title detail "+ titleId);
+                } else {
+                    Logs.errorLog(this.getClass(), "ERROR - title detail "+ titleId +" - "+ resp.code() +" // "+ call.request());
+                }
+            }
+
+        } catch (IOException | DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED - to get/update title detail ["+ titleId +"] "+ e);
+        }
     }
 }

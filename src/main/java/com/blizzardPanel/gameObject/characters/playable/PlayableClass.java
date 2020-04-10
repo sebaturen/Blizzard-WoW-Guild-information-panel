@@ -62,6 +62,10 @@ public class PlayableClass {
     //
     //------------------------------------------------------------------------------------------------------------------
 
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
+    }
+
     public long getId() {
         return id;
     }

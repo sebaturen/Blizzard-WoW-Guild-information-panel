@@ -18,6 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,44 +36,58 @@ public class AccountProfileAPI extends BlizzardAPI {
                 "Bearer "+u.getAccess_token()
         );
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject detail = response.body();
-                    if (detail.has("wow_accounts")) {
+        if (u.getIs_guild_member()) { // async process
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    summaryResponse(u, call, response);
+                }
 
-                        try {
-                            BlizzardUpdate.dbConnect.update(
-                                    User.TABLE_NAME,
-                                    new String[]{"last_alters_update"},
-                                    new String[]{new Date().getTime()+""},
-                                    User.TABLE_KEY +"=?",
-                                    new String[]{u.getId()+""}
-                            );
-                        } catch (SQLException | DataException e) {
-                            Logs.fatalLog(this.getClass(), "FAILED to update user alters `is update` ["+ u.getId() +"] "+ e);
-                        }
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Logs.fatalLog(this.getClass(), "FAILED - to get a user summary ["+ u.getBattle_tag() +"] - "+ t);
+                }
+            });
+        } else { // sync process
+            try {
+                Response<JsonObject> resp = call.execute();
+                summaryResponse(u, call, resp);
+            } catch (IOException e) {
+                Logs.errorLog(this.getClass(), "Failed to sync user summary ["+ u.getBattle_tag() +"]");
+            }
+        }
 
-                        for(JsonElement wowAccount : detail.get("wow_accounts").getAsJsonArray() ) {
-                            JsonObject wowAccountDetail = wowAccount.getAsJsonObject();
-                            if (wowAccountDetail.has("characters")) {
-                                for (JsonElement charDet : wowAccountDetail.get("characters").getAsJsonArray()) {
-                                    saveCharacter(charDet.getAsJsonObject(), u);
-                                }
-                            }
+    }
+
+    private void summaryResponse(User u, Call<JsonObject> call, Response<JsonObject> response) {
+        if (response.isSuccessful()) {
+            JsonObject detail = response.body();
+            if (detail.has("wow_accounts")) {
+
+                try {
+                    BlizzardUpdate.dbConnect.update(
+                            User.TABLE_NAME,
+                            new String[]{"last_alters_update"},
+                            new String[]{new Date().getTime()+""},
+                            User.TABLE_KEY +"=?",
+                            new String[]{u.getId()+""}
+                    );
+                } catch (SQLException | DataException e) {
+                    Logs.fatalLog(this.getClass(), "FAILED to update user alters `is update` ["+ u.getId() +"] "+ e);
+                }
+
+                for(JsonElement wowAccount : detail.get("wow_accounts").getAsJsonArray() ) {
+                    JsonObject wowAccountDetail = wowAccount.getAsJsonObject();
+                    if (wowAccountDetail.has("characters")) {
+                        for (JsonElement charDet : wowAccountDetail.get("characters").getAsJsonArray()) {
+                            saveCharacter(charDet.getAsJsonObject(), u);
                         }
                     }
-                } else {
-                    Logs.errorLog(this.getClass(), "ERROR to get a user summary ["+ u.getBattle_tag() +"] - "+ response.code() +" // "+ call.request());
                 }
             }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Logs.fatalLog(this.getClass(), "FAILED - to get a user summary ["+ u.getBattle_tag() +"] - "+ t);
-            }
-        });
+        } else {
+            Logs.errorLog(this.getClass(), "ERROR to get a user summary ["+ u.getBattle_tag() +"] - "+ response.code() +" // "+ call.request());
+        }
     }
 
     private void saveCharacter(JsonObject charDet, User u) {

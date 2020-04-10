@@ -64,6 +64,18 @@ public class PlayableRace {
     //
     //------------------------------------------------------------------------------------------------------------------
 
+    public String getFaction_type() {
+        return faction_type;
+    }
+
+    public boolean isIs_selectable() {
+        return is_selectable;
+    }
+
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
+    }
+
     public long getId() {
         return id;
     }

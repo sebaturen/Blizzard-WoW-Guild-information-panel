@@ -19,7 +19,10 @@
     <div class="row justify-content-md-center">
         <% // "redirectUri" is generate in menu.jsp %>
         <a href="<%= redirectUri %>">
-            <button type="button" class="btn btn-primary"><fmt:message key="label.blizzard_login" /></button>
+            <button type="button" class="btn btn-primary">
+                <img src="assets/img/icons/battlenet-icon.png" alt="" style="width: 26px;">
+                <fmt:message key="label.blizzard_login" />
+            </button>
         </a><br><br>
     </div>
 </div>

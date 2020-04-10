@@ -275,6 +275,17 @@ public class Guild {
         return guildRosters;
     }
 
+    public List<GuildRank> getGuildRanks() {
+        if (guildRanks == null) {
+            loadRanks();
+        }
+        return guildRanks;
+    }
+
+    public String getFaction_type() {
+        return faction_type;
+    }
+
     public long getId() {
         return id;
     }

@@ -13,13 +13,13 @@
         <div class="container fill">
             <div id="welcome">
                 <div class="row guild_logoName divder">
-                    <div class="col-3 log_artofwar">
+                    <div class="col-md-3 d-none d-md-block log_artofwar">
                         <img src="assets/img/artofwar_logo.png"/>
                     </div>
-                    <div class="col-6 align-self-center">
+                    <div class="col col-md-6 align-self-center">
                         <p class='home_name warcraft_font'>${guild.name}</p>
                     </div>
-                    <div class="col-3 log_artofwar">
+                    <div class="col-md-3 d-none d-md-block log_artofwar">
                         <img class='flipImg' src="assets/img/artofwar_logo.png"/>
                     </div>
                 </div>
