@@ -6,9 +6,10 @@ body {
     background-color: #26262c;
     color: white;
     position: relative;
-    padding-bottom: 4rem;
-    padding-top: 4em;
     min-height: 100%;
+}
+body > .container {
+    padding: 25px;
 }
 p {
     margin-top: 0;
@@ -68,13 +69,14 @@ p {
     background: transparent;
 }
 .item-floating-desc {
-    padding: 10px;
-    padding-right: 20px;
+    padding: 1em;
     z-index: 999;
     display: none;
     position: fixed;
     overflow: hidden;
-    background-image: url('./../img/tooltip.png');
+    background-image: url(./../img/tooltip.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 .tooltipDesc {
     text-align: left !important;
@@ -85,24 +87,21 @@ p {
 }
 .azeritaPowerDesc, .itemSpellDetail {
     max-width: 319px;
-    padding-left: 14px;
 }
 .azPower, .itemSpellDetail {
     font-size: 0.8em;
 }
 .navbar {
+    width: 100%;
+}
+#stickyNav {
     background-color: #26262c;
     position: fixed;
-    width: 100%;
     top: 0;
     left: 0;
     z-index: 99999;
 }
 #footer {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
     padding: 2rem;
 }
 
@@ -145,11 +144,6 @@ p {
 }
 .pointer {
     cursor: pointer;
-}
-body > .container {
-    margin-top: 21px;
-    padding: 25px;
-    margin-bottom: 21px;
 }
 .moneyitem, .moneygold, .moneysilver, .moneycopper, .moneyachievement, .moneysocketmeta,
 .moneysocketred, .moneysocketyellow, .moneysocketblue, .moneysocketprismatic {

@@ -75,6 +75,46 @@ public class CharacterStats {
     //------------------------------------------------------------------------------------------------------------------
 
 
+    public int getHealth() {
+        return health;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public JsonObject getAgility() {
+        return agility;
+    }
+
+    public JsonObject getStamina() {
+        return stamina;
+    }
+
+    public JsonObject getMelee() {
+        return melee;
+    }
+
+    public JsonObject getMastery() {
+        return mastery;
+    }
+
+    public JsonObject getVersatility() {
+        return versatility;
+    }
+
+    public JsonObject getSpell() {
+        return spell;
+    }
+
+    public JsonObject getIntellect() {
+        return intellect;
+    }
+
+    public StaticInformation getPowerType() {
+        return powerType;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterStats\", " +

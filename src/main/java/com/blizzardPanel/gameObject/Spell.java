@@ -57,6 +57,28 @@ public class Spell {
 
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    // GET / SET
+    //
+    //------------------------------------------------------------------------------------------------------------------
+
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
+    }
+
+    public String getDescription(String locale) {
+        return description.get(locale).getAsString();
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"Spell\", " +

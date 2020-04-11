@@ -819,9 +819,9 @@ public class CharacterProfileAPI extends BlizzardAPI {
                 columns.add("versatility");
                 JsonObject versa = new JsonObject();
                 versa.addProperty("base", statistics.get("versatility").getAsString());
-                versa.addProperty("damage_done_bonus", statistics.get("versatility_damage_done_bonus").getAsString());
-                versa.addProperty("healing_done_bonus", statistics.get("versatility_healing_done_bonus").getAsString());
-                versa.addProperty("damage_taken_bonus", statistics.get("versatility_damage_taken_bonus").getAsString());
+                versa.addProperty("damage_done_bonus", statistics.get("versatility_damage_done_bonus").getAsInt());
+                versa.addProperty("healing_done_bonus", statistics.get("versatility_healing_done_bonus").getAsInt());
+                versa.addProperty("damage_taken_bonus", statistics.get("versatility_damage_taken_bonus").getAsInt());
                 values.add(versa);
 
                 columns.add("avoidance");
@@ -833,31 +833,31 @@ public class CharacterProfileAPI extends BlizzardAPI {
                 columns.add("hand");
                 JsonObject hand = new JsonObject();
                 JsonObject mainHand = new JsonObject();
-                mainHand.addProperty("damage_min", statistics.get("main_hand_damage_min").getAsString());
-                mainHand.addProperty("damage_max", statistics.get("main_hand_damage_max").getAsString());
-                mainHand.addProperty("speed", statistics.get("main_hand_speed").getAsString());
-                mainHand.addProperty("dps", statistics.get("main_hand_dps").getAsString());
+                mainHand.addProperty("damage_min", statistics.get("main_hand_damage_min").getAsInt());
+                mainHand.addProperty("damage_max", statistics.get("main_hand_damage_max").getAsInt());
+                mainHand.addProperty("speed", statistics.get("main_hand_speed").getAsInt());
+                mainHand.addProperty("dps", statistics.get("main_hand_dps").getAsInt());
                 JsonObject offHand = new JsonObject();
-                mainHand.addProperty("damage_min", statistics.get("off_hand_damage_min").getAsString());
-                mainHand.addProperty("damage_max", statistics.get("off_hand_damage_max").getAsString());
-                mainHand.addProperty("speed", statistics.get("off_hand_speed").getAsString());
-                mainHand.addProperty("dps", statistics.get("off_hand_dps").getAsString());
+                mainHand.addProperty("damage_min", statistics.get("off_hand_damage_min").getAsInt());
+                mainHand.addProperty("damage_max", statistics.get("off_hand_damage_max").getAsInt());
+                mainHand.addProperty("speed", statistics.get("off_hand_speed").getAsInt());
+                mainHand.addProperty("dps", statistics.get("off_hand_dps").getAsInt());
                 hand.add("main", mainHand);
                 hand.add("off", offHand);
                 values.add(hand.toString());
 
                 columns.add("spell");
                 JsonObject spell = new JsonObject();
-                spell.addProperty("power", statistics.get("spell_power").getAsString());
-                spell.addProperty("penetration", statistics.get("spell_penetration").getAsString());
+                spell.addProperty("power", statistics.get("spell_power").getAsInt());
+                spell.addProperty("penetration", statistics.get("spell_penetration").getAsInt());
                 spell.add("haste", statistics.getAsJsonObject("spell_haste"));
                 spell.add("crit", statistics.get("spell_crit").getAsJsonObject());
                 values.add(spell.toString());
 
                 columns.add("mana");
                 JsonObject mana = new JsonObject();
-                mana.addProperty("regen", statistics.get("mana_regen").getAsString());
-                mana.addProperty("regen_combat", statistics.get("mana_regen_combat").getAsString());
+                mana.addProperty("regen", statistics.get("mana_regen").getAsInt());
+                mana.addProperty("regen_combat", statistics.get("mana_regen_combat").getAsInt());
                 values.add(mana);
 
                 columns.add("armor");

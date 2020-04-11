@@ -229,6 +229,10 @@ public class CharacterMember {
         return info;
     }
 
+    public List<CharacterSpec> getSpecs() {
+        return specs;
+    }
+
     public CharacterSpec getActiveSpec() {
         if (specs == null) {
             loadSpec();

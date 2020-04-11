@@ -88,6 +88,20 @@ public class PlayableSpec {
         return playableClass;
     }
 
+    public String getName(String locale) {
+        return name.get(locale).getAsString();
+    }
+
+    public String getDesc(String locale, String type) {
+        switch (type) {
+            case "MALE":
+                return desc_male.get(locale).getAsString();
+            case "FEMALE":
+                return desc_female.get(locale).getAsString();
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"Spec\", " +

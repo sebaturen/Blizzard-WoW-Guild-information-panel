@@ -204,10 +204,13 @@ function addMember(members){
     let fullLoad = ($("#fullLoad").length != 0);
     jQuery.each(members, function(i, val) {
         let outForm = (fullLoad)? '<a href="?id='+ val.id +'">':'';
-         outForm +=
-                '<div class="row pjInfo pointer" data-id="'+ val.id +'">'+
-                    '<div class="col"><img class="img_profile" src="'+ val.media.avatar +'?alt=/shadow/avatar/2-1.jpg" /></div>'+
-                    '<div class="col character-'+ val.info.class.id +'">'+ val.name +'</div>'+
+         outForm += '<div class="row pjInfo pointer" data-id="'+ val.id +'">';
+         if (typeof val.media.avatar != 'undefined') {
+             outForm += '<div class="col"><img class="img_profile" src="'+ val.media.avatar +'" /></div>';
+         } else {
+             outForm += '<div class="col"><img class="img_profile" src="https://render-us.worldofwarcraft.com/character/tichondrius/00/000000000-avatar.jpg?alt=/shadow/avatar/2-1.jpg" /></div>';
+         }
+         outForm += '<div class="col character-'+ val.info.class.id +'">'+ val.name +'</div>'+
                     '<div class="col"><img src="assets/img/classes/class_'+ val.info.class.id +'.png" style="width: 22px;"/></div>'+
                     '<div class="col">'+ val.info.lvl +'</div>'+
                     '<div class="col d-none d-md-block"><img src="assets/img/classes/specs/spec_'+ val.info.class.id +'_'+ val.spec.id +'.png" style="width: 22px;"/> <img src="assets/img/icons/'+ val.spec.rol +'.png" style="width: 22px;"/></div>';

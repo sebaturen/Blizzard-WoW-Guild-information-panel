@@ -53,22 +53,22 @@ public class CharacterSpec {
                 newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
             }
             if (newCSpec.tier_1 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_1).build());
             }
             if (newCSpec.tier_2 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_2).build());
             }
             if (newCSpec.tier_3 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_3).build());
             }
             if (newCSpec.tier_4 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_4).build());
             }
             if (newCSpec.tier_5 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_5).build());
             }
             if (newCSpec.tier_6 > 0) {
-                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_0).build());
+                newCSpec.tiers.add(new Spell.Builder(newCSpec.tier_6).build());
             }
 
             return newCSpec;
@@ -100,6 +100,10 @@ public class CharacterSpec {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public List<Spell> getTiers() {
+        return tiers;
     }
 
     @Override

@@ -123,6 +123,10 @@ public class CharacterInfo {
         return null;
     }
 
+    public String getGender_type() {
+        return gender_type;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"CharacterInfo\", " +
