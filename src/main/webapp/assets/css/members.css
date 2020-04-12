@@ -54,10 +54,13 @@
 }
 .contentDivide {
     background: rgb(2,0,36);
-    background: linear-gradient(180deg, rgba(2,0,36,0) 0%, rgba(38,38,44,1) 76%);
+    background: linear-gradient(180deg, rgba(2,0,36,0) 0%, rgba(1,4,36,0.7833508403361344) 49%, rgba(1,4,36,1) 89%);
 }
 .bg_solid {
-    background-color: #26262c;
+    background-color: #010424;
+}
+.active_spec {
+    text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
 }
 /*-------ITEMS ---------------*/
 .item_title {    

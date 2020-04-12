@@ -23,11 +23,11 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
-@Path("/mythicPlus")
+@Path("/mythicPlus/")
 public class MythicPlus {
 
     @GET
-    @Path("/best/{season}")
+    @Path("best/{season}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response memberList(
             @DefaultValue("en_US") @QueryParam("locale") String locale,
@@ -62,7 +62,7 @@ public class MythicPlus {
     }
 
     @GET
-    @Path("/weekRuns")
+    @Path("weekRuns")
     @Produces(MediaType.APPLICATION_JSON)
     public Response weekRuns(@DefaultValue("en_US") @QueryParam("locale") String locale) {
         try {
@@ -88,7 +88,7 @@ public class MythicPlus {
     }
 
     @GET
-    @Path("/{characterId}")
+    @Path("{characterId}")
     public Response characterWeek(
             @DefaultValue("en_US") @QueryParam("locale") String locale,
             @PathParam("characterId") long characterId,
@@ -122,6 +122,77 @@ public class MythicPlus {
         notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
         return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
 
+    }
+
+    @GET
+    @Path("topFailed")
+    public Response topFailedRuns(
+            @DefaultValue("en_US") @QueryParam("locale") String locale,
+            @Context HttpServletRequest request
+    ) {
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser != null && currentUser.getIs_guild_member()) {
+            try {
+                String query =
+                        "SELECT DISTINCT  " +
+                        "    kr.id " +
+                        "FROM " +
+                        "    keystone_dungeon_run_members km " +
+                        "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
+                        "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
+                        "WHERE " +
+                        "    gr.character_id IS NOT NULL " +
+                        "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" " +
+                        "    AND is_completed_within_time = FALSE " +
+                        "ORDER BY " +
+                        "    kr.duration DESC " +
+                        "LIMIT 3";
+                return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
+            } catch (SQLException | DataException e) {
+                Logs.fatalLog(this.getClass(), "FATAL - error MythicPlus failed top season "+ e);
+                return Response.serverError().build();
+            }
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+    }
+
+    @GET
+    @Path("weekRunsFailed")
+    public Response weekRunsFailed(
+            @DefaultValue("en_US") @QueryParam("locale") String locale,
+            @Context HttpServletRequest request
+    ) {
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser != null && currentUser.getIs_guild_member()) {
+            try {
+                String query =
+                        "SELECT DISTINCT " +
+                        "    kr.id " +
+                        "FROM " +
+                        "    keystone_dungeon_run_members km " +
+                        "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
+                        "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
+                        "WHERE " +
+                        "    gr.character_id IS NOT NULL " +
+                        "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" " +
+                        "    AND kr.completed_timestamp >= "+ ServerTime.getLastResetTime() +" " +
+                        "    AND kr.is_completed_within_time = FALSE " +
+                        "ORDER BY " +
+                        "    kr.completed_timestamp DESC;";
+
+                return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
+            } catch (SQLException | DataException e) {
+                Logs.fatalLog(this.getClass(), "FATAL - error MythicPlus failed week season "+ e);
+                return Response.serverError().build();
+            }
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
     }
 
     private JsonArray loadKeys(String query, String locale) throws SQLException, DataException {
@@ -158,6 +229,7 @@ public class MythicPlus {
         JsonArray members = new JsonArray();
         for (MythicDungeonMember member : runOb.getMembers()) {
             JsonObject mem = new JsonObject();
+            mem.addProperty("id", member.getCharacter().getId());
             mem.addProperty("name", member.getCharacter().getName());
             mem.addProperty("iLvl", member.getCharacter_item_level());
             mem.addProperty("realm", member.getCharacter().getRealm().getName(locale));

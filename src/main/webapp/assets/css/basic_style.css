@@ -256,7 +256,7 @@ p {
 .dungeon-challenge-img {
     background-size: cover;
     background-position: center center;
-    margin: -25px -25px 0 -25px;
+    border-radius: 4px 4px 0 0;
 }
 .key_dung_title {
     padding: 50px;
@@ -277,9 +277,12 @@ p {
 .key_date {
     float: right;
     font-size: 0.7em;
-    text-align: center;
-    padding-top: 2em;
-    margin-bottom: 0em;
+    text-align: right;
+    padding-top: 0.5em;
+}
+.key_characters > a {
+    text-decoration: none;
+    color: white;
 }
 /*END -------GUILD CHALLENGE------------*/
 
@@ -421,10 +424,7 @@ p {
 
 /*----------MYTHIC PLUS-----------------*/
 .key_run_dun_img {
-    height: 140px;
-}
-.key_run_group {
-    padding-bottom: 15px;
+    height: 150px;
 }
 .key_run_lvl {
     background-image: url("./../img/icons/mythic_key_level.png");
@@ -439,6 +439,7 @@ p {
 }
 .key_affixes {
     text-align: center;
+    padding-top: 8px;
 }
 .key_affix_img {
     margin-right: 2px;
@@ -467,6 +468,25 @@ p {
 }
 .fails_keys {
     float: right;
+}
+.mythiContent {
+    border: 1px solid #928c8c;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #26262d;
+}
+.key_detail .row {
+    margin: 0;
+}
+.key_detail {
+    padding: 10px;
+}
+.key_run_group {
+    padding: 4px;
+}
+#runList, #failedRunsWeekList {
+    padding-top: 2em;
 }
 /*END----------MYTHIC PLUS-----------------*/
 
@@ -511,3 +531,12 @@ p {
                                   supported by Chrome and Opera */
 }
 /*END-----------------EVENT--------------*/
+/*-----------------ALTERS--------------*/
+.user {
+    padding-bottom: 2em;
+}
+.character-tab > a {
+    text-decoration: none;
+    color: white;
+}
+/*END-----------------ALTERS--------------*/

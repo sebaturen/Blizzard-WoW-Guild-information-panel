@@ -20,33 +20,37 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item <% out.write((currentPath.equals("index.jsp") || currentPath.equals(""))? "active":""); %>">
+            <li class="nav-item <%= (currentPath.equals("index.jsp") || currentPath.equals(""))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/index.jsp"><fmt:message key="label.home" /></a>
             </li>
-            <li class="nav-item <% out.write((currentPath.equals("list_members.jsp"))? "active":""); %>">
+            <li class="nav-item <%= (currentPath.equals("list_members.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/members.jsp"><fmt:message key="label.member_list" /></a>
             </li>
-            <li class="nav-item <% out.write((currentPath.equals("mythic_plus.jsp"))? "active":""); %>">
-                <a class="nav-link" href="<%= request.getContextPath() %>/mythic_plus.jsp"><fmt:message key="label.mythic_plus" /></a>
+            <li class="nav-item dropdown <%= (currentPath.equals("mythic_plus.jsp") || currentPath.equals("mythic_plus_failed.jsp"))? "active":"" %>">
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><fmt:message key="label.mythic_plus" /></a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="<%= request.getContextPath() %>/mythic_plus.jsp"><fmt:message key="label.week_runs" /></a>
+                    <a class="dropdown-item" href="<%= request.getContextPath() %>/mythic_plus_failed.jsp"><fmt:message key="label.failed_runs" /></a>
+                </div>
             </li>
-            <li class="nav-item <% out.write((currentPath.equals("progress.jsp"))? "active":""); %>">
+            <li class="nav-item <%= (currentPath.equals("progress.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp"><fmt:message key="label.guild_progress" /></a>
             </li>
             <% if(guildMember) { %>
-                <li class="nav-item <% out.write((currentPath.equals("alters.jsp"))? "active":""); %>">
+                <li class="nav-item <%= (currentPath.equals("alters.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp"><fmt:message key="label.alters" /></a>
                 </li>
-                <li class="nav-item <% out.write((currentPath.equals("auction_house.jsp"))? "active":""); %>">
+                <li class="nav-item <%= (currentPath.equals("auction_house.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp"><fmt:message key="label.auction_house" /></a>
                 </li>
-                <li class="nav-item <% out.write((currentPath.equals("polls.jsp"))? "active":""); %>">
+                <li class="nav-item <%= (currentPath.equals("polls.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp"><fmt:message key="label.polls" /></a>
                 </li>
-                <li class="nav-item <% out.write((currentPath.equals("events.jsp"))? "active":""); %>">
+                <li class="nav-item <%= (currentPath.equals("events.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/events.jsp"><fmt:message key="label.events" /></a>
                 </li>
             <% } %>
-            <li class="nav-item <% out.write((currentPath.equals("faqs.jsp"))? "active":""); %>">
+            <li class="nav-item <%= (currentPath.equals("faqs.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/faqs.jsp"><fmt:message key="label.simeo" /></a>
             </li>
             <li class="nav-item">
@@ -88,6 +92,36 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     </c:if>
                 </button>
         </a>
+        </div>
+    </div>
+
+    <div id="mythic_run_mold" class="key_run_group dungeon-challenge col" style="display: none">
+        <div class="mythiContent">
+            <div class='key_run_dun_img dungeon-challenge-img' style=''>
+                <div class='key_run_lvl'></div>
+                <h2 class='key_dung_title'></h2>
+            </div>
+            <div class="key_detail">
+                <div class="row">
+                    <p class="col key_group_time"></p>
+                    <p class="col key_date"></p>
+                </div>
+                <div class="character-tab key_characters">
+                    <div class="row pjInfo">
+                        <div class="col-7"><fmt:message key="label.name" /></div>
+                        <div class="col-3"><fmt:message key="label.role" /></div>
+                        <div class="col-2"><fmt:message key="label.ilvl" /></div>
+                    </div>
+                        <div id="key_char_detail" class="row pjInfo">
+                        <div class="col-7 key_char_name"></div>
+                        <div class="col-3">
+                            <img class="key_char_rol_img" src='' style='width: 22px;'/>
+                            <img class="key_char_spec_img" rc='' style='width: 22px;'/>
+                        </div>
+                        <div class="col-2 key_char_ilvl"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </nav>

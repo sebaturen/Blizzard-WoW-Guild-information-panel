@@ -104,14 +104,17 @@ function renderRuns(keyRuns, loadLocation) {
             $('.key_char_rol_img', prepareMember).attr('src', 'assets/img/icons/'+ mem.rol +'.png');
             $('.key_char_spec_img', prepareMember).attr('src', 'assets/img/classes/specs/spec_'+ mem.class +'_'+ mem.spec +'.png');
             $('.key_char_ilvl', prepareMember).text(mem.iLvl);
+            if (mem.main_guild) {
+                prepareMember = prepareMember.wrap("<a href='members.jsp?id="+ mem.id +"'></a>").parent();
+            }
             $('.key_characters', prepareKey).append(prepareMember.clone());
         });
 
         // Affixes information
-        let prepareAffix = $("#key_char_detail").clone().attr('id', 'affixes');
-        let affixContent = '<td colspan="3" class="key_affixes">';
+        let prepareAffix = $("#key_char_detail").clone().attr('id', 'affixes').removeClass('pjInfo').removeClass('row');
+        let affixContent = '<div class="key_affixes row">';
         jQuery.each( keyRun.affixes, function(k, affix) {
-            affixContent += '<img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />';
+            affixContent += '<div class="col"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" /></div>';
         });
         $(prepareAffix).html(affixContent);
         $('.key_characters', prepareKey).append(prepareAffix);
@@ -122,14 +125,14 @@ function renderRuns(keyRuns, loadLocation) {
         group = $(group).add(prepareKey.clone());
         i = parseInt(i) + 1;
         if (i%3 === 0) {
-            let keyCont = $('<div class="row"></div>');
+            let keyCont = $('<div class="row key_runs"></div>');
             $(keyCont).append($(group).clone());
             $(loadLocation).append($(keyCont).clone());
             group = $();
         }
     });
     if ($(group).length > 0) {
-        let keyCont = $('<div class="row"></div>');
+        let keyCont = $('<div class="row key_runs"></div>');
         $(keyCont).append($(group).clone());
         $(loadLocation).append($(keyCont).clone());
     }

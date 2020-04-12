@@ -50,7 +50,9 @@ public class CharacterInfo {
                 newInfo.playableClass = new PlayableClass.Builder(newInfo.class_id).build();
                 newInfo.gender = new StaticInformation.Builder(newInfo.gender_type).build();
                 newInfo.faction = new StaticInformation.Builder(newInfo.faction_type).build();
-                newInfo.activeTitle = new CharacterTitle.Builder(newInfo.active_title_id).build();
+                if (newInfo.active_title_id > 0) {
+                    newInfo.activeTitle = new CharacterTitle.Builder(newInfo.active_title_id).build();
+                }
             }
             return newInfo;
         }

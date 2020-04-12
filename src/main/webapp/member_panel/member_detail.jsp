@@ -7,7 +7,7 @@
         <link type="text/css" rel="stylesheet" href="assets/css/members.css">
         <script src="assets/js/member_detail.js"></script>
     </head>
-    <body class="member_bg_content" style="background-image: url('${character.media.render_url}')">
+    <body class="member_bg_content" style="background-color: #010424; background-image: url('${character.media.render_url}')">
         <%@include file="../includes/menu.jsp" %>
         <div class="container">
             <div id="info" class="name_title" data-id="${character.id}">
@@ -175,7 +175,7 @@
                     <c:forEach var="spec" items="${character.specs}">
                         <div class="interSeparator row">
                             <div
-                                    class="col-3 nameDescTooltip"
+                                    class="col-3 nameDescTooltip <c:if test="${spec.enable}">active_spec</c:if> "
                                     data-spec="${spec.playableSpec.id}"
                                     data-name="${spec.playableSpec.getName(locale)}"
                                     data-desc="${spec.playableSpec.getDesc(locale, character.info.gender_type)}"
@@ -203,33 +203,6 @@
         <div class="container">
             <div id="mythic_week" class="separator">
                 <div id="loading" class="justify-content-md-center"><div class="loader"></div></div>
-                <div id="mythic_run_mold" class="key_run_group dungeon-challenge col" style="display: none">
-                    <div class='key_run_dun_img dungeon-challenge-img' style=''>
-                        <div class='key_run_lvl'></div>
-                        <h2 class='key_dung_title'></h2>
-                    </div>
-                    <p class='key_group_time'></p>
-                    <p class='key_date'></p>
-                    <table class='table table-dark character-tab'>
-                        <thead>
-                        <tr>
-                            <th scope='col'><fmt:message key="label.name" /></th>
-                            <th scope='col'><fmt:message key="label.role" /></th>
-                            <th scope='col'><fmt:message key="label.ilvl" /></th>
-                        </tr>
-                        </thead>
-                        <tbody class="key_characters">
-                        <tr id="key_char_detail">
-                            <td class="key_char_name"></td>
-                            <td>
-                                <img class="key_char_rol_img" src='' style='width: 22px;'/>
-                                <img class="key_char_spec_img" rc='' style='width: 22px;'/>
-                            </td>
-                            <td class="key_char_ilvl"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
         <div class="item-floating-desc tooltip-affix">

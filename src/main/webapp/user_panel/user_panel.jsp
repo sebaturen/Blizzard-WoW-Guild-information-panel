@@ -96,10 +96,10 @@
                         <img src="assets/img/icons/Discord-Logo-Color.svg" style="width: 35px; float: right;">
                         <div class="returnCode">
                             <code id="discordCode" class="">
-                                <c:if test="${user.discord_user_id > 0}">
-                                    !regist ${user.access_token}
-                                </c:if>
                                 <c:if test="${user.discord_user_id == 0}">
+                                    !sign-in ${user.access_token}
+                                </c:if>
+                                <c:if test="${user.discord_user_id > 0}">
                                     <fmt:message key="label.account_ready" />
                                 </c:if>
                             </code>

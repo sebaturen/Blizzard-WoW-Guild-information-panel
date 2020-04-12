@@ -1,5 +1,5 @@
 /*Load Mythic Plus information!*/
-var countFinish = 0;
+let countFinish = 0;
 $(document).ready(function() {
     /*Load a member details*/
     $.get("rest/mythicPlus/best/4?locale="+ Cookies.get('locale'), function(data) {

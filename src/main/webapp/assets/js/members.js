@@ -203,8 +203,7 @@ function addMember(members){
     $("#charContent").html("");
     let fullLoad = ($("#fullLoad").length != 0);
     jQuery.each(members, function(i, val) {
-        let outForm = (fullLoad)? '<a href="?id='+ val.id +'">':'';
-         outForm += '<div class="row pjInfo pointer" data-id="'+ val.id +'">';
+         let outForm = '<a href="?id='+ val.id +'"><div class="row pjInfo pointer" data-id="'+ val.id +'">';
          if (typeof val.media.avatar != 'undefined') {
              outForm += '<div class="col"><img class="img_profile" src="'+ val.media.avatar +'" /></div>';
          } else {
@@ -245,8 +244,7 @@ function addMember(members){
             }
             outForm += '</div>';
         }
-        outForm += '</div>';
-        outForm += (fullLoad)? '</a>':'';
+        outForm += '</div></a>';
         $("#charContent").append(outForm);
     });
 }

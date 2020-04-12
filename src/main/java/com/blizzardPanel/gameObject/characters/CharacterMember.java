@@ -139,11 +139,15 @@ public class CharacterMember {
     private void loadSpec() {
         specs = new ArrayList<>();
         try {
-            JsonArray specs_db = DBLoadObject.dbConnect.select(
-                    CharacterSpec.TABLE_NAME,
-                    new String[]{CharacterSpec.TABLE_KEY},
-                    "character_id=?",
-                    new String[]{id+""}
+            JsonArray specs_db = DBLoadObject.dbConnect.selectQuery(
+                    "SELECT " +
+                    "   id " +
+                    "FROM " +
+                    "   character_specs " +
+                    "WHERE " +
+                    "   character_id = "+ id +" " +
+                    "ORDER BY " +
+                    "   `enable` DESC"
             );
 
             if (specs_db.size() > 0) {

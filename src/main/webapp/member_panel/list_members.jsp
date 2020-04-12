@@ -7,7 +7,7 @@
         <link type="text/css" rel="stylesheet" href="assets/css/members.css">
         <script src="assets/js/members.js"></script>
     </head>
-    <body>
+    <body style="background-color: #010424;">
         <%@include file="../includes/menu.jsp" %>
         <div class="container">
             <div id="character-content">

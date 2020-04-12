@@ -82,13 +82,13 @@ public class User {
                             newUser.id = BlizzardUpdate.shared.saveUser(newUser);
                         }
                         newUser.access_token = accessToken;
+                        newUser.updateCharacters();
                     }
                 }
             }
 
             // Load info
             if (newUser != null) {
-                newUser.updateCharacters();
                 newUser.loadMainCharacter();
             }
 
@@ -111,17 +111,28 @@ public class User {
         characters = new ArrayList<>();
         invalidCharacters = new ArrayList<>();
         try {
-            JsonArray chars_db = DBLoadObject.dbConnect.select(
-                    USER_CHARACTER_TABLE_NAME,
-                    new String[]{"character_id"},
-                    "user_id = ?",
-                    new String[]{id+""}
+            JsonArray chars_db = DBLoadObject.dbConnect.selectQuery(
+                    "SELECT " +
+                    "    c.id " +
+                    "FROM " +
+                    "    user_character uc, " +
+                    "    users u, " +
+                    "    `characters` c " +
+                    "    LEFT JOIN character_info ci ON c.id = ci.character_id " +
+                    "WHERE " +
+                    "    uc.character_id = c.id " +
+                    "    AND uc.user_id = "+ id +" " +
+                    "    AND u.id = uc.user_id " +
+                    "ORDER BY " +
+                    "    CASE WHEN c.id = u.main_character_id then 0 else 1 end, " +
+                    "    c.is_valid = TRUE DESC, " +
+                    "    ci. `level` DESC"
             );
             int guildRank = -1;
             boolean isGuildMember = false;
             for(JsonElement charDB : chars_db) {
                 // Add Characters for a user
-                CharacterMember newC = new CharacterMember.Builder(charDB.getAsJsonObject().get("character_id").getAsLong()).build();
+                CharacterMember newC = new CharacterMember.Builder(charDB.getAsJsonObject().get("id").getAsLong()).build();
                 if (newC.isIs_valid()) {
                     characters.add(newC);
                 } else {
@@ -223,6 +234,10 @@ public class User {
         mainCharacter = u.mainCharacter;
         characters = u.characters;
         is_guild_member = u.is_guild_member;
+    }
+
+    public long getLast_alters_update() {
+        return last_alters_update;
     }
 
     public long getLast_login() {
