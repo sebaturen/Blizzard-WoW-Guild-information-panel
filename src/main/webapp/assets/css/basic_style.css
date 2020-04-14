@@ -247,7 +247,7 @@ p {
 #main-menu > nav > li {
     display: inline-block;
 }
-#token_price > p {
+.token_price > p {
     float: left;
 }
 /*END -------MENU------------*/
@@ -470,7 +470,7 @@ p {
     float: right;
 }
 .mythiContent {
-    border: 1px solid #928c8c;
+    border: 1px solid #464444;
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -487,6 +487,20 @@ p {
 }
 #runList, #failedRunsWeekList {
     padding-top: 2em;
+}
+.weekDivider {
+    border-right: 1px solid #ffffff26;
+}
+.affixes {
+    padding-bottom: 2em;
+}
+.affixes .row {
+    margin: 0;
+    padding-left: 15px;
+}
+.affixes .col {
+    margin: 0;
+    padding: 0;
 }
 /*END----------MYTHIC PLUS-----------------*/
 

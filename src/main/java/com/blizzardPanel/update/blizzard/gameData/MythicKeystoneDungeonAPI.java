@@ -71,7 +71,7 @@ public class MythicKeystoneDungeonAPI extends BlizzardAPI {
                 List<Object> columns = new ArrayList<>();
                 List<Object> values = new ArrayList<>();
                 columns.add("name");
-                values.add(blizz_dungeon.getAsJsonObject("dungeon").getAsJsonObject("name").toString());
+                values.add(blizz_dungeon.getAsJsonObject("name").toString());
 
                 columns.add("slug");
                 values.add(blizz_dungeon.getAsJsonObject("zone").get("slug").getAsString());

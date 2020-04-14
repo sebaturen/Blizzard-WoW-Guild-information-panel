@@ -53,8 +53,8 @@
     padding: 1em 0;
 }
 .contentDivide {
-    background: rgb(2,0,36);
-    background: linear-gradient(180deg, rgba(2,0,36,0) 0%, rgba(1,4,36,0.7833508403361344) 49%, rgba(1,4,36,1) 89%);
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(1,4,36,1) 49%, rgba(1,4,36,1) 89%);
 }
 .bg_solid {
     background-color: #010424;

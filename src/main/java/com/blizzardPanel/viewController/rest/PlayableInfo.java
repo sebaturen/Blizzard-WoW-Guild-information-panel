@@ -1,12 +1,10 @@
 package com.blizzardPanel.viewController.rest;
 
 import com.blizzardPanel.DataException;
-import com.blizzardPanel.GeneralConfig;
 import com.blizzardPanel.User;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.characters.playable.PlayableClass;
 import com.blizzardPanel.gameObject.characters.playable.PlayableRace;
-import com.blizzardPanel.gameObject.guilds.GuildRank;
 import com.blizzardPanel.viewController.GuildController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -17,7 +15,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.awt.*;
 import java.sql.SQLException;
 
 @Path("/playable")

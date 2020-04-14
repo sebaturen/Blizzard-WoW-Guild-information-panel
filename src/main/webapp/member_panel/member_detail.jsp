@@ -7,7 +7,8 @@
         <link type="text/css" rel="stylesheet" href="assets/css/members.css">
         <script src="assets/js/member_detail.js"></script>
     </head>
-    <body class="member_bg_content" style="background-color: #010424; background-image: url('${character.media.render_url}')">
+    <!-- https://cssgradient.io/ -->
+    <body class="member_bg_content" style="background-color: #010424; background-image: url('${character.media.render_url}')"> <!--   -->
         <%@include file="../includes/menu.jsp" %>
         <div class="container">
             <div id="info" class="name_title" data-id="${character.id}">
@@ -203,12 +204,6 @@
         <div class="container">
             <div id="mythic_week" class="separator">
                 <div id="loading" class="justify-content-md-center"><div class="loader"></div></div>
-            </div>
-        </div>
-        <div class="item-floating-desc tooltip-affix">
-            <div class="itemDesc tooltipDesc">
-                <p id="affix_name"></p>
-                <p id="affix_desc" class="tooltip-yellow itemSpellDetail"></p>
             </div>
         </div>
         <%@include file="../includes/footer.jsp" %>

@@ -9,15 +9,6 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
-    <div class="item-floating-desc tooltip-wow_token">
-        <div class="itemDesc tooltipDesc">
-            <div id="graph">
-                <div id="tokenGraph" style="height: 400px; width: 500px;"></div>
-            </div>
-        </div>
-    </div>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item <%= (currentPath.equals("index.jsp") || currentPath.equals(""))? "active":"" %>">
@@ -59,7 +50,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
-            <div id="token_price">
+            <div class="token_price">
                 <p class="quality-wow-token"><fmt:message key="label.wow_token" /></p>:&nbsp;
                 <% WoWToken tokenPrice = new WoWToken.Builder().build(); %>
                 <% if (tokenPrice.getPrice().getGold() > 0) { %><span class="moneygold"><%= String.format("%,d", tokenPrice.getPrice().getGold()) %></span><% } %>
@@ -125,3 +116,12 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
         </div>
     </div>
 </nav>
+<div class="item-floating-desc tooltip-affix">
+    <div class="itemDesc tooltipDesc">
+        <p id="affix_name"></p>
+        <p id="affix_desc" class="tooltip-yellow itemSpellDetail"></p>
+        <div id="wow_token_graph" style="display: none">
+            <div id="tokenGraph" style="height: 400px; width: 500px;"></div>
+        </div>
+    </div>
+</div>

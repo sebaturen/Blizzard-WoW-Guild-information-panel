@@ -7,9 +7,19 @@
         <link type="text/css" rel="stylesheet" href="assets/css/index.css">
         <script src="assets/js/mythic_plus.js"></script>
     </head>
-    <body style="background-color: #01073d;">
+    <body> <!-- style="background-color: #01073d;" -->
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
+            <div class="affixes row key_title">
+                <div class="col weekDivider">
+                    <h3><fmt:message key="label.current_affixes" /></h3>
+                    <div id="currentAffixes" class="row"></div>
+                </div>
+                <div class="col">
+                    <h3><fmt:message key="label.next_affixes" /></h3>
+                    <div id="nextAffixes" class="row"></div>
+                </div>
+            </div>
             <div id="bestRun" style="display: none;">
                 <div class="key_title">
                     <h1><fmt:message key="label.best_runs" /></h1>
@@ -22,12 +32,6 @@
                 </div>
             </div>
             <div id="loading" class="justify-content-md-center"><div class="loader"></div></div>
-            <div class="item-floating-desc tooltip-affix">
-                <div class="itemDesc tooltipDesc">
-                    <p id="affix_name"></p>
-                    <p id="affix_desc" class="tooltip-yellow itemSpellDetail"></p>
-                </div>
-            </div>
         </div>
         <%@include file="includes/footer.jsp" %>
     </body>

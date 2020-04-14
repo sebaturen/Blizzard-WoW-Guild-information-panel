@@ -10,7 +10,7 @@
         <link type="text/css" rel="stylesheet" href="assets/css/index.css">
         <script src="assets/js/alters.js"></script>
     </head>
-    <body style="background-color: #030317;">
+    <body> <!--  style="background-color: #030317;" -->
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
             <div id="loading" class="justify-content-md-center"><div class="loader"></div></div>

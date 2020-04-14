@@ -16,7 +16,7 @@
         <title>${guild.name} - User Panel</title>
         <%@include file="../includes/header.jsp" %>
     </head>
-    <body>
+    <body> <!-- style="background-color: #141417;" -->
         <%@include file="../includes/menu.jsp" %>
         <div class="container fill">
             <img src="assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px"><%= user.getBattle_tag() %>
@@ -39,32 +39,40 @@
                         <div class="col-md-2 col-4"><fmt:message key="label.faction"/></div>
                     </div>
                     <c:forEach items="${user.characters}" var="cm">
-                    <div class="row pjInfo">
-                        <div class="col-md-1 col-2">
-                            <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">
-                                <c:if test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
-                                    &#xe801;
+                        <c:if test="${cm.info.guild_id == guild.id}">
+                            <a href="members.jsp?id=${cm.id}">
+                        </c:if>
+                        <div class="row pjInfo">
+                            <div class="col-md-1 col-2">
+                                <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">
+                                    <c:choose>
+                                        <c:when test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
+                                            &#xe801;
+                                        </c:when>
+                                        <c:when test="${cm.info.guild_id == guild.id}">
+                                            &#xe800;
+                                        </c:when>
+                                    </c:choose>
+                                </i>
+                            </div>
+                            <div class="col-md-2 col-4 character-${cm.info.class_id}">${cm.name}</div>
+                            <div class="col-md-2 d-none d-md-block">
+                                <c:if test="${cm.activeSpec.specialization_id != 1}">
+                                    <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
                                 </c:if>
-                                <c:if test="${user.mainCharacter == null || user.mainCharacter.id != cm.id}">
-                                    &#xe800;
+                            </div>
+                            <div class="col-md-1 d-none d-md-block">${cm.info.level}</div>
+                            <div class="col-md-2 col-2">
+                                <c:if test="${cm.bestMythicRun != null}">
+                                    ${cm.bestMythicRun.keystone_level}
                                 </c:if>
-                            </i>
+                            </div>
+                            <div class="col-md-2 d-none d-md-block">${cm.realm.getName(locale)}</div>
+                            <div class="col-md-2 col-4"><img src="assets/img/icons/${cm.info.faction.type}.png" style="width: 22px;"/></div>
                         </div>
-                        <div class="col-md-2 col-4 character-${cm.info.class_id}">${cm.name}</div>
-                        <div class="col-md-2 d-none d-md-block">
-                            <c:if test="${cm.activeSpec.specialization_id != 1}">
-                                <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
-                            </c:if>
-                        </div>
-                        <div class="col-md-1 d-none d-md-block">${cm.info.level}</div>
-                        <div class="col-md-2 col-2">
-                            <c:if test="${cm.bestMythicRun != null}">
-                                ${cm.bestMythicRun.keystone_level}
-                            </c:if>
-                        </div>
-                        <div class="col-md-2 d-none d-md-block">${cm.realm.getName(locale)}</div>
-                        <div class="col-md-2 col-4"><img src="assets/img/icons/${cm.info.faction.type}.png" style="width: 22px;"/></div>
-                    </div>
+                        <c:if test="${cm.info.guild_id == guild.id}">
+                            </a>
+                        </c:if>
                     </c:forEach>
                 </div>
             </c:if>

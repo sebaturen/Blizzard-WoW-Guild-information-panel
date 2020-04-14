@@ -18,10 +18,33 @@ window.onmousemove = function (e) {
 
 $(document).ready(function() {
 
-    /* Mouse over */
-    $('#navbarSupportedContent')
+    // Nav bar
+    let navbar = $(".navbar");
+    let sticky = navbar.offset().top;
+    let copNav = navbar.clone().attr('id', 'stickyNav').hide();
+    $("body").append(copNav);
+    window.onscroll = function() {
+        if (window.pageYOffset > sticky) {
+            copNav.show();
+        } else {
+            copNav.hide();
+        }
+    };
+
+    // Mouse over....
+    $('body')
+        // Key affix
+        .on('mouseover', '.key_affix_img', function() {
+            $("#affix_name").text($(this).data("name"));
+            $("#affix_desc").text($(this).data("desc"));
+            $(".tooltip-affix").show();
+        })
+        // Key affix
+        .on('mouseleave', '.key_affix_img', function() {
+            $(".tooltip-affix").hide();
+        })
         // Token price
-        .on('mouseover', '#token_price', function() {
+        .on('mouseover', '.token_price', function() {
             /* Load wow token prices */
             $.get('rest/wow_token/history?max=10', function (data) {
                 console.log('token price history ready');
@@ -60,25 +83,16 @@ $(document).ready(function() {
                 $("#tokenGraph").CanvasJSChart(options);
 
             });
-            $(".tooltip-wow_token").show();
+            $("#affix_name").text("");
+            $("#affix_desc").text("");
+            $("#wow_token_graph").show();
+            $(".tooltip-affix").show();
         })
-
         // Tooltips
-        .on('mouseleave', '#token_price', function() {
-            $(".tooltip-wow_token").hide();
+        .on('mouseleave', '.token_price', function() {
+            $("#wow_token_graph").hide();
+            $(".tooltip-affix").hide();
         });
-
-    let navbar = $(".navbar");
-    let sticky = navbar.offset().top;
-    let copNav = navbar.clone().attr('id', 'stickyNav').hide();
-    $("body").append(copNav);
-    window.onscroll = function() {
-        if (window.pageYOffset > sticky) {
-            copNav.show();
-        } else {
-            copNav.hide();
-        }
-    };
 });
 
 function renderRuns(keyRuns, loadLocation) {
@@ -95,19 +109,20 @@ function renderRuns(keyRuns, loadLocation) {
         $('.key_date', prepareKey).text(keyRun.complete_date);
         $('#key_char_detail', prepareKey).remove();
 
+        // Tank information
         // Members information
-        jQuery.each( keyRun.members, function(j, mem) {
-            let isMain = ((mem.main_guild)? "<i class='main_char artOfWar-icon'>&#xe801;</i>":"");
-            let prepareMember = $("#key_char_detail").clone().attr('id', 'character_'+ j);
-            $('.key_char_name', prepareMember).addClass('character-'+ mem.class);
-            $('.key_char_name', prepareMember).html(isMain + mem.name +'<div class="char-realm">'+ mem.realm +'</div>');
-            $('.key_char_rol_img', prepareMember).attr('src', 'assets/img/icons/'+ mem.rol +'.png');
-            $('.key_char_spec_img', prepareMember).attr('src', 'assets/img/classes/specs/spec_'+ mem.class +'_'+ mem.spec +'.png');
-            $('.key_char_ilvl', prepareMember).text(mem.iLvl);
-            if (mem.main_guild) {
-                prepareMember = prepareMember.wrap("<a href='members.jsp?id="+ mem.id +"'></a>").parent();
-            }
-            $('.key_characters', prepareKey).append(prepareMember.clone());
+        jQuery.each( keyRun.TANK, function(j, mem) {
+            $('.key_characters', prepareKey).append(renderMemberInfo(mem).clone());
+        });
+
+        // Members information
+        jQuery.each( keyRun.HEALER, function(j, mem) {
+            $('.key_characters', prepareKey).append(renderMemberInfo(mem).clone());
+        });
+
+        // Members information
+        jQuery.each( keyRun.DAMAGE, function(j, mem) {
+            $('.key_characters', prepareKey).append(renderMemberInfo(mem).clone());
         });
 
         // Affixes information
@@ -137,4 +152,18 @@ function renderRuns(keyRuns, loadLocation) {
         $(loadLocation).append($(keyCont).clone());
     }
     $(loadLocation).show();
+}
+
+function renderMemberInfo(mem) {
+    let isMain = ((mem.main_guild)? "<i class='main_char artOfWar-icon'>&#xe801;</i>":"");
+    let prepareMember = $("#key_char_detail").clone().attr('id', 'character_'+ mem.id);
+    $('.key_char_name', prepareMember).addClass('character-'+ mem.class);
+    $('.key_char_name', prepareMember).html(isMain + mem.name +'<div class="char-realm">'+ mem.realm +'</div>');
+    $('.key_char_rol_img', prepareMember).attr('src', 'assets/img/icons/'+ mem.rol +'.png');
+    $('.key_char_spec_img', prepareMember).attr('src', 'assets/img/classes/specs/spec_'+ mem.class +'_'+ mem.spec +'.png');
+    $('.key_char_ilvl', prepareMember).text(mem.iLvl);
+    if (mem.main_guild) {
+        prepareMember = prepareMember.wrap("<a href='members.jsp?id="+ mem.id +"'></a>").parent();
+    }
+    return prepareMember;
 }

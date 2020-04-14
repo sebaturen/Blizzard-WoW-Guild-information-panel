@@ -14,22 +14,17 @@ $(document).ready(function() {
     }).always(function() {
         complete();
     });
-
-    /*Mose over and leave in affix detail*/
-    $('#runList, #bestRun')
-        .on('mouseover', '.key_affix_img', function() {
-            $("#affix_name").text($(this).data("name"));
-            $("#affix_desc").text($(this).data("desc"));
-            $(".tooltip-affix").show();
-        })
-        .on('mouseleave', '.key_affix_img', function() {
-            $(".tooltip-affix").hide();
-        });
+    $.get("rest/mythicPlus/weekAffix?locale="+ Cookies.get('locale'), function(data) {
+        console.log("mythic affix is load complete", data);
+        weekAffixes(data);
+    }).always(function() {
+        complete();
+    });
 });
 
 function complete() {
     countFinish++;
-    if (countFinish == 2) {
+    if (countFinish == 3) {
         $("#loading").remove();
     }
 }
@@ -40,4 +35,15 @@ function bestRun(keyRuns) {
 
 function weekRun(keyRuns) {
     renderRuns(keyRuns, "#runList");
+}
+
+function weekAffixes(affiexs) {
+    jQuery.each(affiexs.current, function(i, affix) {
+        let affixData = '<div class="col"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
+        $("#currentAffixes").append(affixData);
+    });
+    jQuery.each(affiexs.next, function(i, affix) {
+        let affixData = '<div class="col"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
+        $("#nextAffixes").append(affixData);
+    });
 }

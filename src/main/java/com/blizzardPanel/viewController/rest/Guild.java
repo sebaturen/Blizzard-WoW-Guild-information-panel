@@ -182,7 +182,8 @@ public class Guild {
                         "SELECT " +
                                 "    c.id, " +
                                 "    uc.user_id, " +
-                                "    gk.title " +
+                                "    gk.title," +
+                                "    CASE when u.main_character_id = c.id then 1 else 0 end as isMain " +
                                 "FROM " +
                                 "    guild_roster gr " +
                                 "    LEFT JOIN `characters` c ON gr.character_id = c.id " +
@@ -198,6 +199,7 @@ public class Guild {
                                 "ORDER BY " +
                                 "    gr.rank_id ASC, " +
                                 "    u.guild_rank ASC, " +
+                                "    isMain DESC, " +
                                 "    ci.`level` DESC;";
                 JsonArray charactes_db = DBLoadObject.dbConnect.selectQuery(query);
 
@@ -225,6 +227,7 @@ public class Guild {
                     characterDetail.addProperty("class", cm.getInfo().getClass_id());
                     characterDetail.addProperty("spec", cm.getActiveSpec().getSpecialization_id());
                     characterDetail.addProperty("title", charDetail_db.get("title").getAsString());
+                    characterDetail.addProperty("isMain", (charDetail_db.get("isMain").getAsInt() == 1));
 
                     users.get(charDetail_db.get("user_id").getAsString()).getAsJsonObject().getAsJsonArray("characters").add(characterDetail);
 
