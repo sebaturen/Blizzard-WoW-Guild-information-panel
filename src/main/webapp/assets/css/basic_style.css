@@ -259,7 +259,6 @@ p {
     border-radius: 4px 4px 0 0;
 }
 .key_dung_title {
-    padding: 50px;
     text-align: center;
     text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
     color: #fff;
@@ -427,15 +426,20 @@ p {
     height: 150px;
 }
 .key_run_lvl {
-    background-image: url("./../img/icons/mythic_key_level.png");
+    background-image: url(./../img/icons/mythic_key_level.png);
     width: 100px;
     height: 100px;
     background-size: cover;
     background-position: center center;
     text-align: center;
-    padding-top: 29px;
+    padding-top: 33px;
+    padding-left: 3px;
     font-size: 1.5em;
     float: left;
+}
+.key_run_dun_img .col {
+    padding: 0;
+    margin: 0;
 }
 .key_affixes {
     text-align: center;
@@ -501,6 +505,9 @@ p {
 .affixes .col {
     margin: 0;
     padding: 0;
+}
+.key_run_dun_img {
+    margin: 0;
 }
 /*END----------MYTHIC PLUS-----------------*/
 

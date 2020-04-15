@@ -88,9 +88,11 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
 
     <div id="mythic_run_mold" class="key_run_group dungeon-challenge col" style="display: none">
         <div class="mythiContent">
-            <div class='key_run_dun_img dungeon-challenge-img' style=''>
-                <div class='key_run_lvl'></div>
-                <h2 class='key_dung_title'></h2>
+            <div class='key_run_dun_img dungeon-challenge-img row' style=''>
+                <div class='col-5'>
+                    <div class='key_run_lvl key_title'></div>
+                </div>
+                <h2 class='key_dung_title col-7'></h2>
             </div>
             <div class="key_detail">
                 <div class="row">
