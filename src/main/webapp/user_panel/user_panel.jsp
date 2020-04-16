@@ -15,6 +15,7 @@
     <head>
         <title>${guild.name} - User Panel</title>
         <%@include file="../includes/header.jsp" %>
+        <script src="assets/js/user_panel.js"></script>
     </head>
     <body> <!-- style="background-color: #141417;" -->
         <%@include file="../includes/menu.jsp" %>
@@ -28,6 +29,7 @@
                 <fmt:message key="label.character_loading" /><br><br>
             </c:if>
             <c:if test="${user.characters.size() != 0}">
+                <div class="loader ajaxLoad" style="display: none;"></div>
                 <div class="table table-dark character-tab">
                     <div class="row pjInfo">
                         <div class="col-md-1 col-2"></div>
@@ -44,16 +46,14 @@
                         </c:if>
                         <div class="row pjInfo">
                             <div class="col-md-1 col-2">
-                                <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">
-                                    <c:choose>
-                                        <c:when test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
-                                            &#xe801;
-                                        </c:when>
-                                        <c:when test="${cm.info.guild_id == guild.id}">
-                                            &#xe800;
-                                        </c:when>
-                                    </c:choose>
-                                </i>
+                                <c:choose>
+                                    <c:when test="${user.mainCharacter != null && user.mainCharacter.id == cm.id}">
+                                        <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">&#xe801;</i>
+                                    </c:when>
+                                    <c:when test="${cm.info.guild_id == guild.id}">
+                                        <i class="main_char artOfWar-icon pointer" data-member_id="${cm.id}">&#xe800;</i>
+                                    </c:when>
+                                </c:choose>
                             </div>
                             <div class="col-md-2 col-4 character-${cm.info.class_id}">${cm.name}</div>
                             <div class="col-md-2 d-none d-md-block">

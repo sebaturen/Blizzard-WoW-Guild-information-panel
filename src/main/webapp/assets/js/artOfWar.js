@@ -39,7 +39,6 @@ $(document).ready(function() {
             $("#affix_desc").text($(this).data("desc"));
             $(".tooltip-affix").show();
         })
-        // Key affix
         .on('mouseleave', '.key_affix_img', function() {
             $(".tooltip-affix").hide();
         })
@@ -92,7 +91,8 @@ $(document).ready(function() {
         .on('mouseleave', '.token_price', function() {
             $("#wow_token_graph").hide();
             $(".tooltip-affix").hide();
-        });
+        })
+
 });
 
 function renderRuns(keyRuns, loadLocation) {
@@ -166,4 +166,25 @@ function renderMemberInfo(mem) {
         prepareMember = prepareMember.wrap("<a href='members.jsp?id="+ mem.id +"'></a>").parent();
     }
     return prepareMember;
+}
+
+
+function renderAlters(container, data) {
+    let out = '';
+    jQuery.each(data.users, function(i, user) {
+        out += '<div class="user">';
+        out += '<img id="user_'+ user.id +'" src="assets/img/icons/Battlenet_icon_flat.svg" style="width: 40px" />'+ user.battle_tag
+        out += '<span class="right_small_date">['+ user.last_modified +']</span>'
+        out += '<div class="character-tab">';
+        jQuery.each(user.characters, function (j, char) {
+            out += '<a href="members.jsp?id='+ char.id +'"><div id="character_'+ char.id +'" class="row pjInfo">'+
+                '<div class="col"><p class="character-'+ char.class +' char-name">'+ ((char.isMain)? '<i class="artOfWar-icon">&#xe801;</i> ':'')+ char.name +'</p></div>' +
+                '<div class="col"><img src="assets/img/classes/specs/spec_'+ char.class +'_'+ char.spec +'.png" style="width: 22px;"/></div>' +
+                '<div class="col">'+ char.lvl +'</div>' +
+                '<div class="col">'+ char.title +'</div> ' +
+                '</div></a>';
+        });
+        out += "</div></div>";
+    });
+    $(container).append(out);
 }

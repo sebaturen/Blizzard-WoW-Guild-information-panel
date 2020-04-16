@@ -7,6 +7,7 @@ body {
     color: white;
     position: relative;
     min-height: 100%;
+    font-family: 'Montserrat', sans-serif;
 }
 body > .container {
     padding: 25px;
@@ -258,10 +259,16 @@ p {
     background-position: center center;
     border-radius: 4px 4px 0 0;
 }
+.key_db_title {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
 .key_dung_title {
-    text-align: center;
     text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,.3);
     color: #fff;
+    width: 100%;
+    text-align: center;
 }
 .key_group_time {
     float: left;
@@ -424,6 +431,7 @@ p {
 /*----------MYTHIC PLUS-----------------*/
 .key_run_dun_img {
     height: 150px;
+    margin: 0;
 }
 .key_run_lvl {
     background-image: url(./../img/icons/mythic_key_level.png);
@@ -433,7 +441,7 @@ p {
     background-position: center center;
     text-align: center;
     padding-top: 33px;
-    padding-left: 3px;
+    padding-left: 2px;
     font-size: 1.5em;
     float: left;
 }
@@ -473,12 +481,18 @@ p {
 .fails_keys {
     float: right;
 }
-.mythiContent {
+.mythicContent {
     border: 1px solid #464444;
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     background-color: #26262d;
+}
+.mythicContent:hover {
+    -webkit-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    margin-top: -2px;
 }
 .key_detail .row {
     margin: 0;
@@ -505,9 +519,6 @@ p {
 .affixes .col {
     margin: 0;
     padding: 0;
-}
-.key_run_dun_img {
-    margin: 0;
 }
 /*END----------MYTHIC PLUS-----------------*/
 

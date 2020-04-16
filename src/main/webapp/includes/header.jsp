@@ -22,6 +22,8 @@
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="<%= request.getContextPath() +"/" %>assets/js/artOfWar.js"></script>
 <link type="text/css" rel="stylesheet" href="<%= request.getContextPath() +"/" %>assets/css/basic_style.css">
+<!-- fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114404549-2"></script>
 <script>

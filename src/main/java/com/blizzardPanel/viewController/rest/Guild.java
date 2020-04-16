@@ -20,6 +20,7 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.crypto.Data;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -180,14 +181,14 @@ public class Guild {
             try {
                 String query =
                         "SELECT " +
-                                "    c.id, " +
+                                "    gr.character_id, " +
                                 "    uc.user_id, " +
                                 "    gk.title," +
                                 "    CASE when u.main_character_id = c.id then 1 else 0 end as isMain " +
                                 "FROM " +
                                 "    guild_roster gr " +
                                 "    LEFT JOIN `characters` c ON gr.character_id = c.id " +
-                                "    left join character_info ci on gr.character_id = ci.character_id " +
+                                "    LEFT JOIN character_info ci ON gr.character_id = ci.character_id " +
                                 "    LEFT JOIN user_character uc ON gr.character_id = uc.character_id, " +
                                 "    guild_rank gk, " +
                                 "    users u " +
@@ -201,41 +202,9 @@ public class Guild {
                                 "    u.guild_rank ASC, " +
                                 "    isMain DESC, " +
                                 "    ci.`level` DESC;";
-                JsonArray charactes_db = DBLoadObject.dbConnect.selectQuery(query);
+                JsonArray characters_db = DBLoadObject.dbConnect.selectQuery(query);
 
-                JsonObject users = new JsonObject();
-                for(JsonElement char_db : charactes_db) {
-
-                    JsonObject charDetail_db = char_db.getAsJsonObject();
-
-                    CharacterMember cm = new CharacterMember.Builder(charDetail_db.get("id").getAsLong()).build();
-                    if (!users.has(charDetail_db.get("user_id").getAsString())) {
-                        User u = new User.Builder(charDetail_db.get("user_id").getAsInt()).build();
-                        JsonObject userDetail = new JsonObject();
-                        userDetail.addProperty("id", u.getId());
-                        userDetail.addProperty("battle_tag", u.getBattle_tag().split("#")[0]);
-                        userDetail.addProperty("last_modified", new SimpleDateFormat(GeneralConfig.getDateFormat(locale)).format(new Date(u.getLast_alters_update())));
-                        JsonArray characters = new JsonArray();
-                        userDetail.add("characters", characters);
-                        users.add(charDetail_db.get("user_id").getAsString(), userDetail);
-                    }
-
-                    JsonObject characterDetail = new JsonObject();
-                    characterDetail.addProperty("id", cm.getId());
-                    characterDetail.addProperty("name", cm.getName());
-                    characterDetail.addProperty("lvl", cm.getInfo().getLevel());
-                    characterDetail.addProperty("class", cm.getInfo().getClass_id());
-                    characterDetail.addProperty("spec", cm.getActiveSpec().getSpecialization_id());
-                    characterDetail.addProperty("title", charDetail_db.get("title").getAsString());
-                    characterDetail.addProperty("isMain", (charDetail_db.get("isMain").getAsInt() == 1));
-
-                    users.get(charDetail_db.get("user_id").getAsString()).getAsJsonObject().getAsJsonArray("characters").add(characterDetail);
-
-                }
-
-                JsonObject infoResp = new JsonObject();
-                infoResp.add("users", users);
-                return Response.ok(infoResp.toString(), MediaType.APPLICATION_JSON_TYPE).build();
+                return Response.ok(alterListGen(characters_db, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
             } catch (SQLException | DataException e) {
                 Logs.fatalLog(this.getClass(), "Failed to get alters "+ e);
                 return Response.serverError().build();
@@ -245,5 +214,95 @@ public class Guild {
         notAuthorize.addProperty("code", 0);
         notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
         return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+    }
+
+    @GET
+    @Path("/alter/{character_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response alterList(
+            @DefaultValue("en_US") @QueryParam("locale") String locale,
+            @PathParam("character_id") long characterId,
+            @Context HttpServletRequest request
+    ) {
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser != null && currentUser.getIs_guild_member()) {
+            String query =
+                    "SELECT " +
+                    "    uc.character_id, " +
+                    "    uc.user_id, " +
+                    "    gk.title, " +
+                    "    CASE WHEN u.main_character_id = uc.character_id THEN " +
+                    "        1 " +
+                    "    ELSE " +
+                    "        0 " +
+                    "    END AS isMain " +
+                    "FROM " +
+                    "    user_character uc " +
+                    "    LEFT JOIN guild_roster gr ON uc.character_id = gr.character_id " +
+                    "    LEFT JOIN guild_rank gk ON gk.id = gr.rank_id, " +
+                    "    users u " +
+                    "WHERE " +
+                    "    uc.user_id = ( " +
+                    "        SELECT " +
+                    "            u.user_id " +
+                    "        FROM " +
+                    "            user_character u " +
+                    "        WHERE " +
+                    "            u.character_id = "+ characterId +") " +
+                    "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" " +
+                    "    AND u.id = uc.user_id " +
+                    "    AND gk.guild_id = gr.guild_id;";
+            try {
+                JsonArray characters_db = DBLoadObject.dbConnect.selectQuery(query);
+                return Response.ok(alterListGen(characters_db, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
+            } catch (SQLException | DataException e) {
+                Logs.fatalLog(this.getClass(), "FAILED to get character altes "+ e);
+                JsonObject notAuthorize = new JsonObject();
+                notAuthorize.addProperty("code", 1);
+                notAuthorize.addProperty("msg", "Failed to get information");
+                return Response.status(500).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+            }
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+    }
+
+    private JsonObject alterListGen(JsonArray characterList, String locale) {
+        JsonObject users = new JsonObject();
+        for(JsonElement char_db : characterList) {
+
+            JsonObject charDetail_db = char_db.getAsJsonObject();
+
+            CharacterMember cm = new CharacterMember.Builder(charDetail_db.get("character_id").getAsLong()).build();
+            if (!users.has(charDetail_db.get("user_id").getAsString())) {
+                User u = new User.Builder(charDetail_db.get("user_id").getAsInt()).build();
+                JsonObject userDetail = new JsonObject();
+                userDetail.addProperty("id", u.getId());
+                userDetail.addProperty("battle_tag", u.getBattle_tag().split("#")[0]);
+                userDetail.addProperty("last_modified", new SimpleDateFormat(GeneralConfig.getDateFormat(locale)).format(new Date(u.getLast_alters_update())));
+                JsonArray characters = new JsonArray();
+                userDetail.add("characters", characters);
+                users.add(charDetail_db.get("user_id").getAsString(), userDetail);
+            }
+
+            JsonObject characterDetail = new JsonObject();
+            characterDetail.addProperty("id", cm.getId());
+            characterDetail.addProperty("name", cm.getName());
+            characterDetail.addProperty("lvl", cm.getInfo().getLevel());
+            characterDetail.addProperty("class", cm.getInfo().getClass_id());
+            characterDetail.addProperty("spec", cm.getActiveSpec().getSpecialization_id());
+            characterDetail.addProperty("title", charDetail_db.get("title").getAsString());
+            characterDetail.addProperty("isMain", (charDetail_db.get("isMain").getAsInt() == 1));
+
+            users.get(charDetail_db.get("user_id").getAsString()).getAsJsonObject().getAsJsonArray("characters").add(characterDetail);
+
+        }
+
+        JsonObject infoResp = new JsonObject();
+        infoResp.add("users", users);
+
+        return infoResp;
     }
 }

@@ -244,6 +244,22 @@ public class User {
         return last_login;
     }
 
+    public boolean setMainCharacter(long charId) {
+        for (CharacterMember cm : characters) {
+            if (cm.getId() == charId) {
+                main_character_id = charId;
+                mainCharacter = cm;
+                BlizzardUpdate.shared.saveUser(this);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public long getMain_character_id() {
+        return main_character_id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"User\", " +
