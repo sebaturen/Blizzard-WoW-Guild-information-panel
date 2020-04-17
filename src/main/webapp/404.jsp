@@ -8,7 +8,7 @@
     <body>
         <%@include file="includes/menu.jsp" %>
         <div class="container fill">
-            ... 404 error.... please look again
+            ... <fmt:message key="label.404_error" /> <fmt:message key="label.404_error_msg" />
         </div>
         <%@include file="includes/footer.jsp" %>
     </body>
