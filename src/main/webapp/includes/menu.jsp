@@ -24,10 +24,10 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     <a class="dropdown-item" href="<%= request.getContextPath() %>/mythic_plus_failed.jsp"><fmt:message key="label.failed_runs" /></a>
                 </div>
             </li>
+            <% if(guildMember && user.getId() == 1) { %>
             <li class="nav-item <%= (currentPath.equals("progress.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp"><fmt:message key="label.guild_progress" /></a>
             </li>
-            <% if(guildMember) { %>
                 <li class="nav-item <%= (currentPath.equals("alters.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp"><fmt:message key="label.alters" /></a>
                 </li>

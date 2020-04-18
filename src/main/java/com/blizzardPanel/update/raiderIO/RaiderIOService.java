@@ -14,4 +14,12 @@ public interface RaiderIOService {
     Call<JsonObject> currentAffixes(
             @Query("region") String region
     );
+
+    @GET("characters/{region}/{realmSlug}/{characterName}")
+    Call<JsonObject> characterIO(
+            @Path("region") String region,
+            @Path("realmSlug") String realmSlug,
+            @Path("characterName") String characterName,
+            @Query("season") String season
+    );
 }

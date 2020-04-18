@@ -10,6 +10,7 @@ import com.blizzardPanel.gameObject.mythicKeystones.MythicDungeonRun;
 import com.blizzardPanel.update.blizzard.BlizzardAPI;
 import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.blizzard.WoWAPIService;
+import com.blizzardPanel.update.raiderIO.RaiderIOUpdate;
 import com.google.gson.*;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -360,6 +361,8 @@ public class CharacterProfileAPI extends BlizzardAPI {
                         saveCharacterMythicPlus(summary.getAsJsonObject("mythic_keystone_profile"), characterId);
                         // Save character-achievements
                         //...?
+                        // Update RaderIO
+                        RaiderIOUpdate.shared.updateCharacterIO(characterId, characterName, realmSlug);
                     }
                 } catch (SQLException | DataException e) {
                     Logs.fatalLog(this.getClass(), "FAILED - to get mythicPlus or achievement for guild/not member ["+ characterId +"] - "+ e);

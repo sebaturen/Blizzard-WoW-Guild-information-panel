@@ -8,6 +8,29 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.6/dist/jquery.fancybox.min.css" />
         <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.6/dist/jquery.fancybox.min.js"></script>
         <style>
+            .dung-title {
+                padding: 70px;
+                text-align: center;
+            }
+            .img_info {
+                height: 15em;
+                margin: auto;
+                background-size: cover;
+                background-position: center center;
+                margin-top: 1em;
+                margin-bottom: 1em;
+
+                border: 1px solid #464444;
+                border-radius: 4px;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                background-color: #26262d;
+            }
+            .img_info:hover {
+                -webkit-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+                -moz-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+                box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+            }
             @media screen and (min-width:768px) {
                 .cont_inf {
                     padding-left: 2em;
@@ -21,26 +44,11 @@
                     width: 80%;
                 }
             }
-            .img_info {
-                height: 15em;
-                margin: auto;
-                background-size: cover;
-                background-position: center center;
-                margin-top: 1em;
-                margin-bottom: 1em;
-                -webkit-box-shadow: 10px 10px 40px -5px rgba(0,0,0,0.75);
-                -moz-box-shadow: 10px 10px 40px -5px rgba(0,0,0,0.75);
-                box-shadow: 10px 10px 40px -5px rgba(0,0,0,0.75);
-            }
-            .dung-title {
-                padding: 70px;
-                text-align: center;
-            }
         </style>
     </head>
     <body> <!-- style="background-color: #1f0c27;" -->
         <%@include file="includes/menu.jsp" %>
-        <div class="dungeon-challenge-img" style="background-image: url('assets/img/raids/battle-of-dazaralor.jpg');">
+        <div class="dungeon-challenge-img member_bg_content" style="background-image: url('assets/img/raids/battle-of-dazaralor.jpg');">
             <div class="container">
                 <h1 class="dung-title">Como simular DPS y Comparar &iacute;tems.</h1>
             </div>

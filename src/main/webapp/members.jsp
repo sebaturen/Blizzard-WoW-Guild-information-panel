@@ -18,6 +18,17 @@
     <c:when test="${not empty param.id && !user.login}">
         <c:redirect url="login.jsp?rdir=members.jsp?id=${param.id}" />
     </c:when>
+    <c:when test="${not empty param && !user.login}">
+        <c:url value="members.jsp" var="url">
+            <c:forEach var="p" items="${param}">
+                <c:param name="${p.key}" value="${p.value}" />
+            </c:forEach>
+        </c:url>
+        <c:url value="login.jsp" var="redirectLogin">
+            <c:param name="rdir" value="${url}"/>
+        </c:url>
+        <c:redirect url="${redirectLogin}" />
+    </c:when>
     <c:otherwise>
         <jsp:forward page="member_panel/list_members.jsp" />
     </c:otherwise>

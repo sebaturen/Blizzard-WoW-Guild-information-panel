@@ -75,10 +75,25 @@ public class User {
                 if (accessToken != null) {
                     String battleTag = BlizzardUpdate.shared.getBattleTag(accessToken);
                     if (battleTag != null) {
-                        newUser = new User.Builder(battleTag).build();
+                        // Check if user previews exist
+                        try {
+                            JsonArray userExist = BlizzardUpdate.dbConnect.select(
+                                    User.TABLE_NAME,
+                                    new String[]{"battle_tag"},
+                                    "battle_tag =?",
+                                    new String[]{battleTag}
+                            );
+                            if (userExist.size() > 0) {
+                                newUser = new User.Builder(battleTag).build();
+                            }
+                        } catch (SQLException | DataException e) {
+                            Logs.fatalLog(this.getClass(), "FAILED to load a user from battletag ["+ battleTag +"] - "+ e);
+                        }
+                        // Save a new user
                         if (newUser == null) {
                             newUser = new User();
                             newUser.battle_tag = battleTag;
+                            newUser.access_token = accessToken;
                             newUser.id = BlizzardUpdate.shared.saveUser(newUser);
                         }
                         newUser.access_token = accessToken;

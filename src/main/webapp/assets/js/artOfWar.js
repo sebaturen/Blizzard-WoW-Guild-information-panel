@@ -34,12 +34,12 @@ $(document).ready(function() {
     // Mouse over....
     $('body')
         // Key affix
-        .on('mouseover', '.key_affix_img', function() {
+        .on('mouseover', '.key_affix_img, .nameDescTooltip', function() {
             $("#affix_name").text($(this).data("name"));
             $("#affix_desc").text($(this).data("desc"));
             $(".tooltip-affix").show();
         })
-        .on('mouseleave', '.key_affix_img', function() {
+        .on('mouseleave', '.key_affix_img, .nameDescTooltip', function() {
             $(".tooltip-affix").hide();
         })
         // Token price
@@ -187,4 +187,15 @@ function renderAlters(container, data) {
         out += "</div></div>";
     });
     $(container).append(out);
+}
+
+function getURLParameter(sParam) {
+    let sPageURL = window.location.search.substring(1);
+    let sURLVariables = sPageURL.split('&');
+    for (let i = 0; i < sURLVariables.length; i++) {
+        let sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) {
+            return sParameterName[1];
+        }
+    }
 }

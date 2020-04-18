@@ -80,6 +80,10 @@ public class Realm {
         return name.get(locale).getAsString();
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"Realm\", " +

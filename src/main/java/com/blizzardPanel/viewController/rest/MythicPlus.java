@@ -45,6 +45,7 @@ public class MythicPlus {
                     "FROM " +
                     "    keystone_dungeon_run_members km " +
                     "    LEFT JOIN keystone_dungeon_run kr ON km.keystone_dungeon_run_id = kr.id " +
+                    "    LEFT JOIN keystone_dungeon kd ON kr.keystone_dungeon_id = kd.id " +
                     "    LEFT JOIN guild_roster gr ON km.character_id = gr.character_id " +
                     "WHERE " +
                     "    gr.character_id IS NOT NULL " +
@@ -54,6 +55,19 @@ public class MythicPlus {
                     ((mythicSeason.getEnd_timestamp() > 0) ? "AND kr.completed_timestamp <= " + mythicSeason.getEnd_timestamp() : "") +
                     "ORDER BY " +
                     "    kr.keystone_level DESC, " +
+                    "    CASE WHEN kd.keystone_upgrades_3 >= kr.duration THEN " +
+                    "        3 " +
+                    "    ELSE " +
+                    "        CASE WHEN kd.keystone_upgrades_2 >= kr.duration THEN " +
+                    "            2 " +
+                    "        ELSE " +
+                    "            CASE WHEN kd.keystone_upgrades_1 >= kr.duration THEN " +
+                    "                1 " +
+                    "            ELSE " +
+                    "                -1 " +
+                    "            END " +
+                    "        END " +
+                    "    END DESC, " +
                     "    kr.completed_timestamp DESC " +
                     "LIMIT 3;";
 
