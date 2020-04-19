@@ -1,0 +1,47 @@
+.options {
+    padding: 1em;
+}
+.option_det {
+    border: 1px solid #464444;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #26262d;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+
+.enabled_poll_opt:hover {
+    -webkit-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0px 7px 26px -8px rgba(0,0,0,0.75);
+    margin-left: 2px;
+    margin-right: -2px;
+}
+
+.opt_selected {
+    border-bottom: 1px solid #28A745;
+    border-right: 1px solid #28A745;
+}
+
+.detail {
+    font-size: 13px;
+}
+
+.progress {
+    height: 6px;
+    margin-bottom: 6px;
+}
+
+.progress_percent {
+    float: right;
+}
+
+.result {
+    font-size: 11px;
+}
+
+.character_name {
+    padding-left: 4px;
+}

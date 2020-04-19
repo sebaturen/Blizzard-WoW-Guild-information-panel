@@ -390,54 +390,6 @@ p {
 }
 /*END-----------------CREATE POLL--------------*/
 
-/*-----------------POLL--------------*/
-.poll_question {
-    padding: 1em;
-    padding-bottom: 1.7em;
-}
-.poll_controll {
-    float: right;
-}
-.btn_poll_option, .btn_poll_option_delete {
-    border-radius: 50%;
-    height: 24px;
-    width: 24px;
-    padding: 0;
-    padding-top: 2px;
-}
-.btn_poll_option_delete > i {
-    margin-top: -0.3em;
-}
-.deleteOption {
-    float: right;
-}
-.poll_options {
-    margin: 1em;
-}
-.poll_options > div {
-    margin-bottom: 0.5em;
-}
-.ajaxLoad {
-    float: left;
-    width: 20px;
-    height: 20px;
-}
-.poll_opt_mask {
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-}
-.poll_opts.row {
-    /* background-color: red; */
-    margin-left: 0;
-    margin-right: 0;
-}
-.poll_controll {
-    float: right;
-}
-/*END-----------------POLL--------------*/
-
 /*----------MYTHIC PLUS-----------------*/
 .key_run_dun_img {
     height: 150px;

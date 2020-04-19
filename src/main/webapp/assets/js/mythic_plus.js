@@ -39,11 +39,11 @@ function weekRun(keyRuns) {
 
 function weekAffixes(affiexs) {
     jQuery.each(affiexs.current, function(i, affix) {
-        let affixData = '<div class="col"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
+        let affixData = '<div class="col nameDescTooltip"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
         $("#currentAffixes").append(affixData);
     });
     jQuery.each(affiexs.next, function(i, affix) {
-        let affixData = '<div class="col"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
+        let affixData = '<div class="col nameDescTooltip"><img class="key_affix_img" src="'+ affix.media +'" data-name="'+ affix.name +'" data-desc="'+ affix.desc +'" />'+ affix.name +'</div>';
         $("#nextAffixes").append(affixData);
     });
 }

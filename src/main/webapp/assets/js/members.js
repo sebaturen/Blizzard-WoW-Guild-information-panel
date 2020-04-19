@@ -59,7 +59,6 @@ $(document).ready(function() {
                     `
                 );
                 $(".tooltip-affix").show();
-                console.log($(this).children(".charIODetail").data());
             }
         })
         .on('mouseleave', '.charIO', function() {
@@ -69,7 +68,6 @@ $(document).ready(function() {
     //------------SORT---------------------------//
     // Sort by rank
     $("#rankColum").on("click", function() {
-        console.log("rank sort?");
         visualMembers.sort(function(a, b) {
             var rankA = parseInt(a.rank);
             var rankB = parseInt(b.rank);

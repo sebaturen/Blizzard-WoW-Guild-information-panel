@@ -2,24 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/polls/Poll.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/polls/PollOption.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/polls/PollOptionResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Polls.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/polls.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/polls.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/polls.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_en_US.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_es_MX.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_es_MX.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_es_MX_utf8.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_es_MX_utf8.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Realm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/Realm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_en_US.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/messages_es_MX.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_es_MX.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/messages_es_MX_utf8.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_es_MX_utf8.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/members.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/members.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/blizzLink.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/blizzLink.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/faqs.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/faqs.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/members.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/members.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,9 +66,9 @@
       <list>
         <option value="FxmlFile" />
         <option value="Enum" />
-        <option value="Jsp File" />
         <option value="Interface" />
         <option value="JavaScript File" />
+        <option value="Jsp File" />
         <option value="Class" />
       </list>
     </option>
@@ -246,7 +256,7 @@
       <workItem from="1586911195079" duration="2098000" />
       <workItem from="1586971985318" duration="13880000" />
       <workItem from="1587147217813" duration="585000" />
-      <workItem from="1587150716575" duration="14640000" />
+      <workItem from="1587150716575" duration="36960000" />
     </task>
     <servers />
   </component>
@@ -262,12 +272,12 @@
       <screen x="0" y="23" width="2560" height="1353" />
     </state>
     <state x="1145" y="471" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585695418122" />
-    <state x="1320" y="-962" key="#com.intellij.ide.util.MemberChooser" timestamp="1587152776481">
+    <state x="1320" y="-962" key="#com.intellij.ide.util.MemberChooser" timestamp="1587242663993">
       <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
     <state x="1320" y="-961" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586175746162" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1585862074038" />
-    <state x="1320" y="-962" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587152776481" />
+    <state x="1320" y="-962" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587242663993" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1113@0.23.1920.1113" timestamp="1586314744077" />
     <state x="1220" y="381" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1114@0.23.1920.1114" timestamp="1585972823813" />
     <state x="1220" y="383" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1120@0.23.1920.1120" timestamp="1587005220056" />
@@ -333,11 +343,11 @@
     <state x="1065" y="-744" key="com.intellij.ide.util.TipDialog/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1586374088941" />
     <state x="1029" y="552" key="com.intellij.ide.util.TipDialog/0.23.1920.1113@0.23.1920.1113" timestamp="1586199240673" />
     <state x="1372" y="666" key="com.intellij.ide.util.TipDialog/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585850992539" />
-    <state x="719" y="482" width="866" height="490" key="find.popup" timestamp="1587179643732">
-      <screen x="0" y="23" width="1920" height="1120" />
+    <state x="652" y="-836" width="1154" height="619" key="find.popup" timestamp="1587226672398">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
     <state x="645" y="-1117" width="683" height="521" key="find.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586297097551" />
-    <state x="652" y="-836" width="1154" height="619" key="find.popup/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587162901949" />
+    <state x="652" y="-836" width="1154" height="619" key="find.popup/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587226672398" />
     <state x="719" y="479" width="865" height="486" key="find.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1586314018321" />
     <state x="719" y="479" width="683" height="487" key="find.popup/0.23.1920.1114@0.23.1920.1114" timestamp="1585972814385" />
     <state x="719" y="482" width="866" height="490" key="find.popup/0.23.1920.1120@0.23.1920.1120" timestamp="1587179643732" />
@@ -353,12 +363,12 @@
     <state x="1172" y="-1073" width="670" height="707" key="run.anything.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586123357707" />
     <state x="1109" y="293" width="670" height="556" key="run.anything.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1586045690393" />
     <state x="1479" y="351" width="670" height="675" key="run.anything.popup/0.23.2560.1353/-1920.459.1920.1177@0.23.2560.1353" timestamp="1585851423482" />
-    <state x="709" y="280" width="670" height="535" key="search.everywhere.popup" timestamp="1587004299996">
-      <screen x="0" y="23" width="1920" height="1120" />
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup" timestamp="1587252234591">
+      <screen x="-307" y="-1417" width="2560" height="1417" />
     </state>
     <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1113@-307.-1417.2560.1417" timestamp="1586299634859" />
     <state x="709" y="278" width="670" height="531" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1113@0.23.1920.1113" timestamp="1586201350058" />
-    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1586637784893" />
+    <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587252234591" />
     <state x="709" y="278" width="670" height="531" key="search.everywhere.popup/0.23.1920.1113@0.23.1920.1113" timestamp="1585967141438" />
     <state x="709" y="280" width="670" height="535" key="search.everywhere.popup/0.23.1920.1120@0.23.1920.1120" timestamp="1587004299996" />
   </component>
@@ -399,16 +409,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java</url>
           <line>181</line>
           <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java</url>
-          <line>277</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js</url>
-          <line>27</line>
-          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

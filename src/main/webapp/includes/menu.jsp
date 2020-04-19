@@ -24,6 +24,11 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                     <a class="dropdown-item" href="<%= request.getContextPath() %>/mythic_plus_failed.jsp"><fmt:message key="label.failed_runs" /></a>
                 </div>
             </li>
+            <% if(guildMember) { %>
+                <li class="nav-item <%= (currentPath.equals("polls.jsp"))? "active":"" %>">
+                    <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp"><fmt:message key="label.polls" /></a>
+                </li>
+            <% } %>
             <% if(guildMember && user.getId() == 1) { %>
             <li class="nav-item <%= (currentPath.equals("progress.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp"><fmt:message key="label.guild_progress" /></a>
@@ -33,9 +38,6 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 </li>
                 <li class="nav-item <%= (currentPath.equals("auction_house.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp"><fmt:message key="label.auction_house" /></a>
-                </li>
-                <li class="nav-item <%= (currentPath.equals("polls.jsp"))? "active":"" %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp"><fmt:message key="label.polls" /></a>
                 </li>
                 <li class="nav-item <%= (currentPath.equals("events.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/events.jsp"><fmt:message key="label.events" /></a>
@@ -86,7 +88,7 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
         </div>
     </div>
 
-    <div id="mythic_run_mold" class="key_run_group dungeon-challenge col" style="display: none">
+    <div id="mythic_run_mold" class="key_run_group dungeon-challenge col-12 col-sm-6 col-md-4" style="display: none">
         <div class="mythicContent">
             <div class='key_run_dun_img dungeon-challenge-img' style=''>
                 <div class='key_lvl_det'>

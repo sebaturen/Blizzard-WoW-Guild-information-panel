@@ -74,7 +74,7 @@ public class Guild {
                 info.addProperty("race_id", charInfo.getPlayableRace().getId());
 
                 // Only if user is a guild member
-                if (currentUser.getGuild_rank() != -1) {
+                if (currentUser != null && currentUser.getGuild_rank() != -1) {
                     info.addProperty("equip_lvl", charInfo.getEquipped_item_level());
                     info.addProperty("avg_lvl", charInfo.getAverage_item_level());
 
@@ -118,9 +118,7 @@ public class Guild {
             members.add(member);
         }
 
-        CacheControl cc = new CacheControl();
-        cc.setMaxAge(1);
-        return Response.ok(members.toString(), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+        return Response.ok(members.toString(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET

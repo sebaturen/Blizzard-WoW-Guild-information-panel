@@ -276,6 +276,16 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == this.getClass()) {
+            if (id == ((User) obj).getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "{\"_class\":\"User\", " +
                 "\"id\":\"" + id + "\"" + ", " +
