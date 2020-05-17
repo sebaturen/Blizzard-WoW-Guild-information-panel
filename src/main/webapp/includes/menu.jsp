@@ -25,6 +25,9 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
                 </div>
             </li>
             <% if(guildMember) { %>
+                <li class="nav-item <%= (currentPath.equals("alters.jsp"))? "active":"" %>">
+                    <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp"><fmt:message key="label.alters" /></a>
+                </li>
                 <li class="nav-item <%= (currentPath.equals("polls.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/polls.jsp"><fmt:message key="label.polls" /></a>
                 </li>
@@ -33,9 +36,6 @@ String currentPath = ""; if (path.length > 0) currentPath = path[path.length-1];
             <li class="nav-item <%= (currentPath.equals("progress.jsp"))? "active":"" %>">
                 <a class="nav-link" href="<%= request.getContextPath() %>/progress.jsp"><fmt:message key="label.guild_progress" /></a>
             </li>
-                <li class="nav-item <%= (currentPath.equals("alters.jsp"))? "active":"" %>">
-                    <a class="nav-link" href="<%= request.getContextPath() %>/alters.jsp"><fmt:message key="label.alters" /></a>
-                </li>
                 <li class="nav-item <%= (currentPath.equals("auction_house.jsp"))? "active":"" %>">
                     <a class="nav-link" href="<%= request.getContextPath() %>/auction_house.jsp"><fmt:message key="label.auction_house" /></a>
                 </li>

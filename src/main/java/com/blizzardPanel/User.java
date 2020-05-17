@@ -19,6 +19,8 @@ public class User {
     // User DB
     public static final String TABLE_NAME = "users";
     public static final String TABLE_KEY = "id";
+    public static final String TABLE_NAME_VPN = "user_vpn";
+    public static final String TABLE_KEY_VPN = "id";
     // Character user DB
     public static final String USER_CHARACTER_TABLE_NAME = "user_character";
     public static final String USER_CHARACTER_TABLE_KEY = "id";
@@ -29,6 +31,7 @@ public class User {
     private String access_token;
     private long discord_user_id;
     private long main_character_id;
+    private String vpn_ip;
     private long last_login;
     private long last_alters_update;
     private Boolean is_guild_member = false;
@@ -44,6 +47,7 @@ public class User {
         private int id;
         private String code;
         private String battleTag;
+        private String ipAddrs;
 
         public Builder(int userId) {
             super(TABLE_NAME, User.class);
@@ -52,6 +56,10 @@ public class User {
         public Builder(String battleTag) {
             super(TABLE_NAME, User.class);
             this.battleTag = battleTag;
+        }
+        public Builder(String userIP, boolean falseValue) {
+            super(TABLE_NAME, User.class);
+            this.ipAddrs = userIP;
         }
         public Builder setCode(String code) {
             this.code = code;
@@ -69,6 +77,9 @@ public class User {
             }
             if (battleTag != null) {
                 newUser = (User) load("battle_tag", battleTag);
+            }
+            if (ipAddrs != null) {
+                newUser = (User) load("vpn_ip", ipAddrs);
             }
             if (code != null) {
                 String accessToken = BlizzardUpdate.shared.getUserAccessToken(this.code);
@@ -249,6 +260,7 @@ public class User {
         mainCharacter = u.mainCharacter;
         characters = u.characters;
         is_guild_member = u.is_guild_member;
+        vpn_ip = u.vpn_ip;
     }
 
     public long getLast_alters_update() {
@@ -269,6 +281,10 @@ public class User {
             }
         }
         return false;
+    }
+
+    public String getVpn_ip() {
+        return vpn_ip;
     }
 
     public long getMain_character_id() {
@@ -293,6 +309,7 @@ public class User {
                 "\"access_token\":" + (access_token == null ? "null" : "\"" + access_token + "\"") + ", " +
                 "\"discord_user_id\":\"" + discord_user_id + "\"" + ", " +
                 "\"main_character_id\":\"" + main_character_id + "\"" + ", " +
+                "\"vpn_ip\":" + (vpn_ip == null ? "null" : "\"" + vpn_ip + "\"") + ", " +
                 "\"last_login\":\"" + last_login + "\"" + ", " +
                 "\"last_alters_update\":\"" + last_alters_update + "\"" + ", " +
                 "\"is_guild_member\":" + (is_guild_member == null ? "null" : "\"" + is_guild_member + "\"") + ", " +

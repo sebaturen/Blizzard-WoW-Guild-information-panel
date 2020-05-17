@@ -85,9 +85,9 @@ p {
     display: none;
     position: fixed;
     overflow: hidden;
-    background-image: url(./../img/tooltip.png);
-    background-size: auto;
-    background-repeat: no-repeat;
+    background-color: #06061db3;
+    border: 1px solid #ecc7c7;
+    border-radius: 5px;
 }
 .tooltipDesc {
     text-align: left !important;
@@ -338,7 +338,11 @@ p {
     animation: spin 2s linear infinite;
     margin: 0 auto;
 }
-
+.ajaxLoad {
+    float: left;
+    width: 20px;
+    height: 20px;
+}
 /* Safari */
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }

@@ -28,6 +28,11 @@
                     <div class="result"></div>
                 </div>
             </div>
+            <div class="poll_controller">
+                <button type="button" class="disabled btn btn-outline-warning" style="display: none;"><fmt:message key="label.disabled"/></button>
+                <button type="button" class="enabled btn btn-outline-primary" style="display: none;"><fmt:message key="label.enabled"/></button>
+                <button type="button" class="remove btn btn-outline-danger" style="display: none;"><fmt:message key="label.remove"/></button>
+            </div>
         </div>
         <div class="container fill">
             <div id="enabled_polls" style="display: none">

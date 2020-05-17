@@ -34,12 +34,12 @@ $(document).ready(function() {
     // Mouse over....
     $('body')
         // Key affix
-        .on('mouseover', '.key_affix_img, .nameDescTooltip', function() {
+        .on('mouseover', '.key_affix_img, .nameDescTooltip, .char_achievement', function() {
             $("#affix_name").text($(this).data("name"));
             $("#affix_desc").text($(this).data("desc"));
             $(".tooltip-affix").show();
         })
-        .on('mouseleave', '.key_affix_img, .nameDescTooltip', function() {
+        .on('mouseleave', '.key_affix_img, .nameDescTooltip, .char_achievement', function() {
             $(".tooltip-affix").hide();
         })
         // Token price

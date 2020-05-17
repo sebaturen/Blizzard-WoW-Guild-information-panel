@@ -28,7 +28,10 @@
                         <p class='small_title warcraft_font'><fmt:message key="label.activities" /></p>
                         <c:forEach items="${guild.activities}" var="ac">
                             <c:if test="${ac.type == 'CHARACTER_ACHIEVEMENT'}">
-                                <div class="new divder row">
+                                <div
+                                        class="new divder row char_achievement"
+                                        data-name="${ac.characterAchievement.achievement.getName(locale)}"
+                                        data-desc="${ac.characterAchievement.achievement.getDescription(locale)}">
                                     <div class="col-2 icon_new"><img src="${ac.characterAchievement.achievement.media.value}"/></div>
                                     <div class="newDetail col-10">
                                         <a href="members.jsp?id=${ac.characterAchievement.characterMember.id}">

@@ -73,6 +73,10 @@ public class Achievement {
         return name.get(locale).getAsString();
     }
 
+    public String getDescription(String locale) {
+        return description.get(locale).getAsString();
+    }
+
     public Media getMedia() {
         return media;
     }

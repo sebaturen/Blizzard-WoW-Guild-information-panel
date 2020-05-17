@@ -21,8 +21,7 @@
 }
 
 .opt_selected {
-    border-bottom: 1px solid #28A745;
-    border-right: 1px solid #28A745;
+    border-left: 6px solid #28A745;
 }
 
 .detail {
@@ -44,4 +43,8 @@
 
 .character_name {
     padding-left: 4px;
+}
+
+.poll_controller {
+    text-align: right;
 }

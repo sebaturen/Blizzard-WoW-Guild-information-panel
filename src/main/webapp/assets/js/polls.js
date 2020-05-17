@@ -15,7 +15,8 @@ $(document).ready(function() {
     });
 
     // Clicked event
-    $(document).on("click", ".enabled_poll_opt", function() {
+    $(document)
+        .on("click", ".enabled_poll_opt", function() {
         let optSelect = $(this);
         let pollSelect = $("#poll_"+ optSelect.data("poll_id"));
         let addOption = !optSelect.hasClass("opt_selected");
@@ -64,7 +65,57 @@ $(document).ready(function() {
         }
 
         console.log("opt!", optSelect.data());
-    });
+    })
+        .on("click",".disabled", function() {
+            let controlSelect = $(this);
+            let pollSelect = $("#poll_"+ controlSelect.data("poll_id"));
+            pollSelect.find(".loader").show();
+            $.ajax({
+                url: "rest/polls/"+ controlSelect.data("poll_id"),
+                type: 'PUT',
+                data: {
+                    action: 'disabled'
+                },
+                success: function() {
+                    location.reload();
+                }
+            }).always(function() {
+                pollSelect.find(".loader").hide();
+            });
+
+        })
+        .on("click", ".enabled", function() {
+            let controlSelect = $(this);
+            let pollSelect = $("#poll_"+ controlSelect.data("poll_id"));
+            pollSelect.find(".loader").show();
+            $.ajax({
+                url: "rest/polls/"+ controlSelect.data("poll_id"),
+                type: 'PUT',
+                data: {
+                    action: 'enabled'
+                },
+                success: function() {
+                    location.reload();
+                }
+            }).always(function() {
+                pollSelect.find(".loader").hide();
+            });
+
+        })
+        .on("click", ".remove", function() {
+            let controlSelect = $(this);
+            let pollSelect = $("#poll_"+ controlSelect.data("poll_id"));
+            pollSelect.find(".loader").show();
+            $.ajax({
+                url: "rest/polls/"+ controlSelect.data("poll_id"),
+                type: 'DELETE',
+                success: function() {
+                    location.reload();
+                }
+            }).always(function() {
+                pollSelect.find(".loader").hide();
+            });
+        });
 });
 
 function renderPoll(location, pollInfo) {
@@ -76,6 +127,21 @@ function renderPoll(location, pollInfo) {
     preparePoll.attr("data-multi_select", pollInfo.config.multi_select);
     preparePoll.attr("data-start_date", pollInfo.config.start_date);
     preparePoll.attr("data-total_result", pollInfo.total_result);
+
+    $(".poll_controller > button", preparePoll).attr("data-poll_id", pollInfo.id);
+    if (currentUser.guild_rank == 0 || currentUser.guild_rank == 1) {
+        if (pollInfo.config.is_enabled) {
+            if (pollInfo.config.end_date > 0 && new Date().getTime() > pollInfo.config.end_date) {
+                $(".enabled", preparePoll).show();
+                $(".remove", preparePoll).show();
+            } else {
+                $(".disabled", preparePoll).show();
+            }
+        } else {
+            $(".enabled", preparePoll).show();
+            $(".remove", preparePoll).show();
+        }
+    }
 
     $('.question', preparePoll).text(pollInfo.question);
     let ownerName = pollInfo.owner.name;

@@ -180,6 +180,96 @@ public class Polls {
         return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
     }
 
+    @DELETE
+    @Path("/{poll_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removePoll(
+            @PathParam("poll_id") int pollId,
+            @Context HttpServletRequest request
+    ){
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser != null && currentUser.getGuild_rank() != -1) {
+            if (currentUser.getGuild_rank() == 0 || currentUser.getGuild_rank() == 1) {
+                Poll p = new Poll.Builder(pollId).build();
+                if (p != null && p.getId() > 0) {
+                    try {
+                        DBLoadObject.dbConnect.update(
+                                Poll.TABLE_NAME,
+                                new String[]{"is_hide"},
+                                new String[]{"1"},
+                                Poll.TABLE_KEY +" = ?",
+                                new String[]{pollId+""}
+                        );
+                        return Response.ok().build();
+                    } catch (SQLException | DataException e) {
+                        Logs.fatalLog(this.getClass(), "FAILED to delete poll [p:" + pollId + "] " + e);
+                        return Response.serverError().build();
+                    }
+                }
+            }
+            JsonObject notAuthorize = new JsonObject();
+            notAuthorize.addProperty("code", 1);
+            notAuthorize.addProperty("msg", "ㄱ.ㄱ");
+            return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+    }
+
+    @PUT
+    @Path("/{poll_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editPoll(
+            @PathParam("poll_id") int pollId,
+            @Context HttpServletRequest request,
+            String data
+    ) {
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (currentUser != null && currentUser.getGuild_rank() != -1) {
+            if (currentUser.getGuild_rank() == 0 || currentUser.getGuild_rank() == 1) {
+                Poll p = new Poll.Builder(pollId).build();
+                if (p != null && p.getId() > 0) {
+                    try {
+                        String action = data.split("action=")[1];
+                        switch (action) {
+                            case "disabled":
+                                DBLoadObject.dbConnect.update(
+                                        Poll.TABLE_NAME,
+                                        new String[]{"is_enabled"},
+                                        new String[]{"0"},
+                                        Poll.TABLE_KEY + " = ?",
+                                        new String[]{pollId + ""}
+                                );
+                                return Response.ok().build();
+                            case "enabled":
+                                DBLoadObject.dbConnect.update(
+                                        Poll.TABLE_NAME,
+                                        new String[]{"is_enabled"},
+                                        new String[]{"1"},
+                                        Poll.TABLE_KEY + " = ?",
+                                        new String[]{pollId + ""}
+                                );
+                                return Response.ok().build();
+                        }
+                    } catch (SQLException | DataException | ArrayIndexOutOfBoundsException e) {
+                        Logs.fatalLog(this.getClass(), "FAILED to update poll [p:" + pollId + "] " + e);
+                        return Response.serverError().build();
+                    }
+                }
+            }
+            JsonObject notAuthorize = new JsonObject();
+            notAuthorize.addProperty("code", 1);
+            notAuthorize.addProperty("msg", "ㄱ.ㄱ");
+            return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+        }
+        JsonObject notAuthorize = new JsonObject();
+        notAuthorize.addProperty("code", 0);
+        notAuthorize.addProperty("msg", "user not login/not guilder member. Action is not authorize");
+        return Response.status(403).type(MediaType.APPLICATION_JSON_TYPE).entity(notAuthorize.toString()).build();
+    }
+
     private JsonObject pollToJson(User currentUser, Poll p) {
         JsonObject pDet = new JsonObject();
 
@@ -248,6 +338,7 @@ public class Polls {
 
         JsonObject ownDetail = new JsonObject();
         ownDetail.addProperty("id", u.getId());
+        ownDetail.addProperty("guild_rank", u.getGuild_rank());
         ownDetail.addProperty("name", ownerName);
         ownDetail.addProperty("color", ownerColor);
         ownDetail.addProperty("type", type);
