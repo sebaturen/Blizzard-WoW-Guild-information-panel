@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/VpnMonitoring.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/vpn_nic_monitoring_script.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -12,20 +10,8 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/messages_es_MX.properties" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/messages_es_MX.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Polls.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Polls.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/messages_es_MX.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages_es_MX.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/polls.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/polls.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/polls.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/polls.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/menu.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/polls.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/polls.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/vpn_nic_monitoring_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/vpn_nic_monitoring_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/VpnMonitoring.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/VpnMonitoring.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -259,7 +245,9 @@
       <workItem from="1588083691262" duration="2178000" />
       <workItem from="1589065244775" duration="1143000" />
       <workItem from="1589088155885" duration="294000" />
-      <workItem from="1589681071368" duration="10605000" />
+      <workItem from="1589681071368" duration="11513000" />
+      <workItem from="1590358771184" duration="329000" />
+      <workItem from="1590673336720" duration="53000" />
     </task>
     <servers />
   </component>

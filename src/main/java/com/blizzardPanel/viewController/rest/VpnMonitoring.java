@@ -45,14 +45,14 @@ public class VpnMonitoring {
             if (vpn_monitoring.size() > 0) { // Update
                 JsonObject vpnCurrentInf = vpn_monitoring.get(0).getAsJsonObject();
 
-                int byte_sent = jInfo.get("bytes_sent").getAsInt() + vpnCurrentInf.get("t_bytes_sent").getAsInt();
-                int bytes_recv = jInfo.get("bytes_recv").getAsInt() + vpnCurrentInf.get("t_bytes_recv").getAsInt();
-                int packets_sent = jInfo.get("packets_sent").getAsInt() + vpnCurrentInf.get("t_packets_sent").getAsInt();
-                int packets_recv = jInfo.get("packets_recv").getAsInt() + vpnCurrentInf.get("t_packets_recv").getAsInt();
-                int errin = jInfo.get("errin").getAsInt() + vpnCurrentInf.get("t_errin").getAsInt();
-                int errout = jInfo.get("errout").getAsInt() + vpnCurrentInf.get("t_errout").getAsInt();
-                int dropin = jInfo.get("dropin").getAsInt() + vpnCurrentInf.get("t_dropin").getAsInt();
-                int dropout = jInfo.get("dropout").getAsInt() + vpnCurrentInf.get("t_dropout").getAsInt();
+                long byte_sent = jInfo.get("bytes_sent").getAsLong() + vpnCurrentInf.get("t_bytes_sent").getAsLong();
+                long bytes_recv = jInfo.get("bytes_recv").getAsLong() + vpnCurrentInf.get("t_bytes_recv").getAsLong();
+                long packets_sent = jInfo.get("packets_sent").getAsLong() + vpnCurrentInf.get("t_packets_sent").getAsLong();
+                long packets_recv = jInfo.get("packets_recv").getAsLong() + vpnCurrentInf.get("t_packets_recv").getAsLong();
+                long errin = jInfo.get("errin").getAsLong() + vpnCurrentInf.get("t_errin").getAsLong();
+                long errout = jInfo.get("errout").getAsLong() + vpnCurrentInf.get("t_errout").getAsLong();
+                long dropin = jInfo.get("dropin").getAsLong() + vpnCurrentInf.get("t_dropin").getAsLong();
+                long dropout = jInfo.get("dropout").getAsLong() + vpnCurrentInf.get("t_dropout").getAsLong();
 
                 columns.add("t_bytes_sent");
                 values.add(byte_sent);
@@ -78,7 +78,7 @@ public class VpnMonitoring {
                         "user_id=? AND timestamp=?",
                         new String[]{user.getId()+"", jInfo.get("start_date").getAsLong()*1000+""}
                 );
-                Logs.infoLog(this.getClass(), "VPN Monitoring update! - "+ user.getBattle_tag());
+                //Logs.infoLog(this.getClass(), "VPN Monitoring update! - "+ user.getBattle_tag());
             } else { // Insert
                 columns.add("user_id");
                 values.add(user.getId());
