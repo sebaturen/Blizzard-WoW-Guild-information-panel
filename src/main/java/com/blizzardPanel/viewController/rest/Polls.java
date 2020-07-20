@@ -111,11 +111,18 @@ public class Polls {
                         }
                         if (!preResult) {
                             try {
+                                if (!p.isMulti_select()) {
+                                    DBLoadObject.dbConnect.delete(
+                                            PollOptionResult.TABLE_NAME,
+                                            "poll_id = ? AND owner_id = ?",
+                                            new String[]{p.getId()+"", currentUser.getId()+""}
+                                    );
+                                }
                                 DBLoadObject.dbConnect.insert(
                                         PollOptionResult.TABLE_NAME,
                                         PollOptionResult.TABLE_KET,
-                                        new String[]{"poll_option_id", "owner_id", "timestamp"},
-                                        new String[]{optId+"", currentUser.getId()+"", new Date().getTime()+""}
+                                        new String[]{"poll_id", "poll_option_id", "owner_id", "timestamp"},
+                                        new String[]{p.getId()+"", optId+"", currentUser.getId()+"", new Date().getTime()+""}
                                 );
                                 return Response.ok().build();
                             } catch (SQLException | DataException e) {

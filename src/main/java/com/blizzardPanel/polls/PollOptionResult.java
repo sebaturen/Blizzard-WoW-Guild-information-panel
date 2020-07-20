@@ -11,6 +11,7 @@ public class PollOptionResult {
 
     // DB Attribute
     private int id;
+    private int poll_id;
     private int poll_option_id;
     private int owner_id;
     private long timestamp;
@@ -59,10 +60,15 @@ public class PollOptionResult {
         return timestamp;
     }
 
+    public int getPoll_id() {
+        return poll_id;
+    }
+
     @Override
     public String toString() {
         return "{\"_class\":\"PollOptionResult\", " +
                 "\"id\":\"" + id + "\"" + ", " +
+                "\"poll_id\":\"" + poll_id + "\"" + ", " +
                 "\"poll_option_id\":\"" + poll_option_id + "\"" + ", " +
                 "\"owner_id\":\"" + owner_id + "\"" + ", " +
                 "\"timestamp\":\"" + timestamp + "\"" + ", " +

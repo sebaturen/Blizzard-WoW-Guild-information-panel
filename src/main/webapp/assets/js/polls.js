@@ -29,8 +29,18 @@ $(document).ready(function() {
                 type: 'PUT',
                 success: function(r) {
                     if (!pollSelect.data("multi_select")) {
-                        pollSelect.find(".enabled_poll_opt").removeClass("opt_selected");
-                        pollSelect.find(".char_"+ currentUser.id).removeClass("opt_selected");
+                        pollSelect.find(".enabled_poll_opt").each(function () {
+                            $(this).removeClass("opt_selected");
+                            if ($(this).data("opt_total_result") > 0) {
+                                $(this).data("opt_total_result", $(this).data("opt_total_result") - 1);
+                            }
+                        });
+                        pollSelect.find(".char_"+ currentUser.id).each(function () {
+                            $(this).remove();
+                        });
+                        if (pollSelect.data("total_result") > 0) {
+                            pollSelect.data("total_result", pollSelect.data("total_result") - 1);
+                        }
                     }
                     optSelect.addClass("opt_selected");
                     optSelect.find(".result").append(resultUserDet(currentUser));
