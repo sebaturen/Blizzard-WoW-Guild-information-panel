@@ -272,5 +272,4 @@ public class AchievementAPI extends BlizzardAPI {
         }
     }
 
-
 }

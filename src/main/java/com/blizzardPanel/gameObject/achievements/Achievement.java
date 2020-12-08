@@ -3,6 +3,8 @@ package com.blizzardPanel.gameObject.achievements;
 import com.blizzardPanel.dbConnect.DBLoadObject;
 import com.blizzardPanel.gameObject.Media;
 import com.blizzardPanel.gameObject.StaticInformation;
+import com.blizzardPanel.update.blizzard.BlizzardAPI;
+import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -47,12 +49,14 @@ public class Achievement {
         public Achievement build() {
             if (!achievements.containsKey(id)) {
                 Achievement newAchievement = (Achievement) load(TABLE_KEY, id);
-                newAchievement.achievementCategory = new AchievementCategory.Builder(newAchievement.category_id).build();
-                newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
-                if (newAchievement.faction_type != null) {
-                    newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
+                if (newAchievement != null) {
+                    newAchievement.achievementCategory = new AchievementCategory.Builder(newAchievement.category_id).build();
+                    newAchievement.media = new Media.Builder(Media.type.ACHIEVEMENT, newAchievement.media_id).build();
+                    if (newAchievement.faction_type != null) {
+                        newAchievement.faction = new StaticInformation.Builder(newAchievement.faction_type).build();
+                    }
+                    achievements.put(id, newAchievement);
                 }
-                achievements.put(id, newAchievement);
             }
             return achievements.get(id);
         }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -20,23 +23,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/war/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/war/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/polls/PollOptionResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/polls/PollOptionResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Polls.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Polls.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/polls.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/polls.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/AchievementAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,6 +233,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -276,12 +274,16 @@
       <workItem from="1590673336720" duration="53000" />
       <workItem from="1595053324108" duration="1828000" />
       <workItem from="1595263085398" duration="201000" />
-      <workItem from="1595263517327" duration="2460000" />
+      <workItem from="1595263517327" duration="2877000" />
+      <workItem from="1595799906286" duration="58000" />
+      <workItem from="1595800399959" duration="255000" />
+      <workItem from="1606170324851" duration="2434000" />
+      <workItem from="1606405027860" duration="600000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -303,10 +305,10 @@
     <state x="1320" y="-962" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587242663993" />
     <state x="1220" y="383" key="#com.intellij.ide.util.MemberChooser/-307.-1417.2560.1417/0.23.1920.1120@0.23.1920.1120" timestamp="1589732659956" />
     <state x="1220" y="383" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1120@0.23.1920.1120" timestamp="1587270972922" />
-    <state x="662" y="-965" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1586706948009">
-      <screen x="-307" y="-1417" width="2560" height="1417" />
+    <state x="648" y="322" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1595799956151">
+      <screen x="0" y="23" width="1920" height="1112" />
     </state>
-    <state x="662" y="-965" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1586706948009" />
+    <state x="648" y="322" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1920.1112@0.23.1920.1112" timestamp="1595799956151" />
     <state x="719" y="127" key="SettingsEditor" timestamp="1595263234796">
       <screen x="0" y="23" width="1920" height="1112" />
     </state>
@@ -329,7 +331,6 @@
     </state>
     <state x="638" y="-1092" width="670" height="676" key="search.everywhere.popup/-307.-1417.2560.1417/0.23.1920.1120@-307.-1417.2560.1417" timestamp="1587252234591" />
     <state x="709" y="278" width="503" height="531" key="search.everywhere.popup/0.23.1920.1112@0.23.1920.1112" timestamp="1595055135225" />
-    <state x="709" y="280" width="670" height="535" key="search.everywhere.popup/0.23.1920.1120@0.23.1920.1120" timestamp="1587004299996" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -356,7 +357,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/achievements/Achievement.java</url>
-          <line>72</line>
+          <line>76</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
