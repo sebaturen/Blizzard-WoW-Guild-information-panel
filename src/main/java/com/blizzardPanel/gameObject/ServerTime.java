@@ -25,7 +25,7 @@ public class ServerTime {
     public static final String TIME_ZONE = "PST";
     private static ServerTime svObject;
     public static final int MAINTENANCE_DAY = Calendar.TUESDAY;
-    public static final int MAINTENANCE_HOUR = 8    ;
+    public static final int MAINTENANCE_HOUR = 8;
 
     //Attribute
     private final String timeZone;

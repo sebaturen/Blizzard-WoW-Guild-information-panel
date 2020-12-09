@@ -37,7 +37,10 @@ public class MythicAffix {
 
         public MythicAffix build() {
             if (!mythicAffixes.containsKey(id)) {
-                mythicAffixes.put(id, (MythicAffix) load(TABLE_KEY, id));
+                MythicAffix af = (MythicAffix) load(TABLE_KEY, id);
+                if (af != null) {
+                    mythicAffixes.put(id, af);
+                }
             }
             return mythicAffixes.get(id);
         }

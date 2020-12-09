@@ -23,7 +23,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/ServerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/ServerTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/baner_creator.psd" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/baner_creator.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +101,12 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -119,7 +140,7 @@
       <command value="gradle build :war" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.Blizzard-WoW-Guild-information-panel [build :war]">
+  <component name="RunManager" selected="Gradle.Blizzard-WoW-Guild-information-panel [build]">
     <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -284,7 +305,7 @@
       <workItem from="1606405027860" duration="600000" />
       <workItem from="1607442399492" duration="68000" />
       <workItem from="1607442474301" duration="6000" />
-      <workItem from="1607442492843" duration="624000" />
+      <workItem from="1607442492843" duration="6553000" />
     </task>
     <servers />
   </component>
@@ -348,7 +369,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java</url>
-          <line>181</line>
+          <line>183</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>

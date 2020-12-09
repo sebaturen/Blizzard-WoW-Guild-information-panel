@@ -219,4 +219,13 @@ public interface WoWAPIService {
             @Query("namespace") String namespace,
             @Header("Authorization") String token
     );
+
+    //------------------------------------------ Mythic Plus affixes
+    @GET("data/wow/keystone-affix/{id}")
+    Call<JsonObject> mythicPlusAffixes(
+            @Path("id") int affixId,
+            @Query("namespace") String namespace,
+            @Header("Authorization") String token,
+            @Header("If-Modified-Since") String ifModifiedSince
+    );
 }

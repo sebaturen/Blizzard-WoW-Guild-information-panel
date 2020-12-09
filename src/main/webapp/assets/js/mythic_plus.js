@@ -2,7 +2,7 @@
 let countFinish = 0;
 $(document).ready(function() {
     /*Load a member details*/
-    $.get("rest/mythicPlus/best/4?locale="+ Cookies.get('locale'), function(data) {
+    $.get("rest/mythicPlus/best/5?locale="+ Cookies.get('locale'), function(data) {
         console.log("mythic best load complete", data);
         bestRun(data);
     }).always(function() {

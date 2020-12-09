@@ -9,6 +9,7 @@ import com.blizzardPanel.gameObject.ServerTime;
 import com.blizzardPanel.gameObject.characters.CharacterMember;
 import com.blizzardPanel.gameObject.characters.playable.PlayableSpec;
 import com.blizzardPanel.gameObject.mythicKeystones.*;
+import com.blizzardPanel.update.blizzard.BlizzardUpdate;
 import com.blizzardPanel.update.raiderIO.RaiderIOUpdate;
 import com.blizzardPanel.viewController.GuildController;
 import com.google.gson.JsonArray;
@@ -161,6 +162,7 @@ public class MythicPlus {
                         "    gr.character_id IS NOT NULL " +
                         "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" " +
                         "    AND is_completed_within_time = FALSE " +
+                        "    AND completed_timestamp >= 1606172400000" +
                         "ORDER BY " +
                         "    kr.duration DESC " +
                         "LIMIT 3";
@@ -216,121 +218,73 @@ public class MythicPlus {
     @Path("weekAffix")
     public Response weekAffix(@DefaultValue("en_US") @QueryParam("locale") String locale) {
         // Get current affix:
-        JsonObject affixes = RaiderIOUpdate.shared.getCurrentAffixes();
+        try {
+            String query =
+                    "SELECT " +
+                    "    * " +
+                    "FROM " +
+                    "    keystone_affixes_weeks " +
+                    "WHERE " +
+                    "    `week` = ( " +
+                    "        SELECT " +
+                    "            affix1 " +
+                    "        FROM " +
+                    "            keystone_affixes_weeks " +
+                    "        WHERE " +
+                    "            `week` = 0)";
 
-        JsonArray currentAffixes = new JsonArray();
-        List<Long> afList = new ArrayList<>();
-        for(JsonElement affix : affixes.getAsJsonArray("affix_details")) {
-            JsonObject afDetail = affix.getAsJsonObject();
-            MythicAffix af = new MythicAffix.Builder(afDetail.get("id").getAsLong()).build();
+            JsonObject currentAffixesDB = DBLoadObject.dbConnect.selectQuery(query).get(0).getAsJsonObject();
+            int nextAffix = currentAffixesDB.get("week").getAsInt()+1;
+            if (nextAffix > 12) {
+                nextAffix = 1;
+            }
+            JsonObject nextAffixesDB = DBLoadObject.dbConnect.select(
+                    "keystone_affixes_weeks",
+                    new String[] { "affix1", "affix2", "affix3", "affix4" },
+                    "week = ?",
+                    new String[] { ""+ nextAffix }
+            ).get(0).getAsJsonObject();
 
-            currentAffixes.add(affixDetail(af, locale));
-            afList.add(af.getId());
-        }
+            // Prepare output
+            JsonArray currentAffixes = new JsonArray();
+            currentAffixes.add(affixDetail(currentAffixesDB.get("affix1").getAsInt(), locale));
+            currentAffixes.add(affixDetail(currentAffixesDB.get("affix2").getAsInt(), locale));
+            currentAffixes.add(affixDetail(currentAffixesDB.get("affix3").getAsInt(), locale));
+            currentAffixes.add(affixDetail(currentAffixesDB.get("affix4").getAsInt(), locale));
 
-        /**
-         * Next affix combination
-         * 10	7	12	120
-         * 9	6	13	120
-         * 10	8	12	120
-         * 9	5	3	120
-         * 10	7	2	120
-         * 9	11	4	120
-         * 10	8	14	120
-         * 9	7	13	120
-         * 10	11	3	120
-         * 9	6	4	120
-         * 10	5	14	120
-         * 9	11	2	120
-         */
-        JsonArray nextAffixes = new JsonArray();
-        if (afList.contains(10L) && afList.contains(7L) && afList.contains(12L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(6).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(13).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(6L) && afList.contains(13L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(8).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(12).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(10L) && afList.contains(8L) && afList.contains(12L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(5).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(3).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(5L) && afList.contains(3L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(7).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(2).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(10L) && afList.contains(7L) && afList.contains(2L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(11).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(4).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(11L) && afList.contains(4L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(8).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(14).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(10L) && afList.contains(8L) && afList.contains(14L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(7).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(13).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(7L) && afList.contains(13L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(11).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(3).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(10L) && afList.contains(11L) && afList.contains(3L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(6).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(4).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(6L) && afList.contains(4L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(5).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(14).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(10L) && afList.contains(5L) && afList.contains(14L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(9).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(11).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(2).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
-        }
-        if (afList.contains(9L) && afList.contains(11L) && afList.contains(2L) && afList.contains(120L)) {
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(10).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(7).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(12).build(), locale));
-            nextAffixes.add(affixDetail(new MythicAffix.Builder(120).build(), locale));
+            JsonArray nextAffixes = new JsonArray();
+            nextAffixes.add(affixDetail(nextAffixesDB.get("affix1").getAsInt(), locale));
+            nextAffixes.add(affixDetail(nextAffixesDB.get("affix2").getAsInt(), locale));
+            nextAffixes.add(affixDetail(nextAffixesDB.get("affix3").getAsInt(), locale));
+            nextAffixes.add(affixDetail(nextAffixesDB.get("affix4").getAsInt(), locale));
+
+            JsonObject weekAffixNexAffix = new JsonObject();
+            weekAffixNexAffix.add("current", currentAffixes);
+            weekAffixNexAffix.add("next", nextAffixes);
+
+            return Response.ok(weekAffixNexAffix.toString(), MediaType.APPLICATION_JSON_TYPE).build();
+
+        } catch (DataException | SQLException e) {
+            e.printStackTrace();
         }
 
-        JsonObject weekAffixNexAffix = new JsonObject();
-        weekAffixNexAffix.add("current", currentAffixes);
-        weekAffixNexAffix.add("next", nextAffixes);
-
-        return Response.ok(weekAffixNexAffix.toString(), MediaType.APPLICATION_JSON_TYPE).build();
-
+        return Response.serverError().build();
     }
 
-    private JsonObject affixDetail(MythicAffix af, String locale) {
+    private JsonObject affixDetail(int afId, String locale) {
+        MythicAffix af = new MythicAffix.Builder(afId).build();
+        if (af == null) {
+            // try load info from blizzard again... if no t exist, principal in first time running new affixes
+            BlizzardUpdate.shared.mythicKeystoneDungeonAPI.affixesDetail(afId);
+            af = new MythicAffix.Builder(afId).build();
+        }
         JsonObject affixDetail = new JsonObject();
-        affixDetail.addProperty("id", af.getId());
-        affixDetail.addProperty("name", af.getName(locale));
-        affixDetail.addProperty("desc", af.getDescription(locale));
-        affixDetail.addProperty("media", af.getMedia().getValue());
+        if (af != null) {
+            affixDetail.addProperty("id", af.getId());
+            affixDetail.addProperty("name", af.getName(locale));
+            affixDetail.addProperty("desc", af.getDescription(locale));
+            affixDetail.addProperty("media", af.getMedia().getValue());
+        }
         return affixDetail;
     }
 

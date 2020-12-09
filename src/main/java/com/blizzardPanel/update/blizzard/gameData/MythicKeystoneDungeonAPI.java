@@ -160,7 +160,7 @@ public class MythicKeystoneDungeonAPI extends BlizzardAPI {
         urlHref = urlHref.split("namespace")[0];
         urlHref += "namespace=static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION");
 
-        String affixId = reference.get("id").getAsString();
+        int affixId = reference.get("id").getAsInt();
 
         try {
             // Check if dungeon previously exist:
@@ -168,7 +168,7 @@ public class MythicKeystoneDungeonAPI extends BlizzardAPI {
                     MythicAffix.TABLE_NAME,
                     new String[]{"last_modified"},
                     MythicAffix.TABLE_KEY +"=?",
-                    new String[]{affixId}
+                    new String[]{affixId+""}
             );
             boolean isInDb = (affix_db.size() > 0);
             long lastModified = 0L;
@@ -183,59 +183,95 @@ public class MythicKeystoneDungeonAPI extends BlizzardAPI {
                     BlizzardUpdate.parseDateFormat(lastModified)
             );
 
-            // Run call
-            Response<JsonObject> resp = call.execute();
-            if (resp.isSuccessful()) {
-                JsonObject blizz_affix = resp.body();
+            affixesInfo(affixId, call, isInDb);
 
-                // Prepare Values
-                List<Object> columns = new ArrayList<>();
-                List<Object> values = new ArrayList<>();
-                columns.add("name");
-                values.add(blizz_affix.getAsJsonObject("name").toString());
-
-                columns.add("description");
-                values.add(blizz_affix.getAsJsonObject("description").toString());
-
-                columns.add("media_id");
-                values.add(blizz_affix.getAsJsonObject("media").get("id").getAsString());
-                BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.KEYSTONE_AFFIX, blizz_affix.getAsJsonObject("media"));
-
-                columns.add("last_modified");
-                values.add(resp.headers().getDate("Last-Modified").getTime() +"");
-
-                if (isInDb) { // Update
-                    BlizzardUpdate.dbConnect.update(
-                            MythicAffix.TABLE_NAME,
-                            columns,
-                            values,
-                            MythicAffix.TABLE_KEY +"=?",
-                            new String[]{affixId}
-                    );
-                } else { // Insert
-                    columns.add(MythicAffix.TABLE_KEY);
-                    values.add(blizz_affix.get("id").getAsString());
-                    BlizzardUpdate.dbConnect.insert(
-                            MythicAffix.TABLE_NAME,
-                            MythicAffix.TABLE_KEY,
-                            columns,
-                            values
-                    );
-                }
-
-                Logs.infoLog(this.getClass(), "OK - Mythic Affix detail "+ affixId);
-
-            } else {
-                if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
-                    Logs.infoLog(this.getClass(), "NOT Modified Mythic Affix detail "+ affixId);
-                } else {
-                    Logs.errorLog(this.getClass(), "ERROR - Mythic Affix detail "+ affixId +" - "+ resp.code() +" // "+ call.request());
-                }
-            }
         } catch (IOException | DataException | SQLException e) {
             Logs.fatalLog(this.getClass(), "FAILED - to get Mythic Affix detail "+ e);
         }
 
+    }
+
+    public void affixesDetail(int id) {
+        if (BlizzardUpdate.shared.accessToken == null || BlizzardUpdate.shared.accessToken.isExpired()) BlizzardUpdate.shared.generateAccessToken();
+        try {
+            // Check if dungeon previously exist:
+            JsonArray affix_db = BlizzardUpdate.dbConnect.select(
+                    MythicAffix.TABLE_NAME,
+                    new String[]{"last_modified"},
+                    MythicAffix.TABLE_KEY + "=?",
+                    new String[]{id+""}
+            );
+            boolean isInDb = (affix_db.size() > 0);
+            long lastModified = 0L;
+            if (affix_db.size() > 0) {
+                lastModified = affix_db.get(0).getAsJsonObject().get("last_modified").getAsLong();
+            }
+
+            // Prepare Call
+            Call<JsonObject> call = apiCalls.mythicPlusAffixes(
+                    id,
+                    "static-"+ GeneralConfig.getStringConfig("SERVER_LOCATION"),
+                    BlizzardUpdate.shared.accessToken.getAuthorization(),
+                    BlizzardUpdate.parseDateFormat(lastModified)
+            );
+
+            affixesInfo(id, call, isInDb);
+
+        } catch (IOException | DataException | SQLException e) {
+            Logs.fatalLog(this.getClass(), "FAILED - to get Mythic Affix detail ["+ id +"] "+ e);
+        }
+    }
+
+    private void affixesInfo(int affixId, Call<JsonObject> call, boolean isInDb) throws IOException, SQLException, DataException {
+        // Run call
+        Response<JsonObject> resp = call.execute();
+        if (resp.isSuccessful()) {
+            JsonObject blizz_affix = resp.body();
+
+            // Prepare Values
+            List<Object> columns = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+            columns.add("name");
+            values.add(blizz_affix.getAsJsonObject("name").toString());
+
+            columns.add("description");
+            values.add(blizz_affix.getAsJsonObject("description").toString());
+
+            columns.add("media_id");
+            values.add(blizz_affix.getAsJsonObject("media").get("id").getAsString());
+            BlizzardUpdate.shared.mediaAPI.mediaDetail(Media.type.KEYSTONE_AFFIX, blizz_affix.getAsJsonObject("media"));
+
+            columns.add("last_modified");
+            values.add(resp.headers().getDate("Last-Modified").getTime() +"");
+
+            if (isInDb) { // Update
+                BlizzardUpdate.dbConnect.update(
+                        MythicAffix.TABLE_NAME,
+                        columns,
+                        values,
+                        MythicAffix.TABLE_KEY +"=?",
+                        new String[]{affixId+""}
+                );
+            } else { // Insert
+                columns.add(MythicAffix.TABLE_KEY);
+                values.add(blizz_affix.get("id").getAsString());
+                BlizzardUpdate.dbConnect.insert(
+                        MythicAffix.TABLE_NAME,
+                        MythicAffix.TABLE_KEY,
+                        columns,
+                        values
+                );
+            }
+
+            Logs.infoLog(this.getClass(), "OK - Mythic Affix detail "+ affixId);
+
+        } else {
+            if (resp.code() == HttpServletResponse.SC_NOT_MODIFIED) {
+                Logs.infoLog(this.getClass(), "NOT Modified Mythic Affix detail "+ affixId);
+            } else {
+                Logs.errorLog(this.getClass(), "ERROR - Mythic Affix detail "+ affixId +" - "+ resp.code() +" // "+ call.request());
+            }
+        }
     }
 
     /**

@@ -23,7 +23,7 @@
             <div id="bestRun" style="display: none;">
                 <div class="key_title">
                     <h1><fmt:message key="label.best_runs" /></h1>
-                    <h3 clsdd="key_divide_title">(<fmt:message key="label.season" /> 4)</h3>
+                    <h3 clsdd="key_divide_title">(<fmt:message key="label.season" /> 1)</h3>
                 </div>
             </div>
             <div id="runList" style="display: none;">
