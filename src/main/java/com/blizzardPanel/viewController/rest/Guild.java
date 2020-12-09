@@ -72,6 +72,8 @@ public class Guild {
             if (charInfo != null) {
                 info.addProperty("lvl", charInfo.getLevel());
                 info.addProperty("race_id", charInfo.getPlayableRace().getId());
+                info.addProperty("gender", charInfo.getGender_type());
+                info.addProperty("faction", charInfo.getFaction().getType());
 
                 // Only if user is a guild member
                 if (currentUser != null && currentUser.getGuild_rank() != -1) {

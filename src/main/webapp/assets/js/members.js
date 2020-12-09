@@ -162,23 +162,6 @@ $(document).ready(function() {
         visualMembers.sort();
         addMember(visualMembers);
     });
-    // Sort by Hoa Level
-    $("#hoalvl").on("click", function() {
-        visualMembers.sort(function(a, b) {
-            let aHoalv = parseFloat(a.info.hoa_lvl);
-            let bHoaIlv = parseFloat(b.info.hoa_lvl);
-            if (aHoalv < bHoaIlv) {
-                return 1;
-            }
-            if (aHoalv > bHoaIlv) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        visualMembers.sort();
-        addMember(visualMembers);
-    });
     // Sort by Raider.IO
     $("#ioScore").on("click", function() {
         visualMembers.sort(function(a, b) {
@@ -236,7 +219,18 @@ function addMember(members){
          if (typeof val.media.avatar != 'undefined') {
              outForm += '<div class="col"><img class="img_profile" src="'+ val.media.avatar +'" /></div>';
          } else {
-             outForm += '<div class="col"><img class="img_profile" src="https://render-us.worldofwarcraft.com/character/tichondrius/00/000000000-avatar.jpg?alt=/shadow/avatar/2-1.jpg" /></div>';
+             let defaultAvatar = "";
+             if (val.info.faction == "ALLIANCE") {
+                 defaultAvatar += "1-";
+             } else {
+                 defaultAvatar += "2-";
+             }
+             if (val.info.gender == "MALE") {
+                 defaultAvatar += "0.jpg";
+             } else {
+                 defaultAvatar += "1.jpg";
+             }
+             outForm += '<div class="col"><img class="img_profile" src="https://render-us.worldofwarcraft.com/character/tichondrius/00/000000000-avatar.jpg?alt=/shadow/avatar/'+ defaultAvatar +'" /></div>';
          }
          outForm += '<div class="col character-'+ val.info.class.id +'">'+ val.name +'</div>'+
                     '<div class="col"><img src="assets/img/classes/class_'+ val.info.class.id +'.png" style="width: 22px;"/></div>'+
@@ -251,13 +245,6 @@ function addMember(members){
             } else {
                 outForm += '</div>';
             }
-
-            // HOA lvl
-            outForm += '<div class="col d-none d-md-block">';
-            if (typeof val.info.hoa_lvl != 'undefined') {
-                outForm += val.info.hoa_lvl;
-            }
-            outForm += '</div>';
 
             // Raider IO
             let mScore = '';

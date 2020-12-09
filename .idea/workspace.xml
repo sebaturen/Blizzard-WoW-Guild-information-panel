@@ -29,17 +29,14 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/ServerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/ServerTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/gameObject/mythicKeystones/MythicAffix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/WoWAPIService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/gameData/MythicKeystoneDungeonAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/img/baner_creator.psd" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/img/baner_creator.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/mythic_plus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/includes/footer.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/mythic_plus.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/member_panel/list_members.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/member_panel/list_members.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +60,17 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="Blizzard-Wow-Guild-Information-Panel" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Blizzard-Wow-Guild-Information-Panel" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Blizzard-Wow-Guild-Information-Panel" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -193,6 +201,25 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="Blizzard-WoW-Guild-information-panel [war]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="war" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="Blizzard-Wow-Guild-Information-Panel [build :war]" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -251,6 +278,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Blizzard-WoW-Guild-information-panel [war]" />
         <item itemvalue="Gradle.Blizzard-WoW-Guild-information-panel [build :war]" />
         <item itemvalue="Gradle.Blizzard-WoW-Guild-information-panel [build]" />
         <item itemvalue="Gradle.Blizzard-Wow-Guild-Information-Panel [build]" />
@@ -305,7 +333,7 @@
       <workItem from="1606405027860" duration="600000" />
       <workItem from="1607442399492" duration="68000" />
       <workItem from="1607442474301" duration="6000" />
-      <workItem from="1607442492843" duration="6553000" />
+      <workItem from="1607442492843" duration="8289000" />
     </task>
     <servers />
   </component>
@@ -329,6 +357,22 @@
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
     <state x="1074" y="392" key="#Project_Structure/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607443014750" />
+    <state width="1878" height="306" key="GridCell.Tab.0.bottom" timestamp="1607517809296">
+      <screen x="0" y="25" width="2560" height="1345" />
+    </state>
+    <state width="1878" height="306" key="GridCell.Tab.0.bottom/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809296" />
+    <state width="1878" height="306" key="GridCell.Tab.0.center" timestamp="1607517809295">
+      <screen x="0" y="25" width="2560" height="1345" />
+    </state>
+    <state width="1878" height="306" key="GridCell.Tab.0.center/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809295" />
+    <state width="1878" height="306" key="GridCell.Tab.0.left" timestamp="1607517809294">
+      <screen x="0" y="25" width="2560" height="1345" />
+    </state>
+    <state width="1878" height="306" key="GridCell.Tab.0.left/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809294" />
+    <state width="1878" height="306" key="GridCell.Tab.0.right" timestamp="1607517809295">
+      <screen x="0" y="25" width="2560" height="1345" />
+    </state>
+    <state width="1878" height="306" key="GridCell.Tab.0.right/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809295" />
     <state x="1095" y="450" key="SettingsEditor" timestamp="1607442688043">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>

@@ -85,7 +85,6 @@
                         <div class="col pointer d-none d-md-block" id="specColum"><fmt:message key="label.current_spec" /></div>
                         <% if(guildMember) { %>
                             <div class="col d-none d-md-block pointer" id="iLevelColum"><fmt:message key="label.ilvl" /></div>
-                            <div class="col d-none d-md-block pointer" id="hoalvl">HoA Lvl</div>
                             <div class="col d-none d-md-block pointer" id="ioScore">Raider.IO</div>
                         <% } %>
                     </div>
