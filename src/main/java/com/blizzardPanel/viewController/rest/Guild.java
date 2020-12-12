@@ -292,7 +292,9 @@ public class Guild {
             characterDetail.addProperty("name", cm.getName());
             characterDetail.addProperty("lvl", cm.getInfo().getLevel());
             characterDetail.addProperty("class", cm.getInfo().getClass_id());
-            characterDetail.addProperty("spec", cm.getActiveSpec().getSpecialization_id());
+            if (cm.getActiveSpec() != null) {
+                characterDetail.addProperty("spec", cm.getActiveSpec().getSpecialization_id());
+            }
             characterDetail.addProperty("title", charDetail_db.get("title").getAsString());
             characterDetail.addProperty("isMain", (charDetail_db.get("isMain").getAsInt() == 1));
 
