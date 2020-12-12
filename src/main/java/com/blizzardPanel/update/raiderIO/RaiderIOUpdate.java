@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 public class RaiderIOUpdate {
 
-    public static final String currentSeason = "season-bfa-4";
+    public static final String currentSeason = "season-sl-1";
 
     public static RaiderIOUpdate shared = new RaiderIOUpdate();
     public static DBConnect dbConnect = new DBConnect();
