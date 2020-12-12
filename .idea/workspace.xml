@@ -23,20 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/raiderIO/RaiderIOUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/artOfWar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -322,7 +310,7 @@
       <workItem from="1607442474301" duration="6000" />
       <workItem from="1607442492843" duration="8649000" />
       <workItem from="1607554332451" duration="37000" />
-      <workItem from="1607792760601" duration="2154000" />
+      <workItem from="1607792760601" duration="4306000" />
     </task>
     <servers />
   </component>
@@ -366,10 +354,10 @@
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
     <state x="1095" y="450" key="SettingsEditor/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607442688043" />
-    <state x="987" y="433" width="587" height="534" key="find.popup" timestamp="1607792842056">
+    <state x="987" y="433" width="587" height="534" key="find.popup" timestamp="1607811865533">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="987" y="433" width="587" height="534" key="find.popup/3840.897.1920.1020/0.0.2560.1400@0.0.2560.1400" timestamp="1607792842056" />
+    <state x="987" y="433" width="587" height="534" key="find.popup/3840.897.1920.1020/0.0.2560.1400@0.0.2560.1400" timestamp="1607811865533" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

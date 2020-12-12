@@ -54,7 +54,7 @@ public class MythicPlus {
                     "    AND kr.is_completed_within_time = 1 " +
                     "    AND kr.completed_timestamp >= "+ mythicSeason.getStart_timestamp() +" " +
                     ((mythicSeason.getEnd_timestamp() > 0) ? "AND kr.completed_timestamp <= " + mythicSeason.getEnd_timestamp() : "") +
-                    "ORDER BY " +
+                    " ORDER BY " +
                     "    kr.keystone_level DESC, " +
                     "    CASE WHEN kd.keystone_upgrades_3 >= kr.duration THEN " +
                     "        3 " +
@@ -162,7 +162,7 @@ public class MythicPlus {
                         "    gr.character_id IS NOT NULL " +
                         "    AND gr.guild_id = "+ GuildController.getInstance().getId() +" " +
                         "    AND is_completed_within_time = FALSE " +
-                        "    AND completed_timestamp >= 1606172400000" +
+                        "    AND completed_timestamp >= 1606172400000 " +
                         "ORDER BY " +
                         "    kr.duration DESC " +
                         "LIMIT 3";
@@ -200,7 +200,7 @@ public class MythicPlus {
                         "    AND kr.completed_timestamp >= "+ ServerTime.getLastResetTime() +" " +
                         "    AND kr.is_completed_within_time = FALSE " +
                         "ORDER BY " +
-                        "    kr.completed_timestamp DESC;";
+                        "    kr.completed_timestamp DESC";
 
                 return Response.ok(loadKeys(query, locale).toString(), MediaType.APPLICATION_JSON_TYPE).build();
             } catch (SQLException | DataException e) {
