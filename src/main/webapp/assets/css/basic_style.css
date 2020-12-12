@@ -442,7 +442,9 @@ p {
 .char-realm {
     color: rgba(255, 255, 255, 0.44);
     font-size: 0.5em;
-    float: right;
+    position: absolute;
+    right: 0;
+    top: 6px;
 }
 .fails_keys {
     float: right;

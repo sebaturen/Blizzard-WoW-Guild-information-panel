@@ -23,20 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/Guild.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/member_panel/list_members.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/member_panel/list_members.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/basic_style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,19 +137,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.Blizzard-WoW-Guild-information-panel [build]">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Blizzard-WoW-Guild-information-panel [build :war]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -333,7 +308,8 @@
       <workItem from="1606405027860" duration="600000" />
       <workItem from="1607442399492" duration="68000" />
       <workItem from="1607442474301" duration="6000" />
-      <workItem from="1607442492843" duration="8289000" />
+      <workItem from="1607442492843" duration="8649000" />
+      <workItem from="1607554332451" duration="37000" />
     </task>
     <servers />
   </component>
@@ -357,22 +333,22 @@
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
     <state x="1074" y="392" key="#Project_Structure/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607443014750" />
-    <state width="1878" height="306" key="GridCell.Tab.0.bottom" timestamp="1607517809296">
+    <state width="1878" height="306" key="GridCell.Tab.0.bottom" timestamp="1607539838873">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
-    <state width="1878" height="306" key="GridCell.Tab.0.bottom/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809296" />
-    <state width="1878" height="306" key="GridCell.Tab.0.center" timestamp="1607517809295">
+    <state width="1878" height="306" key="GridCell.Tab.0.bottom/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607539838873" />
+    <state width="1878" height="306" key="GridCell.Tab.0.center" timestamp="1607539838673">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
-    <state width="1878" height="306" key="GridCell.Tab.0.center/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809295" />
-    <state width="1878" height="306" key="GridCell.Tab.0.left" timestamp="1607517809294">
+    <state width="1878" height="306" key="GridCell.Tab.0.center/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607539838673" />
+    <state width="1878" height="306" key="GridCell.Tab.0.left" timestamp="1607539838576">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
-    <state width="1878" height="306" key="GridCell.Tab.0.left/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809294" />
-    <state width="1878" height="306" key="GridCell.Tab.0.right" timestamp="1607517809295">
+    <state width="1878" height="306" key="GridCell.Tab.0.left/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607539838576" />
+    <state width="1878" height="306" key="GridCell.Tab.0.right" timestamp="1607539838870">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
-    <state width="1878" height="306" key="GridCell.Tab.0.right/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607517809295" />
+    <state width="1878" height="306" key="GridCell.Tab.0.right/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607539838870" />
     <state x="1095" y="450" key="SettingsEditor" timestamp="1607442688043">
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
