@@ -24,7 +24,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1f920eaf-0d4c-421f-b42d-a6e8d079ee02" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/viewController/rest/MythicPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/js/members.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/user_panel/user_panel.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,7 +312,8 @@
       <workItem from="1607442474301" duration="6000" />
       <workItem from="1607442492843" duration="8649000" />
       <workItem from="1607554332451" duration="37000" />
-      <workItem from="1607792760601" duration="4306000" />
+      <workItem from="1607792760601" duration="6147000" />
+      <workItem from="1607899548455" duration="1375000" />
     </task>
     <servers />
   </component>
@@ -354,17 +357,17 @@
       <screen x="0" y="25" width="2560" height="1345" />
     </state>
     <state x="1095" y="450" key="SettingsEditor/-1920.306.1920.1175/0.25.2560.1345@0.25.2560.1345" timestamp="1607442688043" />
-    <state x="987" y="433" width="587" height="534" key="find.popup" timestamp="1607811865533">
+    <state x="987" y="433" width="587" height="534" key="find.popup" timestamp="1607900703988">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="987" y="433" width="587" height="534" key="find.popup/3840.897.1920.1020/0.0.2560.1400@0.0.2560.1400" timestamp="1607811865533" />
+    <state x="987" y="433" width="587" height="534" key="find.popup/3840.897.1920.1020/0.0.2560.1400@0.0.2560.1400" timestamp="1607900703988" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/blizzardPanel/update/blizzard/profile/CharacterProfileAPI.java</url>
-          <line>1222</line>
+          <line>1225</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

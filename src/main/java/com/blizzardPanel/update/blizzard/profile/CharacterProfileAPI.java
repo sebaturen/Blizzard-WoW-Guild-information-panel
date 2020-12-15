@@ -500,7 +500,10 @@ public class CharacterProfileAPI extends BlizzardAPI {
                 JsonObject bodyContent = response.body();
                 if (bodyContent != null && bodyContent.has("specializations")) {
                     JsonArray blizzSpec = bodyContent.getAsJsonArray("specializations");
-                    long activeSpecId = bodyContent.getAsJsonObject("active_specialization").get("id").getAsLong();
+                    long activeSpecId = 0;
+                    if (bodyContent.getAsJsonObject("active_specialization") != null) {
+                        activeSpecId = bodyContent.getAsJsonObject("active_specialization").get("id").getAsLong();
+                    }
 
                     // SAVE LAST UPDATE FROM CHARACTER-SPEC!~
                     BlizzardUpdate.dbConnect.update(

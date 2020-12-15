@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-md-2 col-4 character-${cm.info.class_id}">${cm.name}</div>
                             <div class="col-md-2 d-none d-md-block">
-                                <c:if test="${cm.activeSpec.specialization_id != 1}">
+                                <c:if test="${cm.activeSpec.specialization_id > 1}">
                                     <img src="assets/img/classes/specs/spec_${cm.info.class_id}_${cm.activeSpec.specialization_id}.png" style="width: 22px;"/>
                                 </c:if>
                             </div>
